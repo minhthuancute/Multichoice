@@ -1,6 +1,6 @@
 {
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/frontend/src",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/multichoice/frontend/src",
   "projectType": "application",
   "targets": {
     "build": {
@@ -9,17 +9,20 @@
       "defaultConfiguration": "production",
       "options": {
         "compiler": "babel",
-        "outputPath": "dist/apps/frontend",
-        "index": "apps/frontend/src/index.html",
+        "outputPath": "dist/apps/multichoice/frontend",
+        "index": "apps/multichoice/frontend/src/index.html",
         "baseHref": "/",
-        "main": "apps/frontend/src/main.tsx",
-        "polyfills": "apps/frontend/src/polyfills.ts",
-        "tsConfig": "apps/frontend/tsconfig.app.json",
-        "assets": ["apps/frontend/src/favicon.ico", "apps/frontend/src/assets"],
-        "styles": ["apps/frontend/src/styles.scss"],
+        "main": "apps/multichoice/frontend/src/main.tsx",
+        "polyfills": "apps/multichoice/frontend/src/polyfills.ts",
+        "tsConfig": "apps/multichoice/frontend/tsconfig.app.json",
+        "assets": [
+          "apps/multichoice/frontend/src/favicon.ico",
+          "apps/multichoice/frontend/src/assets"
+        ],
+        "styles": ["apps/multichoice/frontend/src/styles.scss"],
         "scripts": [],
         "webpackConfig": "@nrwl/react/plugins/webpack",
-        "postcssConfig": "apps/frontend/postcss.config.js"
+        "postcssConfig": "apps/multichoice/frontend/postcss.config.js"
       },
       "configurations": {
         "development": {
@@ -31,8 +34,8 @@
         "production": {
           "fileReplacements": [
             {
-              "replace": "apps/frontend/src/environments/environment.ts",
-              "with": "apps/frontend/src/environments/environment.prod.ts"
+              "replace": "apps/multichoice/frontend/src/environments/environment.ts",
+              "with": "apps/multichoice/frontend/src/environments/environment.prod.ts"
             }
           ],
           "optimization": true,
@@ -48,15 +51,15 @@
       "executor": "@nrwl/web:dev-server",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "frontend:build",
+        "buildTarget": "multichoice-frontend:build",
         "hmr": true
       },
       "configurations": {
         "development": {
-          "buildTarget": "frontend:build:development"
+          "buildTarget": "multichoice-frontend:build:development"
         },
         "production": {
-          "buildTarget": "frontend:build:production",
+          "buildTarget": "multichoice-frontend:build:production",
           "hmr": false
         }
       }
@@ -65,14 +68,14 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["apps/frontend/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": ["apps/multichoice/frontend/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/frontend"],
+      "outputs": ["coverage/apps/multichoice/frontend"],
       "options": {
-        "jestConfig": "apps/frontend/jest.config.ts",
+        "jestConfig": "apps/multichoice/frontend/jest.config.ts",
         "passWithNoTests": true
       }
     }

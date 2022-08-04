@@ -2,8 +2,7 @@
   "$schema": "./node_modules/nx/schemas/workspace-schema.json",
   "version": 2,
   "projects": {
-    "backend": "apps/backend",
-    "frontend": "apps/frontend",
-    "frontend-e2e": "apps/frontend-e2e"
+    "multichoice-backend": "apps/multichoice/backend",
+    "multichoice-frontend": "apps/multichoice/frontend"
   }
 }
