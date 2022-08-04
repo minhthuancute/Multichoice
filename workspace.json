@@ -3,6 +3,7 @@
   "version": 2,
   "projects": {
     "multichoice-backend": "apps/multichoice/backend",
+    "multichoice-dto": "libs/multichoice/dto",
     "multichoice-frontend": "apps/multichoice/frontend"
   }
 }
