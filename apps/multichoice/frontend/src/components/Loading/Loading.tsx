@@ -1,0 +1,14 @@
+import React from 'react';
+import './loading.scss';
+
+interface ILoading {
+  isLoading?: boolean;
+}
+
+const Loading: React.FC<ILoading> = ({ isLoading = true }) => {
+  return isLoading ? (
+    <div className="wrapper-loading w-8 h-8 rounded-full border border-solid border-primary border-t-transparent"></div>
+  ) : null;
+};
+
+export default Loading;

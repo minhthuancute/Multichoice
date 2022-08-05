@@ -1,5 +1,6 @@
 const { createGlobPatternsForDependencies } = require('@nrwl/react/tailwind');
 const { join } = require('path');
+const baseColors = require('tailwindcss/colors');
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -11,7 +12,16 @@ module.exports = {
     ...createGlobPatternsForDependencies(__dirname),
   ],
   theme: {
-    extend: {},
+    extend: {
+      backgroundImage: {
+        login: "url('/assets/images/bg-login.jpg')",
+      },
+    },
+    colors: {
+      ...baseColors,
+      primary: '#1e85ff',
+      black: '#1c2437',
+    },
   },
   plugins: [],
 };
