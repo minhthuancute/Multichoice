@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto } from '@monorepo/multichoice/dto';
+import configuration from '../config/configuration';
 
 @Injectable()
 export class UserService {
@@ -8,7 +9,7 @@ export class UserService {
   }
 
   findAll() {
-    return `This action returns all user`;
+    return configuration().database.password;
   }
 
   findOne(id: number) {
