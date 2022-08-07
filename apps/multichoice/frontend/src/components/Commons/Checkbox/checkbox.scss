@@ -1,0 +1,5 @@
+.wrapper-input {
+  input:checked ~ label .box {
+    background-color: red;
+  }
+}

@@ -1,5 +1,5 @@
 class TitleServices {
-  defaultTitle = 'MultiChoise';
+  defaultTitle = 'MultiChoice';
   setTitle(title: string = this.defaultTitle): void {
     document.title = title;
   }
