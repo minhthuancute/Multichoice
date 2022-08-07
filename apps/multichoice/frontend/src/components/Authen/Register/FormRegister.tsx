@@ -6,11 +6,11 @@ import { titleServices } from '../../../services/TitleServices';
 import { classNames } from '../../../helper/classNames';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import './form.scss';
 import { Link } from 'react-router-dom';
 import { localServices } from '../../../services/LocalServices';
 import { FORM_LOGIN_LOCAL } from '../../../constants/contstants';
 import Checkbox from '../../Commons/Checkbox/Checkbox';
-import './form.scss';
 
 interface IFormLogin {
   email: string;
@@ -31,7 +31,7 @@ const schemaFormLogin = yup
   })
   .required();
 
-const FormLogin = () => {
+const FormRegister = () => {
   const [dataLocal, setDataLocal] = useState<IFormLogin>();
   const [rememberMe, setRememberMe] = useState<boolean>(false);
 
@@ -68,10 +68,12 @@ const FormLogin = () => {
         autoComplete="off"
       >
         <div className="form-header mb-10 text-center">
-          <h2 className="font-semibold text-black mb-5 text-3xl">Login</h2>
+          <h2 className="font-semibold text-black mb-5 text-3xl">
+            Sign up Now
+          </h2>
           <p className="text-slate-600">
-            Inter yor email address and password <br />
-            to get access account
+            Inter yor valid email address and password <br />
+            to register your account
           </p>
         </div>
         <div className="form-group ">
@@ -178,4 +180,4 @@ const FormLogin = () => {
   );
 };
 
-export default FormLogin;
+export default FormRegister;
