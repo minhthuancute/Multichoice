@@ -33,8 +33,8 @@ export class authService {
         if (!user) {
             throw new BadRequestException('Email is not found');
         }
-
-        if (!await bcrypt.compare(login.password, user.password)) {
+        const isMatchPassword = await bcrypt.compare(login.password, user.password);
+        if (!isMatchPassword) {
             throw new BadRequestException('password is incore');
         }
 
