@@ -8,10 +8,10 @@ import { authService } from "./auth.servise";
 
 @Module({
     imports: [TypeOrmModule.forFeature([User]), JwtModule.register({
-        secret: configuration().JWT_KEY,
+        secret: configuration().jwt_key,
         signOptions: { expiresIn: '1d' }
     })],
     controllers: [authController],
     providers: [authService],
 })
-export class authModule { }
+export class AuthModule { }
