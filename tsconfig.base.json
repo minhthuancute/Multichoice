@@ -15,7 +15,10 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@monorepo/multichoice/dto": ["libs/multichoice/dto/src/index.ts"]
+      "@monorepo/multichoice/dto": ["libs/multichoice/dto/src/index.ts"],
+      "@monorepo/multichoice/validation": [
+        "libs/multichoice/validation/src/index.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]
