@@ -7,4 +7,5 @@ export default () => ({
     password: process.env.MYSQL_PASSWORD,
     database: process.env.MYSQL_DATABASE,
   },
+  jwt_key: process.env.JWT_KEY
 });
