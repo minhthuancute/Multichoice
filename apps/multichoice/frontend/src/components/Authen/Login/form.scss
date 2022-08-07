@@ -1,0 +1,9 @@
+.wrapper-input {
+  &.no-error {
+    input:focus ~ label {
+      svg {
+        fill: #1e85ff;
+      }
+    }
+  }
+}

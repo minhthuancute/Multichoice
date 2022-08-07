@@ -4,7 +4,7 @@ interface IClassNames {
 
 export const classNames: IClassNames = (classes = '', restClass): string => {
   if (!restClass) return classes;
-  let classCondition: string = ' ';
+  let classCondition = ' ';
   for (const [key, value] of Object.entries(restClass)) {
     classCondition += value ? `${key} ` : '';
   }

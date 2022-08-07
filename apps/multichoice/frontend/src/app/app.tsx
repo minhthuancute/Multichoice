@@ -1,13 +1,15 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import React, { Suspense } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import styles from './app.module.scss';
 
 // Pages
 import Home from '../pages/Home/Home';
-import Login from '../pages/Login/Login';
-import Register from '../pages/Register/Register';
 import Loading from '../components/Loading/Loading';
+// import lazy
+const Login: React.FC = React.lazy(() => import('../pages/Login/Login'));
+const Register: React.FC = React.lazy(
+  () => import('../pages/Register/Register')
+);
 const PageNotFound: React.FC = React.lazy(
   () => import('../pages/Notfound/Notfound')
 );
@@ -25,7 +27,14 @@ export const App = () => {
             </Suspense>
           }
         />
-        <Route path="/register" element={<Register />} />
+        <Route
+          path="/register"
+          element={
+            <Suspense fallback={<Loading />}>
+              <Register />
+            </Suspense>
+          }
+        />
         <Route
           path="*"
           element={
