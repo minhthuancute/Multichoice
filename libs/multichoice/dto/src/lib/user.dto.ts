@@ -20,3 +20,13 @@ export class UpdateUserDto {
   @MinLength(4)
   username: string;
 }
+
+export class LoginUserDto {
+  @ApiProperty()
+  @IsEmail()
+  email: string;
+
+  @ApiProperty()
+  @MinLength(6)
+  password: string;
+}
