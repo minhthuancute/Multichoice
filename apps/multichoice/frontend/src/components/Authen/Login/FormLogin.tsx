@@ -1,6 +1,7 @@
 import React, { useLayoutEffect, useState } from 'react';
 import { MdOutlineMail } from 'react-icons/md';
 import { VscUnlock } from 'react-icons/vsc';
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { titleServices } from '../../../services/TitleServices';
 import { classNames } from '../../../helper/classNames';
@@ -11,6 +12,7 @@ import { localServices } from '../../../services/LocalServices';
 import { FORM_LOGIN_LOCAL } from '../../../constants/contstants';
 import Checkbox from '../../Commons/Checkbox/Checkbox';
 import './form.scss';
+import InputAuthen from '../InputAuthen';
 
 interface IFormLogin {
   email: string;
@@ -21,19 +23,14 @@ const schemaFormLogin = yup
   .object()
   .shape({
     email: yup.string().max(100).required('Email is required').email(),
-    password: yup
-      .string()
-      .min(8)
-      .max(36)
-      .lowercase()
-      .uppercase()
-      .matches(/[0-9]/),
+    password: yup.string().min(8).max(36).lowercase().uppercase(),
   })
   .required();
 
-const FormLogin = () => {
+const FormLogin: React.FC = () => {
   const [dataLocal, setDataLocal] = useState<IFormLogin>();
   const [rememberMe, setRememberMe] = useState<boolean>(false);
+  const [isHidePass, setIsHidePass] = useState<boolean>(true);
 
   const {
     register,
@@ -60,6 +57,10 @@ const FormLogin = () => {
     console.log('hihi');
   };
 
+  const toggleHidePass = () => {
+    setIsHidePass((state) => !state);
+  };
+
   return (
     <div className="wrapper-form">
       <form
@@ -74,47 +75,17 @@ const FormLogin = () => {
             to get access account
           </p>
         </div>
-        <div className="form-group ">
-          <div
-            className={classNames('wrapper-input relative', {
-              'no-error': !errors.email,
-            })}
-          >
-            <input
-              {...register('email')}
-              id="email"
-              placeholder="Email Address"
-              className={classNames(
-                `transition-all duration-200 pl-9 w-full text-stone-600 outline-none border px-2.5 py-4 border-solid
-                border-stone-200 focus:border-primary rounded-md`,
-                {
-                  'border-stone-200 focus:border-primary': !errors.email,
-                  'border-red-500 focus:border-red-500': errors.email,
-                }
-              )}
-            />
 
-            <label
-              htmlFor="email"
-              className="absolute inline-block px-2 left-0 top-1/2 transform -translate-y-1/2"
-            >
-              <MdOutlineMail
-                className={classNames('transition-all duration-200 text-xl', {
-                  'fill-slate-400': !errors.email,
-                  'fill-red-500': errors.email,
-                })}
-              />
-            </label>
-          </div>
+        <InputAuthen
+          registerField={register('email')}
+          isError={Boolean(errors.email)}
+          errMessage={errors.email?.message}
+          placeholder="hihi"
+          typeInput="email"
+          Icon={MdOutlineMail}
+        />
 
-          {errors.email && (
-            <p className="mt-1 text-xs text-red-500 first-letter:capitalize">
-              {errors.email.message}
-            </p>
-          )}
-        </div>
-
-        <div className="form-group relative mt-5">
+        <div className="form-group password mt-5">
           <div
             className={classNames('wrapper-input relative', {
               'no-error': !errors.password,
@@ -123,10 +94,10 @@ const FormLogin = () => {
             <input
               {...register('password')}
               id="password"
-              type="password"
+              type={isHidePass ? 'password' : 'text'}
               placeholder="Password"
               className={classNames(
-                `transition-all duration-200 pl-9 w-full text-stone-600 outline-none border px-2.5 py-4 border-solid
+                `transition-all duration-200 pl-9 w-full text-stone-800 outline-none border px-2.5 py-4 border-solid
               border-stone-200 focus:border-primary rounded-md`,
                 {
                   'border-stone-200 focus:border-primary': !errors.password,
@@ -140,11 +111,37 @@ const FormLogin = () => {
             >
               <VscUnlock
                 className={classNames('transition-all duration-200  text-xl', {
-                  'fill-slate-400': !errors.email,
-                  'fill-red-500': errors.email,
+                  'fill-slate-400': !errors.password,
+                  'fill-red-500': errors.password,
                 })}
               />
             </label>
+
+            <div className="absolute inline-block px-2 right-2 top-1/2 transform -translate-y-1/2">
+              <button type="button" onClick={() => toggleHidePass()}>
+                {isHidePass ? (
+                  <AiOutlineEyeInvisible
+                    className={classNames(
+                      'transition-all duration-200  text-xl',
+                      {
+                        'fill-slate-400': !errors.password,
+                        'fill-red-500': errors.password,
+                      }
+                    )}
+                  />
+                ) : (
+                  <AiOutlineEye
+                    className={classNames(
+                      'transition-all duration-200  text-xl',
+                      {
+                        'fill-slate-400': !errors.password,
+                        'fill-red-500': errors.password,
+                      }
+                    )}
+                  />
+                )}
+              </button>
+            </div>
           </div>
           {errors.password && (
             <p className="mt-1 text-xs text-red-500 first-letter:capitalize">
@@ -155,7 +152,7 @@ const FormLogin = () => {
 
         <div className="remember-me flex items-center justify-between mt-5 text-slate-800">
           <div className="check-box cursor-pointer flex items-center">
-            <Checkbox onChange={onChangeCheckbox} />
+            <Checkbox onChange={onChangeCheckbox} textLabel="Remember me" />
           </div>
           <Link
             to="/"
@@ -170,7 +167,7 @@ const FormLogin = () => {
             className="w-full py-4 bg-primary rounded-md text-white font-medium"
             type="submit"
           >
-            Sign in Now
+            Sign up Now
           </button>
         </div>
       </form>

@@ -1,9 +1,18 @@
 import React from 'react';
+import { classNames } from '../../helper/classNames';
 
-const SignUpOptions: React.FC = () => {
+interface ISignupOption {
+  isLoginPage?: boolean;
+}
+
+const SignUpOptions: React.FC<ISignupOption> = ({ isLoginPage = false }) => {
   return (
-    <div className="signup-options">
-      <div className="line my-10">
+    <div className="signup-options flex flex-col">
+      <div
+        className={classNames('line my-10 order-1', {
+          'order-3 ': !isLoginPage,
+        })}
+      >
         <p
           className="flex items-center before:w-1/2
           before:h-0.5 after:w-1/2 after:h-0.5 before:bg-slate-100 after:bg-slate-100"
@@ -13,7 +22,7 @@ const SignUpOptions: React.FC = () => {
           </span>
         </p>
       </div>
-      <div className="socials">
+      <div className="socials order-2">
         <div className="google">
           <button
             className="w-full flex items-center justify-center border border-solid border-slate-200

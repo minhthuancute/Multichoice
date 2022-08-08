@@ -1,16 +1,19 @@
 import React, { useLayoutEffect, useState } from 'react';
 import { MdOutlineMail } from 'react-icons/md';
 import { VscUnlock } from 'react-icons/vsc';
+import { AiOutlineEye } from 'react-icons/ai';
+
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { titleServices } from '../../../services/TitleServices';
 import { classNames } from '../../../helper/classNames';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import './form.scss';
-import { Link } from 'react-router-dom';
 import { localServices } from '../../../services/LocalServices';
 import { FORM_LOGIN_LOCAL } from '../../../constants/contstants';
 import Checkbox from '../../Commons/Checkbox/Checkbox';
+
+import './form.scss';
+import SignUpOptions from '../SignUpOptions';
 
 interface IFormLogin {
   email: string;
@@ -76,6 +79,7 @@ const FormRegister = () => {
             to register your account
           </p>
         </div>
+        <SignUpOptions isLoginPage={false} />
         <div className="form-group ">
           <div
             className={classNames('wrapper-input relative', {
@@ -157,14 +161,15 @@ const FormRegister = () => {
 
         <div className="remember-me flex items-center justify-between mt-5 text-slate-800">
           <div className="check-box cursor-pointer flex items-center">
-            <Checkbox onChange={onChangeCheckbox} />
+            <label htmlFor=""></label>
+            <Checkbox
+              onChange={onChangeCheckbox}
+              textLabel="<p>
+              I accept the <span style='color: #1e85ff'>Term of Conditions</span>
+              and <span style='color: #1e85ff'>Privacy Policy</span>
+            </p>"
+            />
           </div>
-          <Link
-            to="/"
-            className="text-sm transition-all duration-200 hover:text-primary"
-          >
-            Forget password?
-          </Link>
         </div>
 
         <div className="submit mt-5">
