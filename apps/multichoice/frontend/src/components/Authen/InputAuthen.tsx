@@ -1,8 +1,11 @@
 import React, { HTMLInputTypeAttribute, useState } from 'react';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import { classNames } from '../../helper/classNames';
+import styles from './styleAuthen.module.scss';
 
 export interface IInputAuthen {
+  className?: string;
+  id?: string;
   placeholder?: string;
   Icon?: any;
   typeInput?: HTMLInputTypeAttribute;
@@ -13,6 +16,8 @@ export interface IInputAuthen {
 }
 
 const InputAuthen: React.FC<IInputAuthen> = ({
+  className,
+  id,
   registerField,
   isError,
   errMessage,
@@ -22,18 +27,26 @@ const InputAuthen: React.FC<IInputAuthen> = ({
 }) => {
   const [isHidePass, setIsHidePass] = useState<boolean>(true);
 
+  const getTypeInput = (): HTMLInputTypeAttribute => {
+    if (typeInput !== 'password') {
+      return typeInput;
+    } else {
+      return isHidePass ? 'password' : 'text';
+    }
+  };
+
   return (
-    <div className="form-group relative">
+    <div className={classNames('form-group relative', className)}>
       {/* input content */}
       <div
-        className={classNames('wrapper-input relative', {
+        className={classNames(`relative ${styles['wrapper-input']}`, {
           'no-error': !isError,
         })}
       >
         <input
           {...registerField}
-          id="password"
-          type={typeInput}
+          id={id}
+          type={getTypeInput()}
           placeholder={placeholder}
           className={classNames(
             `transition-all duration-200  w-full text-stone-600 outline-none border px-2.5 py-4 border-solid
@@ -63,14 +76,14 @@ const InputAuthen: React.FC<IInputAuthen> = ({
         <div className="absolute inline-block px-2 right-2 top-1/2 transform -translate-y-1/2">
           <button type="button" onClick={() => setIsHidePass(!isHidePass)}>
             {isHidePass ? (
-              <AiOutlineEyeInvisible
+              <AiOutlineEye
                 className={classNames('transition-all duration-200  text-xl', {
                   'fill-slate-400': !isError,
                   'fill-red-500': isError,
                 })}
               />
             ) : (
-              <AiOutlineEye
+              <AiOutlineEyeInvisible
                 className={classNames('transition-all duration-200  text-xl', {
                   'fill-slate-400': !isError,
                   'fill-red-500': isError,
