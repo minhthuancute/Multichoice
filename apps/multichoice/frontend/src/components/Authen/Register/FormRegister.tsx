@@ -1,7 +1,6 @@
 import React, { useLayoutEffect, useState } from 'react';
 import { MdOutlineMail } from 'react-icons/md';
 import { VscUnlock } from 'react-icons/vsc';
-import { AiOutlineEye } from 'react-icons/ai';
 
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { titleServices } from '../../../services/TitleServices';
@@ -14,6 +13,7 @@ import Checkbox from '../../Commons/Checkbox/Checkbox';
 
 import './form.scss';
 import SignUpOptions from '../SignUpOptions';
+import InputAuthen from '../InputAuthen';
 
 interface IFormLogin {
   email: string;
@@ -24,19 +24,12 @@ const schemaFormLogin = yup
   .object()
   .shape({
     email: yup.string().max(100).required('Email is required').email(),
-    password: yup
-      .string()
-      .min(8)
-      .max(36)
-      .lowercase()
-      .uppercase()
-      .matches(/[0-9]/),
+    password: yup.string().min(8).max(36).lowercase().uppercase(),
   })
   .required();
 
-const FormRegister = () => {
+const FormRegister: React.FC = () => {
   const [dataLocal, setDataLocal] = useState<IFormLogin>();
-  const [rememberMe, setRememberMe] = useState<boolean>(false);
 
   const {
     register,
@@ -74,94 +67,35 @@ const FormRegister = () => {
           <h2 className="font-semibold text-black mb-5 text-3xl">
             Sign up Now
           </h2>
-          <p className="text-slate-600">
+          <p className="text-slate-800">
             Inter yor valid email address and password <br />
             to register your account
           </p>
         </div>
+
         <SignUpOptions isLoginPage={false} />
-        <div className="form-group ">
-          <div
-            className={classNames('wrapper-input relative', {
-              'no-error': !errors.email,
-            })}
-          >
-            <input
-              {...register('email')}
-              id="email"
-              placeholder="Email Address"
-              className={classNames(
-                `transition-all duration-200 pl-9 w-full text-stone-600 outline-none border px-2.5 py-4 border-solid
-                border-stone-200 focus:border-primary rounded-md`,
-                {
-                  'border-stone-200 focus:border-primary': !errors.email,
-                  'border-red-500 focus:border-red-500': errors.email,
-                }
-              )}
-            />
 
-            <label
-              htmlFor="email"
-              className="absolute inline-block px-2 left-0 top-1/2 transform -translate-y-1/2"
-            >
-              <MdOutlineMail
-                className={classNames('transition-all duration-200 text-xl', {
-                  'fill-slate-400': !errors.email,
-                  'fill-red-500': errors.email,
-                })}
-              />
-            </label>
-          </div>
+        <InputAuthen
+          registerField={register('email')}
+          isError={Boolean(errors.email)}
+          errMessage={errors.email?.message}
+          placeholder="Email Address"
+          typeInput="email"
+          Icon={MdOutlineMail}
+        />
 
-          {errors.email && (
-            <p className="mt-1 text-xs text-red-500 first-letter:capitalize">
-              {errors.email.message}
-            </p>
-          )}
-        </div>
-
-        <div className="form-group relative mt-5">
-          <div
-            className={classNames('wrapper-input relative', {
-              'no-error': !errors.password,
-            })}
-          >
-            <input
-              {...register('password')}
-              id="password"
-              type="password"
-              placeholder="Password"
-              className={classNames(
-                `transition-all duration-200 pl-9 w-full text-stone-600 outline-none border px-2.5 py-4 border-solid
-              border-stone-200 focus:border-primary rounded-md`,
-                {
-                  'border-stone-200 focus:border-primary': !errors.password,
-                  'border-red-500 focus:border-red-500': errors.password,
-                }
-              )}
-            />
-            <label
-              htmlFor="password"
-              className="absolute inline-block px-2 left-0 top-1/2 transform -translate-y-1/2"
-            >
-              <VscUnlock
-                className={classNames('transition-all duration-200  text-xl', {
-                  'fill-slate-400': !errors.email,
-                  'fill-red-500': errors.email,
-                })}
-              />
-            </label>
-          </div>
-          {errors.password && (
-            <p className="mt-1 text-xs text-red-500 first-letter:capitalize">
-              {errors.password.message}
-            </p>
-          )}
-        </div>
+        <InputAuthen
+          className="mt-5"
+          registerField={register('password')}
+          isError={Boolean(errors.password)}
+          errMessage={errors.password?.message}
+          placeholder="Password"
+          typeInput="password"
+          Icon={VscUnlock}
+        />
 
         <div className="remember-me flex items-center justify-between mt-5 text-slate-800">
           <div className="check-box cursor-pointer flex items-center">
-            <label htmlFor=""></label>
             <Checkbox
               onChange={onChangeCheckbox}
               textLabel="<p>
