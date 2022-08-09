@@ -27,8 +27,7 @@ export class authService {
         return this.userRepository.save(createUserDto)
     }
 
-    async findOne(login: LoginUserDto) {
-
+    async validateUser(login: LoginUserDto): Promise<any> {
         const user = await this.userRepository.findOneBy({ email: login.email });
         if (!user) {
             throw new BadRequestException('Email is not found');
@@ -37,6 +36,10 @@ export class authService {
         if (!isMatchPassword) {
             throw new BadRequestException('password is incore');
         }
+        return user;
+    }
+
+    async login(user: any) {
 
         const payload: AuthPayload = {
             name: user.username,
@@ -44,10 +47,8 @@ export class authService {
             id: user.id,
         };
 
-
         return {
-            token: await this.jwtService.signAsync({ id: payload.id }),
-            payload,
+            token: await this.jwtService.signAsync(payload),
         };
     }
 

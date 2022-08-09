@@ -8,6 +8,7 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { AppModule } from './app/app.module';
+import { HttpErrorFilterr } from './app/http-error-filter';
 import configuration from './config/configuration';
 
 async function bootstrap() {
@@ -15,6 +16,7 @@ async function bootstrap() {
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
   app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalFilters(new HttpErrorFilterr());
   // swagger
   const config = new DocumentBuilder()
     .setTitle('Multichoice')
