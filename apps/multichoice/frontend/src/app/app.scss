@@ -1,6 +1,5 @@
 /* Your styles goes here. */
 
-// custom check box
-input[type='checkbox']:checked:after {
-  display: none !important;
+* {
+  -webkit-tap-highlight-color: transparent;
 }

@@ -1,16 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BsCheck } from 'react-icons/bs';
 import './checkbox.scss';
 
 interface CheckboxProps {
+  isChecked?: boolean;
   textLabel?: string;
-  onChange: () => void;
+  onChange?: (isChecked: boolean) => void;
 }
 
-const Checkbox: React.FC<CheckboxProps> = ({ onChange, textLabel }) => {
+const Checkbox: React.FC<CheckboxProps> = ({
+  isChecked = false,
+  onChange,
+  textLabel,
+}) => {
+  const [toggleChecked, setToggleChecked] = useState<boolean>(isChecked);
+
+  const onChangeCheckbox = (): void => {
+    setToggleChecked((state) => !state);
+    if (onChange) {
+      onChange(!toggleChecked);
+    }
+  };
+
   return (
-    <div className="wrapper-input flex items-center">
-      <input hidden type="checkbox" id="remember" onChange={() => onChange()} />
+    <div className={'wrapper-input flex items-center'}>
+      <input
+        hidden
+        defaultChecked={isChecked}
+        type="checkbox"
+        id="remember"
+        onChange={() => onChangeCheckbox()}
+      />
 
       <label
         htmlFor="remember"
