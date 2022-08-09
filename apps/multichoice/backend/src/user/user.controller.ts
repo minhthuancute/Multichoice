@@ -6,15 +6,19 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto } from '@monorepo/multichoice/dto';
 import { ApiTags } from '@nestjs/swagger';
+import { AuthenticationGuard } from '../auth/guards/auth.guard';
+import { User } from './entities/user.entity';
 
 @ApiTags('User')
 @Controller('user')
+@UseGuards(AuthenticationGuard)
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
@@ -22,7 +26,7 @@ export class UserController {
   }
 
   @Get()
-  findAll() {
+  findAll(): Promise<User[]> {
     return this.userService.findAll();
   }
 
