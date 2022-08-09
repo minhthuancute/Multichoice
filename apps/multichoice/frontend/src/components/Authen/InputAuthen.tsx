@@ -1,9 +1,10 @@
 import React, { HTMLInputTypeAttribute, useState } from 'react';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import { classNames } from '../../helper/classNames';
-import styles from './styleAuthen.module.scss';
+import './authen.scss';
 
 export interface IInputAuthen {
+  defaultValue?: string;
   className?: string;
   id?: string;
   placeholder?: string;
@@ -16,6 +17,7 @@ export interface IInputAuthen {
 }
 
 const InputAuthen: React.FC<IInputAuthen> = ({
+  defaultValue,
   className,
   id,
   registerField,
@@ -39,7 +41,7 @@ const InputAuthen: React.FC<IInputAuthen> = ({
     <div className={classNames('form-group relative', className)}>
       {/* input content */}
       <div
-        className={classNames(`relative ${styles['wrapper-input']}`, {
+        className={classNames('relative wrapper-input', {
           'no-error': !isError,
         })}
       >
@@ -48,8 +50,9 @@ const InputAuthen: React.FC<IInputAuthen> = ({
           id={id}
           type={getTypeInput()}
           placeholder={placeholder}
+          defaultValue={defaultValue}
           className={classNames(
-            `transition-all duration-200  w-full text-stone-600 outline-none border px-2.5 py-4 border-solid
+            `transition-all duration-200 w-full text-stone-600 outline-none border px-2.5 py-4 border-solid
               border-stone-200 focus:border-primary rounded-md`,
             {
               'border-stone-200 focus:border-primary': !isError,
@@ -64,7 +67,7 @@ const InputAuthen: React.FC<IInputAuthen> = ({
           className="absolute inline-block px-2 left-0 top-1/2 transform -translate-y-1/2"
         >
           <Icon
-            className={classNames('transition-all duration-200  text-xl', {
+            className={classNames('transition-all duration-200 text-xl', {
               'fill-slate-400': !isError,
               'fill-red-500': isError,
             })}

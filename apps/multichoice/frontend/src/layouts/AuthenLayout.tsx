@@ -19,27 +19,50 @@ const AuthenLayout: React.FC<ILayout> = ({ children }) => {
 
   return (
     <div className="layout-authen min-h-screen bg-login bg-no-repeat bg-center">
-      <header className="header px-10 pt-5 flex items-center justify-between">
-        <h1 className="logo font-semibold text-2xl">
-          <Link to="/">MultiChoice</Link>
-        </h1>
-        {isLoginPage ? (
-          <p className="text-sm">
-            Don't have account ?
-            <Link to="/register" className="inline-block ml-1 text-primary">
-              Sign up now !
-            </Link>
-          </p>
-        ) : (
-          <p className="text-sm">
-            Already have an account ?
-            <Link to="/login" className="inline-block ml-1 text-primary">
-              Log in !
-            </Link>
-          </p>
-        )}
+      <header className="header px-10 pt-5 flex items-center justify-between xs:flex-col md:flex-row">
+        <div className="header-left">
+          <h1 className="logo font-semibold text-2xl">
+            <Link to="/">MultiChoice</Link>
+          </h1>
+        </div>
+        <div className="header-right xs:hidden md:block">
+          {isLoginPage ? (
+            <p className="text-sm">
+              Don't have account ?
+              <Link to="/register" className="inline-block ml-1 text-primary">
+                Sign up now !
+              </Link>
+            </p>
+          ) : (
+            <p className="text-sm">
+              Already have an account ?
+              <Link to="/login" className="inline-block ml-1 text-primary">
+                Log in !
+              </Link>
+            </p>
+          )}
+        </div>
       </header>
-      <main className="max-w-lg pt-8 pb-24 mx-auto">{children}</main>
+      <main className="max-w-lg xs:pt-12 md:pt-8 pb-24 px-4 mx-auto">
+        {children}
+        <div className="text-center xs:block md:hidden mt-10">
+          {isLoginPage ? (
+            <p className="text-sm">
+              Don't have account ?
+              <Link to="/register" className="inline-block ml-1 text-primary">
+                Sign up now !
+              </Link>
+            </p>
+          ) : (
+            <p className="text-sm">
+              Already have an account ?
+              <Link to="/login" className="inline-block ml-1 text-primary">
+                Log in !
+              </Link>
+            </p>
+          )}
+        </div>
+      </main>
     </div>
   );
 };

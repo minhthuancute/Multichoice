@@ -4,32 +4,37 @@ import { VscUnlock } from 'react-icons/vsc';
 
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { titleServices } from '../../../services/TitleServices';
-import { classNames } from '../../../helper/classNames';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { localServices } from '../../../services/LocalServices';
 import { FORM_LOGIN_LOCAL } from '../../../constants/contstants';
 import Checkbox from '../../Commons/Checkbox/Checkbox';
 
-import './form.scss';
 import SignUpOptions from '../SignUpOptions';
 import InputAuthen from '../InputAuthen';
+import { validation } from '@monorepo/multichoice/validation';
 
 interface IFormLogin {
   email: string;
   password: string;
 }
 
-const schemaFormLogin = yup
+const { email, password } = validation();
+const schemaFormRegister = yup
   .object()
   .shape({
-    email: yup.string().max(100).required('Email is required').email(),
-    password: yup.string().min(8).max(36).lowercase().uppercase(),
+    email: yup
+      .string()
+      .max(email.maxLength)
+      .required('Email is required')
+      .email(),
+    password: yup.string().min(password.minLength).max(password.maxLength),
   })
   .required();
 
 const FormRegister: React.FC = () => {
   const [dataLocal, setDataLocal] = useState<IFormLogin>();
+  const [isUserAccept, setIsUserAccept] = useState<boolean>(false);
 
   const {
     register,
@@ -37,7 +42,7 @@ const FormRegister: React.FC = () => {
     watch,
     formState: { errors },
   } = useForm<IFormLogin>({
-    resolver: yupResolver(schemaFormLogin),
+    resolver: yupResolver(schemaFormRegister),
   });
 
   useLayoutEffect(() => {
@@ -49,11 +54,9 @@ const FormRegister: React.FC = () => {
   }, []);
 
   const onSubmit: SubmitHandler<IFormLogin> = (data) => {
-    console.log(data);
-  };
-
-  const onChangeCheckbox = () => {
-    console.log('hihi');
+    if (isUserAccept) {
+      console.log(data);
+    }
   };
 
   return (
@@ -97,7 +100,7 @@ const FormRegister: React.FC = () => {
         <div className="remember-me flex items-center justify-between mt-5 text-slate-800">
           <div className="check-box cursor-pointer flex items-center">
             <Checkbox
-              onChange={onChangeCheckbox}
+              onChange={setIsUserAccept}
               textLabel="<p>
               I accept the <span style='color: #1e85ff'>Term of Conditions</span>
               and <span style='color: #1e85ff'>Privacy Policy</span>
