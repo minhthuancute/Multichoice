@@ -1,0 +1,8 @@
+.wrapper-input {
+  input:checked ~ label .box {
+    background-color: #1e85ff;
+    .icon {
+      opacity: 1;
+    }
+  }
+}

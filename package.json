@@ -12,6 +12,7 @@
   },
   "private": true,
   "dependencies": {
+    "@hookform/resolvers": "^2.9.7",
     "@nestjs/common": "^8.0.0",
     "@nestjs/config": "^2.2.0",
     "@nestjs/core": "^8.0.0",
@@ -30,10 +31,15 @@
     "passport-local": "^1.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hook-form": "^7.34.0",
+    "react-icons": "^4.4.0",
+    "react-router-dom": "^6.3.0",
     "reflect-metadata": "^0.1.13",
     "regenerator-runtime": "0.13.7",
     "rxjs": "^7.0.0",
-    "typeorm": "^0.3.7"
+    "tslib": "^2.3.0",
+    "typeorm": "^0.3.7",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@nestjs/schematics": "^8.0.0",
