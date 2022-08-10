@@ -17,6 +17,7 @@ async function bootstrap() {
   app.setGlobalPrefix(globalPrefix);
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters(new HttpErrorFilterr());
+  app.enableCors({ credentials: true, origin: '*' });
   // swagger
   const config = new DocumentBuilder()
     .setTitle('Multichoice')

@@ -8,7 +8,7 @@ export const validation = () => ({
 
   password: {
     required: true,
-    minLength: 2,
+    minLength: 6,
     maxLength: 30,
     pattern: 'neu co',
   },
