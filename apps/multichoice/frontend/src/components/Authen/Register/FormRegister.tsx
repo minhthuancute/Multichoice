@@ -13,8 +13,9 @@ import Checkbox from '../../Commons/Checkbox/Checkbox';
 import SignUpOptions from '../SignUpOptions';
 import InputAuthen from '../InputAuthen';
 import { validation } from '@monorepo/multichoice/validation';
+import { authenServices } from '../../../services/AuthenServices';
 
-interface IFormLogin {
+export interface IFormRegister {
   email: string;
   password: string;
 }
@@ -33,29 +34,25 @@ const schemaFormRegister = yup
   .required();
 
 const FormRegister: React.FC = () => {
-  const [dataLocal, setDataLocal] = useState<IFormLogin>();
   const [isUserAccept, setIsUserAccept] = useState<boolean>(false);
 
   const {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
-  } = useForm<IFormLogin>({
+  } = useForm<IFormRegister>({
     resolver: yupResolver(schemaFormRegister),
   });
 
   useLayoutEffect(() => {
     titleServices.addSub('Login');
-    const dataLocal: IFormLogin = localServices.getData(FORM_LOGIN_LOCAL);
-    if (dataLocal) {
-      setDataLocal(dataLocal);
-    }
   }, []);
 
-  const onSubmit: SubmitHandler<IFormLogin> = (data) => {
+  const onSubmit: SubmitHandler<IFormRegister> = async (formData) => {
     if (isUserAccept) {
-      console.log(data);
+      const data = await authenServices.register(formData);
     }
   };
 

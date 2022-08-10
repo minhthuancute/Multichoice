@@ -108,4 +108,4 @@ const InputAuthen: React.FC<IInputAuthen> = ({
   );
 };
 
-export default InputAuthen;
+export default React.memo(InputAuthen);
