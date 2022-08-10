@@ -15,6 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@monorepo/multichoice/constant": [
+        "libs/multichoice/constant/src/index.ts"
+      ],
       "@monorepo/multichoice/dto": ["libs/multichoice/dto/src/index.ts"],
       "@monorepo/multichoice/validation": [
         "libs/multichoice/validation/src/index.ts"

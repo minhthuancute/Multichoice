@@ -3,13 +3,18 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { Timestamp } from '../../orm/timestamp.entity';
+import qs = require('qs');
+import { Question } from '../../question/entities/question.entity';
+import { Topic } from '../../question/entities/topic.entity';
 
-@Entity({ name: 'users' })
+@Entity()
 export class User extends Timestamp {
   @PrimaryGeneratedColumn()
   id: number;
@@ -24,6 +29,10 @@ export class User extends Timestamp {
   @Exclude({ toPlainOnly: false })
   password: string;
 
+  @OneToMany(() => Topic, (topic) => topic.owner)
+  topics: Topic[];
+
   @Column({ default: true })
   isActive: boolean;
 }
+//
