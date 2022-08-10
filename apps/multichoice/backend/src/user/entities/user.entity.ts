@@ -1,4 +1,5 @@
 import {
+  BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
@@ -6,9 +7,10 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
+import { Timestamp } from '../../orm/timestamp.entity';
 
 @Entity({ name: 'users' })
-export class User {
+export class User extends Timestamp {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -24,10 +26,4 @@ export class User {
 
   @Column({ default: true })
   isActive: boolean;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 }
