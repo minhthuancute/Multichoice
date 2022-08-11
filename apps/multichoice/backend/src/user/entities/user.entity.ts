@@ -13,13 +13,13 @@ export class User {
   id: number;
 
   @Column()
-  name: string;
+  username: string;
 
   @Column()
   email: string;
 
   @Column()
-  @Exclude()
+  @Exclude({ toPlainOnly: false })
   password: string;
 
   @Column({ default: true })
