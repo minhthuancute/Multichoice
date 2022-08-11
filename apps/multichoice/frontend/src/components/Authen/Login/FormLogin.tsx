@@ -59,12 +59,11 @@ const FormLogin: React.FC = () => {
     cookieServices.setCookie(USER, data, 30);
   };
 
-  const onSubmit: SubmitHandler<IFormLogin> = async (formData) => {
+  const onSubmit: SubmitHandler<IFormLogin> = async (formData: IFormLogin) => {
     if (isRememberUser) {
       handleRememberUser(formData);
     }
     const data = await authenServices.login(formData);
-    console.log(data);
   };
 
   return (

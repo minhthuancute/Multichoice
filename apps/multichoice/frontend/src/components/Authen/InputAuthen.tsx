@@ -73,30 +73,31 @@ const InputAuthen: React.FC<IInputAuthen> = ({
             })}
           />
         </label>
+
+        {/* toggle password */}
+        {typeInput === 'password' && (
+          <div className="absolute inline-block px-2 right-2 top-1/2 transform -translate-y-1/2">
+            <button type="button" onClick={() => setIsHidePass(!isHidePass)}>
+              {isHidePass ? (
+                <AiOutlineEye
+                  className={classNames('transition-all duration-200 text-xl', {
+                    'fill-slate-400': !isError,
+                    'fill-red-500': isError,
+                  })}
+                />
+              ) : (
+                <AiOutlineEyeInvisible
+                  className={classNames('transition-all duration-200 text-xl', {
+                    'fill-slate-400': !isError,
+                    'fill-red-500': isError,
+                  })}
+                />
+              )}
+            </button>
+          </div>
+        )}
+        {/* toggle password */}
       </div>
-      {/* toggle password */}
-      {typeInput === 'password' && (
-        <div className="absolute inline-block px-2 right-2 top-1/2 transform -translate-y-1/2">
-          <button type="button" onClick={() => setIsHidePass(!isHidePass)}>
-            {isHidePass ? (
-              <AiOutlineEye
-                className={classNames('transition-all duration-200  text-xl', {
-                  'fill-slate-400': !isError,
-                  'fill-red-500': isError,
-                })}
-              />
-            ) : (
-              <AiOutlineEyeInvisible
-                className={classNames('transition-all duration-200  text-xl', {
-                  'fill-slate-400': !isError,
-                  'fill-red-500': isError,
-                })}
-              />
-            )}
-          </button>
-        </div>
-      )}
-      {/* toggle password */}
 
       {/* show error */}
       {isError && (

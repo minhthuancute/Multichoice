@@ -9,14 +9,12 @@ export class Api {
     });
   }
 
-  async get(url: string) {
-    const { data } = await this.axiosInstance.get(url);
-    return data;
+  get(url: string) {
+    return this.axiosInstance.get(url);
   }
 
-  async post(url: string, body?: any) {
-    const { data } = await this.axiosInstance.post(url, body);
-    return data;
+  post(url: string, body?: any) {
+    return this.axiosInstance.post(url, body);
   }
 }
 
