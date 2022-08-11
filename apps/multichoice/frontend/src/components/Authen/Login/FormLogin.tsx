@@ -49,8 +49,10 @@ const FormLogin: React.FC = () => {
   useLayoutEffect(() => {
     titleServices.addSub('Login');
     const dataUser: string = cookieServices.getCookie('USER');
-    setUserLocal(JSON.parse(dataUser));
-    reset({ ...JSON.parse(dataUser) });
+    if (dataUser) {
+      setUserLocal(JSON.parse(dataUser));
+      reset({ ...JSON.parse(dataUser) });
+    }
   }, []);
 
   // save form data to Localstorage
