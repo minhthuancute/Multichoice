@@ -1,29 +1,31 @@
 import React, { useLayoutEffect, useState } from 'react';
 import { MdOutlineMail } from 'react-icons/md';
 import { VscUnlock } from 'react-icons/vsc';
+import { AiOutlineUser } from 'react-icons/ai';
 
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { titleServices } from '../../../services/TitleServices';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { localServices } from '../../../services/LocalServices';
-import { FORM_LOGIN_LOCAL } from '../../../constants/contstants';
 import Checkbox from '../../Commons/Checkbox/Checkbox';
 
 import SignUpOptions from '../SignUpOptions';
 import InputAuthen from '../InputAuthen';
 import { validation } from '@monorepo/multichoice/validation';
 import { authenServices } from '../../../services/AuthenServices';
+import { useNavigate } from 'react-router-dom';
 
 export interface IFormRegister {
+  username: string;
   email: string;
   password: string;
 }
 
-const { email, password } = validation();
+const { username, email, password } = validation();
 const schemaFormRegister = yup
   .object()
   .shape({
+    username: yup.string().min(username.minLength).max(username.maxLength),
     email: yup
       .string()
       .max(email.maxLength)
@@ -34,6 +36,7 @@ const schemaFormRegister = yup
   .required();
 
 const FormRegister: React.FC = () => {
+  const navigate = useNavigate();
   const [isUserAccept, setIsUserAccept] = useState<boolean>(false);
 
   const {
@@ -50,9 +53,14 @@ const FormRegister: React.FC = () => {
     titleServices.addSub('Login');
   }, []);
 
-  const onSubmit: SubmitHandler<IFormRegister> = async (formData) => {
+  const onSubmit: SubmitHandler<IFormRegister> = async (
+    formData: IFormRegister
+  ) => {
     if (isUserAccept) {
-      const data = await authenServices.register(formData);
+      try {
+        const { data } = await authenServices.register(formData);
+        navigate('/login');
+      } catch (error) {}
     }
   };
 
@@ -76,6 +84,16 @@ const FormRegister: React.FC = () => {
         <SignUpOptions isLoginPage={false} />
 
         <InputAuthen
+          registerField={register('username')}
+          isError={Boolean(errors.email)}
+          errMessage={errors.username?.message}
+          placeholder="User Name"
+          typeInput="text"
+          Icon={AiOutlineUser}
+        />
+
+        <InputAuthen
+          className="mt-5"
           registerField={register('email')}
           isError={Boolean(errors.email)}
           errMessage={errors.email?.message}
