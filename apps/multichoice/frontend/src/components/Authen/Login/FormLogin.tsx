@@ -65,7 +65,11 @@ const FormLogin: React.FC = () => {
     if (isRememberUser) {
       handleRememberUser(formData);
     }
-    const data = await authenServices.login(formData);
+    try {
+      const data = await authenServices.login(formData);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

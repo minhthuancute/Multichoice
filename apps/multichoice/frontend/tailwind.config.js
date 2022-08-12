@@ -14,7 +14,7 @@ module.exports = {
   theme: {
     extend: {
       backgroundImage: {
-        login: "url('/assets/images/bg-login.jpg')",
+        authen: "url('/assets/images/bg-login.jpg')",
       },
     },
     colors: {

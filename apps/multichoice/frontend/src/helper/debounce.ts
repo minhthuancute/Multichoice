@@ -1,4 +1,6 @@
-export const debounce = (fn: Function, delay: number = 200) => {
+type FunctionDebounce = (args: any) => any;
+
+export const debounce = (fn: FunctionDebounce, delay = 200) => {
   let timer: ReturnType<typeof setTimeout>;
   return (args: any) => {
     clearTimeout(timer);
