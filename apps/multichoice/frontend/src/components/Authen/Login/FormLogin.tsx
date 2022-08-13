@@ -6,15 +6,15 @@ import { titleServices } from '../../../services/TitleServices';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Link } from 'react-router-dom';
-import { localServices } from '../../../services/LocalServices';
-import { FORM_LOGIN_LOCAL, USER } from '../../../constants/contstants';
+import { USER } from '../../../constants/contstants';
 import Checkbox from '../../Commons/Checkbox/Checkbox';
 import InputAuthen from '../InputAuthen';
 import { validation } from '@monorepo/multichoice/validation';
 import SignUpOptions from '../SignUpOptions';
 import { cookieServices } from '../../../services/CookieServices';
+import { authenServices } from '../../../services/AuthenServices';
 
-interface IFormLogin {
+export interface IFormLogin {
   email: string;
   password: string;
 }
@@ -40,6 +40,7 @@ const FormLogin: React.FC = () => {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
   } = useForm<IFormLogin>({
     resolver: yupResolver(schemaFormLogin),
@@ -48,8 +49,10 @@ const FormLogin: React.FC = () => {
   useLayoutEffect(() => {
     titleServices.addSub('Login');
     const dataUser: string = cookieServices.getCookie('USER');
-    setUserLocal(JSON.parse(dataUser));
-    console.log('dataUser', dataUser);
+    if (dataUser) {
+      setUserLocal(JSON.parse(dataUser));
+      reset({ ...JSON.parse(dataUser) });
+    }
   }, []);
 
   // save form data to Localstorage
@@ -58,9 +61,14 @@ const FormLogin: React.FC = () => {
     cookieServices.setCookie(USER, data, 30);
   };
 
-  const onSubmit: SubmitHandler<IFormLogin> = (data) => {
+  const onSubmit: SubmitHandler<IFormLogin> = async (formData: IFormLogin) => {
     if (isRememberUser) {
-      handleRememberUser(data);
+      handleRememberUser(formData);
+    }
+    try {
+      const data = await authenServices.login(formData);
+    } catch (error) {
+      console.log(error);
     }
   };
 
