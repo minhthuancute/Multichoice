@@ -1,14 +1,14 @@
 import { Api } from '../utils/Api';
-import { IFormLogin } from './../components/Authen/Login/FormLogin';
-import { IFormRegister } from '../components/Authen/Register/FormRegister';
+import { CreateUserDto } from '@monorepo/multichoice/dto';
+import { LoginUserDto } from '@monorepo/multichoice/dto';
 
 class AuthenServices extends Api {
-  login(formData: IFormLogin) {
+  login(formData: LoginUserDto) {
     const data = this.post('/auth/login', formData);
     return data;
   }
 
-  register(formData: IFormRegister) {
+  register(formData: CreateUserDto) {
     const data = this.post('/auth/register', formData);
     return data;
   }

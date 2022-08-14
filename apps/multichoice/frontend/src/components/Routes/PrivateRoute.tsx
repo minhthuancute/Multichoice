@@ -7,5 +7,5 @@ interface IPrivateRoute {
 }
 
 const PrivateRoute: React.FC<IPrivateRoute> = ({ children, ...rest }) => {
-  return <div></div>;
+  return <Route></Route>;
 };

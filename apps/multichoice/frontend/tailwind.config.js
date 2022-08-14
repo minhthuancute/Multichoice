@@ -12,14 +12,18 @@ module.exports = {
     ...createGlobPatternsForDependencies(__dirname),
   ],
   theme: {
+    container: {
+      center: true,
+    },
     extend: {
       backgroundImage: {
         authen: "url('/assets/images/bg-login.jpg')",
+        notfound: "url('/assets/images/pagenotfound.png')",
       },
     },
     colors: {
       ...baseColors,
-      primary: '#1e85ff',
+      primary: '#16a085',
       black: '#1c2437',
     },
     screens: {

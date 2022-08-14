@@ -5,7 +5,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { titleServices } from '../../../services/TitleServices';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { USER } from '../../../constants/contstants';
 import Checkbox from '../../Commons/Checkbox/Checkbox';
 import InputAuthen from '../InputAuthen';
@@ -13,11 +13,11 @@ import { validation } from '@monorepo/multichoice/validation';
 import SignUpOptions from '../SignUpOptions';
 import { cookieServices } from '../../../services/CookieServices';
 import { authenServices } from '../../../services/AuthenServices';
-
-export interface IFormLogin {
-  email: string;
-  password: string;
-}
+import { LoginUserDto } from '@monorepo/multichoice/dto';
+import { AxiosResponse } from 'axios';
+import { userStore } from '../../../store/User/userStore';
+import { ILoginResponse } from '../../../types/LoginResponse';
+import { UserActionsEnum } from '../../../store/User/userTypes';
 
 const { email, password } = validation();
 const schemaFormLogin = yup
@@ -33,16 +33,17 @@ const schemaFormLogin = yup
   .required();
 
 const FormLogin: React.FC = () => {
-  const [userLocal, setUserLocal] = useState<IFormLogin>();
+  const navigate = useNavigate();
+  const { dispatch } = userStore();
+  const [userLocal, setUserLocal] = useState<LoginUserDto>();
   const [isRememberUser, setIsRememberUser] = useState<boolean>(false);
 
   const {
     register,
     handleSubmit,
-    watch,
     reset,
     formState: { errors },
-  } = useForm<IFormLogin>({
+  } = useForm<LoginUserDto>({
     resolver: yupResolver(schemaFormLogin),
   });
 
@@ -53,20 +54,37 @@ const FormLogin: React.FC = () => {
       setUserLocal(JSON.parse(dataUser));
       reset({ ...JSON.parse(dataUser) });
     }
-  }, []);
+  }, [reset]);
 
-  // save form data to Localstorage
-  const handleRememberUser = (data: IFormLogin): void => {
+  // save form data to Cookie
+  const handleRememberUser = (data: LoginUserDto): void => {
     // expried in 30 days
     cookieServices.setCookie(USER, data, 30);
   };
 
-  const onSubmit: SubmitHandler<IFormLogin> = async (formData: IFormLogin) => {
+  const onSubmit: SubmitHandler<LoginUserDto> = async (
+    formData: LoginUserDto
+  ) => {
     if (isRememberUser) {
       handleRememberUser(formData);
     }
     try {
-      const data = await authenServices.login(formData);
+      const data: AxiosResponse = await authenServices.login(formData);
+      const loginResponse: ILoginResponse = data.data;
+      if (loginResponse.success) {
+        const { payload, token } = loginResponse.data;
+        // setInforUser(payload, token);
+
+        dispatch({
+          type: UserActionsEnum.SET_DATA,
+          userPayload: {
+            ...payload,
+            token,
+          },
+        });
+
+        navigate('/');
+      }
     } catch (error) {
       console.log(error);
     }

@@ -41,7 +41,8 @@
     "rxjs": "^7.0.0",
     "tslib": "^2.3.0",
     "typeorm": "^0.3.7",
-    "yup": "^0.32.11"
+    "yup": "^0.32.11",
+    "zustand": "^4.0.0"
   },
   "devDependencies": {
     "@nestjs/schematics": "^8.0.0",

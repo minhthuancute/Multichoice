@@ -10,6 +10,7 @@ const Login: React.FC = React.lazy(() => import('../pages/Login/Login'));
 const Register: React.FC = React.lazy(
   () => import('../pages/Register/Register')
 );
+const Tests: React.FC = React.lazy(() => import('../pages/Tests/Tests'));
 const PageNotFound: React.FC = React.lazy(
   () => import('../pages/Notfound/Notfound')
 );
@@ -19,6 +20,14 @@ export const App = () => {
     <BrowserRouter>
       <Routes>
         <Route index element={<Home />} />
+        <Route
+          path="/tests"
+          element={
+            <Suspense fallback={<Loading />}>
+              <Tests />
+            </Suspense>
+          }
+        />
         <Route
           path="/login"
           element={

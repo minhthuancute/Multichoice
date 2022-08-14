@@ -14,12 +14,7 @@ import InputAuthen from '../InputAuthen';
 import { validation } from '@monorepo/multichoice/validation';
 import { authenServices } from '../../../services/AuthenServices';
 import { useNavigate } from 'react-router-dom';
-
-export interface IFormRegister {
-  username: string;
-  email: string;
-  password: string;
-}
+import { CreateUserDto } from '@monorepo/multichoice/dto';
 
 const { username, email, password } = validation();
 const schemaFormRegister = yup
@@ -45,7 +40,7 @@ const FormRegister: React.FC = () => {
     watch,
     reset,
     formState: { errors },
-  } = useForm<IFormRegister>({
+  } = useForm<CreateUserDto>({
     resolver: yupResolver(schemaFormRegister),
   });
 
@@ -53,8 +48,8 @@ const FormRegister: React.FC = () => {
     titleServices.addSub('Login');
   }, []);
 
-  const onSubmit: SubmitHandler<IFormRegister> = async (
-    formData: IFormRegister
+  const onSubmit: SubmitHandler<CreateUserDto> = async (
+    formData: CreateUserDto
   ) => {
     if (isUserAccept) {
       try {
@@ -119,8 +114,8 @@ const FormRegister: React.FC = () => {
             <Checkbox
               onChange={setIsUserAccept}
               textLabel="<p>
-              I accept the <span style='color: #1e85ff'>Term of Conditions</span>
-              and <span style='color: #1e85ff'>Privacy Policy</span>
+              I accept the <span class='text-primary'>Term of Conditions</span>
+              and <span class='text-primary'>Privacy Policy</span>
             </p>"
             />
           </div>
