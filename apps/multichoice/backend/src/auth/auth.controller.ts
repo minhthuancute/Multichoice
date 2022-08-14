@@ -13,6 +13,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { authService } from './auth.service';
 import { Response, Request } from 'express';
 import { LocalAuthGuard } from './guards/local-auth-guard';
+import { SucessResponse } from '../model/SucessResponse';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -27,8 +28,9 @@ export class authController {
 
     @UseGuards(LocalAuthGuard)
     @Post('login')
-    async login(@Body() login: LoginUserDto): Promise<any> {
-        return this.authService.login(login);
+    async login(@Body() login: LoginUserDto, @Res() response): Promise<any> {
+        const token = await this.authService.login(login);
+        return response.status(200).json(new SucessResponse(200, token, true))
     }
 
 }

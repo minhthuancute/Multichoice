@@ -12,7 +12,7 @@ import { LocalStrategy } from "./strategies/local.strategy";
     imports: [
         TypeOrmModule.forFeature([User]), JwtModule.register({
             secret: configuration().jwt_key,
-            signOptions: { expiresIn: '1d' }
+            signOptions: { expiresIn: configuration().token_expired }
         })
         , PassportModule],
     controllers: [authController],

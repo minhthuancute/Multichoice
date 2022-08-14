@@ -17,10 +17,10 @@ import { Topic } from '../question/entities/topic.entity';
       password: configuration().database.password,
       database: configuration().database.database,
       entities: [User, Topic, QuestionType, Question, Answer],
-      synchronize: true,
+      synchronize: false,
     }),
   ],
   controllers: [],
   providers: [],
 })
-export class OrmModule {}
+export class OrmModule { }
