@@ -18,9 +18,6 @@ export class Question extends Timestamp {
   @Column()
   content: string;
 
-  @Column({ default: false })
-  isDraft: boolean;
-
   @Column()
   isActive: boolean;
 

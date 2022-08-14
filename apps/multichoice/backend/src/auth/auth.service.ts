@@ -17,7 +17,7 @@ export class authService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private jwtService: JwtService
-  ) {}
+  ) { }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const user = await this.userRepository.findOneBy({
@@ -56,6 +56,7 @@ export class authService {
 
     return {
       token: await this.jwtService.signAsync(payload),
+      payload
     };
   }
 }
