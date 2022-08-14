@@ -28,9 +28,8 @@ export class authController {
 
     @UseGuards(LocalAuthGuard)
     @Post('login')
-    async login(@Body() login: LoginUserDto, @Res() response): Promise<any> {
-        const token = await this.authService.login(login);
-        return response.status(200).json(new SucessResponse(200, token, true))
+    async login(@Body() login: LoginUserDto, @Req() req, @Res() response): Promise<any> {
+        return response.status(200).json(new SucessResponse(200, req.user, true))
     }
 
 }
