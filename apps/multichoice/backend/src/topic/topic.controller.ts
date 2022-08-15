@@ -15,7 +15,7 @@ export class TopicController {
   @Post('create')
   async create(@Body() topic: CreateTopicDto, @Req() req, @Res() res): Promise<SucessResponse> {
     const result = await this.topicService.create(topic, req.user);
-    return res.status(200).json(result)
+    return res.status(201).json(result)
   }
 
   @Get('test')
