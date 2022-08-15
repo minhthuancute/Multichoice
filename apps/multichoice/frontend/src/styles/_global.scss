@@ -1,4 +1,8 @@
-.create-test {
+.container {
+  max-width: 1200px;
+}
+
+.btn-primary {
   &:focus {
     box-shadow: rgba(22, 160, 133, 0.2) 0 0 0 3px;
   }

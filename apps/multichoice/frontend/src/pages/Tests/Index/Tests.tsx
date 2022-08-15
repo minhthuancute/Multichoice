@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
-import Modal from '../../components/Modal/Modal';
-import FilterTests from '../../components/Tests/FilterTests';
-import DefaultLayout from '../../layouts/DefaultLayout';
-import './test.scss';
+import React, { useLayoutEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import Modal from '../../../components/Modal/Modal';
+import FilterTests from '../../../components/Tests/FilterTests';
+import DefaultLayout from '../../../layouts/DefaultLayout';
+import { titleServices } from '../../../services/TitleServices';
 
 const Tests: React.FC = () => {
   const [showModalCreate, setShowModalCreate] = useState<boolean>(false);
+
+  useLayoutEffect(() => {
+    titleServices.addSub('Tests');
+  }, []);
 
   const showModalCreateTest = () => {
     setShowModalCreate((state) => !state);
@@ -23,13 +28,14 @@ const Tests: React.FC = () => {
         <div className="test-header">
           <div className="container flex justify-between py-4">
             <h3 className="text-2xl font-semibold">Danh sách đề thi</h3>
-            <button
-              className="create-test rounded-md bg-primary px-4 py-2 text-sm
+            <Link
+              to="/tests/create"
+              className="create-test btn-primary rounded-md bg-primary px-4 py-2 text-sm
             text-white font-bold"
               onClick={() => showModalCreateTest()}
             >
               Tạo đề thi
-            </button>
+            </Link>
           </div>
         </div>
 

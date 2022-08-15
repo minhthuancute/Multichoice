@@ -5,12 +5,17 @@ import './app.scss';
 // Pages
 import Home from '../pages/Home/Home';
 import Loading from '../components/Loading/Loading';
+import CreateTest from '../pages/Tests/Create/CreateTest';
 // import lazy
 const Login: React.FC = React.lazy(() => import('../pages/Login/Login'));
 const Register: React.FC = React.lazy(
   () => import('../pages/Register/Register')
 );
-const Tests: React.FC = React.lazy(() => import('../pages/Tests/Tests'));
+const Tests: React.FC = React.lazy(() => import('../pages/Tests/Index/Tests'));
+const EditTest: React.FC = React.lazy(
+  () => import('../pages/Tests/Edit/EditTest')
+);
+
 const PageNotFound: React.FC = React.lazy(
   () => import('../pages/Notfound/Notfound')
 );
@@ -25,6 +30,22 @@ export const App = () => {
           element={
             <Suspense fallback={<Loading />}>
               <Tests />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/tests/create"
+          element={
+            <Suspense fallback={<Loading />}>
+              <CreateTest />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/tests/edit/:id"
+          element={
+            <Suspense fallback={<Loading />}>
+              <EditTest />
             </Suspense>
           }
         />

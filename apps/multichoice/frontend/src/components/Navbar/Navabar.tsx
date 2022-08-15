@@ -28,8 +28,11 @@ const Navabar: React.FC = () => {
 
   const activeNavItem = (): number => {
     const currentPath = location.pathname;
+    if (currentPath === '/') return 0;
     const currentIndexNav = navs.findIndex((nav: INav) => {
-      return currentPath === nav.path;
+      const matchedNav =
+        nav.path === '/' ? false : currentPath.includes(nav.path);
+      return matchedNav;
     });
     return currentIndexNav;
   };
