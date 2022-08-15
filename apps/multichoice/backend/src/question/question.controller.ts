@@ -6,40 +6,31 @@ import {
   Patch,
   Param,
   Delete,
+  Res,
+  BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
 import { QuestionService } from './question.service';
-import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
+import { CreateQuestionDto } from '@monorepo/multichoice/dto';
+import { ApiTags } from '@nestjs/swagger';
+import { SucessResponse } from '../model/SucessResponse';
+import { TopicService } from '../topic/topic.service';
+import { AuthenticationGuard } from '../auth/guards/auth.guard';
 
 @Controller('question')
+@ApiTags('question')
 export class QuestionController {
-  constructor(private readonly questionService: QuestionService) {}
+  constructor(private readonly questionService: QuestionService,
+    private readonly topicService: TopicService) { }
 
-  @Post()
-  create(@Body() createQuestionDto: CreateQuestionDto) {
-    return this.questionService.create(createQuestionDto);
-  }
+  @UseGuards(AuthenticationGuard)
+  @Post('create')
+  async create(@Body() createQuestionDto: CreateQuestionDto, @Res() res): Promise<SucessResponse> {
+    const topic = await this.topicService.fineOneByID(createQuestionDto.topicID);
+    if (!topic) throw new BadRequestException('topicid is not found')
 
-  @Get()
-  findAll() {
-    return this.questionService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.questionService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateQuestionDto: UpdateQuestionDto
-  ) {
-    return this.questionService.update(+id, updateQuestionDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.questionService.remove(+id);
+    const result = await this.questionService.create(createQuestionDto, topic);
+    return res.status(201).json(result)
   }
 }
