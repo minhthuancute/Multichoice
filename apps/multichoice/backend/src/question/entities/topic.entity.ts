@@ -38,6 +38,9 @@ export class Topic extends Timestamp {
   @Column({ default: false })
   isDraft: boolean;
 
+  @Column()
+  expirationTime: number;
+
   @OneToMany(() => Question, (qs) => qs.topic)
   questions: Question[];
 
