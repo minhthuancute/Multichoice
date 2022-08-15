@@ -29,7 +29,7 @@ export class authController {
     @UseGuards(LocalAuthGuard)
     @Post('login')
     async login(@Body() login: LoginUserDto, @Req() req, @Res() response): Promise<any> {
-        return response.status(200).json(new SucessResponse(200, req.user, true))
+        return response.status(200).json(new SucessResponse(200, req.user))
     }
 
 }

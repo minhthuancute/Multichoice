@@ -4,13 +4,17 @@ import { ConfigModule } from '@nestjs/config';
 import configuration from '../config/configuration';
 import { OrmModule } from '../orm/orm.module';
 import { AuthModule } from '../auth/auth.module';
+import { QuestionModule } from '../question/question.module';
+import { TopicModule } from '../topic/topic.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ load: [configuration] }),
     OrmModule,
     UserModule,
-    AuthModule
+    AuthModule,
+    QuestionModule,
+    TopicModule
   ],
   controllers: [],
   providers: [],
