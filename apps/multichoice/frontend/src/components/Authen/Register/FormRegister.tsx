@@ -126,7 +126,7 @@ const FormRegister: React.FC = () => {
             className="w-full py-4 bg-primary rounded-md text-white font-medium"
             type="submit"
           >
-            Sign in Now
+            Sign up Now
           </button>
         </div>
       </form>
