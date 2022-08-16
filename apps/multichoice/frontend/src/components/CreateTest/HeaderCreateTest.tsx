@@ -19,13 +19,19 @@ const HeaderCreateTest: React.FC = () => {
         <div className="ctas flex items-center">
           <button
             onClick={() => navigate('/tests')}
-            className="create-test mr-4 btn-primary rounded-md flex justify-center
+            className="cancle-create mr-4 btn-primary rounded-md flex justify-center
              items-center w-24 h-10 text-sm text-slate-800 font-bold border border-solid border-slate-800"
           >
             Hủy
           </button>
           <button
-            className="create-test btn-primary rounded-md flex justify-center items-center w-24 h-10 text-sm
+            className="save-daft mr-4 btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
+            text-white font-bold bg-violet-700"
+          >
+            Lưu bản nháp
+          </button>
+          <button
+            className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
             text-white font-bold bg-primary-900"
           >
             Tạo mới
