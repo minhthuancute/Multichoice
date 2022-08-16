@@ -1,8 +1,8 @@
 import React, { HTMLInputTypeAttribute, useState } from 'react';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
-import { classNames } from '../../helper/classNames';
+import { classNames } from '../../../helper/classNames';
 
-export interface IInputAuthen {
+export interface ITextArea {
   defaultValue?: string;
   className?: string;
   id?: string;
@@ -15,7 +15,7 @@ export interface IInputAuthen {
   registerField?: any;
 }
 
-const InputAuthen: React.FC<IInputAuthen> = ({
+const TextArea: React.FC<ITextArea> = ({
   defaultValue,
   className,
   id,
@@ -108,4 +108,4 @@ const InputAuthen: React.FC<IInputAuthen> = ({
   );
 };
 
-export default React.memo(InputAuthen);
+export default React.memo(TextArea);

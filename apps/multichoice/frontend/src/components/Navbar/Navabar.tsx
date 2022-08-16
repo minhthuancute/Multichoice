@@ -47,7 +47,7 @@ const Navabar: React.FC = () => {
               className={classNames(
                 `nav-item font-medium text-sm mr-8 last:mr-0`,
                 {
-                  'active text-primary': activeNavItem() === index,
+                  'active text-primary-900': activeNavItem() === index,
                 }
               )}
             >

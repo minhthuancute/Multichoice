@@ -30,7 +30,7 @@ const Tests: React.FC = () => {
             <h3 className="text-2xl font-semibold">Danh sách đề thi</h3>
             <Link
               to="/tests/create"
-              className="create-test btn-primary rounded-md bg-primary px-4 py-2 text-sm
+              className="create-test btn-primary rounded-md bg-primary-900 px-4 py-2 text-sm
             text-white font-bold"
               onClick={() => showModalCreateTest()}
             >

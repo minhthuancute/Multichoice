@@ -114,8 +114,8 @@ const FormRegister: React.FC = () => {
             <Checkbox
               onChange={setIsUserAccept}
               textLabel="<p>
-              I accept the <span class='text-primary'>Term of Conditions</span>
-              and <span class='text-primary'>Privacy Policy</span>
+              I accept the <span class='text-primary-900'>Term of Conditions</span>
+              and <span class='text-primary-900'>Privacy Policy</span>
             </p>"
             />
           </div>
@@ -123,7 +123,7 @@ const FormRegister: React.FC = () => {
 
         <div className="submit mt-5">
           <button
-            className="w-full py-4 bg-primary rounded-md text-white font-medium"
+            className="w-full py-4 bg-primary-900 rounded-md text-white font-medium"
             type="submit"
           >
             Sign up Now

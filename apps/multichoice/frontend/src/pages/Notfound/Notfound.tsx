@@ -11,7 +11,7 @@ const Notfound: React.FC = () => {
           <p>Chúng tôi không tìm thấy trang bạn tìm kiếm</p>
           <p>
             Vui lòng kiểm tra lại đường dẫn hoặc quay lại
-            <Link to="/" className="text-primary ml-1">
+            <Link to="/" className="text-primary-900 ml-1">
               Trang chủ
             </Link>
           </p>

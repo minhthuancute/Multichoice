@@ -23,7 +23,10 @@ module.exports = {
     },
     colors: {
       ...baseColors,
-      primary: '#16a085',
+      primary: {
+        800: '#1abc9c',
+        900: '#16a085',
+      },
       black: '#1c2437',
     },
     screens: {

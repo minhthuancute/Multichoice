@@ -132,7 +132,7 @@ const FormLogin: React.FC = () => {
           </div>
           <Link
             to="/"
-            className="text-sm transition-all duration-200 hover:text-primary"
+            className="text-sm transition-all duration-200 hover:text-primary-900"
           >
             Forget password?
           </Link>
@@ -140,7 +140,7 @@ const FormLogin: React.FC = () => {
 
         <div className="submit mt-5">
           <button
-            className="w-full py-4 bg-primary rounded-md text-white font-medium"
+            className="w-full py-4 bg-primary-900 rounded-md text-white font-medium"
             type="submit"
           >
             Sign in Now
