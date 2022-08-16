@@ -1,8 +1,5 @@
 import { TopicCategoryEnum, TopicTimeTypeEnum } from "@monorepo/multichoice/constant"
 import { ApiProperty } from "@nestjs/swagger"
-import { isArray } from "class-validator"
-import { type } from "os"
-import { CreateQuestionDto } from "./question.dto"
 
 export class CreateTopicDto {
 

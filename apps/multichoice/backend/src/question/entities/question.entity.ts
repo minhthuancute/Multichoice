@@ -37,5 +37,5 @@ export class Question extends Timestamp {
   answers: Answer[];
 
   @ManyToOne(() => Topic, (ans) => ans.questions)
-  topic: Topic[];
+  topic: Topic;
 }
