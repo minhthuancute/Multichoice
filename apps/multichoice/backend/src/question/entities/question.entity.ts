@@ -18,16 +18,16 @@ export class Question extends Timestamp {
   @Column()
   content: string;
 
-  @Column()
+  @Column({ default: true })
   isActive: boolean;
 
   @Column()
   time: number;
 
-  @Column()
+  @Column({ nullable: true })
   image: string;
 
-  @Column()
+  @Column({ nullable: true })
   audio: string;
 
   @ManyToOne(() => QuestionType, (type) => type.questions)
