@@ -1,10 +1,11 @@
-import React, { HTMLInputTypeAttribute, useState } from 'react';
-import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
+import React, { HTMLInputTypeAttribute } from 'react';
 import { classNames } from '../../../helper/classNames';
 
 export interface ITextArea {
-  defaultValue?: string;
+  textLabel?: React.ReactNode;
+  defaultValue?: any;
   className?: string;
+  classNameTextarea?: string;
   id?: string;
   placeholder?: string;
   Icon?: any;
@@ -13,46 +14,52 @@ export interface ITextArea {
   errMessage?: string;
   fieldName?: string;
   registerField?: any;
+  isRequired?: boolean;
 }
 
 const TextArea: React.FC<ITextArea> = ({
-  defaultValue,
+  textLabel = '',
+  defaultValue = '',
   className,
-  id,
-  registerField,
-  isError,
-  errMessage,
-  Icon,
-  placeholder,
+  classNameTextarea = '',
+  id = '',
+  registerField = null,
+  isError = false,
+  errMessage = '',
+  Icon = '',
+  placeholder = '',
   typeInput = 'text',
+  isRequired = false,
 }) => {
-  const [isHidePass, setIsHidePass] = useState<boolean>(true);
-
-  const getTypeInput = (): HTMLInputTypeAttribute => {
-    if (typeInput !== 'password') {
-      return typeInput;
-    } else {
-      return isHidePass ? 'password' : 'text';
-    }
-  };
-
   return (
     <div className={classNames('form-group relative', className)}>
       {/* input content */}
       <div
-        className={classNames('relative wrapper-input', {
+        className={classNames('relative wrapper-input h-full', {
           'no-error': !isError,
         })}
       >
-        <input
+        <label
+          htmlFor={id}
+          className="font-semibold text-slate-800 text-sm inline-block mb-2"
+        >
+          {textLabel}
+          {isRequired ? <span className="ml-1 text-red-600">*</span> : null}
+        </label>
+
+        <textarea
           {...registerField}
-          id={id}
-          type={getTypeInput()}
-          placeholder={placeholder}
           defaultValue={defaultValue}
+          id={id}
+          type={typeInput}
+          placeholder={placeholder}
           className={classNames(
-            `transition-all duration-200 w-full text-stone-600 outline-none border px-2.5 py-4 border-solid
-              border-stone-200 focus:border-primary-900 rounded-md`,
+            [
+              `text-sm transition-all duration-200 w-full text-stone-600 outline-none
+            border px-2.5 py-2 border-solid border-stone-200 focus:border-primary-900
+            rounded-md placeholder:text-sm`,
+              classNameTextarea,
+            ],
             {
               'border-stone-200 focus:border-primary-900': !isError,
               'border-red-500 focus:border-red-500': isError,
@@ -61,41 +68,6 @@ const TextArea: React.FC<ITextArea> = ({
             }
           )}
         />
-        <label
-          htmlFor="password"
-          className="absolute inline-block px-2 left-0 top-1/2 transform -translate-y-1/2"
-        >
-          <Icon
-            className={classNames('transition-all duration-200 text-xl', {
-              'fill-slate-400': !isError,
-              'fill-red-500': isError,
-            })}
-          />
-        </label>
-
-        {/* toggle password */}
-        {typeInput === 'password' && (
-          <div className="absolute inline-block px-2 right-2 top-1/2 transform -translate-y-1/2">
-            <button type="button" onClick={() => setIsHidePass(!isHidePass)}>
-              {isHidePass ? (
-                <AiOutlineEye
-                  className={classNames('transition-all duration-200 text-xl', {
-                    'fill-slate-400': !isError,
-                    'fill-red-500': isError,
-                  })}
-                />
-              ) : (
-                <AiOutlineEyeInvisible
-                  className={classNames('transition-all duration-200 text-xl', {
-                    'fill-slate-400': !isError,
-                    'fill-red-500': isError,
-                  })}
-                />
-              )}
-            </button>
-          </div>
-        )}
-        {/* toggle password */}
       </div>
 
       {/* show error */}

@@ -16,13 +16,13 @@ export interface IInputAuthen {
 }
 
 const InputAuthen: React.FC<IInputAuthen> = ({
-  defaultValue,
+  defaultValue = '',
   className,
-  id,
-  registerField,
-  isError,
-  errMessage,
-  Icon,
+  id = '',
+  registerField = null,
+  isError = false,
+  errMessage = '',
+  Icon = '',
   placeholder,
   typeInput = 'text',
 }) => {
@@ -65,12 +65,14 @@ const InputAuthen: React.FC<IInputAuthen> = ({
           htmlFor="password"
           className="absolute inline-block px-2 left-0 top-1/2 transform -translate-y-1/2"
         >
-          <Icon
-            className={classNames('transition-all duration-200 text-xl', {
-              'fill-slate-400': !isError,
-              'fill-red-500': isError,
-            })}
-          />
+          {Icon && (
+            <Icon
+              className={classNames('transition-all duration-200 text-xl', {
+                'fill-slate-400': !isError,
+                'fill-red-500': isError,
+              })}
+            />
+          )}
         </label>
 
         {/* toggle password */}

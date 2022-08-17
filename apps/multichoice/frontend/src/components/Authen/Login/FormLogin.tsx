@@ -73,7 +73,6 @@ const FormLogin: React.FC = () => {
       const loginResponse: ILoginResponse = data.data;
       if (loginResponse.success) {
         const { payload, token } = loginResponse.data;
-        // setInforUser(payload, token);
 
         dispatch({
           type: UserActionsEnum.SET_DATA,

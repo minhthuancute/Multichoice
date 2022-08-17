@@ -1,9 +1,16 @@
 interface IClassNames {
-  (classes: string, restClass?: object | string): string;
+  (classes: string | string[], restClass?: object | string): string;
 }
 
-export const classNames: IClassNames = (classes = '', restClass): string => {
-  if (!restClass) return classes;
+export const classNames: IClassNames = (classes, restClass): string => {
+  if (!restClass) {
+    if (typeof classes === 'object') {
+      return classes.join(' ');
+    } else {
+      return classes;
+    }
+  }
+
   if (typeof restClass === 'string') {
     return classes + ' ' + restClass;
   }
@@ -11,5 +18,9 @@ export const classNames: IClassNames = (classes = '', restClass): string => {
   for (const [key, value] of Object.entries(restClass)) {
     classCondition += value ? `${key} ` : '';
   }
-  return classes + classCondition;
+  if (typeof classes === 'object') {
+    return classes.join(' ') + classCondition;
+  } else {
+    return classes + classCondition;
+  }
 };

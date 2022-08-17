@@ -16,7 +16,7 @@ export interface IInput {
   isRequired?: boolean;
 }
 
-const InputCommon: React.FC<IInput> = ({
+const Input: React.FC<IInput> = ({
   textLabel = '',
   defaultValue = '',
   className,
@@ -51,7 +51,7 @@ const InputCommon: React.FC<IInput> = ({
           placeholder={placeholder}
           defaultValue={defaultValue}
           className={classNames(
-            `text-sm transition-all duration-200 w-full text-stone-600 outline-none 
+            `text-sm transition-all duration-200 w-full text-stone-600 outline-none
             border px-2.5 py-2 border-solid border-stone-200 focus:border-primary-900
             rounded-md placeholder:text-sm`,
             {
@@ -74,4 +74,4 @@ const InputCommon: React.FC<IInput> = ({
   );
 };
 
-export default React.memo(InputCommon);
+export default React.memo(Input);
