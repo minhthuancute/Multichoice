@@ -7,16 +7,22 @@ const CreateTest: React.FC = () => {
   const childRef: any = useRef();
   const [shouldSubmit, setShouldSubmit] = useState<boolean>(false);
 
+  const submitForm = () => {
+    setShouldSubmit((state) => !state);
+  };
+
   useEffect(() => {
     console.log(childRef);
-    childRef.current.submitForm();
+    if (shouldSubmit) {
+      childRef.current.submitForm();
+    }
   }, [shouldSubmit]);
 
   return (
     <DefaultLayout>
       <div className="create-test">
         <div className="header">
-          <HeaderCreateTest setShouldSubmit={setShouldSubmit} />
+          <HeaderCreateTest submitForm={submitForm} />
         </div>
         <div className="form py-5 bg-slate-100 min-h-screen">
           <FormCreateTest ref={childRef} shouldSubmit={shouldSubmit} />

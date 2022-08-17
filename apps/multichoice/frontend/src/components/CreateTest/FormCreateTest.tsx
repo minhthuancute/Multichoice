@@ -1,7 +1,7 @@
 import React, {
   forwardRef,
-  useEffect,
   useImperativeHandle,
+  useLayoutEffect,
   useRef,
   useState,
 } from 'react';
@@ -12,8 +12,10 @@ import { CreateTopicDto } from '@monorepo/multichoice/dto';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Select, { IOption } from '../Commons/Select/Select';
-import { TopicCategoryEnum } from '@monorepo/multichoice/constant';
-import { useNavigate } from 'react-router-dom';
+import {
+  TopicCategoryEnum,
+  TopicTimeTypeEnum,
+} from '@monorepo/multichoice/constant';
 
 const schemaFormLogin = yup.object().shape({
   timeTpye: yup.string().required(),
@@ -31,19 +33,18 @@ interface IFormCreateTest {
 
 const FormCreateTest: React.FC<IFormCreateTest> = forwardRef(
   ({ shouldSubmit }, ref) => {
-    const navigate = useNavigate();
     const formRef: any = useRef<HTMLFormElement>(null);
 
     const {
       register,
       handleSubmit,
       reset,
+      setValue,
       formState: { errors },
     } = useForm<CreateTopicDto>({
       resolver: yupResolver(schemaFormLogin),
     });
 
-    const [selectedOption, setSelectedOption] = useState<string>('');
     const [categories] = useState<IOption[]>(() => {
       const topics: TopicCategoryEnum[] = [
         TopicCategoryEnum.GAME,
@@ -61,35 +62,50 @@ const FormCreateTest: React.FC<IFormCreateTest> = forwardRef(
       return options;
     });
 
+    const initForm = () => {
+      const optionVal: TopicCategoryEnum = categories[0]
+        .value as TopicCategoryEnum;
+      // reset({
+      //   timeTpye: TopicTimeTypeEnum.FIXEDTIME,
+      //   typeCategoryName: optionVal,
+      // });
+      setValue('timeTpye', TopicTimeTypeEnum.FIXEDTIME);
+      setValue('typeCategoryName', optionVal);
+    };
+
+    useLayoutEffect(() => {
+      initForm();
+    }, []);
+
     const onSelect = (item: IOption) => {
-      console.log(item);
+      const optionVal: TopicCategoryEnum = item.value as TopicCategoryEnum;
+      // reset({
+      //   typeCategoryName: optionVal,
+      // });
+      setValue('typeCategoryName', optionVal);
     };
 
     const onSubmit: SubmitHandler<CreateTopicDto> = async (
       formData: CreateTopicDto
     ) => {
-      console.log(formData);
+      console.log('ascjksaj', formData);
     };
 
     useImperativeHandle(
       ref,
       () => ({
         submitForm: () => {
-          console.log('asckj', shouldSubmit);
-          if (shouldSubmit) {
-            formRef.current.submit();
-          }
+          formRef.current.click();
         },
       }),
-      [shouldSubmit]
+      []
     );
 
     return (
       <div className="container">
         <form
-          className="flex items-start gap-x-4"
+          className="form flex items-start gap-x-4"
           onSubmit={handleSubmit(onSubmit)}
-          ref={formRef}
         >
           <div className="form-left w-1/3 p-4 bg-white rounded-md">
             <Input
@@ -130,6 +146,9 @@ const FormCreateTest: React.FC<IFormCreateTest> = forwardRef(
               isError={Boolean(errors.description)}
               errMessage={errors.description?.message}
             />
+          </div>
+          <div className="submit">
+            <button ref={formRef} hidden></button>
           </div>
         </form>
       </div>

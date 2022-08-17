@@ -1,4 +1,4 @@
-import { Api } from '../utils/Api';
+import { Api } from './Api';
 import { CreateUserDto } from '@monorepo/multichoice/dto';
 import { LoginUserDto } from '@monorepo/multichoice/dto';
 

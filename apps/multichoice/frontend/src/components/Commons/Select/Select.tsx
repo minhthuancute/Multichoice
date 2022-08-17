@@ -80,7 +80,8 @@ const Select: React.FC<ISelect> = ({
                     transition-all duration-200 hover:bg-slate-100 rounded-md
                   `,
                   {
-                    'bg-slate-100': option.value === selectedOption,
+                    'bg-slate-100 text-primary-900':
+                      option.value === selectedOption,
                   }
                 )}
               >

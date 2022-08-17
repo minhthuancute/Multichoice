@@ -3,16 +3,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import Breadcrumb from '../Commons/Breadcrumb/Breadcrumb';
 
 interface IHeaderCreateTest {
-  setShouldSubmit: (value: boolean) => void;
+  submitForm: () => void;
 }
 
-const HeaderCreateTest: React.FC<IHeaderCreateTest> = ({ setShouldSubmit }) => {
+const HeaderCreateTest: React.FC<IHeaderCreateTest> = ({ submitForm }) => {
   const navigate = useNavigate();
-
-  // handle submit create TOPIC
-  // const handleSubmit = () => {
-
-  // }
 
   return (
     <div className="header-create-test">
@@ -42,7 +37,7 @@ const HeaderCreateTest: React.FC<IHeaderCreateTest> = ({ setShouldSubmit }) => {
           <button
             className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
             text-white font-bold bg-primary-900"
-            onClick={() => setShouldSubmit(true)}
+            onClick={() => submitForm()}
           >
             Tạo mới
           </button>
