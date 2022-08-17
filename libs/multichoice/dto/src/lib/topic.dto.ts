@@ -7,10 +7,13 @@ export class CreateTopicDto {
     timeTpye: TopicTimeTypeEnum
 
     @ApiProperty({ enum: TopicCategoryEnum, default: TopicCategoryEnum.NONE })
-    typeName: TopicCategoryEnum
+    typeCategoryName: TopicCategoryEnum
 
     @ApiProperty()
     title: string
+
+    @ApiProperty()
+    description: string
 
     @ApiProperty({ default: false })
     isDraft: boolean

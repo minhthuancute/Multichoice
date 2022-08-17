@@ -23,7 +23,7 @@ export class Topic extends Timestamp {
     enum: TopicCategoryEnum,
     default: TopicCategoryEnum.NONE,
   })
-  typeName: TopicCategoryEnum;
+  typeCategoryName: TopicCategoryEnum;
 
   @Column({
     type: 'enum',
@@ -34,6 +34,9 @@ export class Topic extends Timestamp {
 
   @Column()
   title: string;
+
+  @Column({ type: 'text', nullable: true })
+  description: string;
 
   @Column({ default: false })
   isDraft: boolean;
