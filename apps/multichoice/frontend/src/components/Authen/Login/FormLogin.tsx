@@ -6,7 +6,7 @@ import { titleServices } from '../../../services/TitleServices';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Link, useNavigate } from 'react-router-dom';
-import { USER } from '../../../constants/contstants';
+import { TOKEN, USER } from '../../../constants/contstants';
 import Checkbox from '../../Commons/Checkbox/Checkbox';
 import InputAuthen from '../InputAuthen';
 import { validation } from '@monorepo/multichoice/validation';
@@ -18,6 +18,7 @@ import { AxiosResponse } from 'axios';
 import { userStore } from '../../../store/User/userStore';
 import { ILoginResponse } from '../../../types/LoginResponse';
 import { UserActionsEnum } from '../../../store/User/userTypes';
+import { localServices } from '../../../services/LocalServices';
 
 const { email, password } = validation();
 const schemaFormLogin = yup
@@ -73,6 +74,7 @@ const FormLogin: React.FC = () => {
       const loginResponse: ILoginResponse = data.data;
       if (loginResponse.success) {
         const { payload, token } = loginResponse.data;
+        localServices.setData(TOKEN, token);
 
         dispatch({
           type: UserActionsEnum.SET_DATA,

@@ -5,10 +5,9 @@ import { IDataUser, userStore } from '../../store/rootReducer';
 import { UserActionsEnum } from '../../store/User/userTypes';
 
 const Home: React.FC = () => {
-  const { user, dispatch } = userStore();
+  const { dispatch } = userStore();
   useLayoutEffect(() => {
     titleServices.setTitle('Multichoice');
-    console.log(user);
   }, []);
 
   const demo = () => {

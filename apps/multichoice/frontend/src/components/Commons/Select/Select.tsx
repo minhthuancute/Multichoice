@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { BiChevronDown } from 'react-icons/bi';
 import { classNames } from '../../../helper/classNames';
+import { useOnClickOutside } from '../../../hooks/useOnClickOutside';
 
 export interface IOption {
   label: string;
@@ -14,6 +15,7 @@ export interface ISelect {
   options?: IOption[];
   textLabel?: string;
   isRequired?: boolean;
+  isCollapse?: boolean;
 }
 
 const Select: React.FC<ISelect> = ({
@@ -23,7 +25,10 @@ const Select: React.FC<ISelect> = ({
   className = '',
   textLabel = '',
   isRequired = false,
+  isCollapse = true,
 }) => {
+  const refSelect = useRef<HTMLDivElement>(null);
+
   const [collapseSelect, setCollapseSelect] = useState<boolean>(true);
   const [selectedOption, setSelectedOption] = useState<string>(defaultValue);
 
@@ -35,13 +40,19 @@ const Select: React.FC<ISelect> = ({
     }
   };
 
+  const onClickOutSide = () => {
+    setCollapseSelect(true);
+  };
+
+  useOnClickOutside(refSelect, onClickOutSide);
+
   return (
     <div className={classNames(['wrapper-select', className])}>
       <label className="font-semibold text-slate-800 text-sm inline-block mb-2">
         {textLabel}
         {isRequired ? <span className="ml-1 text-red-600">*</span> : null}
       </label>
-      <div className="select-body relative">
+      <div className="select-body relative" ref={refSelect}>
         <div className="selected-item ">
           <button
             onClick={() => setCollapseSelect(!collapseSelect)}
@@ -64,7 +75,7 @@ const Select: React.FC<ISelect> = ({
         <ul
           className={classNames(
             `wrapper-options overflow-hidden w-full bg-white mt-2  border border-solid border-primary-900
-            rounded-md absolute top-full transform origin-top transition-all duration-300`,
+            rounded-md absolute z-50 top-full transform origin-top transition-all duration-300`,
             {
               'scale-y-0': collapseSelect,
             }

@@ -1,16 +1,11 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Modal from '../../../components/Modal/Modal';
 import FilterTests from '../../../components/Tests/FilterTests';
 import DefaultLayout from '../../../layouts/DefaultLayout';
-import { titleServices } from '../../../services/TitleServices';
 
 const Tests: React.FC = () => {
   const [showModalCreate, setShowModalCreate] = useState<boolean>(false);
-
-  useLayoutEffect(() => {
-    titleServices.addSub('Tests');
-  }, []);
 
   const showModalCreateTest = () => {
     setShowModalCreate((state) => !state);

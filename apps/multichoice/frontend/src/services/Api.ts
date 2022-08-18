@@ -1,12 +1,17 @@
 import axios, { AxiosInstance } from 'axios';
-import { environment } from '../environments/environment';
+import { TOKEN } from '../constants/contstants';
+import { localServices } from './LocalServices';
 
 export class Api {
   axiosInstance: AxiosInstance;
   constructor() {
+    const token = localServices.getData(TOKEN);
     this.axiosInstance = axios.create({
       baseURL: 'http://localhost:3333/api',
     });
+    this.axiosInstance.defaults.headers.common[
+      'Authorization'
+    ] = `Bearer ${token}`;
   }
 
   get(url: string) {

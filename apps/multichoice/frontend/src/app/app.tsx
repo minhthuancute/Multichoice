@@ -7,6 +7,7 @@ import './app.scss';
 import Home from '../pages/Home/Home';
 import Loading from '../components/Loading/Loading';
 import CreateTest from '../pages/Tests/Create/CreateTest';
+import PrivateRoute from '../components/Routes/PrivateRoute';
 // import lazy
 const Login: React.FC = React.lazy(() => import('../pages/Login/Login'));
 const Register: React.FC = React.lazy(
@@ -25,15 +26,9 @@ export const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route index element={<Home />} />
-        <Route
-          path="/tests"
-          element={
-            <Suspense fallback={<Loading />}>
-              <Tests />
-            </Suspense>
-          }
-        />
+        {/* <Route index element={<Home />} /> */}
+        <Route index element={<PrivateRoute Component={Home} />} />
+
         <Route
           path="/tests/create"
           element={
