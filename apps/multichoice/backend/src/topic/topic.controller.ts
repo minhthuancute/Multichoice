@@ -1,7 +1,17 @@
 import { CreateTopicDto } from '@monorepo/multichoice/dto';
-import { Body, Controller, Get, Param, Post, Req, Res, UseGuards } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { get } from 'https';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthenticationGuard } from '../auth/guards/auth.guard';
 import { SucessResponse } from '../model/SucessResponse';
 import { Topic } from '../question/entities/topic.entity';
@@ -13,14 +23,38 @@ export class TopicController {
   constructor(private readonly topicService: TopicService) { }
   @UseGuards(AuthenticationGuard)
   @Post('create')
-  async create(@Body() topic: CreateTopicDto, @Req() req, @Res() res): Promise<SucessResponse> {
+  @ApiBearerAuth()
+  async create(
+    @Body() topic: CreateTopicDto,
+    @Req() req,
+    @Res() res
+  ): Promise<SucessResponse> {
     const result = await this.topicService.create(topic, req.user);
-    return res.status(201).json(result)
+    return res.status(201).json(result);
   }
 
   @Get(':id')
-  async test(@Param('id') id: number, @Res() res): Promise<Topic> {
-    const result = await this.topicService.fineOneByID(id)
-    return res.status(200).json(result)
+  async getTopicById(@Param('id') id: number, @Res() res): Promise<Topic> {
+    const result = await this.topicService.fineOneByID(id);
+    if (!result) {
+      throw new NotFoundException('Topic not found');
+    }
+    return res.status(200).json(result);
+  }
+
+  @UseGuards(AuthenticationGuard)
+  @Delete(':id')
+  @ApiBearerAuth()
+  async deleteTopicById(@Param('id') id: number, @Res() res) {
+    await this.topicService.deleteById(id);
+    return res.status(200).json(new SucessResponse(200, {}));
+  }
+
+  @UseGuards(AuthenticationGuard)
+  @Get()
+  @ApiBearerAuth()
+  async getTopicAll(@Res() res): Promise<Topic[]> {
+    const result = await this.topicService.fileAll();
+    return res.status(200).json(new SucessResponse(200, result));
   }
 }

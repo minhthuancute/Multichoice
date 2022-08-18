@@ -7,6 +7,7 @@ import {
   HttpStatus,
   BadRequestException,
   UnauthorizedException,
+  PayloadTooLargeException,
 } from '@nestjs/common';
 import {
   CannotCreateEntityIdMapError,
@@ -24,6 +25,7 @@ export class HttpErrorFilterr implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
     let message = (exception as any).message;
     let code = 'HttpException';
+    const statusCode = (exception as any).status;
 
     Logger.error(message, `${request.method} ${request.url}`);
 
@@ -32,6 +34,7 @@ export class HttpErrorFilterr implements ExceptionFilter {
     switch (exception.constructor) {
       case HttpException:
         status = (exception as HttpException).getStatus();
+        message = (exception as HttpException).getResponse();
         break;
       case QueryFailedError: // this is a TypeOrm error
         status = HttpStatus.UNPROCESSABLE_ENTITY;
@@ -58,9 +61,15 @@ export class HttpErrorFilterr implements ExceptionFilter {
         message = (exception as any).response.message;
         code = (exception as any).response.message;
         break;
+      case PayloadTooLargeException:
+        status = (exception as PayloadTooLargeException).getStatus()
+        message = (exception as PayloadTooLargeException).message
+        break;
       default:
         status = HttpStatus.INTERNAL_SERVER_ERROR;
     }
-    response.status(status).json(ErrorResponse(status, message, code, request));
+    response
+      .status(statusCode || status)
+      .json(ErrorResponse(statusCode || status, message, code, request));
   }
 }

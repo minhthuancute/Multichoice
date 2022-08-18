@@ -36,6 +36,8 @@ export class Question extends Timestamp {
   @OneToMany(() => Answer, (ans) => ans.question)
   answers: Answer[];
 
-  @ManyToOne(() => Topic, (ans) => ans.questions)
+  @ManyToOne(() => Topic, (ans) => ans.questions, {
+    onDelete: 'CASCADE',
+  })
   topic: Topic;
 }

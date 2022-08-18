@@ -1,6 +1,7 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Question } from '../../question/entities/question.entity';
 import { Timestamp } from '../../orm/timestamp.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class Answer extends Timestamp {
@@ -11,8 +12,11 @@ export class Answer extends Timestamp {
   content: string;
 
   @Column({ default: false })
+  @Column({ select: false })
   isCorrect: boolean;
 
-  @ManyToOne(() => Question, (qs) => qs.answers)
+  @ManyToOne(() => Question, (qs) => qs.answers, {
+    onDelete: 'CASCADE',
+  })
   question: Question;
 }

@@ -7,6 +7,8 @@ export default () => ({
     password: process.env.MYSQL_PASSWORD,
     database: process.env.MYSQL_DATABASE,
   },
-  jwt_key: process.env.JWT_KEY || 'abc123456',
-  token_expired: process.env.TOKEN_EXPIRED || '1d',
+  jwt_key: process.env.JWT_KEY,
+  token_expired: process.env.TOKEN_EXPIRED,
+  upload_location: process.env.UPLOAD_LOCATION,
+  max_file_size: process.env.MAX_FILE_SIZE
 });

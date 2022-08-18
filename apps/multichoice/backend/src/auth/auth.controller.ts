@@ -30,8 +30,8 @@ export class authController {
   async login(
     @Body() login: LoginUserDto,
     @Req() req,
-    @Res() response
+    @Res() res
   ): Promise<any> {
-    return response.json(new SucessResponse(200, req.user));
+    return res.json(new SucessResponse(200, req.user));
   }
 }
