@@ -9,19 +9,25 @@ import { User } from '../user/entities/user.entity';
 
 @Injectable()
 export class TopicService {
-    constructor(@InjectRepository(Topic) private readonly topicRepository: Repository<Topic>) { }
+  constructor(
+    @InjectRepository(Topic) private readonly topicRepository: Repository<Topic>
+  ) {}
 
-    async create(topic: CreateTopicDto, user: User): Promise<SucessResponse> {
-        const topicEntity: Topic = plainToClass(Topic, topic)
-        topicEntity.owner = user;
+  async create(topic: CreateTopicDto, user: User): Promise<SucessResponse> {
+    const topicEntity: Topic = plainToClass(Topic, topic);
+    topicEntity.owner = user;
 
-        const result = await this.topicRepository.save(topicEntity);
-        return new SucessResponse(201, result);
-    }
+    const result = await this.topicRepository.save(topicEntity);
+    return new SucessResponse(201, result);
+  }
 
-    async fineOneByID(id: number): Promise<Topic> {
-
-        const result = await this.topicRepository.findOneById(id)
-        return result;
-    }
+  async fineOneByID(id: number): Promise<Topic> {
+    const result = await this.topicRepository.findOne({
+      where: {
+        id,
+      },
+      relations: ['questions', 'questions.answers'],
+    });
+    return result;
+  }
 }

@@ -17,7 +17,7 @@ export class authService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private jwtService: JwtService
-  ) { }
+  ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const user = await this.userRepository.findOneBy({
@@ -42,12 +42,12 @@ export class authService {
     }
     const isMatchPassword = await bcrypt.compare(login.password, user.password);
     if (!isMatchPassword) {
-      throw new BadRequestException('password is incore');
+      throw new BadRequestException('Password is incorrect');
     }
     return user;
   }
 
-  async login(user: any) {
+  async login(user: User) {
     const payload: AuthPayload = {
       name: user.username,
       email: user.email,
@@ -56,7 +56,7 @@ export class authService {
 
     return {
       token: await this.jwtService.signAsync(payload),
-      payload
+      payload,
     };
   }
 }
