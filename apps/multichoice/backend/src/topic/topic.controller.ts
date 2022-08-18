@@ -2,7 +2,9 @@ import { CreateTopicDto } from '@monorepo/multichoice/dto';
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  NotFoundException,
   Param,
   Post,
   Req,
@@ -32,8 +34,19 @@ export class TopicController {
   }
 
   @Get(':id')
-  async test(@Param('id') id: number, @Res() res): Promise<Topic> {
+  async getTopicById(@Param('id') id: number, @Res() res): Promise<Topic> {
     const result = await this.topicService.fineOneByID(id);
+    if (!result) {
+      throw new NotFoundException('Topic not found');
+    }
     return res.status(200).json(result);
+  }
+
+  @UseGuards(AuthenticationGuard)
+  @Delete(':id')
+  @ApiBearerAuth()
+  async deleteTopicById(@Param('id') id: number, @Res() res) {
+    await this.topicService.deleteById(id);
+    return res.status(200).json(new SucessResponse(200, {}));
   }
 }

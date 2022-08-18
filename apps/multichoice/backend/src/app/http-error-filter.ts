@@ -25,6 +25,7 @@ export class HttpErrorFilterr implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
     let message = (exception as any).message;
     let code = 'HttpException';
+    const statusCode = (exception as any).status;
 
     Logger.error(message, `${request.method} ${request.url}`);
 
@@ -67,6 +68,8 @@ export class HttpErrorFilterr implements ExceptionFilter {
       default:
         status = HttpStatus.INTERNAL_SERVER_ERROR;
     }
-    response.status(status).json(ErrorResponse(status, message, code, request));
+    response
+      .status(statusCode || status)
+      .json(ErrorResponse(statusCode || status, message, code, request));
   }
 }
