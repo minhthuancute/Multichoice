@@ -15,6 +15,8 @@ export class Answer extends Timestamp {
   @Column({ select: false })
   isCorrect: boolean;
 
-  @ManyToOne(() => Question, (qs) => qs.answers)
+  @ManyToOne(() => Question, (qs) => qs.answers, {
+    onDelete: 'CASCADE',
+  })
   question: Question;
 }

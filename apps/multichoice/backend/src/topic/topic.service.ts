@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { SucessResponse } from '../model/SucessResponse';
 import { Topic } from '../question/entities/topic.entity';
 import { User } from '../user/entities/user.entity';
+import { DeleteResult } from 'typeorm/query-builder/result/DeleteResult';
 
 @Injectable()
 export class TopicService {
@@ -29,5 +30,10 @@ export class TopicService {
       relations: ['questions', 'questions.answers'],
     });
     return result;
+  }
+
+  async deleteById(id: number): Promise<boolean> {
+    await this.topicRepository.delete(id);
+    return true;
   }
 }
