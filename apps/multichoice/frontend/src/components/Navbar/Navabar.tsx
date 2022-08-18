@@ -47,12 +47,11 @@ const Navabar: React.FC = () => {
               className={classNames(
                 `nav-item font-medium text-sm mr-8 last:mr-0`,
                 {
-                  'active text-primary-900 font-semibold':
-                    activeNavItem() === index,
+                  'active text-primary-900': activeNavItem() === index,
                 }
               )}
             >
-              <Link to={nav.path} className="inline-block py-3.5">
+              <Link to={nav.path} className="inline-block py-4">
                 {nav.label}
               </Link>
             </li>

@@ -99,7 +99,7 @@ const FormLogin: React.FC = () => {
         autoComplete="off"
       >
         <div className="form-header mb-10 flex items-center md:flex-col xs:flex-col text-center">
-          <h2 className="font-semibold text-black mb-5 text-3xl">Login</h2>
+          <h2 className="font-medium text-black mb-5 text-3xl">Login</h2>
           <p className="text-slate-800">
             Enter yor email address and password <br />
             to get access account

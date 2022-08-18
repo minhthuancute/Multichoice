@@ -22,12 +22,11 @@ const Tests: React.FC = () => {
         </Modal>
         <div className="test-header">
           <div className="container flex justify-between py-4">
-            <h3 className="text-2xl font-semibold">Danh sách đề thi</h3>
+            <h3 className="text-2xl font-medium">Danh sách đề thi</h3>
             <Link
               to="/tests/create"
               className="create-test btn-primary rounded-md bg-primary-900 text-sm
             text-white font-bold flex justify-center items-center w-32 h-10"
-              onClick={() => showModalCreateTest()}
             >
               Tạo đề thi
             </Link>
