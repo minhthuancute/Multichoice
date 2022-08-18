@@ -1,4 +1,3 @@
-import { QuestionTypeEnum } from "@monorepo/multichoice/constant";
 import { ApiProperty } from "@nestjs/swagger";
 import { CreatAnswer } from "./answer.dto";
 

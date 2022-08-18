@@ -1,8 +1,5 @@
 import { TopicCategoryEnum, TopicTimeTypeEnum } from "@monorepo/multichoice/constant"
 import { ApiProperty } from "@nestjs/swagger"
-import { isArray } from "class-validator"
-import { type } from "os"
-import { CreateQuestionDto } from "./question.dto"
 
 export class CreateTopicDto {
 
@@ -10,10 +7,13 @@ export class CreateTopicDto {
     timeTpye: TopicTimeTypeEnum
 
     @ApiProperty({ enum: TopicCategoryEnum, default: TopicCategoryEnum.NONE })
-    typeName: TopicCategoryEnum
+    typeCategoryName: TopicCategoryEnum
 
     @ApiProperty()
     title: string
+
+    @ApiProperty()
+    description: string
 
     @ApiProperty({ default: false })
     isDraft: boolean

@@ -1,5 +1,5 @@
 import { CreateTopicDto } from '@monorepo/multichoice/dto';
-import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { get } from 'https';
 import { AuthenticationGuard } from '../auth/guards/auth.guard';
@@ -15,12 +15,12 @@ export class TopicController {
   @Post('create')
   async create(@Body() topic: CreateTopicDto, @Req() req, @Res() res): Promise<SucessResponse> {
     const result = await this.topicService.create(topic, req.user);
-    return res.status(200).json(result)
+    return res.status(201).json(result)
   }
 
-  @Get('test')
-  async test(@Res() res): Promise<Topic> {
-    const result = await this.topicService.fineOneByID(1)
+  @Get(':id')
+  async test(@Param('id') id: number, @Res() res): Promise<Topic> {
+    const result = await this.topicService.fineOneByID(id)
     return res.status(200).json(result)
   }
 }
