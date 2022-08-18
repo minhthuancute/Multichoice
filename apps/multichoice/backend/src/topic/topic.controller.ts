@@ -12,7 +12,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { get } from 'https';
 import { AuthenticationGuard } from '../auth/guards/auth.guard';
 import { SucessResponse } from '../model/SucessResponse';
 import { Topic } from '../question/entities/topic.entity';
@@ -21,7 +20,7 @@ import { TopicService } from './topic.service';
 @ApiTags('topic')
 @Controller('topic')
 export class TopicController {
-  constructor(private readonly topicService: TopicService) {}
+  constructor(private readonly topicService: TopicService) { }
   @UseGuards(AuthenticationGuard)
   @Post('create')
   @ApiBearerAuth()
@@ -49,5 +48,13 @@ export class TopicController {
   async deleteTopicById(@Param('id') id: number, @Res() res) {
     await this.topicService.deleteById(id);
     return res.status(200).json(new SucessResponse(200, {}));
+  }
+
+  @UseGuards(AuthenticationGuard)
+  @Get()
+  @ApiBearerAuth()
+  async getTopicAll(@Res() res): Promise<Topic[]> {
+    const result = await this.topicService.fileAll();
+    return res.status(200).json(new SucessResponse(200, result));
   }
 }
