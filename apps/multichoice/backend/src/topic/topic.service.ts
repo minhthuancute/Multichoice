@@ -12,7 +12,7 @@ import { DeleteResult } from 'typeorm/query-builder/result/DeleteResult';
 export class TopicService {
   constructor(
     @InjectRepository(Topic) private readonly topicRepository: Repository<Topic>
-  ) {}
+  ) { }
 
   async create(topic: CreateTopicDto, user: User): Promise<SucessResponse> {
     const topicEntity: Topic = plainToClass(Topic, topic);
@@ -35,5 +35,12 @@ export class TopicService {
   async deleteById(id: number): Promise<boolean> {
     await this.topicRepository.delete(id);
     return true;
+  }
+
+  async fileAll(): Promise<Topic[]> {
+    const result = await this.topicRepository.find({
+      relations: ['questions', 'questions.answers']
+    });
+    return result;
   }
 }
