@@ -27,7 +27,6 @@ export class User extends Timestamp {
 
   @Column()
   @Exclude({ toPlainOnly: false })
-  @Column({ select: false })
   password: string;
 
   @OneToMany(() => Topic, (topic) => topic.owner)
