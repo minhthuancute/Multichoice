@@ -23,12 +23,22 @@ export class QuestionService {
     return result;
   }
 
-  async create(createQuestionDto: CreateQuestionDto, topic: Topic): Promise<SucessResponse> {
+  async create(createQuestionDto: CreateQuestionDto, topic: Topic, files: any): Promise<SucessResponse> {
 
     const questionType: QuestionType = await this.fineOneByID(createQuestionDto.questionTypeID)
     if (!questionType) throw new BadRequestException('questionTypeID is not found')
 
     const QuestionEntity: Question = plainToClass(Question, createQuestionDto)
+
+    //save image}||audio
+    if (files !== undefined) {
+      if (files.audio !== undefined) {
+        QuestionEntity.audio = files.audio.filename
+      }
+      if (files.image !== undefined) {
+        QuestionEntity.image = files.image.filename
+      }
+    }
 
     QuestionEntity.topic = topic
     QuestionEntity.type = questionType

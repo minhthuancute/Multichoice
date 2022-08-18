@@ -14,12 +14,6 @@ export class CreateQuestionDto {
     @ApiProperty()
     time: number
 
-    @ApiProperty()
-    image: string
-
-    @ApiProperty()
-    audio: string
-
     @ApiProperty({ default: true })
     isActive: boolean
 

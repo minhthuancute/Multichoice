@@ -1,7 +1,6 @@
 import { CreateTopicDto } from '@monorepo/multichoice/dto';
 import { Body, Controller, Get, Param, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { get } from 'https';
 import { AuthenticationGuard } from '../auth/guards/auth.guard';
 import { SucessResponse } from '../model/SucessResponse';
 import { Topic } from '../question/entities/topic.entity';

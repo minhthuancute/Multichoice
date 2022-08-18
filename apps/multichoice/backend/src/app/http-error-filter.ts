@@ -7,6 +7,7 @@ import {
   HttpStatus,
   BadRequestException,
   UnauthorizedException,
+  PayloadTooLargeException,
 } from '@nestjs/common';
 import { CannotCreateEntityIdMapError, EntityNotFoundError, QueryFailedError } from 'typeorm';
 import { ErrorResponse } from '../model/ErrorResponse';
@@ -28,6 +29,7 @@ export class HttpErrorFilterr implements ExceptionFilter {
     switch (exception.constructor) {
       case HttpException:
         status = (exception as HttpException).getStatus();
+        message = (exception as HttpException).getResponse();
         break;
       case QueryFailedError:  // this is a TypeOrm error
         status = HttpStatus.UNPROCESSABLE_ENTITY
@@ -53,6 +55,10 @@ export class HttpErrorFilterr implements ExceptionFilter {
         status = HttpStatus.UNAUTHORIZED
         message = (exception as any).response.message;
         code = (exception as any).response.message;
+        break;
+      case PayloadTooLargeException:
+        status = (exception as PayloadTooLargeException).getStatus()
+        message = (exception as PayloadTooLargeException).message
         break;
       default:
         status = HttpStatus.INTERNAL_SERVER_ERROR
