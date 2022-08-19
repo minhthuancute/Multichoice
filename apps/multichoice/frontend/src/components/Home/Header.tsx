@@ -23,7 +23,7 @@ const Header: React.FC = () => {
     >
       <div className="wrapper-header container flex items-center justify-between">
         <div className="header-left logo">
-          <h1 className="logo font-medium text-2xl">
+          <h1 className="logo font-medium text-xl">
             <Link to="/">MultiChoice</Link>
           </h1>
         </div>
@@ -46,7 +46,7 @@ const Header: React.FC = () => {
               </h3>
             </div>
             <div
-              className="dropdown-user p-3 pt-10 bg-white shadow-md absolute right-0 w-[248px] z-50 
+              className="dropdown-user p-3 pt-10 bg-white shadow-md absolute right-0 w-[248px] z-50
               transition-all duration-200 invisible opacity-0 group-hover:visible group-hover:opacity-100
             "
             >

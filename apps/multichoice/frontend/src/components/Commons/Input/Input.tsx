@@ -1,10 +1,13 @@
 import React, { HTMLInputTypeAttribute } from 'react';
 import { classNames } from '../../../helper/classNames';
 
+export type InputSize = 'xs' | 'sm' | 'md' | 'lg';
+
 export interface IInput {
   textLabel?: React.ReactNode;
   defaultValue?: any;
   className?: string;
+  classInput?: string;
   id?: string;
   placeholder?: string;
   Icon?: any;
@@ -14,12 +17,14 @@ export interface IInput {
   fieldName?: string;
   registerField?: any;
   isRequired?: boolean;
+  inputSize?: InputSize;
 }
 
 const Input: React.FC<IInput> = ({
   textLabel = '',
   defaultValue = '',
   className,
+  classInput = '',
   id = '',
   registerField = null,
   isError = false,
@@ -28,6 +33,7 @@ const Input: React.FC<IInput> = ({
   placeholder = '',
   typeInput = 'text',
   isRequired = false,
+  inputSize = 'sm',
 }) => {
   return (
     <div className={classNames('form-group relative', className)}>
@@ -51,14 +57,19 @@ const Input: React.FC<IInput> = ({
           placeholder={placeholder}
           defaultValue={defaultValue}
           className={classNames(
-            `text-sm transition-all duration-200 w-full text-stone-600 outline-none
+            [
+              `text-sm transition-all duration-200 w-full text-stone-600 outline-none
             border px-2.5 py-2 border-solid border-stone-200 focus:border-primary-900
             rounded-md placeholder:text-sm`,
+            ],
             {
               'border-stone-200 focus:border-primary-900': !isError,
               'border-red-500 focus:border-red-500': isError,
               'pl-9': Icon,
               'pl-2.5': !Icon,
+              'py-2': inputSize === 'sm',
+              'py-3': inputSize === 'md',
+              'py-4': inputSize === 'lg',
             }
           )}
         />

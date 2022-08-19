@@ -2,6 +2,10 @@ import { Api } from './Api';
 import { CreateTopicDto } from '@monorepo/multichoice/dto';
 
 class TopicServices extends Api {
+  async getAllTopic() {
+    return this.get('/topic');
+  }
+
   createTopic(formData: CreateTopicDto) {
     return this.post('/topic/create', formData);
   }

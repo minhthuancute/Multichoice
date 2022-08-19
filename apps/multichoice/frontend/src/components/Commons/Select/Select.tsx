@@ -15,7 +15,6 @@ export interface ISelect {
   options?: IOption[];
   textLabel?: string;
   isRequired?: boolean;
-  isCollapse?: boolean;
 }
 
 const Select: React.FC<ISelect> = ({
@@ -25,7 +24,6 @@ const Select: React.FC<ISelect> = ({
   className = '',
   textLabel = '',
   isRequired = false,
-  isCollapse = true,
 }) => {
   const refSelect = useRef<HTMLDivElement>(null);
 
@@ -66,7 +64,7 @@ const Select: React.FC<ISelect> = ({
               className={classNames(
                 'icon transform transition-all duration-200',
                 {
-                  'rotate-180': !collapseSelect,
+                  'rotate-180 fill-primary-900': !collapseSelect,
                 }
               )}
             />

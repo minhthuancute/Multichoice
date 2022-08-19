@@ -1,25 +1,20 @@
 import React, { useLayoutEffect } from 'react';
 import DefaultLayout from '../../layouts/DefaultLayout';
 import { titleServices } from '../../services/TitleServices';
-import { IDataUser, userStore } from '../../store/rootReducer';
-import { UserActionsEnum } from '../../store/User/userTypes';
 
 const Home: React.FC = () => {
-  const { dispatch } = userStore();
   useLayoutEffect(() => {
     titleServices.setTitle('Multichoice');
   }, []);
 
-  const demo = () => {
-    dispatch({
-      type: UserActionsEnum.DEMO,
-      userPayload: {} as IDataUser,
-    });
-  };
-
   return (
     <DefaultLayout>
-      <button onClick={() => demo()}>Click me</button>
+      <div
+        className="test-body py-5 bg-slate-100"
+        style={{
+          height: 'calc(100vh - 53px)',
+        }}
+      ></div>
     </DefaultLayout>
   );
 };

@@ -16,7 +16,7 @@ const HeaderAuthen: React.FC = () => {
   return (
     <header className="header px-10 pt-5 flex items-center justify-between xs:flex-col md:flex-row">
       <div className="header-left">
-        <h1 className="logo font-medium text-2xl">
+        <h1 className="logo font-medium text-xl">
           <Link to="/">MultiChoice</Link>
         </h1>
       </div>

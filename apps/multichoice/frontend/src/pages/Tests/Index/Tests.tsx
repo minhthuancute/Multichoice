@@ -1,28 +1,23 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Modal from '../../../components/Modal/Modal';
 import FilterTests from '../../../components/Tests/FilterTests';
 import DefaultLayout from '../../../layouts/DefaultLayout';
+import TestList from '../TestList/TestList';
 
 const Tests: React.FC = () => {
-  const [showModalCreate, setShowModalCreate] = useState<boolean>(false);
+  const [searchKeyword, setSearchKeyword] = useState<string>('');
 
-  const showModalCreateTest = () => {
-    setShowModalCreate((state) => !state);
+  const onFilter = (keyword: string) => {
+    console.log(keyword);
+    setSearchKeyword(keyword);
   };
 
   return (
     <DefaultLayout>
       <div className="wrapper-tests">
-        <Modal openModal={showModalCreate}>
-          <div>
-            hihi
-            <button onClick={() => setShowModalCreate(false)}>Close</button>
-          </div>
-        </Modal>
         <div className="test-header">
           <div className="container flex justify-between py-4">
-            <h3 className="text-2xl font-medium">Danh sách đề thi</h3>
+            <h3 className="text-xl font-medium">Danh sách đề thi</h3>
             <Link
               to="/tests/create"
               className="create-test btn-primary rounded-md bg-primary-900 text-sm
@@ -33,8 +28,11 @@ const Tests: React.FC = () => {
           </div>
         </div>
 
-        <div className="test-body container mt-4">
-          <FilterTests />
+        <div className="test-body py-5 bg-slate-100 min-h-screen">
+          <div className="container">
+            <FilterTests onFilter={onFilter} />
+            <TestList searchKeyword={searchKeyword} />
+          </div>
         </div>
       </div>
     </DefaultLayout>
