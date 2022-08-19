@@ -7,6 +7,7 @@ import { SucessResponse } from '../model/SucessResponse';
 import { Topic } from '../question/entities/topic.entity';
 import { User } from '../user/entities/user.entity';
 import { DeleteResult } from 'typeorm/query-builder/result/DeleteResult';
+import { number } from 'yup';
 
 @Injectable()
 export class TopicService {
@@ -42,5 +43,11 @@ export class TopicService {
       relations: ['questions', 'questions.answers']
     });
     return result;
+  }
+
+  async update(id: number, topic: CreateTopicDto, user: User): Promise<SucessResponse> {
+    const topicEntity: Topic = plainToClass(Topic, topic);
+    const result = await this.topicRepository.update({ id, owner: user }, topicEntity);
+    return new SucessResponse(200, result);
   }
 }
