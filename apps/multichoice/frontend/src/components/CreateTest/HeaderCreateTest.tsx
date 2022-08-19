@@ -29,12 +29,6 @@ const HeaderCreateTest: React.FC<IHeaderCreateTest> = ({ submitForm }) => {
             Hủy
           </button>
           <button
-            className="save-daft mr-4 btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
-            text-white font-bold bg-violet-700"
-          >
-            Lưu bản nháp
-          </button>
-          <button
             className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
             text-white font-bold bg-primary-900"
             onClick={() => submitForm()}

@@ -69,9 +69,7 @@ const FormRegister: React.FC = () => {
         autoComplete="off"
       >
         <div className="form-header mb-10 text-center">
-          <h2 className="font-semibold text-black mb-5 text-3xl">
-            Sign up Now
-          </h2>
+          <h2 className="font-medium text-black mb-5 text-3xl">Sign up Now</h2>
           <p className="text-slate-800">
             Inter yor valid email address and password <br />
             to register your account
