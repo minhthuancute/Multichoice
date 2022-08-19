@@ -17,7 +17,7 @@ export class authService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private jwtService: JwtService
-  ) {}
+  ) { }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const user = await this.userRepository.findOneBy({
@@ -49,7 +49,7 @@ export class authService {
 
   async login(user: User) {
     const payload: AuthPayload = {
-      name: user.username,
+      username: user.username,
       email: user.email,
       id: user.id,
     };

@@ -38,9 +38,12 @@ export class TopicService {
     return true;
   }
 
-  async fileAll(): Promise<Topic[]> {
+  async fileAll(user: User): Promise<Topic[]> {
     const result = await this.topicRepository.find({
-      relations: ['questions', 'questions.answers']
+      where: {
+        owner: user
+      },
+      relations: ['questions', 'questions.answers'],
     });
     return result;
   }
