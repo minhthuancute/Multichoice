@@ -6,6 +6,7 @@ import {
   Get,
   NotFoundException,
   Param,
+  Patch,
   Post,
   Req,
   Res,
@@ -53,8 +54,22 @@ export class TopicController {
   @UseGuards(AuthenticationGuard)
   @Get()
   @ApiBearerAuth()
-  async getTopicAll(@Res() res): Promise<Topic[]> {
-    const result = await this.topicService.fileAll();
+  async getTopicAll(@Req() req, @Res() res): Promise<Topic[]> {
+    const result = await this.topicService.fileAll(req.user);
     return res.status(200).json(new SucessResponse(200, result));
   }
+
+  @UseGuards(AuthenticationGuard)
+  @Patch(':id')
+  @ApiBearerAuth()
+  async update(
+    @Param('id') id: number,
+    @Body() topic: CreateTopicDto,
+    @Req() req,
+    @Res() res
+  ): Promise<SucessResponse> {
+    const result = await this.topicService.update(id, topic, req.user);
+    return res.status(201).json(result);
+  }
+
 }

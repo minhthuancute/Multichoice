@@ -77,7 +77,7 @@ const FormCreateTest: React.FC<IFormCreateTest> = forwardRef((props, ref) => {
   const initForm = () => {
     const optionVal: TopicCategoryEnum = topicCategories[0]
       .value as TopicCategoryEnum;
-    setValue('timeTpye', TopicTimeTypeEnum.FIXEDTIME);
+    setValue('timeType', TopicTimeTypeEnum.FIXEDTIME);
     setValue('typeCategoryName', optionVal);
   };
 
@@ -92,7 +92,7 @@ const FormCreateTest: React.FC<IFormCreateTest> = forwardRef((props, ref) => {
 
   const onSelectTimeType = (item: IOption) => {
     const optionVal: TopicTimeTypeEnum = item.value as TopicTimeTypeEnum;
-    setValue('timeTpye', optionVal);
+    setValue('timeType', optionVal);
   };
 
   // create TOPIC

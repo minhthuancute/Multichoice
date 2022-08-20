@@ -4,7 +4,7 @@ import { ApiProperty } from "@nestjs/swagger"
 export class CreateTopicDto {
 
     @ApiProperty({ enum: TopicTimeTypeEnum, default: TopicTimeTypeEnum.FIXEDTIME })
-    timeTpye: TopicTimeTypeEnum
+    timeType: TopicTimeTypeEnum
 
     @ApiProperty({ enum: TopicCategoryEnum, default: TopicCategoryEnum.NONE })
     typeCategoryName: TopicCategoryEnum
@@ -21,3 +21,4 @@ export class CreateTopicDto {
     @ApiProperty()
     expirationTime: number
 }
+
