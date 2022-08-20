@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  Generated,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -34,6 +35,10 @@ export class Topic extends Timestamp {
 
   @Column()
   title: string;
+
+  @Column()
+  @Generated("uuid")
+  url: string;
 
   @Column({ type: 'text', nullable: true })
   description: string;

@@ -1,6 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateQuestionDto } from '@monorepo/multichoice/dto';
-import { UpdateQuestionDto } from './dto/update-question.dto';
+import { CreateQuestionDto, CreateQuestionTypeDto } from '@monorepo/multichoice/dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Question } from './entities/question.entity';
 import { Repository } from 'typeorm';
@@ -9,6 +8,7 @@ import { plainToClass } from 'class-transformer';
 import { Topic } from './entities/topic.entity';
 import { QuestionType } from './entities/question-type.entity';
 import { Answer } from '../answer/entities/answer.entity';
+import { User } from '../user/entities/user.entity';
 
 @Injectable()
 export class QuestionService {
@@ -20,7 +20,13 @@ export class QuestionService {
   async fineOneByID(id: number): Promise<QuestionType> {
 
     const result = await this.questionTypeRepository.findOneById(id)
+
     return result;
+  }
+
+  async deleteByID(id: number): Promise<boolean> {
+    await this.questionRepository.delete(id)
+    return true;
   }
 
   async create(createQuestionDto: CreateQuestionDto, topic: Topic, files: any): Promise<SucessResponse> {
@@ -57,5 +63,17 @@ export class QuestionService {
     await this.answerRepository.save(answers)
 
     return new SucessResponse(200, "Sucess");
+  }
+
+  async getQestionByID(id: number): Promise<Question> {
+
+    const result = await this.questionRepository.findOne(
+      { where: { id }, relations: ['answers'] })
+    return result;
+  }
+
+  async insertQestionType(questionType: CreateQuestionTypeDto): Promise<QuestionType> {
+    const result = await this.questionTypeRepository.save(questionType);
+    return result;
   }
 }
