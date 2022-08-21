@@ -20,7 +20,7 @@ import { topicServices } from '../../services/TopicServices';
 import { useNavigate } from 'react-router-dom';
 
 const schemaFormLogin = yup.object().shape({
-  timeTpye: yup.string().required(),
+  timeType: yup.string().required(),
   typeCategoryName: yup.string().required(),
   title: yup.string().required(),
   description: yup.string(),
@@ -59,6 +59,7 @@ const FormCreateTest: React.FC<IFormCreateTest> = forwardRef((props, ref) => {
     });
     return options;
   });
+
   const [topicTimeTypes] = useState<IOption[]>(() => {
     const timeTypes: TopicTimeTypeEnum[] = [];
     for (const types in TopicTimeTypeEnum) {

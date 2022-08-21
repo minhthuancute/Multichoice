@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { topicServices } from '../../../services/TopicServices';
-import { ITopicResponse } from '../../../types/TopicResponse';
+import { topicServices } from '../../services/TopicServices';
+import { ITopicResponse } from '../../types/TopicResponse';
 import TestItem, { ITestItem } from '../TestItem/TestItem';
 
 interface ITestList {
@@ -14,7 +14,6 @@ const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
   const getListTest = async () => {
     try {
       const { data } = await topicServices.getAllTopic();
-      console.log(data);
       const topicResponse: ITopicResponse[] = data.data;
       const topicsData = topicResponse.map((test: ITopicResponse) => {
         const testData: ITestItem = {

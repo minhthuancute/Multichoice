@@ -1,8 +1,9 @@
 import React from 'react';
+import { Outlet } from 'react-router-dom';
 import Header from '../components/Home/Header';
 
 interface ILayout {
-  children?: JSX.Element | JSX.Element[] | string | string[];
+  children?: React.ReactNode;
 }
 
 const DefaultLayout: React.FC<ILayout> = ({ children }) => {
@@ -10,6 +11,7 @@ const DefaultLayout: React.FC<ILayout> = ({ children }) => {
     <div className="layout-default">
       <Header />
       <main className="layout-default__main">{children}</main>
+      <Outlet />
     </div>
   );
 };

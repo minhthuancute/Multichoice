@@ -4,7 +4,9 @@ import { AiOutlineQuestionCircle } from 'react-icons/ai';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { FaPencilAlt } from 'react-icons/fa';
 
-import { getDate } from '../../../utils/formatDate';
+import { getDate } from '../../utils/formatDate';
+import ToolTip from '../Commons/ToolTip/ToolTip';
+import { Link } from 'react-router-dom';
 
 export interface ITestItem {
   id: number;
@@ -34,31 +36,21 @@ const TestItem: React.FC<ITestItemProp> = ({ test }) => {
             <span>{test.questionCount} câu hỏi</span>
           </li>
         </ul>
-        <div className="right ">
+        <div className="right">
           <ul className="ctas flex items-center">
-            <li className="relative group mr-4">
-              <button>
-                <FaPencilAlt className="p-0.5 text-slate-800" />
-              </button>
-              <div
-                className="text-xs text-white absolute w-max -top-full left-1/2 bg-slate-800 px-2 py-0.5
-                transform -translate-x-1/2 rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible
-                transition-all duration-200"
-              >
-                Cập nhật đề thi
-              </div>
+            <li className="relative group mr-5 mb-1.5">
+              <ToolTip title="Cập nhật đề thi">
+                <Link to={'/tests/edit/' + test.id}>
+                  <FaPencilAlt className="text-slate-800 text-sm" />
+                </Link>
+              </ToolTip>
             </li>
             <li className="relative group">
-              <button>
-                <RiDeleteBin6Line className="p-0.5 text-red-500 text-xl" />
-              </button>
-              <div
-                className="text-xs text-white absolute w-max -top-full left-1/2 bg-slate-800 px-2 py-0.5
-                transform -translate-x-1/2 rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible
-                transition-all duration-200"
-              >
-                Xóa
-              </div>
+              <ToolTip title="Xóa">
+                <button>
+                  <RiDeleteBin6Line className="text-red-500 text-xl" />
+                </button>
+              </ToolTip>
             </li>
           </ul>
         </div>

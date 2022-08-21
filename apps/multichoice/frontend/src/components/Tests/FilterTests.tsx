@@ -4,6 +4,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { BiSearchAlt } from 'react-icons/bi';
 import Input from '../Commons/Input/Input';
+import { useSearchParams } from 'react-router-dom';
 
 const schemaFormFilter = yup.object().shape({
   title: yup.string(),
@@ -18,6 +19,8 @@ interface IFilterTests {
 }
 
 const FilterTests: React.FC<IFilterTests> = ({ onFilter }) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const { register, handleSubmit } = useForm<IFormFilterTest>({
     resolver: yupResolver(schemaFormFilter),
   });
@@ -25,7 +28,8 @@ const FilterTests: React.FC<IFilterTests> = ({ onFilter }) => {
   const onSubmit: SubmitHandler<IFormFilterTest> = (
     formData: IFormFilterTest
   ) => {
-    console.log(formData);
+    console.log(searchParams);
+    setSearchParams('?search=' + formData.title);
     if (onFilter) {
       onFilter(formData.title);
     }
@@ -39,7 +43,6 @@ const FilterTests: React.FC<IFilterTests> = ({ onFilter }) => {
       >
         <Input
           className="flex-1"
-          classInput="py-4"
           placeholder="Tìm kiếm đề thi"
           registerField={register('title')}
           inputSize="md"

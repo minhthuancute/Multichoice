@@ -37,8 +37,6 @@ const FormRegister: React.FC = () => {
   const {
     register,
     handleSubmit,
-    watch,
-    reset,
     formState: { errors },
   } = useForm<CreateUserDto>({
     resolver: yupResolver(schemaFormRegister),
@@ -54,6 +52,9 @@ const FormRegister: React.FC = () => {
     if (isUserAccept) {
       try {
         const { data } = await authenServices.register(formData);
+        if (data) {
+          console.log();
+        }
         navigate('/login');
       } catch (error) {
         console.log(error);
@@ -85,6 +86,7 @@ const FormRegister: React.FC = () => {
           placeholder="User Name"
           typeInput="text"
           Icon={AiOutlineUser}
+          id="username"
         />
 
         <InputAuthen
@@ -95,6 +97,7 @@ const FormRegister: React.FC = () => {
           placeholder="Email Address"
           typeInput="email"
           Icon={MdOutlineMail}
+          id="email"
         />
 
         <InputAuthen
@@ -105,6 +108,7 @@ const FormRegister: React.FC = () => {
           placeholder="Password"
           typeInput="password"
           Icon={VscUnlock}
+          id="password"
         />
 
         <div className="remember-me flex items-center justify-between mt-5 text-slate-800">

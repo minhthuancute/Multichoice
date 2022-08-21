@@ -1,6 +1,6 @@
 import React, { useLayoutEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import DefaultLayout from '../../../layouts/DefaultLayout';
+import HeaderEditTest from '../../../components/EditTest/HeaderEditTest';
 import { topicServices } from '../../../services/TopicServices';
 
 const EditTest: React.FC = () => {
@@ -21,9 +21,11 @@ const EditTest: React.FC = () => {
   }, []);
 
   return (
-    <DefaultLayout>
-      <div className="edit-test"></div>
-    </DefaultLayout>
+    <div className="edit-test">
+      <HeaderEditTest />
+
+      <div className="content-page py-5 bg-slate-100"></div>
+    </div>
   );
 };
 

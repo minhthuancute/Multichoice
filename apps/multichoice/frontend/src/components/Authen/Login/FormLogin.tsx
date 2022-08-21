@@ -17,7 +17,6 @@ import { LoginUserDto } from '@monorepo/multichoice/dto';
 import { AxiosResponse } from 'axios';
 import { userStore } from '../../../store/User/userStore';
 import { ILoginResponse } from '../../../types/LoginResponse';
-import { UserActionsEnum } from '../../../store/User/userTypes';
 import { localServices } from '../../../services/LocalServices';
 
 const { email, password } = validation();
@@ -35,7 +34,7 @@ const schemaFormLogin = yup
 
 const FormLogin: React.FC = () => {
   const navigate = useNavigate();
-  const { dispatch } = userStore();
+  const { setInforUser } = userStore();
   const [userLocal, setUserLocal] = useState<LoginUserDto>();
   const [isRememberUser, setIsRememberUser] = useState<boolean>(false);
 
@@ -75,15 +74,7 @@ const FormLogin: React.FC = () => {
       if (loginResponse.success) {
         const { payload, token } = loginResponse.data;
         localServices.setData(TOKEN, token);
-
-        dispatch({
-          type: UserActionsEnum.SET_DATA,
-          userPayload: {
-            ...payload,
-            token,
-          },
-        });
-
+        setInforUser(payload, token);
         navigate('/');
       }
     } catch (error) {
@@ -114,6 +105,7 @@ const FormLogin: React.FC = () => {
           placeholder="Email Address"
           typeInput="email"
           Icon={MdOutlineMail}
+          id="email"
         />
 
         <InputAuthen
@@ -125,6 +117,7 @@ const FormLogin: React.FC = () => {
           placeholder="Password"
           typeInput="password"
           Icon={VscUnlock}
+          id="password"
         />
 
         <div className="remember-me flex items-center justify-between mt-5 text-slate-800">

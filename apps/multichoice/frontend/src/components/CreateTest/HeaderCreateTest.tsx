@@ -23,14 +23,15 @@ const HeaderCreateTest: React.FC<IHeaderCreateTest> = ({ submitForm }) => {
         <div className="ctas flex items-center">
           <button
             onClick={() => navigate('/tests')}
-            className="cancle-create mr-4 btn-primary rounded-md flex justify-center
+            className="cancle-create mr-4 focus:outline-none focus:ring 
+            focus:ring-slate-200 rounded-md flex justify-center
              items-center w-24 h-10 text-sm text-slate-800 font-bold border border-solid border-slate-800"
           >
             Hủy
           </button>
           <button
             className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
-            text-white font-bold bg-primary-900"
+            text-white font-bold bg-primary-900 transition-all duration-200 hover:bg-primary-800"
             onClick={() => submitForm()}
           >
             Tạo mới

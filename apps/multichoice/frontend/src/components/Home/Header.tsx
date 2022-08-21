@@ -41,7 +41,7 @@ const Header: React.FC = () => {
               />
               <h3>
                 <Link to="/profile" className="text-slate-800 font-medium">
-                  {user.name}
+                  {user.username}
                 </Link>
               </h3>
             </div>

@@ -9,6 +9,7 @@ import Loading from '../components/Loading/Loading';
 import CreateTest from '../pages/Tests/Create/CreateTest';
 import PrivateRoute from '../components/Routes/PrivateRoute';
 import PublicRoute from '../components/Routes/PublicRoute';
+import DefaultLayout from '../layouts/DefaultLayout';
 // import lazy
 const Login: React.FC = React.lazy(() => import('../pages/Login/Login'));
 const Register: React.FC = React.lazy(
@@ -19,6 +20,10 @@ const EditTest: React.FC = React.lazy(
   () => import('../pages/Tests/Edit/EditTest')
 );
 
+const CreateQuestion: React.FC = React.lazy(
+  () => import('../pages/Question/CreateQuestion')
+);
+
 const PageNotFound: React.FC = React.lazy(
   () => import('../pages/Notfound/Notfound')
 );
@@ -27,7 +32,6 @@ export const App: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route index element={<PrivateRoute Component={Home} />} />
         <Route
           path="/login"
           element={
@@ -44,32 +48,48 @@ export const App: React.FC = () => {
             </Suspense>
           }
         />
+
+        <Route index element={<PrivateRoute Component={Home} />} />
+
         <Route
           path="/tests"
+          element={<PrivateRoute Component={DefaultLayout} />}
+        >
+          <Route
+            index
+            element={
+              <Suspense fallback={<Loading />}>
+                <Tests />
+              </Suspense>
+            }
+          />
+          <Route
+            path="create"
+            element={
+              <Suspense fallback={<Loading />}>
+                <CreateTest />
+              </Suspense>
+            }
+          />
+          <Route
+            path="edit/:id"
+            element={
+              <Suspense fallback={<Loading />}>
+                <EditTest />
+              </Suspense>
+            }
+          />
+        </Route>
+
+        <Route
+          path="/questions/create"
           element={
             <Suspense fallback={<Loading />}>
-              <Tests />
+              <CreateQuestion />
             </Suspense>
           }
         />
 
-        <Route
-          path="/tests/create"
-          element={
-            <Suspense fallback={<Loading />}>
-              <CreateTest />
-            </Suspense>
-          }
-        />
-
-        <Route
-          path="/tests/edit/:id"
-          element={
-            <Suspense fallback={<Loading />}>
-              <EditTest />
-            </Suspense>
-          }
-        />
         <Route
           path="*"
           element={
