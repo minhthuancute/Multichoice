@@ -13,17 +13,13 @@ import {
   UploadedFiles,
 } from '@nestjs/common';
 import { QuestionService } from './question.service';
-import {
-  CreateQuestionDto,
-  CreateQuestionTypeDto,
-} from '@monorepo/multichoice/dto';
+import { CreateQuestionDto } from '@monorepo/multichoice/dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { SucessResponse } from '../model/SucessResponse';
 import { TopicService } from '../topic/topic.service';
 import { AuthenticationGuard } from '../auth/guards/auth.guard';
 import { multerOptions } from '../uploads/upload';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { QuestionType } from './entities/question-type.entity';
 
 @Controller('question')
 @ApiTags('question')
@@ -33,9 +29,9 @@ export class QuestionController {
     private readonly topicService: TopicService
   ) {}
 
-  @UseGuards(AuthenticationGuard)
+  // @UseGuards(AuthenticationGuard)
   @Post('create')
-  @ApiBearerAuth()
+  // @ApiBearerAuth()
   @UseInterceptors(
     FileFieldsInterceptor([{ name: 'image' }, { name: 'audio' }], multerOptions)
   )
@@ -71,24 +67,5 @@ export class QuestionController {
   async findByID(@Param('id') id: number, @Res() res) {
     const result = await this.questionService.getQestionByID(id);
     return res.status(200).json(new SucessResponse(200, { result }));
-  }
-
-  @UseGuards(AuthenticationGuard)
-  @Post('category/create')
-  @ApiBearerAuth()
-  async insertQestionType(
-    @Body() questionType: CreateQuestionTypeDto,
-    @Res() res
-  ): Promise<QuestionType> {
-    const result = await this.questionService.insertQestionType(questionType);
-    return res.status(201).json(new SucessResponse(201, result));
-  }
-
-  // @UseGuards(AuthenticationGuard)
-  @Get('category/all')
-  @ApiBearerAuth()
-  async getAllQestionType(@Res() res): Promise<QuestionType[]> {
-    const result = await this.questionService.getAllQestionType();
-    return res.status(200).json(new SucessResponse(200, result));
   }
 }

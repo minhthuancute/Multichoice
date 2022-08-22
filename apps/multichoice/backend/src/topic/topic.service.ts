@@ -13,7 +13,7 @@ import { number } from 'yup';
 export class TopicService {
   constructor(
     @InjectRepository(Topic) private readonly topicRepository: Repository<Topic>
-  ) { }
+  ) {}
 
   async create(topic: CreateTopicDto, user: User): Promise<SucessResponse> {
     const topicEntity: Topic = plainToClass(Topic, topic);
@@ -41,16 +41,38 @@ export class TopicService {
   async fileAll(user: User): Promise<Topic[]> {
     const result = await this.topicRepository.find({
       where: {
-        owner: user
+        owner: user,
       },
       relations: ['questions', 'questions.answers'],
     });
     return result;
   }
 
-  async update(id: number, topic: CreateTopicDto, user: User): Promise<SucessResponse> {
+  async update(
+    id: number,
+    topic: CreateTopicDto,
+    user: User
+  ): Promise<SucessResponse> {
     const topicEntity: Topic = plainToClass(Topic, topic);
-    const result = await this.topicRepository.update({ id, owner: user }, topicEntity);
+    const result = await this.topicRepository.update(
+      { id, owner: user },
+      topicEntity
+    );
     return new SucessResponse(200, result);
+  }
+
+  async test(id: number): Promise<Topic[]> {
+    const result = await this.topicRepository.find({
+      where: {
+        id,
+        questions: {
+          answers: {
+            isCorrect: true,
+          },
+        },
+      },
+      relations: ['questions', 'questions.answers'],
+    });
+    return result;
   }
 }
