@@ -7,7 +7,7 @@ export class CreateQuestionDto {
   topicID: number;
 
   @ApiProperty({ enum: QuestionTypeEnum, default: QuestionTypeEnum.SINGLE })
-  Type: QuestionTypeEnum;
+  type: QuestionTypeEnum;
 
   @ApiProperty()
   content: string;
