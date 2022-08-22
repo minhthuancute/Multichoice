@@ -13,7 +13,10 @@ import {
   UploadedFiles,
 } from '@nestjs/common';
 import { QuestionService } from './question.service';
-import { CreateQuestionDto, CreateQuestionTypeDto } from '@monorepo/multichoice/dto';
+import {
+  CreateQuestionDto,
+  CreateQuestionTypeDto,
+} from '@monorepo/multichoice/dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { SucessResponse } from '../model/SucessResponse';
 import { TopicService } from '../topic/topic.service';
@@ -28,28 +31,37 @@ export class QuestionController {
   constructor(
     private readonly questionService: QuestionService,
     private readonly topicService: TopicService
-  ) { }
+  ) {}
 
   @UseGuards(AuthenticationGuard)
   @Post('create')
   @ApiBearerAuth()
-  @UseInterceptors(FileFieldsInterceptor([
-    { name: 'image' },
-    { name: 'audio' },
-  ], multerOptions))
-  async create(@Body() createQuestionDto: CreateQuestionDto, @UploadedFiles() files, @Res() res): Promise<SucessResponse> {
-    const topic = await this.topicService.fineOneByID(createQuestionDto.topicID);
-    if (!topic) throw new BadRequestException('topicid is not found')
+  @UseInterceptors(
+    FileFieldsInterceptor([{ name: 'image' }, { name: 'audio' }], multerOptions)
+  )
+  async create(
+    @Body() createQuestionDto: CreateQuestionDto,
+    @UploadedFiles() files,
+    @Res() res
+  ): Promise<SucessResponse> {
+    const topic = await this.topicService.fineOneByID(
+      createQuestionDto.topicID
+    );
+    if (!topic) throw new BadRequestException('topicid is not found');
 
-    const result = await this.questionService.create(createQuestionDto, topic, files);
-    return res.status(201).json(result)
+    const result = await this.questionService.create(
+      createQuestionDto,
+      topic,
+      files
+    );
+    return res.status(201).json(result);
   }
 
   @UseGuards(AuthenticationGuard)
   @ApiBearerAuth()
   @Delete(':id')
   async deleteByID(@Param('id') id: number, @Res() res) {
-    await this.questionService.deleteByID(id)
+    await this.questionService.deleteByID(id);
     return res.status(200).json(new SucessResponse(200, {}));
   }
 
@@ -57,7 +69,7 @@ export class QuestionController {
   @ApiBearerAuth()
   @Get(':id')
   async findByID(@Param('id') id: number, @Res() res) {
-    const result = await this.questionService.getQestionByID(id)
+    const result = await this.questionService.getQestionByID(id);
     return res.status(200).json(new SucessResponse(200, { result }));
   }
 
@@ -68,7 +80,15 @@ export class QuestionController {
     @Body() questionType: CreateQuestionTypeDto,
     @Res() res
   ): Promise<QuestionType> {
-    const result = await this.questionService.insertQestionType(questionType)
+    const result = await this.questionService.insertQestionType(questionType);
     return res.status(201).json(new SucessResponse(201, result));
+  }
+
+  // @UseGuards(AuthenticationGuard)
+  @Post('category/all')
+  @ApiBearerAuth()
+  async getAllQestionType(@Res() res): Promise<QuestionType[]> {
+    const result = await this.questionService.getAllQestionType();
+    return res.status(200).json(new SucessResponse(200, result));
   }
 }
