@@ -63,7 +63,7 @@ const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
     <div>
       <div className="mt-4">
         {testsFilter &&
-          testsFilter.map((test: ITestItem) => {
+          testsFilter.reverse().map((test: ITestItem) => {
             return <TestItem test={test} key={test.id} />;
           })}
       </div>

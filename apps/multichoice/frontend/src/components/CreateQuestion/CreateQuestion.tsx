@@ -20,23 +20,17 @@ import { topicServices } from '../../services/TopicServices';
 import { useNavigate } from 'react-router-dom';
 
 const schemaFormLogin = yup.object().shape({
-  // timeType: yup.string().required(),
-  // typeCategoryName: yup.string().required(),
-  // title: yup.string().required(),
-  // description: yup.string(),
-  // isDraft: yup.boolean(),
-  // expirationTime: yup.number(),
-  // "topicID": yup.number().required(),
-  // "questionTypeID":  yup.number().required(),
-  // "content": yup.string().required(),
-  // "time": 0,
-  // "isActive": true,
-  // "answers": [
-  //   {
-  //     "content": "string",
-  //     "isCorrect": false
-  //   }
-  // ]
+  topicID: yup.number().required(),
+  questionTypeID: yup.number().required(),
+  content: yup.string().required(),
+  time: yup.number().required(),
+  isActive: yup.boolean(),
+  answers: yup.object().shape<any>([
+    {
+      content: yup.string().required(),
+      isCorrect: yup.boolean(),
+    },
+  ]),
 });
 
 interface IFormCreateTest {
@@ -157,27 +151,17 @@ const FormCreateQuestion: React.FC<IFormCreateTest> = forwardRef(
               onChange={onSelectCategory}
               defaultValue={topicCategories[0].label}
               options={topicCategories}
-              textLabel="Chọn nhóm đề thi"
+              textLabel="Loại câu hỏi"
               className="mt-5"
             />
           </div>
           <div className="form-right w-2/3 p-4 bg-white rounded-md">
-            {/* <Input
-              registerField={register('title')}
-              textLabel="Tên đề thi"
-              id="testName"
-              placeholder="Tên đề thi"
-              isRequired={true}
-              isError={Boolean(errors.title)}
-              errMessage={errors.title?.message}
-            /> */}
-
             <TextArea
               registerField={register('description')}
               textLabel="Câu hỏi"
               placeholder="Nội dung câu hỏi"
               className=""
-              classNameTextarea="h-[296px]"
+              classNameTextarea="h-[248px]"
               isError={Boolean(errors.description)}
               errMessage={errors.description?.message}
               isRequired={true}
