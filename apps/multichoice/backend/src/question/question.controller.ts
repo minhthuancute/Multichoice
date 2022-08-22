@@ -85,7 +85,7 @@ export class QuestionController {
   }
 
   // @UseGuards(AuthenticationGuard)
-  @Post('category/all')
+  @Get('category/all')
   @ApiBearerAuth()
   async getAllQestionType(@Res() res): Promise<QuestionType[]> {
     const result = await this.questionService.getAllQestionType();
