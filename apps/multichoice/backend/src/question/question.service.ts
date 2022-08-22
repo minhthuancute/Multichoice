@@ -1,15 +1,11 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import {
-  CreateQuestionDto,
-  CreateQuestionTypeDto,
-} from '@monorepo/multichoice/dto';
+import { CreateQuestionDto } from '@monorepo/multichoice/dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Question } from './entities/question.entity';
 import { Repository } from 'typeorm';
 import { SucessResponse } from '../model/SucessResponse';
 import { plainToClass } from 'class-transformer';
 import { Topic } from './entities/topic.entity';
-import { QuestionType } from './entities/question-type.entity';
 import { Answer } from '../answer/entities/answer.entity';
 import { User } from '../user/entities/user.entity';
 
@@ -18,17 +14,9 @@ export class QuestionService {
   constructor(
     @InjectRepository(Question)
     private readonly questionRepository: Repository<Question>,
-    @InjectRepository(QuestionType)
-    private readonly questionTypeRepository: Repository<QuestionType>,
     @InjectRepository(Answer)
     private readonly answerRepository: Repository<Answer>
   ) {}
-
-  async fineOneByID(id: number): Promise<QuestionType> {
-    const result = await this.questionTypeRepository.findOneById(id);
-
-    return result;
-  }
 
   async deleteByID(id: number): Promise<boolean> {
     await this.questionRepository.delete(id);
@@ -40,12 +28,6 @@ export class QuestionService {
     topic: Topic,
     files: any
   ): Promise<SucessResponse> {
-    const questionType: QuestionType = await this.fineOneByID(
-      createQuestionDto.questionTypeID
-    );
-    if (!questionType)
-      throw new BadRequestException('questionTypeID is not found');
-
     const QuestionEntity: Question = plainToClass(Question, createQuestionDto);
 
     //save image}||audio
@@ -59,7 +41,6 @@ export class QuestionService {
     }
 
     QuestionEntity.topic = topic;
-    QuestionEntity.type = questionType;
 
     // save question
     const saveQuestion = await this.questionRepository.save(QuestionEntity);
@@ -82,18 +63,6 @@ export class QuestionService {
       where: { id },
       relations: ['answers'],
     });
-    return result;
-  }
-
-  async insertQestionType(
-    questionType: CreateQuestionTypeDto
-  ): Promise<QuestionType> {
-    const result = await this.questionTypeRepository.save(questionType);
-    return result;
-  }
-
-  async getAllQestionType(): Promise<QuestionType[]> {
-    const result = await this.questionTypeRepository.find();
     return result;
   }
 }
