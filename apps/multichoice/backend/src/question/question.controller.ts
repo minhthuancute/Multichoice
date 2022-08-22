@@ -29,9 +29,9 @@ export class QuestionController {
     private readonly topicService: TopicService
   ) {}
 
-  // @UseGuards(AuthenticationGuard)
+  @UseGuards(AuthenticationGuard)
   @Post('create')
-  // @ApiBearerAuth()
+  @ApiBearerAuth()
   @UseInterceptors(
     FileFieldsInterceptor([{ name: 'image' }, { name: 'audio' }], multerOptions)
   )
