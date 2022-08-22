@@ -21,7 +21,7 @@ import { TopicService } from './topic.service';
 @ApiTags('topic')
 @Controller('topic')
 export class TopicController {
-  constructor(private readonly topicService: TopicService) { }
+  constructor(private readonly topicService: TopicService) {}
   @UseGuards(AuthenticationGuard)
   @Post('create')
   @ApiBearerAuth()
@@ -72,4 +72,9 @@ export class TopicController {
     return res.status(201).json(result);
   }
 
+  @Get('cc/test')
+  async test(@Req() req, @Res() res): Promise<Topic[]> {
+    const result = await this.topicService.test(1);
+    return res.status(200).json(new SucessResponse(200, result));
+  }
 }

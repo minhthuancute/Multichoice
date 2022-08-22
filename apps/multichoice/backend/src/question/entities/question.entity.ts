@@ -6,9 +6,9 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Timestamp } from '../../orm/timestamp.entity';
-import { QuestionType } from './question-type.entity';
 import { Answer } from '../../answer/entities/answer.entity';
 import { Topic } from './topic.entity';
+import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 
 @Entity()
 export class Question extends Timestamp {
@@ -30,8 +30,12 @@ export class Question extends Timestamp {
   @Column({ nullable: true })
   audio: string;
 
-  @ManyToOne(() => QuestionType, (type) => type.questions)
-  type: QuestionType;
+  @Column({
+    type: 'enum',
+    enum: QuestionTypeEnum,
+    default: QuestionTypeEnum.SINGLE,
+  })
+  type: QuestionTypeEnum;
 
   @OneToMany(() => Answer, (ans) => ans.question)
   answers: Answer[];
