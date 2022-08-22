@@ -45,3 +45,25 @@ export class LoginUserDto {
   @MinLength(validation().password.minLength)
   password: string;
 }
+
+export class ResultUserDto {
+  @ApiProperty()
+  username: string;
+
+  @ApiProperty()
+  topicID: number;
+
+  @ApiProperty()
+  time: number;
+
+  @ApiProperty()
+  AnswersUserDto: AnswersUserDto[];
+}
+
+export class AnswersUserDto {
+  @ApiProperty()
+  questionID: number;
+
+  @ApiProperty()
+  answer: string;
+}

@@ -1,5 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateQuestionDto, CreateQuestionTypeDto } from '@monorepo/multichoice/dto';
+import {
+  CreateQuestionDto,
+  CreateQuestionTypeDto,
+} from '@monorepo/multichoice/dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Question } from './entities/question.entity';
 import { Repository } from 'typeorm';
@@ -12,68 +15,85 @@ import { User } from '../user/entities/user.entity';
 
 @Injectable()
 export class QuestionService {
-  constructor(@InjectRepository(Question) private readonly questionRepository: Repository<Question>,
-    @InjectRepository(QuestionType) private readonly questionTypeRepository: Repository<QuestionType>,
-    @InjectRepository(Answer) private readonly answerRepository: Repository<Answer>) { }
-
+  constructor(
+    @InjectRepository(Question)
+    private readonly questionRepository: Repository<Question>,
+    @InjectRepository(QuestionType)
+    private readonly questionTypeRepository: Repository<QuestionType>,
+    @InjectRepository(Answer)
+    private readonly answerRepository: Repository<Answer>
+  ) {}
 
   async fineOneByID(id: number): Promise<QuestionType> {
-
-    const result = await this.questionTypeRepository.findOneById(id)
+    const result = await this.questionTypeRepository.findOneById(id);
 
     return result;
   }
 
   async deleteByID(id: number): Promise<boolean> {
-    await this.questionRepository.delete(id)
+    await this.questionRepository.delete(id);
     return true;
   }
 
-  async create(createQuestionDto: CreateQuestionDto, topic: Topic, files: any): Promise<SucessResponse> {
+  async create(
+    createQuestionDto: CreateQuestionDto,
+    topic: Topic,
+    files: any
+  ): Promise<SucessResponse> {
+    const questionType: QuestionType = await this.fineOneByID(
+      createQuestionDto.questionTypeID
+    );
+    if (!questionType)
+      throw new BadRequestException('questionTypeID is not found');
 
-    const questionType: QuestionType = await this.fineOneByID(createQuestionDto.questionTypeID)
-    if (!questionType) throw new BadRequestException('questionTypeID is not found')
-
-    const QuestionEntity: Question = plainToClass(Question, createQuestionDto)
+    const QuestionEntity: Question = plainToClass(Question, createQuestionDto);
 
     //save image}||audio
     if (files !== undefined) {
       if (files.audio !== undefined) {
-        QuestionEntity.audio = files.audio.filename
+        QuestionEntity.audio = files.audio.filename;
       }
       if (files.image !== undefined) {
-        QuestionEntity.image = files.image.filename
+        QuestionEntity.image = files.image.filename;
       }
     }
 
-    QuestionEntity.topic = topic
-    QuestionEntity.type = questionType
+    QuestionEntity.topic = topic;
+    QuestionEntity.type = questionType;
 
     // save question
     const saveQuestion = await this.questionRepository.save(QuestionEntity);
 
     // save list answer
-    const answers: Answer[] = createQuestionDto.answers.map(opt => {
+    const answers: Answer[] = createQuestionDto.answers.map((opt) => {
       const questionOption = new Answer();
-      questionOption.content = opt.content
-      questionOption.isCorrect = opt.isCorrect
+      questionOption.content = opt.content;
+      questionOption.isCorrect = opt.isCorrect;
       questionOption.question = saveQuestion;
       return questionOption;
     });
-    await this.answerRepository.save(answers)
+    await this.answerRepository.save(answers);
 
-    return new SucessResponse(200, "Sucess");
+    return new SucessResponse(200, 'Sucess');
   }
 
   async getQestionByID(id: number): Promise<Question> {
-
-    const result = await this.questionRepository.findOne(
-      { where: { id }, relations: ['answers'] })
+    const result = await this.questionRepository.findOne({
+      where: { id },
+      relations: ['answers'],
+    });
     return result;
   }
 
-  async insertQestionType(questionType: CreateQuestionTypeDto): Promise<QuestionType> {
+  async insertQestionType(
+    questionType: CreateQuestionTypeDto
+  ): Promise<QuestionType> {
     const result = await this.questionTypeRepository.save(questionType);
+    return result;
+  }
+
+  async getAllQestionType(): Promise<QuestionType[]> {
+    const result = await this.questionTypeRepository.find();
     return result;
   }
 }

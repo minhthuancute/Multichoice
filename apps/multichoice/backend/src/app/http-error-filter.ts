@@ -62,8 +62,8 @@ export class HttpErrorFilterr implements ExceptionFilter {
         code = (exception as any).response.message;
         break;
       case PayloadTooLargeException:
-        status = (exception as PayloadTooLargeException).getStatus()
-        message = (exception as PayloadTooLargeException).message
+        status = (exception as PayloadTooLargeException).getStatus();
+        message = (exception as PayloadTooLargeException).message;
         break;
       default:
         status = HttpStatus.INTERNAL_SERVER_ERROR;
