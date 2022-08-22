@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { classNames } from '../../helper/classNames';
 import './navbar.scss';
@@ -11,7 +11,7 @@ interface INav {
 const Navabar: React.FC = () => {
   const location = useLocation();
 
-  const [navs] = useState<INav[]>([
+  const navs: INav[] = [
     {
       label: 'Tổng quan',
       path: '/',
@@ -24,7 +24,7 @@ const Navabar: React.FC = () => {
       label: 'Thống kê',
       path: '/statistic',
     },
-  ]);
+  ];
 
   const activeNavItem = (): number => {
     const currentPath = location.pathname;

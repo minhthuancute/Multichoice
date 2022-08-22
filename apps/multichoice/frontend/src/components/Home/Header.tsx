@@ -23,7 +23,7 @@ const Header: React.FC = () => {
     >
       <div className="wrapper-header container flex items-center justify-between">
         <div className="header-left logo">
-          <h1 className="logo font-medium text-xl">
+          <h1 className="logo font-semibold text-xl">
             <Link to="/">MultiChoice</Link>
           </h1>
         </div>

@@ -1,4 +1,5 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
+import { useQuery } from '../../hooks/useQuery';
 import { topicServices } from '../../services/TopicServices';
 import { ITopicResponse } from '../../types/TopicResponse';
 import TestItem, { ITestItem } from '../TestItem/TestItem';
@@ -8,6 +9,8 @@ interface ITestList {
 }
 
 const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
+  const query = useQuery();
+
   const [testList, setTestList] = useState<ITestItem[]>([]);
   const [testsFilter, setTestsFilter] = useState<ITestItem[]>([]);
 
@@ -21,12 +24,21 @@ const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
           title: test.title,
           date: test.createdAt,
           questionCount: test.questions.length,
+          expirationTime: test.expirationTime,
         };
         return testData;
       });
-
       setTestList(topicsData);
-      setTestsFilter(topicsData);
+
+      const paramSearch = query.get('search') || '';
+      if (paramSearch) {
+        const filterResult = topicsData.filter((test: ITestItem) => {
+          return test.title.includes(paramSearch);
+        });
+        setTestsFilter(filterResult);
+      } else {
+        setTestsFilter(topicsData);
+      }
     } catch (error) {
       console.log(error);
     }

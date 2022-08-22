@@ -7,7 +7,8 @@ import { FaPencilAlt } from 'react-icons/fa';
 import ToolTip from '../Commons/ToolTip/ToolTip';
 import { BsCalendarDate } from 'react-icons/bs';
 import { getDate } from '../../utils/formatDate';
-import { AiOutlineQuestionCircle } from 'react-icons/ai';
+import { AiOutlineFieldTime, AiOutlineQuestionCircle } from 'react-icons/ai';
+import { FaPlus } from 'react-icons/fa';
 
 const HeaderEditTest: React.FC = () => {
   const { id: topicId } = useParams();
@@ -28,9 +29,14 @@ const HeaderEditTest: React.FC = () => {
     getTopicById();
   }, [topicId]);
 
+  // const urlCreateQuestion = async () => {
+  //   const url = `/questions/create?topic_id=${topicInfor?.id}&question_id=${topicInfor?.q}`
+  // };
+
   if (!topicInfor) {
     return null;
   }
+
   return (
     <div className="header-create-test">
       <div className="container py-4 border-b border-solid border-slate-200">
@@ -66,15 +72,20 @@ const HeaderEditTest: React.FC = () => {
             <AiOutlineQuestionCircle className="text-slate-800 mr-1" />
             <span>{topicInfor.questions.length} câu hỏi</span>
           </li>
+          <li className="flex items-center text-sm">
+            <AiOutlineFieldTime className="text-slate-800 mr-1 text-base" />
+            <span>{topicInfor.expirationTime} phút</span>
+          </li>
         </ul>
         <div className="right">
           <Link
             to={'/questions/create?topic_id=' + topicInfor.id}
             className="create-test btn-primary rounded-md bg-primary-900 text-sm
-            text-white font-bold flex justify-center items-center w-32 h-10 transition-all
+            text-white font-bold flex justify-center items-center px-4 h-10 transition-all
             duration-200 hover:bg-primary-800
             "
           >
+            <FaPlus className="mr-1 text-xs font-semibold" />
             Thêm câu hỏi
           </Link>
         </div>

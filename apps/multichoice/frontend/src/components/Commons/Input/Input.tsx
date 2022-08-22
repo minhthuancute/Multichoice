@@ -45,7 +45,7 @@ const Input: React.FC<IInput> = ({
       >
         <label
           htmlFor={id}
-          className="font-medium text-slate-800 text-sm inline-block mb-2"
+          className="font-semibold text-slate-800 text-sm inline-block mb-2"
         >
           {textLabel}
           {isRequired ? <span className="ml-1 text-red-600">*</span> : null}
