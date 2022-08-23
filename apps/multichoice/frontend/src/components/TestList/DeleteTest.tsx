@@ -39,7 +39,7 @@ const DeleteTest: React.FC<IDeleteTest> = ({
               <span className="text-blue-600 font-semibold">{testTitle}</span> ?
             </h4>
           </div>
-          <div className="body ctas flex items-center justify-center gap-x-2 mt-8">
+          <div className="body ctas flex items-center justify-center gap-x-2 mt-12">
             <button
               className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
             text-white font-bold bg-primary-900 transition-all duration-200 hover:bg-primary-800"
