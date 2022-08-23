@@ -34,6 +34,10 @@ export class Api {
   post(url: string, body?: any) {
     return this.axiosInstance.post(url, body);
   }
+
+  delete(url: string, body?: any) {
+    return this.axiosInstance.delete(url, body);
+  }
 }
 
 const apiClient = new Api();

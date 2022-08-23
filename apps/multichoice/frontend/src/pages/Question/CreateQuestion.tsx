@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import FormCreateQuestion from '../../components/CreateQuestion/CreateQuestion';
+import FormCreateQuestion from '../../components/CreateQuestion/FormCreateQuestion';
 import HeaderCreateQuestion from '../../components/CreateQuestion/HeaderCreateQuestion';
 import DefaultLayout from '../../layouts/DefaultLayout';
 

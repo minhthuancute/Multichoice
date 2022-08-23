@@ -18,9 +18,10 @@ export interface ITestItem {
 
 interface ITestItemProp {
   test: ITestItem;
+  handleDeleteTest: (testID: number, testTitle: string) => void;
 }
 
-const TestItem: React.FC<ITestItemProp> = ({ test }) => {
+const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
   return (
     <div className="test-item cursor-pointer p-4 rounded-md bg-white mb-3 last:mb-0">
       <div className="test-item__header title">
@@ -52,7 +53,7 @@ const TestItem: React.FC<ITestItemProp> = ({ test }) => {
             </li>
             <li className="relative group">
               <ToolTip title="Xóa">
-                <button>
+                <button onClick={() => handleDeleteTest(test.id, test.title)}>
                   <RiDeleteBin6Line className="text-red-500 text-xl" />
                 </button>
               </ToolTip>

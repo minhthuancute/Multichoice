@@ -2,7 +2,7 @@ import { Api } from './Api';
 import { CreateTopicDto } from '@monorepo/multichoice/dto';
 
 class TopicServices extends Api {
-  async getAllTopic() {
+  getAllTopic() {
     return this.get('/topic');
   }
 
@@ -13,5 +13,10 @@ class TopicServices extends Api {
   getTopicById(id: string) {
     return this.get('/topic/' + id);
   }
+
+  deleteTopicById(id: number) {
+    return this.delete('/topic/' + id);
+  }
 }
+
 export const topicServices = new TopicServices();

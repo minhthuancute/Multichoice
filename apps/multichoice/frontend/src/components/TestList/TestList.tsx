@@ -3,6 +3,7 @@ import { useQuery } from '../../hooks/useQuery';
 import { topicServices } from '../../services/TopicServices';
 import { ITopicResponse } from '../../types/TopicResponse';
 import TestItem, { ITestItem } from '../TestItem/TestItem';
+import DeleteTest from './DeleteTest';
 
 interface ITestList {
   searchKeyword: string;
@@ -13,6 +14,9 @@ const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
 
   const [testList, setTestList] = useState<ITestItem[]>([]);
   const [testsFilter, setTestsFilter] = useState<ITestItem[]>([]);
+  const [openModalDelete, setOpenModalDelete] = useState<boolean>(false);
+  const [testIdDel, setTestIdDel] = useState<number>(-1);
+  const [testTitleDel, setTestTitleDel] = useState<string>('');
 
   const getListTest = async () => {
     try {
@@ -35,9 +39,9 @@ const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
         const filterResult = topicsData.filter((test: ITestItem) => {
           return test.title.includes(paramSearch);
         });
-        setTestsFilter(filterResult);
+        setTestsFilter(filterResult.reverse());
       } else {
-        setTestsFilter(topicsData);
+        setTestsFilter(topicsData.reverse());
       }
     } catch (error) {
       console.log(error);
@@ -59,12 +63,37 @@ const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
     filterTest(searchKeyword);
   }, [searchKeyword]);
 
+  const handleDeleteTest = (testID: number, title: string) => {
+    setOpenModalDelete(true);
+    setTestIdDel(testID);
+    setTestTitleDel(title);
+  };
+
+  const onConfirmDel = () => {
+    getListTest();
+    setOpenModalDelete(false);
+  };
+
   return (
     <div>
+      <DeleteTest
+        setOpenModalDelete={setOpenModalDelete}
+        openModalDelete={openModalDelete}
+        testID={testIdDel}
+        testTitle={testTitleDel}
+        cbConfirmDel={onConfirmDel}
+      />
+
       <div className="mt-4">
         {testsFilter &&
-          testsFilter.reverse().map((test: ITestItem) => {
-            return <TestItem test={test} key={test.id} />;
+          testsFilter.map((test: ITestItem) => {
+            return (
+              <TestItem
+                test={test}
+                key={test.id}
+                handleDeleteTest={handleDeleteTest}
+              />
+            );
           })}
       </div>
     </div>

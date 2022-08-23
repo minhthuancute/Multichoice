@@ -25,7 +25,7 @@ const Tests: React.FC = () => {
             to="/tests/create"
             className="create-test btn-primary rounded-md bg-primary-900 text-sm
             text-white font-bold flex justify-center items-center w-32 h-10 transition-all
-              duration-200 hover:bg-primary-800
+            duration-200 hover:bg-primary-800
             "
           >
             Tạo đề thi
