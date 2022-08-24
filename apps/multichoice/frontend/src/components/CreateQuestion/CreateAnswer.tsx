@@ -1,7 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { CreatAnswer } from '@monorepo/multichoice/dto';
 import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { generateArray } from '../../utils/generateArray';
 import AnswerItem from './AnswerItem';
@@ -16,7 +16,7 @@ const answerSchema = yup.object().shape({
 });
 
 const CreateAnswer: React.FC = () => {
-  const { register, handleSubmit, setValue } = useForm<CreatAnswer>({
+  const { register, handleSubmit, setValue } = useForm<[CreatAnswer]>({
     resolver: yupResolver(answerSchema),
   });
 
@@ -36,8 +36,12 @@ const CreateAnswer: React.FC = () => {
     setAnswerLength(filterAnswer);
   };
 
+  const onSubmit: SubmitHandler<CreatAnswer[]> = (formData: CreatAnswer[]) => {
+    console.log(formData);
+  };
+
   return (
-    <div className="answer mt-4">
+    <form className="answer mt-4" onSubmit={handleSubmit(onSubmit)}>
       <div className="answer-header">
         <label className="font-semibold text-slate-800 text-sm inline-block mb-2">
           Đáp án
@@ -46,9 +50,11 @@ const CreateAnswer: React.FC = () => {
       </div>
       <div className="answer-body">
         {answerLength.map((item: number, index: number) => {
+          const answerItem = register('0.content');
           return (
             <AnswerItem
               key={item}
+              registerField={answerItem}
               onDeleteAnswer={onDeleteAnswer}
               indexAnswer={index}
             />
@@ -69,7 +75,7 @@ const CreateAnswer: React.FC = () => {
           <span className="text-green-600 font-semibold"> đáp án đúng.</span>
         </p>
       </div>
-    </div>
+    </form>
   );
 };
 

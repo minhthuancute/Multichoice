@@ -8,6 +8,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { CreatAnswer } from '@monorepo/multichoice/dto';
 
 interface IAnswerItem {
+  registerField: any;
   indexAnswer: number;
   onDeleteAnswer: (index: number) => void;
 }
@@ -28,7 +29,11 @@ const schemaAnswer = yup.object().shape({
   }),
 });
 
-const AnswerItem: React.FC<IAnswerItem> = ({ indexAnswer, onDeleteAnswer }) => {
+const AnswerItem: React.FC<IAnswerItem> = ({
+  registerField,
+  indexAnswer,
+  onDeleteAnswer,
+}) => {
   const { register, handleSubmit, setValue } = useForm<CreatAnswer>({
     resolver: yupResolver(schemaAnswer),
   });
@@ -50,25 +55,23 @@ const AnswerItem: React.FC<IAnswerItem> = ({ indexAnswer, onDeleteAnswer }) => {
           <span className="font-semibold">{getAsciiCode()}</span>
         </div>
         <TextArea
-          registerField={register('content')}
+          // registerField={register('content')}
+          registerField={registerField}
           placeholder="Nhập câu trả lời"
           className="flex-1"
+          classNameTextarea="h-full"
         />
-      </div>
-      <div
-        className="remove opacity-0 invisible transition-all duration-200
-        group-hover:opacity-100 group-hover:visible
-      "
-      >
-        <button
-          type="button"
-          className="text-sm font-semibold bg-red-50 text-red-500 flex items-center
-          ml-auto px-2.5 py-0.5 rounded-sm"
-          onClick={() => onDeleteAnswer(indexAnswer)}
-        >
-          <RiDeleteBin6Line className="mr-1" />
-          Xóa
-        </button>
+        <div className="remove ml-3 my-auto">
+          <button
+            type="button"
+            className="text-sm font-semibold bg-red-50 text-red-500 flex items-center
+            px-2.5 py-0.5 rounded-sm"
+            onClick={() => onDeleteAnswer(indexAnswer)}
+          >
+            <RiDeleteBin6Line className="mr-1" />
+            Xóa
+          </button>
+        </div>
       </div>
     </div>
   );
