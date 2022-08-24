@@ -122,7 +122,11 @@ const FormLogin: React.FC = () => {
 
         <div className="remember-me flex items-center justify-between mt-5 text-slate-800">
           <div className="check-box cursor-pointer flex items-center">
-            <Checkbox onChange={setIsRememberUser} textLabel="Remember me" />
+            <Checkbox
+              onChange={setIsRememberUser}
+              textLabel="Remember me"
+              id="remember-me"
+            />
           </div>
           <Link
             to="/"

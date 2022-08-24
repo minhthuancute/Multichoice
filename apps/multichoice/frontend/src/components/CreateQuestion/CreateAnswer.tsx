@@ -3,14 +3,8 @@ import { CreatAnswer } from '@monorepo/multichoice/dto';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
+import { generateArray } from '../../utils/generateArray';
 import AnswerItem from './AnswerItem';
-
-// const answerSchema = yup.array().of(
-//   yup.object().shape({
-//     content: yup.string().required(),
-//     isCorrect: yup.boolean(),
-//   })
-// );
 
 const answerSchema = yup.object().shape({
   answers: yup.array().of(
@@ -26,16 +20,20 @@ const CreateAnswer: React.FC = () => {
     resolver: yupResolver(answerSchema),
   });
 
-  // const [
-  //   answers, setAnswers
-  // ] = useState<CreatAnswer[]>([])
-  const [answerLength, setAnswerLength] = useState<number[]>([1, 2, 3, 4]);
+  const [answerLength, setAnswerLength] = useState<number[]>(generateArray(4));
 
   const addNewAnswer = () => {
     setAnswerLength([
       ...answerLength,
       answerLength[answerLength.length - 1] + 1,
     ]);
+  };
+
+  const onDeleteAnswer = (index: number) => {
+    const filterAnswer = answerLength.filter((item: number) => {
+      return item !== index;
+    });
+    setAnswerLength(filterAnswer);
   };
 
   return (
@@ -47,19 +45,29 @@ const CreateAnswer: React.FC = () => {
         </label>
       </div>
       <div className="answer-body">
-        {answerLength.map((item: number) => {
-          return <AnswerItem key={item} />;
+        {answerLength.map((item: number, index: number) => {
+          return (
+            <AnswerItem
+              key={item}
+              onDeleteAnswer={onDeleteAnswer}
+              indexAnswer={index}
+            />
+          );
         })}
       </div>
-      <div className="add-answer mt-5">
+      <div className="add-answer mt-5 flex items-center justify-between">
         <button
           type="button"
-          className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
+          className="create-test rounded-md flex justify-center items-center w-32 h-10 text-sm
             text-slate-900 font-bold bg-violet-200"
           onClick={() => addNewAnswer()}
         >
           Thêm đáp án
         </button>
+        <p className="text-sm text-slate-800">
+          (*) Tick vào ô vuông cạnh đáp án để chọn
+          <span className="text-green-600 font-semibold"> đáp án đúng.</span>
+        </p>
       </div>
     </div>
   );

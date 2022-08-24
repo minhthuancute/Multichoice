@@ -13,9 +13,11 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Select, { IOption } from '../Commons/Select/Select';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { questionServices } from '../../services/QuestionServices';
 import CreateAnswer from './CreateAnswer';
+import { topicStore } from '../../store/rootReducer';
+import { useQuery } from '../../hooks/useQuery';
 
 interface IDemo {
   topicID: number;
@@ -31,27 +33,29 @@ interface IDemo {
 
 const schemaFormLogin = yup.object().shape({
   topicID: yup.number(),
-  questionTypeID: yup.number().required(),
   content: yup.string().required(),
-  time: yup.number().required(),
+  time: yup.number(),
   isActive: yup.boolean(),
-  answers: yup.array().of(
-    yup.object().shape({
-      content: yup.string().required(),
-      isCorrect: yup.boolean(),
-    })
-  ),
+  answers: yup
+    .array()
+    .of(
+      yup.object().shape({
+        content: yup.string().required(),
+        isCorrect: yup.boolean(),
+      })
+    )
+    .required(),
 });
 
 interface ICreateQuestion {
   ref: any;
 }
 
-// type IPayloadCreateQuestion = typeof schemaFormLogin;
-
 const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
   (props, ref) => {
     const navigate = useNavigate();
+    const query = useQuery();
+    const { topic } = topicStore();
     const formRef: any = useRef<HTMLFormElement>(null);
 
     const {
@@ -79,8 +83,11 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
     });
 
     const initForm = () => {
+      const topicId = query.get('topic_id') || -1;
       setValue('type', QuestionTypeEnum.SINGLE);
-      // setValue('time', 30 * 1000);
+      setValue('time', 0);
+      setValue('isActive', true);
+      setValue('topicID', +topicId);
     };
 
     useLayoutEffect(() => {
@@ -90,6 +97,7 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
     const onSelectQuestionType = (item: IOption) => {
       const optionVal: QuestionTypeEnum = item.value as QuestionTypeEnum;
       setValue('type', optionVal);
+      setValue('isActive', true);
     };
 
     // create Question
@@ -97,6 +105,8 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
       formData: CreateQuestionDto
     ) => {
       try {
+        console.log('submit form');
+
         const { data } = await questionServices.createQuestion(formData);
         if (data.success) {
           console.log(data);
@@ -122,28 +132,29 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
     return (
       <div className="container">
         <form
-          className="form flex items-start gap-x-4"
+          className="form flex items-start"
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className="form-left w-1/3 p-4 bg-white rounded-md">
-            <Input
-              registerField={register('time')}
-              typeInput="number"
-              textLabel="Thời gian làm bài"
-              id="expirationTime"
-              isError={Boolean(errors.time)}
-              errMessage={errors.time?.message}
-            />
-
+            {topic.typeCategoryName === 'GAME' ? (
+              <Input
+                registerField={register('time')}
+                typeInput="number"
+                textLabel="Thời gian làm bài"
+                id="expirationTime"
+                isError={Boolean(errors.time)}
+                errMessage={errors.time?.message}
+                isDisable={topic.typeCategoryName !== 'GAME'}
+              />
+            ) : null}
             <Select
               onChange={onSelectQuestionType}
               defaultValue={questionTypes[0].label}
               options={questionTypes}
               textLabel="Loại câu hỏi"
-              className="mt-5"
             />
           </div>
-          <div className="form-right w-2/3 p-4 bg-white rounded-md">
+          <div className="form-right w-2/3 ml-4 p-4 bg-white rounded-md">
             <TextArea
               registerField={register('content')}
               textLabel="Câu hỏi"

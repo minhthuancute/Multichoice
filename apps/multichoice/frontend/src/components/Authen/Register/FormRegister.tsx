@@ -119,6 +119,7 @@ const FormRegister: React.FC = () => {
               I accept the <span class='text-primary-900'>Term of Conditions</span>
               and <span class='text-primary-900'>Privacy Policy</span>
             </p>"
+              id="accept-term"
             />
           </div>
         </div>

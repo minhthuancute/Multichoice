@@ -4,6 +4,7 @@ import { classNames } from '../../../helper/classNames';
 export type InputSize = 'xs' | 'sm' | 'md' | 'lg';
 
 export interface IInput {
+  onChange?: (value: string) => void;
   textLabel?: React.ReactNode;
   defaultValue?: any;
   className?: string;
@@ -14,16 +15,17 @@ export interface IInput {
   typeInput?: HTMLInputTypeAttribute;
   isError?: boolean;
   errMessage?: string;
-  fieldName?: string;
   registerField?: any;
   isRequired?: boolean;
+  isDisable?: boolean;
   inputSize?: InputSize;
 }
 
 const Input: React.FC<IInput> = ({
+  onChange,
   textLabel = '',
   defaultValue = '',
-  className,
+  className = '',
   classInput = '',
   id = '',
   registerField = null,
@@ -33,10 +35,17 @@ const Input: React.FC<IInput> = ({
   placeholder = '',
   typeInput = 'text',
   isRequired = false,
+  isDisable = false,
   inputSize = 'sm',
 }) => {
+  const onChangeInput = (value: string) => {
+    if (onChange) {
+      onChange(value);
+    }
+  };
+
   return (
-    <div className={classNames('form-group relative', className)}>
+    <div className={classNames(['form-group relative', className])}>
       {/* input content */}
       <div
         className={classNames('relative wrapper-input', {
@@ -52,6 +61,7 @@ const Input: React.FC<IInput> = ({
         </label>
         <input
           {...registerField}
+          onChange={(e) => onChangeInput(e.target.value)}
           id={id}
           type={typeInput}
           placeholder={placeholder}

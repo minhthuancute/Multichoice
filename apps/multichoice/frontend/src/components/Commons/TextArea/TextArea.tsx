@@ -55,7 +55,7 @@ const TextArea: React.FC<ITextArea> = ({
           placeholder={placeholder}
           className={classNames(
             [
-              `text-sm transition-all duration-200 w-full text-stone-600 outline-none
+              `text-sm w-full text-stone-600 outline-none
             border px-2.5 py-2 border-solid border-stone-200 focus:border-primary-900
             rounded-md placeholder:text-sm`,
               classNameTextarea,
