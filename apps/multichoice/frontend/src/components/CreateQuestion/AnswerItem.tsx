@@ -1,46 +1,27 @@
-import React, { useState } from 'react';
-import { RiDeleteBin6Line } from 'react-icons/ri';
+import React from 'react';
 import Checkbox from '../Commons/Checkbox/Checkbox';
 import TextArea from '../Commons/TextArea/TextArea';
-import * as yup from 'yup';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { CreatAnswer } from '@monorepo/multichoice/dto';
+import ToolTip from '../Commons/ToolTip/ToolTip';
+import { MdOutlineClear } from 'react-icons/md';
 
 interface IAnswerItem {
-  registerField: any;
+  registerFieldContent: any;
+  registerFieldIsCorrect: any;
   indexAnswer: number;
+  indexAscii: number;
   onDeleteAnswer: (index: number) => void;
 }
 
-// const schemaAnswer = yup.object().shape({
-//   answers: yup.array().of(
-//     yup.object().shape({
-//       content: yup.string().required(),
-//       isCorrect: yup.boolean(),
-//     })
-//   ),
-// });
-
-const schemaAnswer = yup.object().shape({
-  answers: yup.object().shape({
-    content: yup.string().required(),
-    isCorrect: yup.boolean(),
-  }),
-});
-
 const AnswerItem: React.FC<IAnswerItem> = ({
-  registerField,
+  registerFieldContent,
+  registerFieldIsCorrect,
   indexAnswer,
+  indexAscii,
   onDeleteAnswer,
 }) => {
-  const { register, handleSubmit, setValue } = useForm<CreatAnswer>({
-    resolver: yupResolver(schemaAnswer),
-  });
-
   const getAsciiCode = (): string => {
     const startCharacter = 65;
-    return String.fromCharCode(startCharacter + indexAnswer) + ')';
+    return String.fromCharCode(startCharacter + indexAscii) + ')';
   };
 
   return (
@@ -48,29 +29,30 @@ const AnswerItem: React.FC<IAnswerItem> = ({
       <div className="form-group flex">
         <div className="check-correct flex items-start mr-2">
           <Checkbox
-            registerField={register('isCorrect')}
+            disable={true}
+            registerField={registerFieldIsCorrect}
             className="mt-1"
             id={'answer-' + indexAnswer}
           />
           <span className="font-semibold">{getAsciiCode()}</span>
         </div>
         <TextArea
-          // registerField={register('content')}
-          registerField={registerField}
+          registerField={registerFieldContent}
           placeholder="Nhập câu trả lời"
           className="flex-1"
           classNameTextarea="h-full"
         />
         <div className="remove ml-3 my-auto">
-          <button
-            type="button"
-            className="text-sm font-semibold bg-red-50 text-red-500 flex items-center
-            px-2.5 py-0.5 rounded-sm"
-            onClick={() => onDeleteAnswer(indexAnswer)}
-          >
-            <RiDeleteBin6Line className="mr-1" />
-            Xóa
-          </button>
+          <ToolTip title="Xóa câu trả lời">
+            <button
+              type="button"
+              className="text-sm font-semibold bg-red-50 text-red-500
+              rounded-full w-6 h-6 flex items-center justify-center"
+              onClick={() => onDeleteAnswer(indexAnswer)}
+            >
+              <MdOutlineClear className="text-tiny" />
+            </button>
+          </ToolTip>
         </div>
       </div>
     </div>

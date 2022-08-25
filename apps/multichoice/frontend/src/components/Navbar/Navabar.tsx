@@ -6,6 +6,7 @@ import './navbar.scss';
 interface INav {
   label: string;
   path: string;
+  relativePaths?: string[];
 }
 
 const Navabar: React.FC = () => {
@@ -19,6 +20,7 @@ const Navabar: React.FC = () => {
     {
       label: 'Đề thi',
       path: '/tests',
+      relativePaths: ['questions'],
     },
     {
       label: 'Thống kê',
@@ -26,12 +28,17 @@ const Navabar: React.FC = () => {
     },
   ];
 
-  const activeNavItem = (): number => {
+  const indexActiveNav = (): number => {
     const currentPath = location.pathname;
+
     if (currentPath === '/') return 0;
     const currentIndexNav = navs.findIndex((nav: INav) => {
+      if (nav.path === '/') return false;
+      const relativePaths = nav.relativePaths?.toString();
       const matchedNav =
-        nav.path === '/' ? false : currentPath.includes(nav.path);
+        currentPath.includes(nav.path) ||
+        currentPath.includes(relativePaths || '');
+
       return matchedNav;
     });
     return currentIndexNav;
@@ -47,7 +54,7 @@ const Navabar: React.FC = () => {
               className={classNames(
                 `nav-item font-medium text-sm mr-8 last:mr-0`,
                 {
-                  'active text-primary-900': activeNavItem() === index,
+                  'active text-primary-900': indexActiveNav() === index,
                 }
               )}
             >

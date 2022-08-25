@@ -4,6 +4,7 @@ import { classNames } from '../../../helper/classNames';
 import './checkbox.scss';
 
 interface CheckboxProps {
+  disable?: boolean;
   registerField?: any;
   id: string;
   className?: string;
@@ -13,6 +14,7 @@ interface CheckboxProps {
 }
 
 const Checkbox: React.FC<CheckboxProps> = ({
+  disable = false,
   registerField = null,
   id = '',
   className = '',
@@ -29,8 +31,19 @@ const Checkbox: React.FC<CheckboxProps> = ({
     }
   };
 
+  const onCLickLabel = (e: React.FormEvent<HTMLElement>): void => {
+    if (disable) {
+      e.preventDefault();
+      return;
+    }
+  };
+
   return (
-    <div className={classNames(['wrapper-input flex items-center', className])}>
+    <div
+      className={classNames(['wrapper-input flex items-center', className], {
+        'opacity-40': disable,
+      })}
+    >
       <input
         {...registerField}
         hidden
@@ -40,7 +53,13 @@ const Checkbox: React.FC<CheckboxProps> = ({
         onChange={() => onChangeCheckbox()}
       />
 
-      <label htmlFor={id} className="flex items-center cursor-pointer text-sm">
+      <label
+        htmlFor={id}
+        onClick={(e: React.FormEvent<HTMLElement>) => onCLickLabel(e)}
+        className={classNames('flex items-center cursor-pointer text-sm', {
+          'cursor-not-allowed': disable,
+        })}
+      >
         <div className="box mr-2 w-4 h-4 rounded-sm border border-solid border-slate-400">
           <BsCheck className="icon opacity-0 fill-white" />
         </div>

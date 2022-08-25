@@ -8,28 +8,16 @@ import React, {
 import * as yup from 'yup';
 import Input from '../Commons/Input/Input';
 import TextArea from '../Commons/TextArea/TextArea';
-import { CreateQuestionDto } from '@monorepo/multichoice/dto';
+import { CreatAnswer, CreateQuestionDto } from '@monorepo/multichoice/dto';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Select, { IOption } from '../Commons/Select/Select';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { questionServices } from '../../services/QuestionServices';
 import CreateAnswer from './CreateAnswer';
 import { topicStore } from '../../store/rootReducer';
 import { useQuery } from '../../hooks/useQuery';
-
-interface IDemo {
-  topicID: number;
-  questionTypeID: number;
-  content: string;
-  time: number;
-  isActive: boolean;
-  answers: {
-    content: string;
-    isCorrect: boolean;
-  }[];
-}
 
 const schemaFormLogin = yup.object().shape({
   topicID: yup.number(),
@@ -56,12 +44,13 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
     const navigate = useNavigate();
     const query = useQuery();
     const { topic } = topicStore();
-    const formRef: any = useRef<HTMLFormElement>(null);
+    const submitBtnRef: any = useRef<HTMLButtonElement>(null);
 
     const {
       register,
       handleSubmit,
       setValue,
+      clearErrors,
       formState: { errors },
     } = useForm<CreateQuestionDto>({
       resolver: yupResolver(schemaFormLogin),
@@ -105,14 +94,12 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
       formData: CreateQuestionDto
     ) => {
       try {
-        console.log('submit form');
-
         const { data } = await questionServices.createQuestion(formData);
+
         if (data.success) {
-          console.log(data);
-          // const topicId = data.data.id;
-          // const urlNavigate = '/tests/edit/' + topicId;
-          // navigate(urlNavigate);
+          const topicId = query.get('topic_id') || -1;
+          const urlNavigate = '/tests/edit/' + topicId;
+          navigate(urlNavigate);
         }
       } catch (error) {
         console.log(error);
@@ -123,11 +110,16 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
       ref,
       () => ({
         submitForm: () => {
-          formRef.current.click();
+          submitBtnRef.current.click();
         },
       }),
       []
     );
+
+    const onAddAnswer = (answers: CreatAnswer[]) => {
+      setValue('answers', answers);
+      clearErrors('answers');
+    };
 
     return (
       <div className="container">
@@ -165,11 +157,16 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
               errMessage={errors.content?.message}
               isRequired={true}
             />
-            <CreateAnswer />
+            <div className="create-answer">
+              <CreateAnswer
+                onAddAnswer={onAddAnswer}
+                invalidAnswers={Boolean(errors.answers)}
+              />
+            </div>
           </div>
 
           <div className="submit">
-            <button ref={formRef} hidden></button>
+            <button ref={submitBtnRef} hidden></button>
           </div>
         </form>
       </div>
