@@ -1,12 +1,12 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { CreatAnswer } from '@monorepo/multichoice/dto';
 import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useFieldArray, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { generateArray } from '../../utils/generateArray';
-import Notify from '../Commons/Notify/Notify';
 import AnswerItem from './AnswerItem';
 import { HiInformationCircle } from 'react-icons/hi';
+import { Store } from 'react-notifications-component';
 
 const answerSchema = yup.object().shape({
   answers: yup.array().of(
@@ -18,20 +18,28 @@ const answerSchema = yup.object().shape({
 });
 
 interface ICreateAnswer {
+  onRemoveAnswer: (index: number) => void;
   onAddAnswer: (answers: CreatAnswer[]) => void;
   invalidAnswers?: boolean;
 }
 
 const CreateAnswer: React.FC<ICreateAnswer> = ({
   onAddAnswer,
+  onRemoveAnswer,
   invalidAnswers = false,
 }) => {
-  const { register, watch } = useForm<[CreatAnswer]>({
+  const { register, watch, control } = useForm<[CreatAnswer]>({
     resolver: yupResolver(answerSchema),
   });
 
-  const [showNotify, setShowNotify] = useState<boolean>(false);
+  const { remove } = useFieldArray({
+    control,
+    shouldUnregister: true,
+    name: 'answers' as never,
+  });
+
   const [answerLength, setAnswerLength] = useState<number[]>(generateArray(4));
+  const [correctAnswer, setCorrectAnswer] = useState<number>(-1);
 
   const addNewAnswer = () => {
     if (answerLength.length > 64) {
@@ -46,18 +54,39 @@ const CreateAnswer: React.FC<ICreateAnswer> = ({
 
   const onDeleteAnswer = (index: number) => {
     if (answerLength.length === 2) {
-      setShowNotify((state) => !state);
+      Store.addNotification({
+        message: 'Minimum number of answers is two !',
+        type: 'danger',
+        insert: 'top',
+        container: 'top-right',
+        animationIn: ['animate__animated', 'animate__fadeIn'],
+        animationOut: ['animate__animated', 'animate__fadeOut'],
+        dismiss: {
+          duration: 1500,
+          onScreen: true,
+        },
+      });
       return;
     }
-    const filterAnswer = answerLength.filter((item: number) => {
+    const filterAnswerLength = answerLength.filter((item: number) => {
       return item !== index;
     });
-    setAnswerLength(filterAnswer);
+    setAnswerLength(filterAnswerLength);
+    onRemoveAnswer(index);
+    remove(index);
+  };
+
+  const indexCorrectAnswer = (answers: CreatAnswer[] = []) => {
+    const indexCorrect = answers.findIndex((answer: CreatAnswer) => {
+      return answer.isCorrect;
+    });
+    setCorrectAnswer(indexCorrect);
   };
 
   useEffect(() => {
     const subscription = watch((value: any) => {
       onAddAnswer(value.answers as CreatAnswer[]);
+      indexCorrectAnswer(value.answers);
     });
     return () => {
       subscription.unsubscribe();
@@ -66,12 +95,6 @@ const CreateAnswer: React.FC<ICreateAnswer> = ({
 
   return (
     <div>
-      <div className="noti">
-        <Notify
-          content="All notifications have been set to be automatically dismissed after 5000ms."
-          showNotify={showNotify}
-        />
-      </div>
       <div className="answer mt-4">
         <div className="answer-header">
           <label className="font-semibold text-slate-800 text-sm inline-block mb-2">
@@ -81,14 +104,18 @@ const CreateAnswer: React.FC<ICreateAnswer> = ({
         </div>
         <div className="answer-body">
           {answerLength.map((item: number, index: number) => {
+            // const nameContent = `answers[${index}].content` as any;
+            // const nameIsCorrect = `answers[${index}].isCorrect` as any;
             const nameContent = `answers[${index}].content` as any;
             const nameIsCorrect = `answers[${index}].isCorrect` as any;
+
             const registerContent = register(nameContent);
             const registerIsCorrect = register(nameIsCorrect);
 
             return (
               <AnswerItem
                 key={item}
+                indexCorrectAnswers={correctAnswer}
                 registerFieldContent={registerContent}
                 registerFieldIsCorrect={registerIsCorrect}
                 onDeleteAnswer={onDeleteAnswer}

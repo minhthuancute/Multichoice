@@ -1,6 +1,7 @@
 import React, { useLayoutEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import HeaderEditTest from '../../../components/EditTest/HeaderEditTest';
+import QuestionList from '../../../components/QuestionList/QuestionList';
 import { topicServices } from '../../../services/TopicServices';
 import { topicStore } from '../../../store/rootReducer';
 
@@ -26,7 +27,9 @@ const EditTest: React.FC = () => {
     <div className="edit-test">
       <HeaderEditTest />
 
-      <div className="content-page pt-5 pb-10 bg-slate-100"></div>
+      <div className="content-page pt-5 pb-10 bg-slate-100">
+        <QuestionList />
+      </div>
     </div>
   );
 };

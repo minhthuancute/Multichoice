@@ -5,6 +5,7 @@ import ToolTip from '../Commons/ToolTip/ToolTip';
 import { MdOutlineClear } from 'react-icons/md';
 
 interface IAnswerItem {
+  indexCorrectAnswers?: number;
   registerFieldContent: any;
   registerFieldIsCorrect: any;
   indexAnswer: number;
@@ -13,6 +14,7 @@ interface IAnswerItem {
 }
 
 const AnswerItem: React.FC<IAnswerItem> = ({
+  indexCorrectAnswers = -1,
   registerFieldContent,
   registerFieldIsCorrect,
   indexAnswer,
@@ -20,20 +22,34 @@ const AnswerItem: React.FC<IAnswerItem> = ({
   onDeleteAnswer,
 }) => {
   const getAsciiCode = (): string => {
-    const startCharacter = 65;
+    const startCharacter = 65; // 'A'
     return String.fromCharCode(startCharacter + indexAscii) + ')';
+  };
+
+  const shouldDisableCheckbox = (): boolean => {
+    const shouldDisable =
+      indexCorrectAnswers !== indexAnswer && indexCorrectAnswers !== -1;
+    return shouldDisable;
   };
 
   return (
     <div className="my-5 last:mb-0 group cursor-pointer">
       <div className="form-group flex">
         <div className="check-correct flex items-start mr-2">
-          <Checkbox
-            disable={true}
-            registerField={registerFieldIsCorrect}
-            className="mt-1"
-            id={'answer-' + indexAnswer}
-          />
+          <ToolTip
+            title={
+              shouldDisableCheckbox()
+                ? 'The question cannot have two correct answers'
+                : ''
+            }
+          >
+            <Checkbox
+              disable={shouldDisableCheckbox()}
+              registerField={registerFieldIsCorrect}
+              className="mt-1"
+              id={'answers-' + indexAnswer}
+            />
+          </ToolTip>
           <span className="font-semibold">{getAsciiCode()}</span>
         </div>
         <TextArea

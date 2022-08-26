@@ -1,6 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import React, { Suspense } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+
 import './app.scss';
 
 // Pages
@@ -10,6 +11,9 @@ import CreateTest from '../pages/Tests/Create/CreateTest';
 import PrivateRoute from '../components/Routes/PrivateRoute';
 import PublicRoute from '../components/Routes/PublicRoute';
 import DefaultLayout from '../layouts/DefaultLayout';
+
+import { ReactNotifications } from 'react-notifications-component';
+import 'react-notifications-component/dist/theme.css';
 // import lazy
 const Login: React.FC = React.lazy(() => import('../pages/Login/Login'));
 const Register: React.FC = React.lazy(
@@ -31,6 +35,7 @@ const PageNotFound: React.FC = React.lazy(
 export const App: React.FC = () => {
   return (
     <BrowserRouter>
+      <ReactNotifications />
       <Routes>
         <Route
           path="/login"

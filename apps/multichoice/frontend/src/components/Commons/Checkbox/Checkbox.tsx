@@ -35,6 +35,8 @@ const Checkbox: React.FC<CheckboxProps> = ({
     if (disable) {
       e.preventDefault();
       return;
+    } else {
+      onChangeCheckbox();
     }
   };
 
@@ -50,7 +52,6 @@ const Checkbox: React.FC<CheckboxProps> = ({
         defaultChecked={isChecked}
         type="checkbox"
         id={id}
-        onChange={() => onChangeCheckbox()}
       />
 
       <label

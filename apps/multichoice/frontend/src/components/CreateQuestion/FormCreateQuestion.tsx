@@ -9,7 +9,7 @@ import * as yup from 'yup';
 import Input from '../Commons/Input/Input';
 import TextArea from '../Commons/TextArea/TextArea';
 import { CreatAnswer, CreateQuestionDto } from '@monorepo/multichoice/dto';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Select, { IOption } from '../Commons/Select/Select';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
@@ -21,7 +21,7 @@ import { useQuery } from '../../hooks/useQuery';
 
 const schemaFormLogin = yup.object().shape({
   topicID: yup.number(),
-  content: yup.string().required(),
+  content: yup.string().required('Question content is a required field'),
   time: yup.number(),
   isActive: yup.boolean(),
   answers: yup
@@ -50,6 +50,7 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
       register,
       handleSubmit,
       setValue,
+      getValues,
       clearErrors,
       formState: { errors },
     } = useForm<CreateQuestionDto>({
@@ -121,6 +122,14 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
       clearErrors('answers');
     };
 
+    const onRemoveAnswer = (indexAnswer: number) => {
+      const answers = getValues('answers');
+      const filterAnswer = answers.filter((_, index) => {
+        return indexAnswer !== index;
+      });
+      setValue('answers', filterAnswer);
+    };
+
     return (
       <div className="container">
         <form
@@ -160,6 +169,7 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
             <div className="create-answer">
               <CreateAnswer
                 onAddAnswer={onAddAnswer}
+                onRemoveAnswer={onRemoveAnswer}
                 invalidAnswers={Boolean(errors.answers)}
               />
             </div>
