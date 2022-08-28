@@ -31,12 +31,12 @@ const DeleteTest: React.FC<IDeleteTest> = ({
   return (
     <div>
       <Modal openModal={openModalDelete}>
-        <div className="modal-content px-5 flex flex-col justify-center bg-white rounded-md max-w-lg w-full h-80">
+        <div className="modal-content px-5 flex flex-col justify-center bg-white rounded-md max-w-lg w-full h-60">
           <div className="header text-center">
             <RiErrorWarningLine className="text-red-600 text-5xl mx-auto" />
             <h4 className="mt-4 text-slate-800 text-tiny">
               Bạn có chắc chắn muốn bỏ đề thi:{' '}
-              <span className="text-blue-600 font-semibold">{testTitle}</span> ?
+              <span className="font-semibold">{testTitle}</span> ?
             </h4>
           </div>
           <div className="body ctas flex items-center justify-center gap-x-2 mt-12">

@@ -18,7 +18,9 @@ import { AxiosResponse } from 'axios';
 import { userStore } from '../../../store/User/userStore';
 import { ILoginResponse } from '../../../types/LoginResponse';
 import { localServices } from '../../../services/LocalServices';
-import { Store } from 'react-notifications-component';
+import { iNotification, Store } from 'react-notifications-component';
+import { notify } from '../../../helper/notify';
+import { type } from 'os';
 
 const { email, password } = validation();
 const schemaFormLogin = yup
@@ -76,10 +78,14 @@ const FormLogin: React.FC = () => {
         const { payload, token } = loginResponse.data;
         localServices.setData(TOKEN, token);
         setInforUser(payload, token);
-        navigate('/');
+        navigate('/tests');
       }
     } catch (error) {
       console.log(error);
+      notify({
+        message: 'Wrong user name or password !',
+        type: 'danger',
+      } as iNotification);
     }
   };
 
@@ -131,7 +137,7 @@ const FormLogin: React.FC = () => {
           </div>
           <Link
             to="/"
-            className="text-sm transition-all duration-200 hover:text-primary-900"
+            className="hidden text-sm transition-all duration-200 hover:text-primary-900"
           >
             Forget password?
           </Link>
@@ -139,14 +145,14 @@ const FormLogin: React.FC = () => {
 
         <div className="submit mt-5">
           <button
-            className="w-full py-4 bg-primary-900 rounded-md text-white font-medium"
+            className="w-full py-3 bg-primary-900 rounded-md text-white font-medium"
             type="submit"
           >
             Sign in Now
           </button>
         </div>
 
-        <SignUpOptions isLoginPage={true} />
+        {/* <SignUpOptions isLoginPage={true} /> */}
       </form>
     </div>
   );

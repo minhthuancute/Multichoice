@@ -28,9 +28,10 @@ const CreateAnswer: React.FC<ICreateAnswer> = ({
   onRemoveAnswer,
   invalidAnswers = false,
 }) => {
-  const { register, watch, control } = useForm<[CreatAnswer]>({
-    resolver: yupResolver(answerSchema),
-  });
+  const { getValues, register, unregister, watch, control, resetField } =
+    useForm<[CreatAnswer]>({
+      resolver: yupResolver(answerSchema),
+    });
 
   const { remove } = useFieldArray({
     control,
@@ -53,7 +54,7 @@ const CreateAnswer: React.FC<ICreateAnswer> = ({
   };
 
   const onDeleteAnswer = (index: number) => {
-    if (answerLength.length === 2) {
+    if (answerLength.length - 1 === 1) {
       Store.addNotification({
         message: 'Minimum number of answers is two !',
         type: 'danger',
@@ -71,6 +72,13 @@ const CreateAnswer: React.FC<ICreateAnswer> = ({
     const filterAnswerLength = answerLength.filter((item: number) => {
       return item !== index;
     });
+
+    if (getValues('0')) {
+      const nameContent = `answers[${index}]` as any;
+      unregister(nameContent);
+      resetField('answers' as any);
+    }
+
     setAnswerLength(filterAnswerLength);
     onRemoveAnswer(index);
     remove(index);

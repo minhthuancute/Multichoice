@@ -8,7 +8,7 @@ const QuestionList: React.FC = () => {
 
   return (
     <div>
-      {topic &&
+      {topic.questions &&
         topic.questions.map((question: IQuestion) => {
           return <QuestionItem question={question} />;
         })}

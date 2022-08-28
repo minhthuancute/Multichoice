@@ -15,6 +15,8 @@ import { validation } from '@monorepo/multichoice/validation';
 import { authenServices } from '../../../services/AuthenServices';
 import { useNavigate } from 'react-router-dom';
 import { CreateUserDto } from '@monorepo/multichoice/dto';
+import { iNotification, Store } from 'react-notifications-component';
+import { notify } from '../../../helper/notify';
 
 const { username, email, password } = validation();
 const schemaFormRegister = yup
@@ -51,14 +53,16 @@ const FormRegister: React.FC = () => {
   ) => {
     if (isUserAccept) {
       try {
-        const { data } = await authenServices.register(formData);
-        if (data) {
-          console.log();
-        }
+        await authenServices.register(formData);
         navigate('/login');
       } catch (error) {
         console.log(error);
       }
+    } else {
+      notify({
+        message: 'U must accept the Term of Conditions and Privacy Policy',
+        type: 'danger',
+      } as iNotification);
     }
   };
 
@@ -71,17 +75,17 @@ const FormRegister: React.FC = () => {
       >
         <div className="form-header mb-10 text-center">
           <h2 className="font-medium text-black mb-5 text-3xl">Sign up Now</h2>
-          <p className="text-slate-800">
+          <p className="text-slate-800 text-tiny">
             Inter yor valid email address and password <br />
             to register your account
           </p>
         </div>
 
-        <SignUpOptions isLoginPage={false} />
+        {/* <SignUpOptions isLoginPage={false} /> */}
 
         <InputAuthen
           registerField={register('username')}
-          isError={Boolean(errors.email)}
+          isError={Boolean(errors.username)}
           errMessage={errors.username?.message}
           placeholder="User Name"
           typeInput="text"
@@ -126,7 +130,7 @@ const FormRegister: React.FC = () => {
 
         <div className="submit mt-5">
           <button
-            className="w-full py-4 bg-primary-900 rounded-md text-white font-medium"
+            className="w-full py-3 bg-primary-900 rounded-md text-white font-medium"
             type="submit"
           >
             Sign up Now

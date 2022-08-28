@@ -54,7 +54,7 @@ export const App: React.FC = () => {
           }
         />
 
-        <Route index element={<PrivateRoute Component={Home} />} />
+        {/* <Route index element={<PrivateRoute Component={Home} />} /> */}
 
         <Route
           path="/tests"

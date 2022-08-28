@@ -53,6 +53,7 @@ const AnswerItem: React.FC<IAnswerItem> = ({
           <span className="font-semibold">{getAsciiCode()}</span>
         </div>
         <TextArea
+          key={indexAnswer}
           registerField={registerFieldContent}
           placeholder="Nhập câu trả lời"
           className="flex-1"

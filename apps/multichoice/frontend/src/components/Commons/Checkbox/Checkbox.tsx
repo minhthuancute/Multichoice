@@ -65,6 +65,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
           <BsCheck className="icon opacity-0 fill-white" />
         </div>
         <span
+          className="text-slate-800 text-sm"
           dangerouslySetInnerHTML={{
             __html: textLabel ? textLabel : '',
           }}
