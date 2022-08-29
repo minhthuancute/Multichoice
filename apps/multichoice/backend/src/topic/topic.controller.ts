@@ -52,7 +52,7 @@ export class TopicController {
   }
 
   @UseGuards(AuthenticationGuard)
-  @Get()
+  @Get('/topics/all')
   @ApiBearerAuth()
   async getTopicAll(@Req() req, @Res() res): Promise<Topic[]> {
     const result = await this.topicService.fileAll(req.user);
