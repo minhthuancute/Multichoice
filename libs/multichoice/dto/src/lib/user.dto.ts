@@ -46,24 +46,25 @@ export class LoginUserDto {
   password: string;
 }
 
-export class ResultUserDto {
-  @ApiProperty()
-  username: string;
-
-  @ApiProperty()
-  topicID: number;
-
-  @ApiProperty()
-  time: number;
-
-  @ApiProperty()
-  AnswersUserDto: AnswersUserDto[];
-}
-
 export class AnswersUserDto {
   @ApiProperty()
   questionID: number;
 
   @ApiProperty()
-  answer: string;
+  answerID: number[];
+}
+
+export class UserExamDto {
+  @ApiProperty()
+  username: string;
+
+  @ApiProperty()
+  topicID: number;
+}
+export class ResultUserDto {
+  @ApiProperty()
+  userID: number;
+
+  @ApiProperty({ type: [AnswersUserDto] })
+  AnswersUserDto: AnswersUserDto[];
 }

@@ -71,10 +71,4 @@ export class TopicController {
     const result = await this.topicService.update(id, topic, req.user);
     return res.status(201).json(result);
   }
-
-  @Get('cc/test')
-  async test(@Req() req, @Res() res): Promise<Topic[]> {
-    const result = await this.topicService.test(1);
-    return res.status(200).json(new SucessResponse(200, result));
-  }
 }
