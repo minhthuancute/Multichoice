@@ -29,9 +29,14 @@ export class QuestionService {
     files: any
   ): Promise<SucessResponse> {
     const QuestionEntity: Question = plainToClass(Question, createQuestionDto);
-
-    //save image}||audio
+    if (
+      createQuestionDto.answers == undefined ||
+      createQuestionDto.answers.length == 0
+    ) {
+      throw new BadRequestException('answers is not  empty');
+    }
     if (files !== undefined) {
+      //save image}||audio
       if (files.audio !== undefined) {
         QuestionEntity.audio = files.audio.filename;
       }
@@ -55,7 +60,7 @@ export class QuestionService {
     });
     await this.answerRepository.save(answers);
 
-    return new SucessResponse(200, 'Sucess');
+    return new SucessResponse(201, 'Sucess');
   }
 
   async getQestionByID(id: number): Promise<Question> {

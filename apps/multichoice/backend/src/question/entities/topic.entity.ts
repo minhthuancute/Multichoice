@@ -13,6 +13,7 @@ import {
 import { Question } from './question.entity';
 import { Timestamp } from '../../orm/timestamp.entity';
 import { User } from '../../user/entities/user.entity';
+import { UserExam } from '../../user/entities/userExam';
 
 @Entity()
 export class Topic extends Timestamp {
@@ -37,7 +38,7 @@ export class Topic extends Timestamp {
   title: string;
 
   @Column()
-  @Generated("uuid")
+  @Generated('uuid')
   url: string;
 
   @Column({ type: 'text', nullable: true })
@@ -46,7 +47,7 @@ export class Topic extends Timestamp {
   @Column({ default: false })
   isDraft: boolean;
 
-  @Column()
+  @Column({ type: 'bigint' })
   expirationTime: number;
 
   @OneToMany(() => Question, (qs) => qs.topic)
@@ -54,4 +55,7 @@ export class Topic extends Timestamp {
 
   @ManyToOne(() => User, (usr) => usr.topics)
   owner: User;
+
+  @OneToMany(() => UserExam, (qs) => qs.topic)
+  userExams: UserExam[];
 }

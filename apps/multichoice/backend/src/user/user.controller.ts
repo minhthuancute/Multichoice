@@ -7,27 +7,48 @@ import {
   Param,
   Delete,
   UseGuards,
+  Res,
+  Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto, UpdateUserDto } from '@monorepo/multichoice/dto';
+import {
+  CreateUserDto,
+  ResultUserDto,
+  UpdateUserDto,
+  UserExamDto,
+} from '@monorepo/multichoice/dto';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthenticationGuard } from '../auth/guards/auth.guard';
 import { User } from './entities/user.entity';
+import { TopicService } from '../topic/topic.service';
+import { UserExam } from './entities/userExam';
+import { url } from 'inspector';
 
 @ApiTags('User')
-@Controller('user')
-@UseGuards(AuthenticationGuard)
+@Controller()
+// @UseGuards(AuthenticationGuard)
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(
+    private readonly userService: UserService,
+    private readonly topicService: TopicService
+  ) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  @Post('/exam/end')
+  async endExam(@Body() resultUserDto: ResultUserDto, @Res() res) {
+    const result = await this.userService.endExam(resultUserDto);
+    return res.status(200).json(result);
   }
 
-  @Get()
-  findAll(): Promise<User[]> {
-    return this.userService.findAll();
+  @Post('/exam/start')
+  async startExam(@Res() res, @Body() resultUserDto: UserExamDto) {
+    const result = await this.userService.startExam(resultUserDto);
+    return res.status(200).json(result);
+  }
+
+  @Get(':url')
+  async findTopicByUrl(@Param('url') url: string, @Res() res) {
+    const result = await this.userService.findTopicByUrl(url);
+    return res.status(200).json(result);
   }
 
   @Get(':id')

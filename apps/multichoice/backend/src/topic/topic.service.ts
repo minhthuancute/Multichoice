@@ -33,6 +33,15 @@ export class TopicService {
     return result;
   }
 
+  async fineOneByUrl(url: string): Promise<Topic> {
+    const result = await this.topicRepository.findOne({
+      where: {
+        url,
+      },
+    });
+    return result;
+  }
+
   async deleteById(id: number): Promise<boolean> {
     await this.topicRepository.delete(id);
     return true;
@@ -61,8 +70,8 @@ export class TopicService {
     return new SucessResponse(200, result);
   }
 
-  async test(id: number): Promise<Topic[]> {
-    const result = await this.topicRepository.find({
+  async getIsCorrectByTopicID(id: number): Promise<Topic> {
+    const result = await this.topicRepository.findOne({
       where: {
         id,
         questions: {
