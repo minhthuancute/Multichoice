@@ -69,6 +69,6 @@ export class TopicController {
     @Res() res
   ): Promise<SucessResponse> {
     const result = await this.topicService.update(id, topic, req.user);
-    return res.status(201).json(result);
+    return res.status(200).json(result);
   }
 }
