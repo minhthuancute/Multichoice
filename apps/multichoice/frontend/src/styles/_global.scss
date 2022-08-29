@@ -21,3 +21,11 @@
 .content-page {
   min-height: calc(100vh - 125px);
 }
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primaryColor);
+}

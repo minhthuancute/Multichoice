@@ -1,15 +1,19 @@
-import React, { useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import FilterTests from '../../../components/Tests/FilterTests';
 import TestList from '../../../components/TestList/TestList';
+import { titleServices } from '../../../services/TitleServices';
 
 const Tests: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchKeyword, setSearchKeyword] = useState<string>('');
 
+  useLayoutEffect(() => {
+    titleServices.setTitle('Multichoice');
+  }, []);
+
   // on search Test
   const onFilter = (keyword: string) => {
-    console.log(keyword);
     setSearchKeyword(keyword);
     setSearchParams('?search=' + keyword);
   };

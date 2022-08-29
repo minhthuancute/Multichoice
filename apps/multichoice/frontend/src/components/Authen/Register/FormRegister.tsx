@@ -9,7 +9,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import Checkbox from '../../Commons/Checkbox/Checkbox';
 
-import SignUpOptions from '../SignUpOptions';
+// import SignUpOptions from '../SignUpOptions';
 import InputAuthen from '../InputAuthen';
 import { validation } from '@monorepo/multichoice/validation';
 import { authenServices } from '../../../services/AuthenServices';
@@ -56,7 +56,10 @@ const FormRegister: React.FC = () => {
         await authenServices.register(formData);
         navigate('/login');
       } catch (error) {
-        console.log(error);
+        notify({
+          message: 'Email already exists',
+          type: 'danger',
+        } as iNotification);
       }
     } else {
       notify({

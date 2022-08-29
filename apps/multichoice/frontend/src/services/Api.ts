@@ -1,4 +1,9 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import axios, {
+  AxiosError,
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+} from 'axios';
 import { TOKEN } from '../constants/contstants';
 import { localServices } from './LocalServices';
 
@@ -10,7 +15,7 @@ export class Api {
     });
 
     this.axiosInstance.interceptors.request.use(
-      (config: AxiosRequestConfig) => {
+      (config: AxiosRequestConfig): AxiosRequestConfig => {
         const token = localServices.getData(TOKEN);
         config!.headers!['Authorization'] = `Bearer ${token}`;
         return config;
@@ -18,11 +23,12 @@ export class Api {
     );
 
     this.axiosInstance.interceptors.response.use(
-      (response) => {
+      (response: AxiosResponse): AxiosResponse => {
         return response;
       },
-      (err) => {
+      (err: AxiosError): Promise<AxiosError> => {
         console.log(err);
+        return Promise.reject(err);
       }
     );
   }
@@ -33,6 +39,10 @@ export class Api {
 
   post(url: string, body?: any) {
     return this.axiosInstance.post(url, body);
+  }
+
+  update(url: string, body?: any) {
+    return this.axiosInstance.patch(url, body);
   }
 
   delete(url: string, body?: any) {

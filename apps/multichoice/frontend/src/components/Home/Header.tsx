@@ -39,14 +39,12 @@ const Header: React.FC = () => {
                 alt=""
                 className="w-6 h-6 rounded-full mr-2"
               />
-              <h3>
-                <Link to="/profile" className="text-slate-800 font-medium">
-                  {user.username}
-                </Link>
+              <h3 className="text-slate-800 font-medium">
+                Hello, {user.username}
               </h3>
             </div>
             <div
-              className="dropdown-user p-3 pt-10 bg-white shadow-md absolute right-0 w-[248px] z-50
+              className="dropdown-user p-3 pt-20 bg-white shadow-md absolute right-0 w-[248px] z-50
               transition-all duration-200 invisible opacity-0 group-hover:visible group-hover:opacity-100
             "
             >

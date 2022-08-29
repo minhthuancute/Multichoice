@@ -10,7 +10,7 @@ import { TOKEN, USER } from '../../../constants/contstants';
 import Checkbox from '../../Commons/Checkbox/Checkbox';
 import InputAuthen from '../InputAuthen';
 import { validation } from '@monorepo/multichoice/validation';
-import SignUpOptions from '../SignUpOptions';
+// import SignUpOptions from '../SignUpOptions';
 import { cookieServices } from '../../../services/CookieServices';
 import { authenServices } from '../../../services/AuthenServices';
 import { LoginUserDto } from '@monorepo/multichoice/dto';

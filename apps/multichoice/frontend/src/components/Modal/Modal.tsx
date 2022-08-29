@@ -22,8 +22,8 @@ const Modal: React.FC<ILayout> = ({ openModal = false, children }) => {
   return ReactDOM.createPortal(
     <div
       className={classNames(
-        `modal fixed z-50 top-0 transition-all duration-300 w-full h-screen flex items-center
-          justify-center bg-slate-900 bg-opacity-20 overflow-hidden`,
+        `modal fixed z-50 top-0 transition-all duration-300 w-full h-screen flex
+          justify-center bg-slate-900 bg-opacity-40 overflow-hidden`,
         {
           'visible opacity-100': openModal,
           'invisible opacity-0': !openModal,

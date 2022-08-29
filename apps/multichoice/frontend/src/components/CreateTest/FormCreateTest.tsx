@@ -125,10 +125,7 @@ const FormCreateTest: React.FC<IFormCreateTest> = forwardRef((props, ref) => {
 
   return (
     <div className="container">
-      <form
-        className="form flex items-start gap-x-4"
-        onSubmit={handleSubmit(onSubmit)}
-      >
+      <form className="form flex items-start" onSubmit={handleSubmit(onSubmit)}>
         <div className="form-left w-1/3 p-4 bg-white rounded-md">
           <Input
             registerField={register('expirationTime')}
@@ -150,13 +147,13 @@ const FormCreateTest: React.FC<IFormCreateTest> = forwardRef((props, ref) => {
 
           <Select
             onChange={onSelectTimeType}
-            defaultValue={topicTimeTypes[0].label}
+            defaultValue={topicTimeTypes[1].label}
             options={topicTimeTypes}
             textLabel="Loại thời gian"
             className="mt-5"
           />
         </div>
-        <div className="form-right w-2/3 p-4 bg-white rounded-md">
+        <div className="form-right w-2/3 p-4 ml-4 bg-white rounded-md">
           <Input
             registerField={register('title')}
             textLabel="Tên đề thi"

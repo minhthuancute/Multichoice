@@ -1,19 +1,27 @@
 import React from 'react';
 import { BsCalendarDate } from 'react-icons/bs';
-import { AiOutlineQuestionCircle, AiOutlineFieldTime } from 'react-icons/ai';
+import {
+  AiOutlineQuestionCircle,
+  AiOutlineFieldTime,
+  AiOutlineCaretDown,
+} from 'react-icons/ai';
 import { RiDeleteBin6Line } from 'react-icons/ri';
-import { FaPencilAlt } from 'react-icons/fa';
 
 import { getDate } from '../../utils/formatDate';
 import ToolTip from '../Commons/ToolTip/ToolTip';
 import { Link } from 'react-router-dom';
+import { TiPencil } from 'react-icons/ti';
+import Badge from '../Commons/Badge/Badge';
+import { TopicCategoryEnum } from '@monorepo/multichoice/constant';
 
+export type CategoryType = keyof typeof TopicCategoryEnum;
 export interface ITestItem {
   id: number;
   title: string;
   date: string;
   questionCount: number;
   expirationTime: number;
+  typeCategoryName: CategoryType;
 }
 
 interface ITestItemProp {
@@ -37,24 +45,34 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
             <AiOutlineQuestionCircle className="text-slate-800 mr-1" />
             <span>{test.questionCount} câu hỏi</span>
           </li>
-          <li className="flex items-center text-sm">
+          <li className="flex items-center text-sm mr-3">
             <AiOutlineFieldTime className="text-slate-800 mr-1 text-base" />
             <span>{test.expirationTime} phút</span>
+          </li>
+          <li>
+            <Badge title={test.typeCategoryName} type={test.typeCategoryName} />
           </li>
         </ul>
         <div className="right">
           <ul className="ctas flex items-center">
-            <li className="relative group mr-4 mb-1.5">
+            <li className="relative group mr-4">
               <ToolTip title="Cập nhật đề thi">
                 <Link to={'/tests/edit/' + test.id}>
-                  <FaPencilAlt className="text-slate-800 text-sm" />
+                  <TiPencil className="text-slate-800 text-tiny" />
                 </Link>
               </ToolTip>
             </li>
-            <li className="relative group">
+            <li className="relative group mr-4">
               <ToolTip title="Xóa">
                 <button onClick={() => handleDeleteTest(test.id, test.title)}>
-                  <RiDeleteBin6Line className="text-red-500 text-xl" />
+                  <RiDeleteBin6Line className="text-red-500 text-tiny" />
+                </button>
+              </ToolTip>
+            </li>
+            <li>
+              <ToolTip title="Actions">
+                <button className="create-test text-sm">
+                  <AiOutlineCaretDown />
                 </button>
               </ToolTip>
             </li>

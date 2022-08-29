@@ -29,6 +29,7 @@ const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
           date: test.createdAt,
           questionCount: test.questions.length,
           expirationTime: test.expirationTime,
+          typeCategoryName: test.typeCategoryName,
         };
         return testData;
       });

@@ -9,7 +9,7 @@ import * as yup from 'yup';
 import Input from '../Commons/Input/Input';
 import TextArea from '../Commons/TextArea/TextArea';
 import { CreatAnswer, CreateQuestionDto } from '@monorepo/multichoice/dto';
-import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Select, { IOption } from '../Commons/Select/Select';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
@@ -18,6 +18,8 @@ import { questionServices } from '../../services/QuestionServices';
 import CreateAnswer from './CreateAnswer';
 import { topicStore } from '../../store/rootReducer';
 import { useQuery } from '../../hooks/useQuery';
+import { notify } from '../../helper/notify';
+import { iNotification } from 'react-notifications-component';
 
 const schemaFormLogin = yup.object().shape({
   topicID: yup.number(),
@@ -95,8 +97,19 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
       formData: CreateQuestionDto
     ) => {
       try {
-        const { data } = await questionServices.createQuestion(formData);
+        const answers = getValues('answers');
+        const validAnswers = answers.some((answers: CreatAnswer) => {
+          return answers.isCorrect;
+        });
+        if (!validAnswers) {
+          notify({
+            message: 'Please choose the correct answer for the answer !',
+            type: 'danger',
+          } as iNotification);
+          return;
+        }
 
+        const { data } = await questionServices.createQuestion(formData);
         if (data.success) {
           const topicId = query.get('topic_id') || -1;
           const urlNavigate = '/tests/edit/' + topicId;
@@ -163,7 +176,7 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
               textLabel="Câu hỏi"
               placeholder="Nội dung câu hỏi"
               className=""
-              classNameTextarea="h-[248px]"
+              classNameTextarea="h-[200px]"
               isError={Boolean(errors.content)}
               errMessage={errors.content?.message}
               isRequired={true}

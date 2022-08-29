@@ -7,6 +7,7 @@ export interface ITopicStore {
   setTopicData: (topicData: ITopicResponse) => void;
 }
 
+// Topic detail
 export const topicStore = create<ITopicStore>()(
   devtools(
     persist(

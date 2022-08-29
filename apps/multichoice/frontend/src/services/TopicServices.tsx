@@ -3,7 +3,7 @@ import { CreateTopicDto } from '@monorepo/multichoice/dto';
 
 class TopicServices extends Api {
   getAllTopic() {
-    return this.get('/topic');
+    return this.get('/topic/topics/all');
   }
 
   createTopic(formData: CreateTopicDto) {
@@ -12,6 +12,10 @@ class TopicServices extends Api {
 
   getTopicById(id: string) {
     return this.get('/topic/' + id);
+  }
+
+  updateTopicById(id: number, formData: CreateTopicDto) {
+    return this.update('/topic/' + id, formData);
   }
 
   deleteTopicById(id: number) {
