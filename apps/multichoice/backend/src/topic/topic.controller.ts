@@ -34,6 +34,14 @@ export class TopicController {
     return res.status(201).json(result);
   }
 
+  @UseGuards(AuthenticationGuard)
+  @Get('/all')
+  @ApiBearerAuth()
+  async getTopicAll(@Req() req, @Res() res): Promise<Topic[]> {
+    const result = await this.topicService.fileAll(req.user);
+    return res.status(200).json(new SucessResponse(200, result));
+  }
+
   @Get(':id')
   async getTopicById(@Param('id') id: number, @Res() res): Promise<Topic> {
     const result = await this.topicService.fineOneByID(id);
@@ -49,14 +57,6 @@ export class TopicController {
   async deleteTopicById(@Param('id') id: number, @Res() res) {
     await this.topicService.deleteById(id);
     return res.status(200).json(new SucessResponse(200, {}));
-  }
-
-  @UseGuards(AuthenticationGuard)
-  @Get('/topics/all')
-  @ApiBearerAuth()
-  async getTopicAll(@Req() req, @Res() res): Promise<Topic[]> {
-    const result = await this.topicService.fileAll(req.user);
-    return res.status(200).json(new SucessResponse(200, result));
   }
 
   @UseGuards(AuthenticationGuard)
