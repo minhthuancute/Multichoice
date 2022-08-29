@@ -39,7 +39,7 @@ const Header: React.FC = () => {
                 alt=""
                 className="w-6 h-6 rounded-full mr-2"
               />
-              <h3 className="text-slate-800 font-medium">
+              <h3 className="text-slate-800 font-medium text-tiny">
                 Hello, {user.username}
               </h3>
             </div>

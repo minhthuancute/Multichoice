@@ -3,7 +3,7 @@ import { CreateTopicDto } from '@monorepo/multichoice/dto';
 
 class TopicServices extends Api {
   getAllTopic() {
-    return this.get('/topic/topics/all');
+    return this.get('/topic/all');
   }
 
   createTopic(formData: CreateTopicDto) {

@@ -127,7 +127,7 @@ const FormEditTest: React.FC<IFormEditTest> = ({ setOpenModalEditTest }) => {
   };
 
   return (
-    <div className="max-w-lg w-full mt-10 p-4 rounded-md bg-white h-max">
+    <div className="max-w-lg w-full h-max p-4 rounded-md bg-white">
       <form className="form" onSubmit={handleSubmit(onSubmit)}>
         <div className="form-header flex items-center justify-between mb-8">
           <h4 className="text-slate-800 text-xl font-semibold">

@@ -39,7 +39,7 @@ const HeaderEditTest: React.FC = () => {
   }
 
   return (
-    <div className="header-create-test">
+    <div className="header-edit-test">
       <Modal openModal={openModalEditTest}>
         <FormEditTest setOpenModalEditTest={setOpenModalEditTest} />
       </Modal>
