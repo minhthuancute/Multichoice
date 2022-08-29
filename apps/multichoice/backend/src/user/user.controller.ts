@@ -24,7 +24,7 @@ import { TopicService } from '../topic/topic.service';
 import { UserExam } from './entities/userExam';
 import { url } from 'inspector';
 
-@ApiTags('User')
+@ApiTags('Exam')
 @Controller()
 // @UseGuards(AuthenticationGuard)
 export class UserController {
@@ -49,20 +49,5 @@ export class UserController {
   async findTopicByUrl(@Param('url') url: string, @Res() res) {
     const result = await this.userService.findTopicByUrl(url);
     return res.status(200).json(result);
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
   }
 }
