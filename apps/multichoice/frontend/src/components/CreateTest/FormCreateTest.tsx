@@ -18,6 +18,7 @@ import {
 } from '@monorepo/multichoice/constant';
 import { topicServices } from '../../services/TopicServices';
 import { useNavigate } from 'react-router-dom';
+import { topicStore } from '../../store/rootReducer';
 
 const schemaFormLogin = yup.object().shape({
   timeType: yup.string().required(),
@@ -35,6 +36,7 @@ interface IFormCreateTest {
 const FormCreateTest: React.FC<IFormCreateTest> = forwardRef((props, ref) => {
   const navigate = useNavigate();
   const formRef: any = useRef<HTMLFormElement>(null);
+  const { setTopicData } = topicStore();
 
   const {
     register,
@@ -106,6 +108,7 @@ const FormCreateTest: React.FC<IFormCreateTest> = forwardRef((props, ref) => {
       if (data.success) {
         const topicId = data.data.id;
         const urlNavigate = '/tests/edit/' + topicId;
+        setTopicData(data.data);
         navigate(urlNavigate);
       }
     } catch (error) {

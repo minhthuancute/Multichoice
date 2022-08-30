@@ -24,6 +24,7 @@ const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
       const topicResponse: ITopicResponse[] = data.data;
       const topicsData = topicResponse.map((test: ITopicResponse) => {
         const testData: ITestItem = {
+          topicUrl: test.url,
           id: test.id,
           title: test.title,
           date: test.createdAt,

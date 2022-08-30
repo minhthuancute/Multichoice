@@ -23,6 +23,7 @@ export interface IQuestion {
 }
 
 export interface ITopicResponse {
+  url: string;
   createdAt: string;
   updatedAt: string;
   id: number;

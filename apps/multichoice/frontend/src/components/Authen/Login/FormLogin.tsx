@@ -18,9 +18,8 @@ import { AxiosResponse } from 'axios';
 import { userStore } from '../../../store/User/userStore';
 import { ILoginResponse } from '../../../types/LoginResponse';
 import { localServices } from '../../../services/LocalServices';
-import { iNotification, Store } from 'react-notifications-component';
+import { iNotification } from 'react-notifications-component';
 import { notify } from '../../../helper/notify';
-import { type } from 'os';
 
 const { email, password } = validation();
 const schemaFormLogin = yup

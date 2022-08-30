@@ -20,6 +20,10 @@ import PageNotFound from '../pages/Notfound/Notfound';
 
 import { ReactNotifications } from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
+import BlankLayout from '../layouts/BlankLayout';
+import Intro from '../pages/Exam/Intro/Intro';
+import CollectInfor from '../pages/Exam/CollectInfor/CollectInfor';
+import DoExam from '../pages/Exam/DoExam/DoExam';
 
 export const App: React.FC = () => {
   return (
@@ -52,6 +56,12 @@ export const App: React.FC = () => {
         </Route>
 
         <Route path="/questions/create" element={<CreateQuestion />} />
+
+        <Route path="/exam" element={<BlankLayout />}>
+          <Route path=":exam_id" element={<Intro />} />
+          <Route path=":exam_id/login" element={<CollectInfor />} />
+          <Route path=":exam_id/do-exam" element={<DoExam />} />
+        </Route>
 
         <Route path="*" element={<PageNotFound />} />
       </Routes>

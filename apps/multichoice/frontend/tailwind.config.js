@@ -33,6 +33,7 @@ module.exports = {
       backgroundImage: {
         authen: "url('/assets/images/bg-login.jpg')",
         notfound: "url('/assets/images/pagenotfound.png')",
+        exam: "url('/assets/images/bg-exam.avif')",
       },
     },
     colors: {

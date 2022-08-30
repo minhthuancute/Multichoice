@@ -61,7 +61,7 @@ const Input: React.FC<IInput> = ({
         </label>
         <input
           {...registerField}
-          onChange={(e) => onChangeInput(e.target.value)}
+          // onChange={(e) => onChangeInput(e.target.value)}
           id={id}
           type={typeInput}
           placeholder={placeholder}

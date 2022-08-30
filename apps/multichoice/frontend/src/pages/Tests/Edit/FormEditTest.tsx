@@ -127,7 +127,7 @@ const FormEditTest: React.FC<IFormEditTest> = ({ setOpenModalEditTest }) => {
   };
 
   return (
-    <div className="max-w-lg w-full h-max p-4 rounded-md bg-white">
+    <div className="max-w-lg w-full h-max p-4 mx-auto rounded-md bg-white">
       <form className="form" onSubmit={handleSubmit(onSubmit)}>
         <div className="form-header flex items-center justify-between mb-8">
           <h4 className="text-slate-800 text-xl font-semibold">
@@ -190,15 +190,8 @@ const FormEditTest: React.FC<IFormEditTest> = ({ setOpenModalEditTest }) => {
           isError={Boolean(errors.description)}
           errMessage={errors.description?.message}
         />
-        <div className="ctas flex items-center justify-center gap-x-2 mt-8">
-          <button
-            type="submit"
-            className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
-          text-white font-bold bg-primary-900 transition-all duration-200 hover:bg-primary-800"
-          >
-            Xác nhận
-          </button>
 
+        <div className="ctas flex items-center justify-center gap-x-2 mt-8">
           <button
             type="button"
             className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
@@ -206,6 +199,13 @@ const FormEditTest: React.FC<IFormEditTest> = ({ setOpenModalEditTest }) => {
             onClick={() => setOpenModalEditTest(false)}
           >
             Huỷ
+          </button>
+          <button
+            type="submit"
+            className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
+          text-white font-bold bg-primary-900 transition-all duration-200 hover:bg-primary-800"
+          >
+            Xác nhận
           </button>
         </div>
       </form>
