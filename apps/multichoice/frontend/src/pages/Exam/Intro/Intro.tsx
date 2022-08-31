@@ -1,20 +1,32 @@
 import React, { useLayoutEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { examServices } from '../../../services/ExamServices';
-import { examStore } from '../../../store/rootReducer';
-import { IExamResponse } from '../../../types';
+import { examStore, answerStore, IAnswers } from '../../../store/rootReducer';
+import { IExamResponse, IQuestion } from '../../../types';
 
 import imgExam from '../../../assets/images/bg-exam.avif';
 
 const Intro: React.FC = () => {
   const { exam_id } = useParams();
   const { setExamData } = examStore();
+  const { setAnswers } = answerStore();
 
   const [exam, setExam] = useState<IExamResponse>();
 
   const getExamInfor = async () => {
     try {
       const { data } = await examServices.getExamInfor(exam_id || '');
+      const examInfor: IExamResponse = data;
+      const initAnswers: IAnswers[] = examInfor.questions.map(
+        (questions: IQuestion) => {
+          const tempArr: IAnswers = {
+            questionID: questions.id,
+            answersID: [],
+          };
+          return tempArr;
+        }
+      );
+      setAnswers(initAnswers);
       setExam(data);
       setExamData(data);
     } catch (error) {
@@ -30,7 +42,10 @@ const Intro: React.FC = () => {
 
   return (
     <div className="container h-screen flex items-center">
-      <div className="colect-infor h-[750px] w-full flex items-center">
+      <div
+        className="colect-infor max-h-[500px] h-full w-full flex items-center
+        shadow-xl"
+      >
         <div className="left h-full w-[500px]">
           <img
             src={imgExam}
@@ -38,7 +53,7 @@ const Intro: React.FC = () => {
             className="block h-full w-full object-cover"
           />
         </div>
-        <div className="right flex-1 bg-white h-full relative">
+        <div className="right flex-1 h-full relative">
           <div className="top absolute w-full top-1/2 transform -translate-y-1/2">
             <div className="text-center">
               <h4 className="text-slate-800 text-3xl">{exam.title}</h4>

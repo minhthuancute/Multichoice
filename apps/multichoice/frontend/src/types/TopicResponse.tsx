@@ -5,7 +5,7 @@ import {
 
 type QuestionCategoryType = keyof typeof TopicCategoryEnum;
 
-interface IAnswer {
+export interface IAnswer {
   id: number;
   content: string;
   isCorrect: boolean;

@@ -1,3 +1,4 @@
+import { IQuestion } from './TopicResponse';
 export interface IExamResponse {
   createdAt: string;
   updatedAt: string;
@@ -9,4 +10,5 @@ export interface IExamResponse {
   description: string;
   isDraft: boolean;
   expirationTime: string;
+  questions: IQuestion[];
 }

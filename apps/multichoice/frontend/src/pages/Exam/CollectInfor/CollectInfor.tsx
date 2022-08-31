@@ -12,6 +12,8 @@ import {
 import { notify } from '../../../helper/notify';
 import { iNotification } from 'react-notifications-component';
 import { useNavigate } from 'react-router-dom';
+import { sessionServices } from '../../../services/SessionServices';
+import { USER_DO_EXAM } from '../../../constants/contstants';
 
 const schemaInfor = yup
   .object()
@@ -45,7 +47,10 @@ const CollectInfor: React.FC = () => {
         username: formData.user_name,
       };
       const { data } = await examServices.startExam(payload);
+      console.log(data);
+
       if (data.success) {
+        sessionServices.setData(USER_DO_EXAM, formData.user_name);
         const urlNavigate = '/exam/' + exam.url + '/do-exam';
         navigate(urlNavigate);
       }
@@ -60,7 +65,9 @@ const CollectInfor: React.FC = () => {
   return (
     <div className="container h-screen flex items-center">
       <form
-        className="form colect-infor h-[750px] w-full flex items-center"
+        className="form colect-infor max-h-[500px] h-full w-full flex items-center
+        shadow-xl
+        "
         onSubmit={handleSubmit(onSubmit)}
       >
         <div className="left h-full w-[500px]">
@@ -70,7 +77,7 @@ const CollectInfor: React.FC = () => {
             className="block h-full w-full object-cover"
           />
         </div>
-        <div className="right flex-1 bg-white h-full relative">
+        <div className="right flex-1 h-full relative">
           <div className="top absolute w-full top-1/2 transform -translate-y-1/2">
             <div className="text-center">
               <h4 className="text-slate-800 text-3xl">{exam.title}</h4>
@@ -96,14 +103,14 @@ const CollectInfor: React.FC = () => {
             </div>
           </div>
 
-          <div className="bottom text-center w-full px-10 py-4 mt-auto absolute bottom-0">
+          <footer className="bottom text-center w-full px-10 py-4 mt-auto absolute bottom-0">
             <p className="text-sm ">
               &copy; 2022 Estates. All rights reserved | Designed by{' '}
               <span className="font-semibold text-primary-900">
                 Multichoice Team
               </span>
             </p>
-          </div>
+          </footer>
         </div>
       </form>
     </div>
