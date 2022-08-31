@@ -76,7 +76,7 @@ export class QuestionService {
   convertQuestionEntity(
     files: any,
     updateQuestionDto: UpdateQuestionDto
-  ): QuestionEntity {
+  ): Question {
     const QuestionEntity: Question = new Question();
     QuestionEntity.type = updateQuestionDto.type;
     QuestionEntity.content = updateQuestionDto.content;
