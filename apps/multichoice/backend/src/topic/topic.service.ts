@@ -38,6 +38,7 @@ export class TopicService {
       where: {
         url,
       },
+      relations: ['questions', 'questions.answers'],
     });
     return result;
   }
