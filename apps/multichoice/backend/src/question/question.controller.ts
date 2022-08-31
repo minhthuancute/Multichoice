@@ -13,13 +13,19 @@ import {
   UploadedFiles,
 } from '@nestjs/common';
 import { QuestionService } from './question.service';
-import { CreateQuestionDto } from '@monorepo/multichoice/dto';
+import {
+  CreateQuestionDto,
+  UpdateQuestionDto,
+} from '@monorepo/multichoice/dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { SucessResponse } from '../model/SucessResponse';
 import { TopicService } from '../topic/topic.service';
 import { AuthenticationGuard } from '../auth/guards/auth.guard';
 import { multerOptions } from '../uploads/upload';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { UpdateAnswerDto } from '../answer/dto/update-answer.dto';
+import { Question } from './entities/question.entity';
+import { plainToClass } from 'class-transformer';
 
 @Controller('question')
 @ApiTags('question')
@@ -67,5 +73,25 @@ export class QuestionController {
   async findByID(@Param('id') id: number, @Res() res) {
     const result = await this.questionService.getQestionByID(id);
     return res.status(200).json(new SucessResponse(200, { result }));
+  }
+
+  @UseGuards(AuthenticationGuard)
+  @Patch(':id')
+  @ApiBearerAuth()
+  @UseInterceptors(
+    FileFieldsInterceptor([{ name: 'image' }, { name: 'audio' }], multerOptions)
+  )
+  async update(
+    @Param('id') id: number,
+    @Body() updateQuestionDto: UpdateQuestionDto,
+    @UploadedFiles() files,
+    @Res() res
+  ): Promise<SucessResponse> {
+    const result = await this.questionService.update(
+      id,
+      updateQuestionDto,
+      files
+    );
+    return res.status(200).json(result);
   }
 }
