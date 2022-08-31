@@ -1,9 +1,13 @@
-import { ApiProperty } from "@nestjs/swagger"
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreatAnswer {
-    @ApiProperty()
-    content: string
+  @ApiProperty()
+  content: string;
 
-    @ApiProperty({ default: false })
-    isCorrect: boolean
+  @ApiProperty({ default: false })
+  isCorrect: boolean;
+}
+export class UpdateAnswer extends CreatAnswer {
+  @ApiProperty()
+  id: number;
 }
