@@ -63,9 +63,9 @@ export class UserService {
     await this.userExamRepository.update({ id: userExam.id }, exam);
 
     // save list userAnswer
-    if (resultUserDto.AnswersUserDto !== undefined) {
+    if (resultUserDto.AnswersUsers !== undefined) {
       const lst: UserAnswer[] = [];
-      resultUserDto.AnswersUserDto.forEach((element) => {
+      resultUserDto.AnswersUsers.forEach((element) => {
         element.answerID.forEach((item) => {
           const userAnswer: UserAnswer = new UserAnswer();
           userAnswer.answerID = item;
@@ -103,8 +103,8 @@ export class UserService {
     let poit = 0;
     if (
       questions.length > 0 &&
-      resultUserDto.AnswersUserDto !== undefined &&
-      resultUserDto.AnswersUserDto.length > 0
+      resultUserDto.AnswersUsers !== undefined &&
+      resultUserDto.AnswersUsers.length > 0
     ) {
       const questionsDBB = questions.reduce((result, item) => {
         return {
@@ -118,7 +118,7 @@ export class UserService {
         };
       }, {});
 
-      const aswersUserDto = resultUserDto.AnswersUserDto.reduce(
+      const aswersUserDto = resultUserDto.AnswersUsers.reduce(
         (result, item) => {
           return {
             ...result,
