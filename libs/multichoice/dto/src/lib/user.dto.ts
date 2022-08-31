@@ -1,6 +1,7 @@
 import { IsEmail, MaxLength, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { validation } from '@monorepo/multichoice/validation';
+import { type } from 'os';
 
 export class CreateUserDto {
   @ApiProperty()
@@ -50,7 +51,7 @@ export class AnswersUserDto {
   @ApiProperty()
   questionID: number;
 
-  @ApiProperty()
+  @ApiProperty({ type: [Number] })
   answerID: number[];
 }
 
@@ -66,5 +67,5 @@ export class ResultUserDto {
   userID: number;
 
   @ApiProperty({ type: [AnswersUserDto] })
-  AnswersUserDto: AnswersUserDto[];
+  AnswersUsers: AnswersUserDto[];
 }
