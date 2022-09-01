@@ -16,6 +16,7 @@ import { TopicCategoryEnum } from '@monorepo/multichoice/constant';
 import { copyClipboard } from '../../helper/copyClipboard';
 import { notify } from '../../helper/notify';
 import { iNotification } from 'react-notifications-component';
+import { secondsToMinutes } from '../../utils/minutesToSeconds';
 
 export type CategoryType = keyof typeof TopicCategoryEnum;
 export interface ITestItem {
@@ -74,7 +75,7 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
           </li>
           <li className="flex items-center text-sm mr-3">
             <AiOutlineFieldTime className="text-slate-800 mr-1 text-base" />
-            <span>{test.expirationTime} phút</span>
+            <span>{secondsToMinutes(test.expirationTime)} phút</span>
           </li>
           <li>
             <Badge title={test.typeCategoryName} type={test.typeCategoryName} />

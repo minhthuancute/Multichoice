@@ -1,6 +1,6 @@
 import React from 'react';
 import Input from '../../../components/Commons/Input/Input';
-import { examStore } from '../../../store/rootReducer';
+import { examStore, IInforUserDoExam } from '../../../store/rootReducer';
 import * as yup from 'yup';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -11,9 +11,8 @@ import {
 import { notify } from '../../../helper/notify';
 import { iNotification } from 'react-notifications-component';
 import { useNavigate } from 'react-router-dom';
-import { sessionServices } from '../../../services/SessionServices';
-import { USER_DO_EXAM } from '../../../constants/contstants';
-import imgExam from '../../../assets/images/bg-exam.png';
+import { START_TIME } from '../../../constants/contstants';
+import { localServices } from '../../../services/LocalServices';
 
 const schemaInfor = yup
   .object()
@@ -28,7 +27,7 @@ interface IColectInfor {
 
 const CollectInfor: React.FC = () => {
   const navigate = useNavigate();
-  const { exam } = examStore();
+  const { exam, setUserData } = examStore();
 
   const {
     register,
@@ -47,10 +46,15 @@ const CollectInfor: React.FC = () => {
         username: formData.user_name,
       };
       const { data } = await examServices.startExam(payload);
-      console.log(data);
 
       if (data.success) {
-        sessionServices.setData(USER_DO_EXAM, formData.user_name);
+        localServices.setData(START_TIME, Date.now());
+
+        setUserData({
+          user_name: formData.user_name,
+          user_id: data.data.userid,
+        } as IInforUserDoExam);
+
         const urlNavigate = '/exam/' + exam.url + '/do-exam';
         navigate(urlNavigate);
       }

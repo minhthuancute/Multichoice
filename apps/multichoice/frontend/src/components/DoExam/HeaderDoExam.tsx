@@ -1,22 +1,24 @@
 import React from 'react';
-import { USER_DO_EXAM } from '../../constants/contstants';
-import { sessionServices } from '../../services/SessionServices';
+import { START_TIME } from '../../constants/contstants';
+import { localServices } from '../../services/LocalServices';
+import { examStore } from '../../store/rootReducer';
+import CountDown from '../Commons/CountDown/CountDown';
 
 const HeaderDoExam: React.FC = () => {
-  const user_name = sessionServices.getData(USER_DO_EXAM);
+  const { exam, userDoExam } = examStore();
+
+  const startTime: number = localServices.getData(START_TIME) || 0;
+  const endTime: number = +exam.expirationTime;
 
   return (
-    <header
-      className="header px-10 py-4 flex items-center justify-between
-    shadow-md"
-    >
-      <div className="header-left">
-        <h1 className="logo font-semibold text-xl">MultiChoice</h1>
-      </div>
-      <div className="header-right">
-        <p className="text-tiny text-slate-800">
-          Hello, <span className="font-semibold">{user_name}</span>
-        </p>
+    <header className="header py-4 shadow-md bg-primary-900">
+      <div className="container flex items-center justify-between">
+        <div className="header-left">
+          <p className="text-tiny text-white">Hello, {userDoExam.user_name}</p>
+        </div>
+        <div className="header-right">
+          <CountDown startTime={startTime} endTime={endTime} />
+        </div>
       </div>
     </header>
   );
