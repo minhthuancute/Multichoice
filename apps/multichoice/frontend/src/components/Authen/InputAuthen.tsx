@@ -1,7 +1,6 @@
 import React, { HTMLInputTypeAttribute, useState } from 'react';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import { classNames } from '../../helper/classNames';
-import './authen.scss';
 
 export interface IInputAuthen {
   defaultValue?: string;
@@ -17,13 +16,13 @@ export interface IInputAuthen {
 }
 
 const InputAuthen: React.FC<IInputAuthen> = ({
-  defaultValue,
+  defaultValue = '',
   className,
-  id,
-  registerField,
-  isError,
-  errMessage,
-  Icon,
+  id = '',
+  registerField = null,
+  isError = false,
+  errMessage = '',
+  Icon = '',
   placeholder,
   typeInput = 'text',
 }) => {
@@ -52,10 +51,10 @@ const InputAuthen: React.FC<IInputAuthen> = ({
           placeholder={placeholder}
           defaultValue={defaultValue}
           className={classNames(
-            `transition-all duration-200 w-full text-stone-600 outline-none border px-2.5 py-4 border-solid
-              border-stone-200 focus:border-primary rounded-md`,
+            `transition-all duration-200 w-full text-stone-600 outline-none border px-2.5 py-3 border-solid
+            border-stone-200 focus:border-primary-900 rounded-md text-sm placeholder:text-sm`,
             {
-              'border-stone-200 focus:border-primary': !isError,
+              'border-stone-200 focus:border-primary-900': !isError,
               'border-red-500 focus:border-red-500': isError,
               'pl-9': Icon,
               'pl-2.5': !Icon,
@@ -66,12 +65,14 @@ const InputAuthen: React.FC<IInputAuthen> = ({
           htmlFor="password"
           className="absolute inline-block px-2 left-0 top-1/2 transform -translate-y-1/2"
         >
-          <Icon
-            className={classNames('transition-all duration-200 text-xl', {
-              'fill-slate-400': !isError,
-              'fill-red-500': isError,
-            })}
-          />
+          {Icon && (
+            <Icon
+              className={classNames('transition-all duration-200 text-xl', {
+                'fill-slate-400': !isError,
+                'fill-red-500': isError,
+              })}
+            />
+          )}
         </label>
 
         {/* toggle password */}

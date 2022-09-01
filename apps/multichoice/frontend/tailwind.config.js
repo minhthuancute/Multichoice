@@ -12,14 +12,41 @@ module.exports = {
     ...createGlobPatternsForDependencies(__dirname),
   ],
   theme: {
+    container: {
+      center: true,
+    },
+    fontSize: {
+      xs: '0.75rem',
+      sm: '0.875rem',
+      tiny: '0.9375rem',
+      base: '1rem',
+      lg: '1.125rem',
+      xl: '1.25rem',
+      '2xl': '1.5rem',
+      '3xl': '1.875rem',
+      '4xl': '2.25rem',
+      '5xl': '3rem',
+      '6xl': '4rem',
+      '7xl': '5rem',
+    },
     extend: {
       backgroundImage: {
         authen: "url('/assets/images/bg-login.jpg')",
+        notfound: "url('/assets/images/pagenotfound.png')",
+        exam: "url('/assets/images/bg-exam.avif')",
       },
     },
     colors: {
       ...baseColors,
-      primary: '#1e85ff',
+      primary: {
+        800: '#316B83',
+        900: '#316B83',
+      },
+      secondary: {
+        700: '#f1f2f6',
+        800: '#256D85',
+      },
+
       black: '#1c2437',
     },
     screens: {

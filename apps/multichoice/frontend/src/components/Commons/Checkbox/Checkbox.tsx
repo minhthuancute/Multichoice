@@ -1,14 +1,23 @@
 import React, { useState } from 'react';
 import { BsCheck } from 'react-icons/bs';
+import { classNames } from '../../../helper/classNames';
 import './checkbox.scss';
 
 interface CheckboxProps {
+  disable?: boolean;
+  registerField?: any;
+  id: string;
+  className?: string;
   isChecked?: boolean;
   textLabel?: string;
   onChange?: (isChecked: boolean) => void;
 }
 
 const Checkbox: React.FC<CheckboxProps> = ({
+  disable = false,
+  registerField = null,
+  id = '',
+  className = '',
   isChecked = false,
   onChange,
   textLabel,
@@ -22,24 +31,41 @@ const Checkbox: React.FC<CheckboxProps> = ({
     }
   };
 
+  const onCLickLabel = (e: React.FormEvent<HTMLElement>): void => {
+    if (disable) {
+      e.preventDefault();
+      return;
+    } else {
+      onChangeCheckbox();
+    }
+  };
+
   return (
-    <div className={'wrapper-input flex items-center'}>
+    <div
+      className={classNames(['wrapper-input flex items-center', className], {
+        'opacity-40': disable,
+      })}
+    >
       <input
+        {...registerField}
         hidden
         defaultChecked={isChecked}
         type="checkbox"
-        id="remember"
-        onChange={() => onChangeCheckbox()}
+        id={id}
       />
 
       <label
-        htmlFor="remember"
-        className="flex items-center cursor-pointer text-sm"
+        htmlFor={id}
+        onClick={(e: React.FormEvent<HTMLElement>) => onCLickLabel(e)}
+        className={classNames('flex items-center cursor-pointer text-sm', {
+          'cursor-not-allowed': disable,
+        })}
       >
         <div className="box mr-2 w-4 h-4 rounded-sm border border-solid border-slate-400">
           <BsCheck className="icon opacity-0 fill-white" />
         </div>
         <span
+          className="text-slate-800 text-sm"
           dangerouslySetInnerHTML={{
             __html: textLabel ? textLabel : '',
           }}
