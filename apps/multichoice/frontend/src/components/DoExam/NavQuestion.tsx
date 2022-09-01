@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { classNames } from '../../helper/classNames';
 import { examStore } from '../../store/rootReducer';
 import { IQuestion } from '../../types';
@@ -13,8 +12,6 @@ const NavQuestion: React.FC<INavQuestion> = ({
   indexQuestion = 0,
   setIndexQuestion,
 }) => {
-  const navigate = useNavigate();
-
   const {
     exam: { questions },
   } = examStore();
@@ -24,7 +21,7 @@ const NavQuestion: React.FC<INavQuestion> = ({
   };
 
   return (
-    <div className="shadow-xl w-full min-h-[400px] ml-6 p-8 bg-slate-50 ">
+    <div className="shadow-xl w-full min-h-[420px] px-8 py-6 bg-slate-50 ">
       <h2 className="text-center text-xl text-slate-800">Danh sách câu hỏi</h2>
       <ul className="mt-2 overflow-auto h-max">
         {questions &&

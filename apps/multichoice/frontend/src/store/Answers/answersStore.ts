@@ -3,13 +3,13 @@ import { devtools, persist } from 'zustand/middleware';
 
 export interface IAnswers {
   questionID: number;
-  answersID: number[];
+  answerID: number[];
 }
 
 export interface IAnswersStore {
   answers: IAnswers[];
   setAnswers: (answers: IAnswers[]) => void;
-  updateAnswer: (questionID: number, answersID: number[]) => void; // for update correct answer
+  updateAnswer: (questionID: number, answerID: number[]) => void; // for update correct answer
   addAnswer: (answer: IAnswers) => void;
 }
 
@@ -27,7 +27,7 @@ export const answerStore = create<IAnswersStore>()(
           }),
 
         // for update correct answer
-        updateAnswer: (questionID: number, answersID) =>
+        updateAnswer: (questionID: number, answerID) =>
           set((state) => {
             const tempAnswers = [...state.answers];
             const answerIndex = tempAnswers.findIndex((answer: IAnswers) => {
@@ -36,7 +36,7 @@ export const answerStore = create<IAnswersStore>()(
             console.log(answerIndex);
 
             if (answerIndex !== -1) {
-              tempAnswers[answerIndex].answersID = answersID;
+              tempAnswers[answerIndex].answerID = answerID;
             }
             return {
               answers: tempAnswers,
