@@ -1,6 +1,7 @@
 import React from 'react';
+import { BiCheckDouble } from 'react-icons/bi';
 import { classNames } from '../../helper/classNames';
-import { examStore } from '../../store/rootReducer';
+import { answerStore, examStore } from '../../store/rootReducer';
 import { IQuestion } from '../../types';
 
 interface INavQuestion {
@@ -15,6 +16,7 @@ const NavQuestion: React.FC<INavQuestion> = ({
   const {
     exam: { questions },
   } = examStore();
+  const { answers } = answerStore();
 
   const navigateQuestion = (index: number) => {
     setIndexQuestion(index);
@@ -28,10 +30,17 @@ const NavQuestion: React.FC<INavQuestion> = ({
           questions.map((question: IQuestion, index: number) => {
             return (
               <li
-                className="mb-1.5 last:mb-0 cursor-pointer"
+                className="mb-1.5 last:mb-0 cursor-pointer flex items-center"
                 onClick={() => navigateQuestion(index)}
                 key={question.id}
               >
+                <BiCheckDouble
+                  className={classNames('mr-2', {
+                    'opacity-50': answers[index].answerID.length === 0,
+                    'opacity-100 text-green-500':
+                      answers[index].answerID.length !== 0,
+                  })}
+                />
                 <h4
                   className={classNames(
                     `text-sm whitespace-nowrap overflow-ellipsis overflow-hidden text-slate-800

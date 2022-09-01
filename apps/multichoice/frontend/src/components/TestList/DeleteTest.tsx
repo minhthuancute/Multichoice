@@ -30,7 +30,7 @@ const DeleteTest: React.FC<IDeleteTest> = ({
 
   return (
     <Modal openModal={openModalDelete}>
-      <div className="modal-content mt-10 px-5 flex flex-col justify-center bg-white rounded-md max-w-lg w-full h-60">
+      <div className="modal-content mx-auto mt-10 px-5 flex flex-col justify-center bg-white rounded-md max-w-lg w-full h-60">
         <div className="header text-center">
           <RiErrorWarningLine className="text-red-600 text-5xl mx-auto" />
           <h4 className="mt-4 text-slate-800 text-tiny">

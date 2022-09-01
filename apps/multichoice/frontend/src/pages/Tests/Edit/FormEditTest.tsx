@@ -16,6 +16,7 @@ import TextArea from '../../../components/Commons/TextArea/TextArea';
 import { IoMdClose } from 'react-icons/io';
 import ToolTip from '../../../components/Commons/ToolTip/ToolTip';
 import { topicStore } from '../../../store/rootReducer';
+import { secondsToMinutes } from '../../../utils/minutesToSeconds';
 
 const schemaFormLogin = yup.object().shape({
   timeType: yup.string().required(),
@@ -83,7 +84,7 @@ const FormEditTest: React.FC<IFormEditTest> = ({ setOpenModalEditTest }) => {
     setValue('typeCategoryName', typeCategoryName);
     setValue('title', title);
     setValue('description', description || '');
-    setValue('expirationTime', expirationTime);
+    setValue('expirationTime', +secondsToMinutes(+expirationTime));
   };
 
   useLayoutEffect(() => {
@@ -145,7 +146,7 @@ const FormEditTest: React.FC<IFormEditTest> = ({ setOpenModalEditTest }) => {
         </div>
         <Input
           registerField={register('expirationTime')}
-          defaultValue={expirationTime}
+          defaultValue={+secondsToMinutes(+expirationTime)}
           typeInput="number"
           textLabel="Thời gian làm bài (phút)"
           id="expirationTime"

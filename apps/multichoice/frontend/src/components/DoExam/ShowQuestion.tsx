@@ -19,7 +19,6 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
     exam: { questions },
   } = examStore();
   const { userDoExam } = examStore();
-
   const { answers, updateAnswer } = answerStore();
 
   const questionLength = questions.length;
@@ -61,6 +60,12 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
     }
   };
 
+  const isCheckAnswer = (answerID: number): boolean => {
+    const shouldChecked = answers[indexQuestion].answerID.includes(answerID);
+
+    return shouldChecked;
+  };
+
   if (!questions.length) {
     return null;
   }
@@ -99,6 +104,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
                         name={'correct-answer'}
                         id={'correct-answer-' + index}
                         className="peer"
+                        checked={isCheckAnswer(answers.id)}
                       />
                       <div
                         className="radio mt-0.5 w-4 h-4 border border-solid rounded-full
