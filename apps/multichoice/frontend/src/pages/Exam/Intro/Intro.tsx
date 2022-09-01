@@ -21,7 +21,7 @@ const Intro: React.FC = () => {
         (questions: IQuestion) => {
           const tempArr: IAnswers = {
             questionID: questions.id,
-            answersID: [],
+            answerID: [],
           };
           return tempArr;
         }

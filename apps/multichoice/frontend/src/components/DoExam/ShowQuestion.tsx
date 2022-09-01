@@ -1,5 +1,8 @@
 import React from 'react';
 import { BiSkipNext, BiSkipPrevious } from 'react-icons/bi';
+import { iNotification } from 'react-notifications-component';
+import { notify } from '../../helper/notify';
+import { examServices, IPayloadEndExam } from '../../services/ExamServices';
 import { answerStore, examStore } from '../../store/rootReducer';
 import { IAnswer } from '../../types';
 
@@ -15,8 +18,9 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
   const {
     exam: { questions },
   } = examStore();
+  const { userDoExam } = examStore();
 
-  const { updateAnswer } = answerStore();
+  const { answers, updateAnswer } = answerStore();
 
   const questionLength = questions.length;
   const nextQuestion = (e: React.MouseEvent<HTMLElement>) => {
@@ -35,11 +39,26 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
     setIndexQuestion(indexQuestion - 1);
   };
 
-  const onChooseAnswer = (answersID: number) => {
+  const onChooseAnswer = (answerID: number) => {
     const questionID = questions[indexQuestion].id;
-    console.log(questionID);
+    updateAnswer(questionID, [answerID]);
+  };
 
-    updateAnswer(questionID, [answersID]);
+  const onSumitAnswers = async () => {
+    try {
+      const payload: IPayloadEndExam = {
+        userID: userDoExam.user_id,
+        AnswersUsers: answers,
+      } as IPayloadEndExam;
+      const { data } = await examServices.submitExam(payload);
+      if (data.succes) {
+        notify({
+          message: 'Nộp bài thành công!',
+        } as iNotification);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   if (!questions.length) {
@@ -51,6 +70,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
       <button
         className="px-6 py-2 bg-red-600 rounded-md text-sm
           text-white flex items-center ml-auto mb-4 font-semibold"
+        onClick={() => onSumitAnswers()}
       >
         Nộp bài
       </button>

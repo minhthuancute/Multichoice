@@ -19,6 +19,7 @@ import {
 import { topicServices } from '../../services/TopicServices';
 import { useNavigate } from 'react-router-dom';
 import { topicStore } from '../../store/rootReducer';
+import { minutesToSeconds } from '../../utils/minutesToSeconds';
 
 const schemaFormLogin = yup.object().shape({
   timeType: yup.string().required(),
@@ -103,6 +104,7 @@ const FormCreateTest: React.FC<IFormCreateTest> = forwardRef((props, ref) => {
     formData: CreateTopicDto
   ) => {
     try {
+      formData.expirationTime = minutesToSeconds(formData.expirationTime);
       const { data } = await topicServices.createTopic(formData);
       console.log(data);
       if (data.success) {
