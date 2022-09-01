@@ -41,9 +41,18 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
   };
 
   const onCopyClipboard = () => {
+    const canExam = test.questionCount !== 0;
+    if (!canExam) {
+      notify({
+        message: 'Bạn không thể tạo đợt thi do bộ đề chưa có câu hỏi!',
+        type: 'danger',
+      } as iNotification);
+      return;
+    }
+
     copyClipboard(examUrl());
     notify({
-      message: 'Liên kết đã được sao chép!',
+      message: 'Liên kết đã được lưu trữ vào bộ nhớ tạm.',
       type: 'success',
     } as iNotification);
   };
@@ -104,7 +113,9 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
       >
         <div className="left">
           <span className="text-sm text-slate-900 inline-block">
-            {examUrl()}
+            {test.questionCount === 0
+              ? 'Bộ đề chưa có câu hỏi nào. Hãy thêm câu hỏi cho bộ đề'
+              : examUrl()}
           </span>
         </div>
         <div className="right">

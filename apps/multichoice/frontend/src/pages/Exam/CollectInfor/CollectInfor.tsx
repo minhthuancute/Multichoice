@@ -1,5 +1,4 @@
-import React, { createRef } from 'react';
-import imgExam from '../../../assets/images/bg-exam.avif';
+import React from 'react';
 import Input from '../../../components/Commons/Input/Input';
 import { examStore } from '../../../store/rootReducer';
 import * as yup from 'yup';
@@ -14,6 +13,7 @@ import { iNotification } from 'react-notifications-component';
 import { useNavigate } from 'react-router-dom';
 import { sessionServices } from '../../../services/SessionServices';
 import { USER_DO_EXAM } from '../../../constants/contstants';
+import imgExam from '../../../assets/images/bg-exam.png';
 
 const schemaInfor = yup
   .object()
@@ -65,20 +65,20 @@ const CollectInfor: React.FC = () => {
   return (
     <div className="container h-screen flex items-center">
       <form
-        className="form colect-infor max-h-[500px] h-full w-full flex items-center
-        shadow-xl
-        "
+        className="form colect-infor max-h-[450px] h-full w-full flex items-center
+        shadow-xl"
         onSubmit={handleSubmit(onSubmit)}
       >
         <div className="left h-full w-[500px]">
           <img
-            src={imgExam}
+            // src={require('../../../assets/images/bg-exam.png')}
+            src="https://images.unsplash.com/photo-1457369804613-52c61a468e7d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
             alt="exam multichoice"
             className="block h-full w-full object-cover"
           />
         </div>
         <div className="right flex-1 h-full relative">
-          <div className="top absolute w-full top-1/2 transform -translate-y-1/2">
+          <div className="top absolute w-full top-8 transform">
             <div className="text-center">
               <h4 className="text-slate-800 text-3xl">{exam.title}</h4>
               <p className="mt-2">{exam.description}</p>

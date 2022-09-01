@@ -7,7 +7,7 @@ const MainDoExam: React.FC = () => {
 
   return (
     <div>
-      <div className="max-w-[1200px] mx-auto flex mt-10">
+      <div className="container mx-auto flex mt-10">
         <div className="w-2/3">
           <ShowQuestion
             indexQuestion={indexQuestion}

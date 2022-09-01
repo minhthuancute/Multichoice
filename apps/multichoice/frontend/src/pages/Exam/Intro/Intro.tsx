@@ -4,7 +4,7 @@ import { examServices } from '../../../services/ExamServices';
 import { examStore, answerStore, IAnswers } from '../../../store/rootReducer';
 import { IExamResponse, IQuestion } from '../../../types';
 
-import imgExam from '../../../assets/images/bg-exam.avif';
+import imgExam from '../../../assets/images/bg-exam.png';
 
 const Intro: React.FC = () => {
   const { exam_id } = useParams();
@@ -43,12 +43,13 @@ const Intro: React.FC = () => {
   return (
     <div className="container h-screen flex items-center">
       <div
-        className="colect-infor max-h-[500px] h-full w-full flex items-center
+        className="colect-infor max-h-[450px] h-full w-full flex items-center
         shadow-xl"
       >
         <div className="left h-full w-[500px]">
           <img
-            src={imgExam}
+            // src={imgExam}
+            src="https://images.unsplash.com/photo-1457369804613-52c61a468e7d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
             alt="exam multichoice"
             className="block h-full w-full object-cover"
           />
@@ -62,7 +63,7 @@ const Intro: React.FC = () => {
             <div className="pt-8 px-10">
               <Link
                 to="login"
-                className="create-test btn-primary rounded-md flex justify-center items-center w-full h-12 text-sm
+                className="create-test btn-primary rounded-md flex justify-center items-center w-full h-11 text-sm
               text-white font-bold bg-primary-900 transition-all duration-200 hover:bg-opacity-90"
               >
                 Tham gia ngay
