@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BiSkipNext, BiSkipPrevious } from 'react-icons/bi';
 import { answerStore, examStore } from '../../store/rootReducer';
 import { IAnswer } from '../../types';
@@ -35,17 +35,25 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
     setIndexQuestion(indexQuestion - 1);
   };
 
-  const onChooseAnswer = (answersID: string) => {
+  const onChooseAnswer = (answersID: number) => {
     const questionID = questions[indexQuestion].id;
-    updateAnswer(questionID, answersID);
+    console.log(questionID);
+
+    updateAnswer(questionID, [answersID]);
   };
 
-  if (!questions) {
+  if (!questions.length) {
     return null;
   }
 
   return (
     <div className=" w-full h-max">
+      <button
+        className="px-6 py-2 bg-red-600 rounded-md text-sm
+          text-white flex items-center ml-auto mb-4 font-semibold"
+      >
+        Nộp bài
+      </button>
       <div className="p-10 bg-slate-50 shadow-xl">
         <h4 className="text-slate-800 text-xl font-semibold">
           Câu hỏi {indexQuestion + 1}:{' '}
@@ -59,9 +67,10 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
                 return (
                   <label
                     className="text-tiny text-slate-800 mb-3 last:mb-0
-                    flex items-center cursor-pointer group"
+                    flex items-center cursor-pointer w-max group"
                     htmlFor={'correct-answer-' + index}
                     key={answers.id}
+                    onClick={() => onChooseAnswer(answers.id)}
                   >
                     <div className="checkbox mr-4">
                       <input

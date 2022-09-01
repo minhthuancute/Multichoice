@@ -24,9 +24,9 @@ const NavQuestion: React.FC<INavQuestion> = ({
   };
 
   return (
-    <div className="shadow-xl w-full h-[600px] ml-6 p-8 bg-slate-50 ">
+    <div className="shadow-xl w-full min-h-[400px] ml-6 p-8 bg-slate-50 ">
       <h2 className="text-center text-xl text-slate-800">Danh sách câu hỏi</h2>
-      <ul className="mt-2 overflow-auto h-[500px]">
+      <ul className="mt-2 overflow-auto h-max">
         {questions &&
           questions.map((question: IQuestion, index: number) => {
             return (
