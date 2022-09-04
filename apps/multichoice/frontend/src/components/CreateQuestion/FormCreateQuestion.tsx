@@ -49,6 +49,7 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
     const submitBtnRef: any = useRef<HTMLButtonElement>(null);
 
     const {
+      resetField,
       register,
       handleSubmit,
       setValue,
@@ -136,12 +137,15 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
     };
 
     const onRemoveAnswer = (indexAnswer: number) => {
+      resetField('answers');
+
       const answers = getValues('answers');
       if (answers) {
         const filterAnswer = answers.filter((_, index) => {
           return indexAnswer !== index;
         });
         setValue('answers', filterAnswer);
+        resetField('answers');
       }
     };
 

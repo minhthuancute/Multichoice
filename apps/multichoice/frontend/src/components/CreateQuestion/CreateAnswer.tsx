@@ -1,12 +1,13 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { CreatAnswer } from '@monorepo/multichoice/dto';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { generateArray } from '../../utils/generateArray';
 import AnswerItem from './AnswerItem';
 import { HiInformationCircle } from 'react-icons/hi';
-import { Store } from 'react-notifications-component';
+import { iNotification } from 'react-notifications-component';
+import { notify } from '../../helper/notify';
 
 const answerSchema = yup.object().shape({
   answers: yup.array().of(
@@ -40,7 +41,9 @@ const CreateAnswer: React.FC<ICreateAnswer> = ({
   });
 
   const [answerLength, setAnswerLength] = useState<number[]>(generateArray(4));
-  const [correctAnswer, setCorrectAnswer] = useState<number>(-1);
+  const [correctAnswer, setCorrectAnswer] = useState<string>('');
+  // const answers = getValues('answers' as any);
+  // console.log(answers);
 
   const addNewAnswer = () => {
     if (answerLength.length > 64) {
@@ -55,20 +58,20 @@ const CreateAnswer: React.FC<ICreateAnswer> = ({
 
   const onDeleteAnswer = (index: number) => {
     if (answerLength.length - 1 === 1) {
-      Store.addNotification({
+      notify({
         message: 'Minimum number of answers is two !',
         type: 'danger',
-        insert: 'top',
-        container: 'top-right',
-        animationIn: ['animate__animated', 'animate__fadeIn'],
-        animationOut: ['animate__animated', 'animate__fadeOut'],
-        dismiss: {
-          duration: 1500,
-          onScreen: true,
-        },
-      });
+      } as iNotification);
+
       return;
     }
+
+    const nameContent = `answers[${index}].content` as any;
+    const valueItem = getValues(nameContent) as any;
+    if (valueItem === correctAnswer) {
+      setCorrectAnswer('');
+    }
+
     const filterAnswerLength = answerLength.filter((item: number) => {
       return item !== index;
     });
@@ -85,10 +88,10 @@ const CreateAnswer: React.FC<ICreateAnswer> = ({
   };
 
   const indexCorrectAnswer = (answers: CreatAnswer[] = []) => {
-    const indexCorrect = answers.findIndex((answer: CreatAnswer) => {
+    const valueCorrect = answers.find((answer: CreatAnswer) => {
       return answer.isCorrect;
-    });
-    setCorrectAnswer(indexCorrect);
+    })?.content;
+    setCorrectAnswer(valueCorrect || '');
   };
 
   useEffect(() => {
@@ -112,21 +115,22 @@ const CreateAnswer: React.FC<ICreateAnswer> = ({
         </div>
         <div className="answer-body">
           {answerLength.map((item: number, index: number) => {
-            // const nameContent = `answers[${index}].content` as any;
-            // const nameIsCorrect = `answers[${index}].isCorrect` as any;
             const nameContent = `answers[${index}].content` as any;
             const nameIsCorrect = `answers[${index}].isCorrect` as any;
 
             const registerContent = register(nameContent);
             const registerIsCorrect = register(nameIsCorrect);
 
+            // answers={getValues('answers' as any)}
+
             return (
               <AnswerItem
                 key={item}
-                indexCorrectAnswers={correctAnswer}
                 registerFieldContent={registerContent}
                 registerFieldIsCorrect={registerIsCorrect}
                 onDeleteAnswer={onDeleteAnswer}
+                correctAnswer={correctAnswer}
+                answerValue={(getValues(nameContent) as any) || ''}
                 indexAnswer={item}
                 indexAscii={index}
               />
