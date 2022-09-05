@@ -16,7 +16,10 @@ import TextArea from '../../../components/Commons/TextArea/TextArea';
 import { IoMdClose } from 'react-icons/io';
 import ToolTip from '../../../components/Commons/ToolTip/ToolTip';
 import { topicStore } from '../../../store/rootReducer';
-import { secondsToMinutes } from '../../../utils/minutesToSeconds';
+import {
+  minutesToSeconds,
+  secondsToMinutes,
+} from '../../../utils/minutesToSeconds';
 
 const schemaFormLogin = yup.object().shape({
   timeType: yup.string().required(),
@@ -115,6 +118,7 @@ const FormEditTest: React.FC<IFormEditTest> = ({ setOpenModalEditTest }) => {
     formData: CreateTopicDto
   ) => {
     try {
+      formData.expirationTime = minutesToSeconds(formData.expirationTime);
       const id = topicId || -1;
       const { data } = await topicServices.updateTopicById(+id, formData);
       console.log(data);

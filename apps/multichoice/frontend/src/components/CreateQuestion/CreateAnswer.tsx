@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { CreatAnswer } from '@monorepo/multichoice/dto';
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { generateArray } from '../../utils/generateArray';
@@ -19,7 +19,7 @@ const answerSchema = yup.object().shape({
 });
 
 interface ICreateAnswer {
-  onRemoveAnswer: (index: number) => void;
+  onRemoveAnswer: (filterAnswer: CreatAnswer[]) => void;
   onAddAnswer: (answers: CreatAnswer[]) => void;
   invalidAnswers?: boolean;
 }
@@ -42,8 +42,6 @@ const CreateAnswer: React.FC<ICreateAnswer> = ({
 
   const [answerLength, setAnswerLength] = useState<number[]>(generateArray(4));
   const [correctAnswer, setCorrectAnswer] = useState<string>('');
-  // const answers = getValues('answers' as any);
-  // console.log(answers);
 
   const addNewAnswer = () => {
     if (answerLength.length > 64) {
@@ -82,8 +80,13 @@ const CreateAnswer: React.FC<ICreateAnswer> = ({
       resetField('answers' as any);
     }
 
+    const answers: any = getValues('answers' as any);
+    const filterAnswer = answers.filter((_: any, indexAnswer: number) => {
+      return indexAnswer !== index;
+    });
+
     setAnswerLength(filterAnswerLength);
-    onRemoveAnswer(index);
+    onRemoveAnswer(filterAnswer);
     remove(index);
   };
 
@@ -121,8 +124,6 @@ const CreateAnswer: React.FC<ICreateAnswer> = ({
             const registerContent = register(nameContent);
             const registerIsCorrect = register(nameIsCorrect);
 
-            // answers={getValues('answers' as any)}
-
             return (
               <AnswerItem
                 key={item}
@@ -131,7 +132,7 @@ const CreateAnswer: React.FC<ICreateAnswer> = ({
                 onDeleteAnswer={onDeleteAnswer}
                 correctAnswer={correctAnswer}
                 answerValue={(getValues(nameContent) as any) || ''}
-                indexAnswer={item}
+                indexAnswer={index}
                 indexAscii={index}
               />
             );

@@ -136,14 +136,11 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
       clearErrors('answers');
     };
 
-    const onRemoveAnswer = (indexAnswer: number) => {
+    const onRemoveAnswer = (filterAnswer: CreatAnswer[]) => {
       resetField('answers');
 
       const answers = getValues('answers');
       if (answers) {
-        const filterAnswer = answers.filter((_, index) => {
-          return indexAnswer !== index;
-        });
         setValue('answers', filterAnswer);
         resetField('answers');
       }

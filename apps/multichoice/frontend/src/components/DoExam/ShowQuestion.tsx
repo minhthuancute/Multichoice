@@ -1,14 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BiSkipNext, BiSkipPrevious } from 'react-icons/bi';
 import { iNotification } from 'react-notifications-component';
 import { notify } from '../../helper/notify';
 import { examServices, IPayloadEndExam } from '../../services/ExamServices';
 import { answerStore, examStore } from '../../store/rootReducer';
 import { IAnswer } from '../../types';
+import ExamResult from './ExamResult';
 
 interface IShowQuestion {
   indexQuestion: number;
   setIndexQuestion: React.Dispatch<React.SetStateAction<number>>;
+}
+
+interface IExamResult {
+  user_name: string;
+  point: number;
 }
 
 const ShowQuestion: React.FC<IShowQuestion> = ({
@@ -20,6 +26,9 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
   } = examStore();
   const { userDoExam } = examStore();
   const { answers, updateAnswer } = answerStore();
+
+  const [openModalResult, setOpenModalResult] = useState<boolean>(false);
+  const [examResult, setExamResult] = useState<IExamResult>();
 
   const questionLength = questions.length;
   const nextQuestion = (e: React.MouseEvent<HTMLElement>) => {
@@ -43,6 +52,8 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
     updateAnswer(questionID, [answerID]);
   };
 
+  // const count
+
   const onSumitAnswers = async () => {
     try {
       const payload: IPayloadEndExam = {
@@ -50,13 +61,23 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
         AnswersUsers: answers,
       } as IPayloadEndExam;
       const { data } = await examServices.submitExam(payload);
-      if (data.succes) {
+
+      if (data.success) {
+        setExamResult({
+          user_name: data.data.username,
+          point: data.data.point,
+        } as IExamResult);
+
+        setOpenModalResult(true);
         notify({
           message: 'Nộp bài thành công!',
         } as iNotification);
       }
     } catch (error) {
-      console.log(error);
+      notify({
+        message: 'Bạn đã nộp bài thi!',
+        type: 'danger',
+      } as iNotification);
     }
   };
 
@@ -71,10 +92,19 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
   }
 
   return (
-    <div className=" w-full h-max">
+    <div className="w-full">
+      <ExamResult
+        setOpenModalResult={setOpenModalResult}
+        openModalResult={openModalResult}
+        user_name={examResult?.user_name || ''}
+        point={examResult?.point || 0}
+      />
+
       <button
-        className="px-6 py-2 bg-red-600 rounded-md text-sm
-          text-white flex items-center ml-auto mb-4 font-semibold"
+        className="px-6 py-2.5 bg-violet-600 rounded-md text-sm
+        text-white flex items-center ml-auto mb-4 font-semibold
+        focus:ring-violet-300 focus:ring
+        "
         onClick={() => onSumitAnswers()}
       >
         Nộp bài
@@ -99,6 +129,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
                   >
                     <div className="checkbox mr-4">
                       <input
+                        readOnly
                         hidden
                         type="radio"
                         name={'correct-answer'}
@@ -110,8 +141,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
                         className="radio mt-0.5 w-4 h-4 border border-solid rounded-full
                     border-primary-900 before:bg-primary-900 before:w-2.5 before:h-2.5 before:block
                     before:rounded-full flex items-center justify-center before:opacity-0
-                    peer-checked:before:opacity-100
-                    "
+                    peer-checked:before:opacity-100"
                       ></div>
                     </div>
                     <span className="font-semibold mr-2">
@@ -127,7 +157,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
       <div className="ctas mt-10 flex items-center justify-between">
         <button
           className="px-4 py-1 bg-primary-900 rounded-sm text-sm
-          text-white flex items-center"
+          text-white flex items-center focus:ring-primary-200 focus:ring"
           onClick={(e: React.MouseEvent<HTMLElement>) => preQuestion(e)}
         >
           <BiSkipPrevious className="mr-1 text-xl" />
@@ -135,7 +165,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
         </button>
         <button
           className="px-4 py-1 bg-primary-900 rounded-sm text-sm
-          text-white flex items-center"
+          text-white flex items-center focus:ring-primary-200 focus:ring"
           onClick={(e: React.MouseEvent<HTMLElement>) => nextQuestion(e)}
         >
           Câu hỏi sau

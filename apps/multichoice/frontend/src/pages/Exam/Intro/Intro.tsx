@@ -4,8 +4,6 @@ import { examServices } from '../../../services/ExamServices';
 import { examStore, answerStore, IAnswers } from '../../../store/rootReducer';
 import { IExamResponse, IQuestion } from '../../../types';
 
-import imgExam from '../../../assets/images/bg-exam.png';
-
 const Intro: React.FC = () => {
   const { exam_id } = useParams();
   const { setExamData } = examStore();

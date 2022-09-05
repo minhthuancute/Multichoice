@@ -1,5 +1,4 @@
 import React from 'react';
-import FooterDoExam from '../../../components/DoExam/FooterDoExam';
 import HeaderDoExam from '../../../components/DoExam/HeaderDoExam';
 import MainDoExam from '../../../components/DoExam/MainDoExam';
 
@@ -8,7 +7,6 @@ const DoExam: React.FC = () => {
     <div>
       <HeaderDoExam />
       <MainDoExam />
-      <FooterDoExam />
     </div>
   );
 };

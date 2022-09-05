@@ -1,5 +1,6 @@
 import create from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
+import { EXAM_DATA } from '../../constants/contstants';
 import { IExamResponse } from '../../types';
 
 export interface IInforUserDoExam {
@@ -36,7 +37,7 @@ export const examStore = create<IExamStore>()(
           }),
       }),
       {
-        name: 'exam',
+        name: EXAM_DATA,
       }
     )
   )
