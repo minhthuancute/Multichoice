@@ -32,12 +32,16 @@ const schemaFormLogin = yup.object().shape({
 
 interface IFormEditTest {
   setOpenModalEditTest: React.Dispatch<React.SetStateAction<boolean>>;
+  cbOnUpdateTopic: () => void;
 }
 
-const FormEditTest: React.FC<IFormEditTest> = ({ setOpenModalEditTest }) => {
+const FormEditTest: React.FC<IFormEditTest> = ({
+  setOpenModalEditTest,
+  cbOnUpdateTopic,
+}) => {
   const { id: topicId } = useParams();
 
-  const { topic, setTopicData } = topicStore();
+  const { topic } = topicStore();
   const { expirationTime, typeCategoryName, timeType, title, description } =
     topic;
 
@@ -104,15 +108,6 @@ const FormEditTest: React.FC<IFormEditTest> = ({ setOpenModalEditTest }) => {
     setValue('timeType', optionVal);
   };
 
-  const getTopicDetail = async () => {
-    try {
-      const { data } = await topicServices.getTopicById(topicId || '');
-      setTopicData(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   // create TOPIC
   const onSubmit: SubmitHandler<CreateTopicDto> = async (
     formData: CreateTopicDto
@@ -123,8 +118,8 @@ const FormEditTest: React.FC<IFormEditTest> = ({ setOpenModalEditTest }) => {
       const { data } = await topicServices.updateTopicById(+id, formData);
       console.log(data);
       if (data.success) {
-        getTopicDetail();
         setOpenModalEditTest(false);
+        cbOnUpdateTopic();
       }
     } catch (error) {
       console.log(error);

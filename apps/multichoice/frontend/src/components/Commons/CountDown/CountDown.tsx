@@ -1,6 +1,8 @@
 import React from 'react';
 import Countdown from 'react-countdown';
 import { AiOutlineClockCircle } from 'react-icons/ai';
+import { EXPRIED_EXAM } from '../../../constants/contstants';
+import { localServices } from '../../../services/LocalServices';
 
 interface Renderer {
   (props: any): React.ReactNode;
@@ -45,15 +47,18 @@ const CountDown: React.FC<ICountDown> = ({ startTime = 0, endTime = 1 }) => {
     }
   };
 
+  const onCompleted = () => {
+    localServices.setData(EXPRIED_EXAM, true);
+  };
+
   return (
-    <div>
-      <Countdown
-        date={startTime + endTime}
-        zeroPadTime={2}
-        zeroPadDays={0}
-        renderer={rendererCountdown}
-      />
-    </div>
+    <Countdown
+      date={startTime + endTime}
+      zeroPadTime={2}
+      zeroPadDays={0}
+      renderer={rendererCountdown}
+      onComplete={onCompleted}
+    />
   );
 };
 

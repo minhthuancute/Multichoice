@@ -57,7 +57,7 @@ const CreateAnswer: React.FC<ICreateAnswer> = ({
   const onDeleteAnswer = (index: number) => {
     if (answerLength.length - 1 === 1) {
       notify({
-        message: 'Minimum number of answers is two !',
+        message: 'Câu hỏi phải có ít nhất hai câu trả lời !',
         type: 'danger',
       } as iNotification);
 

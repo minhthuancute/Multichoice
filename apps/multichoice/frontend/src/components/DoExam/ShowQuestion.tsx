@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BiSkipNext, BiSkipPrevious } from 'react-icons/bi';
 import { iNotification } from 'react-notifications-component';
 import { notify } from '../../helper/notify';
 import { examServices, IPayloadEndExam } from '../../services/ExamServices';
-import { answerStore, examStore } from '../../store/rootReducer';
+import { answerStore, examStore, IAnswers } from '../../store/rootReducer';
 import { IAnswer } from '../../types';
 import ExamResult from './ExamResult';
+import ConfirmSubmit from './ConfirmSubmit';
+
+import './doExam.scss';
+import { localServices } from '../../services/LocalServices';
+import { START_TIME } from '../../constants/contstants';
+import { useNavigate, useParams } from 'react-router-dom';
 
 interface IShowQuestion {
   indexQuestion: number;
@@ -21,16 +27,23 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
   indexQuestion = 0,
   setIndexQuestion,
 }) => {
+  const navigate = useNavigate();
+  const { exam_id } = useParams();
+
   const {
     exam: { questions },
   } = examStore();
   const { userDoExam } = examStore();
+  const { exam, setUserData } = examStore();
   const { answers, updateAnswer } = answerStore();
 
+  const [confirmSubmit, setConfirmSubmit] = useState<boolean>(false);
+  const [openModalConfirm, setOpenModalConfirm] = useState<boolean>(false);
   const [openModalResult, setOpenModalResult] = useState<boolean>(false);
   const [examResult, setExamResult] = useState<IExamResult>();
 
   const questionLength = questions.length;
+
   const nextQuestion = (e: React.MouseEvent<HTMLElement>) => {
     if (indexQuestion + 1 >= questionLength) {
       e.preventDefault();
@@ -52,7 +65,12 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
     updateAnswer(questionID, [answerID]);
   };
 
-  // const count
+  const countUnSelectAnswer = (): number => {
+    const count = answers.filter((answer: IAnswers) => {
+      return answer.answerID.length === 0;
+    });
+    return count.length;
+  };
 
   const onSumitAnswers = async () => {
     try {
@@ -73,13 +91,28 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
           message: 'Nộp bài thành công!',
         } as iNotification);
       }
-    } catch (error) {
+    } catch (error: any) {
+      console.log(error);
+
       notify({
-        message: 'Bạn đã nộp bài thi!',
+        message: error.response.data.message,
         type: 'danger',
       } as iNotification);
     }
+    setOpenModalConfirm(false);
+    setConfirmSubmit(false);
   };
+
+  const onCancleModalConfirm = () => {
+    setOpenModalConfirm(false);
+    setConfirmSubmit(false);
+  };
+
+  useEffect(() => {
+    if (confirmSubmit) {
+      onSumitAnswers();
+    }
+  }, [confirmSubmit]);
 
   const isCheckAnswer = (answerID: number): boolean => {
     const shouldChecked = answers[indexQuestion].answerID.includes(answerID);
@@ -87,29 +120,53 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
     return shouldChecked;
   };
 
+  const dev = () => {
+    console.log(exam_id);
+    const preventDoExam = Object.keys(exam).length === 0;
+    if (preventDoExam) {
+      const urlNavigate = '/exam/' + exam_id;
+      navigate(urlNavigate);
+      return;
+    }
+  };
+
+  useEffect(() => {
+    dev();
+  });
+
   if (!questions.length) {
     return null;
   }
 
   return (
     <div className="w-full">
-      <ExamResult
-        setOpenModalResult={setOpenModalResult}
-        openModalResult={openModalResult}
-        user_name={examResult?.user_name || ''}
-        point={examResult?.point || 0}
-      />
+      <div className="modals">
+        <ExamResult
+          setOpenModalResult={setOpenModalResult}
+          openModalResult={openModalResult}
+          user_name={examResult?.user_name || ''}
+          point={examResult?.point || 0}
+        />
+
+        <ConfirmSubmit
+          setConfirmSubmit={setConfirmSubmit}
+          onCancleModalConfirm={onCancleModalConfirm}
+          setOpenModalConfirm={setOpenModalConfirm}
+          openModalConfirm={openModalConfirm}
+          unSelectAnswer={countUnSelectAnswer()}
+        />
+      </div>
 
       <button
         className="px-6 py-2.5 bg-violet-600 rounded-md text-sm
         text-white flex items-center ml-auto mb-4 font-semibold
         focus:ring-violet-300 focus:ring
         "
-        onClick={() => onSumitAnswers()}
+        onClick={() => setOpenModalConfirm(true)}
       >
         Nộp bài
       </button>
-      <div className="p-10 bg-slate-50 shadow-xl">
+      <div className="p-10 bg-slate-50 shadow-xl min-h-[268px]">
         <h4 className="text-slate-800 text-xl font-semibold">
           Câu hỏi {indexQuestion + 1}:{' '}
           <span>{questions[indexQuestion].content}</span>{' '}
@@ -121,8 +178,8 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
               (answers: IAnswer, index: number) => {
                 return (
                   <label
-                    className="text-tiny text-slate-800 mb-3 last:mb-0
-                    flex items-center cursor-pointer w-max group"
+                    className="answer-item text-tiny text-slate-800 mb-4 last:mb-0
+                    flex items-center cursor-pointer group"
                     htmlFor={'correct-answer-' + index}
                     key={answers.id}
                     onClick={() => onChooseAnswer(answers.id)}
@@ -134,14 +191,14 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
                         type="radio"
                         name={'correct-answer'}
                         id={'correct-answer-' + index}
-                        className="peer"
+                        className="peer checkbox-answer"
                         checked={isCheckAnswer(answers.id)}
                       />
                       <div
                         className="radio mt-0.5 w-4 h-4 border border-solid rounded-full
                     border-primary-900 before:bg-primary-900 before:w-2.5 before:h-2.5 before:block
                     before:rounded-full flex items-center justify-center before:opacity-0
-                    peer-checked:before:opacity-100"
+                    peer-checked:before:opacity-100 "
                       ></div>
                     </div>
                     <span className="font-semibold mr-2">

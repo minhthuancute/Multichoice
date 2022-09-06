@@ -104,7 +104,7 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
         });
         if (!validAnswers) {
           notify({
-            message: 'Please choose the correct answer for the answer !',
+            message: 'Bạn chưa chọn đáp án đúng cho câu hỏi !',
             type: 'danger',
           } as iNotification);
           return;

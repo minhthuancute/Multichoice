@@ -33,6 +33,10 @@ const HeaderEditTest: React.FC = () => {
     getTopicById();
   }, [topicId]);
 
+  const cbOnUpdateTopic = () => {
+    getTopicById();
+  };
+
   if (!topicInfor) {
     return null;
   }
@@ -40,7 +44,10 @@ const HeaderEditTest: React.FC = () => {
   return (
     <div className="header-edit-test">
       <Modal openModal={openModalEditTest}>
-        <FormEditTest setOpenModalEditTest={setOpenModalEditTest} />
+        <FormEditTest
+          setOpenModalEditTest={setOpenModalEditTest}
+          cbOnUpdateTopic={cbOnUpdateTopic}
+        />
       </Modal>
       <div className="container py-4 border-b border-solid border-slate-200">
         <Breadcrumb>

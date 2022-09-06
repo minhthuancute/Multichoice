@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Input from '../../../components/Commons/Input/Input';
-import { examStore, IInforUserDoExam } from '../../../store/rootReducer';
+import {
+  examStore,
+  IDataUser,
+  IInforUserDoExam,
+} from '../../../store/rootReducer';
 import * as yup from 'yup';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -11,7 +15,7 @@ import {
 import { notify } from '../../../helper/notify';
 import { iNotification } from 'react-notifications-component';
 import { useNavigate } from 'react-router-dom';
-import { START_TIME } from '../../../constants/contstants';
+import { CURRENT_USER, START_TIME } from '../../../constants/contstants';
 import { localServices } from '../../../services/LocalServices';
 
 const schemaInfor = yup
@@ -36,6 +40,22 @@ const CollectInfor: React.FC = () => {
   } = useForm<IColectInfor>({
     resolver: yupResolver(schemaInfor),
   });
+
+  useEffect(() => {
+    const currentUser = localServices.getData(CURRENT_USER);
+    const userData: IDataUser = currentUser.state.user;
+
+    if (currentUser.state.user.token) {
+      localServices.setData(START_TIME, Date.now());
+
+      setUserData({
+        user_name: userData.username,
+        user_id: userData.id,
+      } as IInforUserDoExam);
+      const urlNavigate = '/exam/' + exam.url + '/do-exam';
+      navigate(urlNavigate);
+    }
+  }, [navigate, exam.url]);
 
   const onSubmit: SubmitHandler<IColectInfor> = async (
     formData: IColectInfor

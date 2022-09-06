@@ -9,3 +9,4 @@ export const ANSWERS_EXAM = 'ANSWERS_EXAM';
 export const EXAM_DATA = 'EXAM_DATA';
 export const LOADING = 'LOADING';
 export const TOPIC_DATA = 'TOPIC_DATA';
+export const EXPRIED_EXAM = 'EXPRIED_EXAM';
