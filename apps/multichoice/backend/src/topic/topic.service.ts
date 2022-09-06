@@ -1,5 +1,10 @@
 import { CreateTopicDto } from '@monorepo/multichoice/dto';
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
 import { Repository } from 'typeorm';
@@ -8,11 +13,18 @@ import { Topic } from '../question/entities/topic.entity';
 import { User } from '../user/entities/user.entity';
 import { DeleteResult } from 'typeorm/query-builder/result/DeleteResult';
 import { number } from 'yup';
+import { UserExam } from '../user/entities/userExam';
+import { Question } from '../question/entities/question.entity';
+import { UserService } from '../user/user.service';
+import { QuestionService } from '../question/question.service';
 
 @Injectable()
 export class TopicService {
   constructor(
-    @InjectRepository(Topic) private readonly topicRepository: Repository<Topic>
+    @InjectRepository(Topic)
+    private readonly topicRepository: Repository<Topic>,
+    @Inject(forwardRef(() => UserService))
+    private readonly userExamService: UserService
   ) {}
 
   async create(topic: CreateTopicDto, user: User): Promise<SucessResponse> {
@@ -44,6 +56,9 @@ export class TopicService {
   }
 
   async deleteById(id: number): Promise<boolean> {
+    // check xem topic co ai thi chua
+    const check = await this.userExamService.findOneByTopicID(id);
+    if (check) throw new BadRequestException('topic is not  deleted');
     await this.topicRepository.delete(id);
     return true;
   }

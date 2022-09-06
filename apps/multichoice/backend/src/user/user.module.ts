@@ -8,9 +8,12 @@ import { TopicService } from '../topic/topic.service';
 import { Topic } from '../question/entities/topic.entity';
 import { UserExam } from './entities/userExam';
 import { UserAnswer } from './entities/userAnswer';
+import { Question } from '../question/entities/question.entity';
+import { QuestionService } from '../question/question.service';
+import { Answer } from '../answer/entities/answer.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Topic, UserExam, UserAnswer])],
+  imports: [TypeOrmModule.forFeature([Topic, UserExam, UserAnswer])],
   controllers: [UserController],
   providers: [UserService, JsonWebTokenStrategy, TopicService],
 })
