@@ -80,7 +80,7 @@ export class UserService {
       await this.userAnswerRepository.save(lst);
     }
     if (exam.status !== true) {
-      throw new BadRequestException('user nộp bài quá thời gian');
+      throw new BadRequestException('Hết thời gian làm bài');
     }
 
     return new SucessResponse(200, {
