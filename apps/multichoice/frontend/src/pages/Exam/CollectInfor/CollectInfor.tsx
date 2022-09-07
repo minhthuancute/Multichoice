@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import Input from '../../../components/Commons/Input/Input';
 import {
   examStore,
+  IAnswers,
   IDataUser,
   IInforUserDoExam,
 } from '../../../store/rootReducer';
@@ -14,9 +15,10 @@ import {
 } from '../../../services/ExamServices';
 import { notify } from '../../../helper/notify';
 import { iNotification } from 'react-notifications-component';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { CURRENT_USER, START_TIME } from '../../../constants/contstants';
 import { localServices } from '../../../services/LocalServices';
+import { IExamResponse, IQuestion } from '../../../types';
 
 const schemaInfor = yup
   .object()
@@ -31,7 +33,9 @@ interface IColectInfor {
 
 const CollectInfor: React.FC = () => {
   const navigate = useNavigate();
-  const { exam, setUserData } = examStore();
+  const { exam_id } = useParams();
+
+  const { exam, setUserData, setExamData } = examStore();
 
   const {
     register,
@@ -40,6 +44,21 @@ const CollectInfor: React.FC = () => {
   } = useForm<IColectInfor>({
     resolver: yupResolver(schemaInfor),
   });
+
+  const getExamInfor = async () => {
+    try {
+      const { data } = await examServices.getExamInfor(exam_id || '');
+      setExamData(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (Object.keys(exam).length === 0) {
+      getExamInfor();
+    }
+  }, []);
 
   useEffect(() => {
     const currentUser = localServices.getData(CURRENT_USER);
@@ -95,7 +114,6 @@ const CollectInfor: React.FC = () => {
       >
         <div className="left h-full w-[500px]">
           <img
-            // src={require('../../../assets/images/bg-exam.png')}
             src="https://images.unsplash.com/photo-1457369804613-52c61a468e7d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
             alt="exam multichoice"
             className="block h-full w-full object-cover"

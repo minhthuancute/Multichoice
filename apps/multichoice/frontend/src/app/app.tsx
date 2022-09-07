@@ -4,12 +4,14 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import './app.scss';
 
-import PrivateRoute from '../components/Routes/PrivateRoute';
-import PublicRoute from '../components/Routes/PublicRoute';
 import DefaultLayout from '../layouts/DefaultLayout';
 
-// Pages
+import PrivateRoute from '../components/Routes/PrivateRoute';
+import PublicRoute from '../components/Routes/PublicRoute';
 import Loading from '../components/Loading/Loading';
+
+// Pages
+
 import CreateTest from '../pages/Tests/Create/CreateTest';
 import Login from '../pages/Login/Login';
 import Register from '../pages/Register/Register';
@@ -24,6 +26,8 @@ import BlankLayout from '../layouts/BlankLayout';
 import Intro from '../pages/Exam/Intro/Intro';
 import CollectInfor from '../pages/Exam/CollectInfor/CollectInfor';
 import DoExam from '../pages/Exam/DoExam/DoExam';
+import Home from '../pages/Home/Home';
+import Statistical from '../pages/Statistical/Statistical';
 
 export const App: React.FC = () => {
   return (
@@ -39,25 +43,28 @@ export const App: React.FC = () => {
           element={<PublicRoute Component={Register} restricted={true} />}
         />
 
-        <Route
-          path="/tests"
-          element={<PrivateRoute Component={DefaultLayout} />}
-        >
-          <Route index element={<Tests />} />
-          <Route path="create" element={<CreateTest />} />
-          <Route
-            path="edit/:id"
-            element={
-              <Suspense fallback={<Loading />}>
-                <EditTest />
-              </Suspense>
-            }
-          />
+        <Route path="/" element={<PrivateRoute Component={DefaultLayout} />}>
+          <Route index element={<Home />} />
+
+          <Route path="statistical" element={<Statistical />} />
+
+          <Route path="tests">
+            <Route index element={<Tests />} />
+            <Route path="create" element={<CreateTest />} />
+            <Route
+              path="edit/:id"
+              element={
+                <Suspense fallback={<Loading />}>
+                  <EditTest />
+                </Suspense>
+              }
+            />
+          </Route>
+
+          <Route path="questions/create" element={<CreateQuestion />} />
         </Route>
 
-        <Route path="/questions/create" element={<CreateQuestion />} />
-
-        <Route path="/exam" element={<BlankLayout />}>
+        <Route path="exam">
           <Route path=":exam_id" element={<Intro />} />
           <Route path=":exam_id/login" element={<CollectInfor />} />
           <Route path=":exam_id/do-exam" element={<DoExam />} />

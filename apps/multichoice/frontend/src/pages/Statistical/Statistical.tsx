@@ -1,7 +1,7 @@
 import React, { useLayoutEffect } from 'react';
 import { titleServices } from '../../services/TitleServices';
 
-const Home: React.FC = () => {
+const Statistical: React.FC = () => {
   useLayoutEffect(() => {
     titleServices.setTitle('Multichoice');
   }, []);
@@ -20,4 +20,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default Statistical;

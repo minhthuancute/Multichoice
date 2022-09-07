@@ -35,9 +35,8 @@ interface ITestItemProp {
 }
 
 const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
-  const examUrl = () => {
-    // must change to use .env
-    const host = 'http://localhost:4200/exam/';
+  const examUrl = (): string => {
+    const host = window.location.origin + '/exam/';
     return host + test.topicUrl;
   };
 

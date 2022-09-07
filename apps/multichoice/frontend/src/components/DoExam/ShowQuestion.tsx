@@ -8,10 +8,9 @@ import { IAnswer } from '../../types';
 import ExamResult from './ExamResult';
 import ConfirmSubmit from './ConfirmSubmit';
 
-import './doExam.scss';
-import { localServices } from '../../services/LocalServices';
-import { START_TIME } from '../../constants/contstants';
 import { useNavigate, useParams } from 'react-router-dom';
+
+import './doExam.scss';
 
 interface IShowQuestion {
   indexQuestion: number;
@@ -34,7 +33,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
     exam: { questions },
   } = examStore();
   const { userDoExam } = examStore();
-  const { exam, setUserData } = examStore();
+  const { exam } = examStore();
   const { answers, updateAnswer } = answerStore();
 
   const [confirmSubmit, setConfirmSubmit] = useState<boolean>(false);
@@ -42,9 +41,8 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
   const [openModalResult, setOpenModalResult] = useState<boolean>(false);
   const [examResult, setExamResult] = useState<IExamResult>();
 
-  const questionLength = questions.length;
-
   const nextQuestion = (e: React.MouseEvent<HTMLElement>) => {
+    const questionLength = questions.length;
     if (indexQuestion + 1 >= questionLength) {
       e.preventDefault();
       return;
@@ -120,21 +118,20 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
     return shouldChecked;
   };
 
-  const dev = () => {
-    console.log(exam_id);
+  // if User not provide infor -> redirect User to page Collect Infor
+  const checkLogged = () => {
     const preventDoExam = Object.keys(exam).length === 0;
     if (preventDoExam) {
       const urlNavigate = '/exam/' + exam_id;
       navigate(urlNavigate);
-      return;
     }
   };
 
   useEffect(() => {
-    dev();
-  });
+    checkLogged();
+  }, []);
 
-  if (!questions.length) {
+  if (!questions) {
     return null;
   }
 

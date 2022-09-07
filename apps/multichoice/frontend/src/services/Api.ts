@@ -17,6 +17,7 @@ export class Api {
     this.axiosInstance.interceptors.request.use(
       (config: AxiosRequestConfig): AxiosRequestConfig => {
         const token = localServices.getData(TOKEN);
+
         config!.headers!['Authorization'] = `Bearer ${token}`;
         return config;
       }

@@ -24,7 +24,7 @@ const Navabar: React.FC = () => {
     },
     {
       label: 'Thống kê',
-      path: '/statistic',
+      path: '/statistical',
     },
   ];
 
