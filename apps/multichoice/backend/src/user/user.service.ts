@@ -46,7 +46,7 @@ export class UserService {
 
     //check user da thi hay chua
     if (userExam.startTime != 0 && userExam.endTime != 0)
-      throw new BadRequestException('user nay da thi');
+      throw new BadRequestException('bạn đã nộp bài');
 
     const topic: Topic = await this.topicService.getIsCorrectByTopicID(
       userExam.topic.id
