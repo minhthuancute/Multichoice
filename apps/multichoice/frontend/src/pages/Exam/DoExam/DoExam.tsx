@@ -1,13 +1,23 @@
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { iNotification } from 'react-notifications-component';
+import { useNavigate, useParams } from 'react-router-dom';
 import HeaderDoExam from '../../../components/DoExam/HeaderDoExam';
 import MainDoExam from '../../../components/DoExam/MainDoExam';
-import { examServices } from '../../../services/ExamServices';
-import { examStore } from '../../../store/rootReducer';
+import { START_EXAM, START_TIME } from '../../../constants/contstants';
+import { notify } from '../../../helper/notify';
+import { cookieServices } from '../../../services/CookieServices';
+import {
+  examServices,
+  IPayloadStartExam,
+} from '../../../services/ExamServices';
+import { localServices } from '../../../services/LocalServices';
+import { examStore, IInforUserDoExam } from '../../../store/rootReducer';
 
 const DoExam: React.FC = () => {
+  const navigate = useNavigate();
+
   const { exam_id } = useParams();
-  const { setExamData } = examStore();
+  const { setExamData, exam, userDoExam, setUserData } = examStore();
 
   const getExamInfor = async () => {
     try {
@@ -17,6 +27,35 @@ const DoExam: React.FC = () => {
       console.log(error);
     }
   };
+
+  const startExam = async () => {
+    cookieServices.setCookie(START_EXAM, true, 30);
+
+    try {
+      const payload: IPayloadStartExam = {
+        topicID: exam.id,
+        username: userDoExam.user_name,
+      };
+      const { data } = await examServices.startExam(payload);
+
+      if (data.success) {
+        localServices.setData(START_TIME, Date.now());
+        setUserData({
+          user_name: userDoExam.user_name,
+          user_id: data.data.userid,
+        } as IInforUserDoExam);
+      }
+    } catch (error) {
+      notify({
+        message: 'Something went wrong !',
+        type: 'danger',
+      } as iNotification);
+    }
+  };
+
+  useEffect(() => {
+    startExam();
+  }, []);
 
   useEffect(() => {
     getExamInfor();

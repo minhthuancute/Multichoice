@@ -46,7 +46,7 @@ const Intro: React.FC = () => {
     const currentUser = localServices.getData(CURRENT_USER);
     const userData: IDataUser = currentUser.state.user;
 
-    if (currentUser.state.user.token && isLoggout === false) {
+    if (currentUser.state.user.token) {
       localServices.setData(START_TIME, Date.now());
 
       setUserData({

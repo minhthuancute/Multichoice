@@ -8,10 +8,7 @@ import {
 import * as yup from 'yup';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import {
-  examServices,
-  IPayloadStartExam,
-} from '../../../services/ExamServices';
+
 import { notify } from '../../../helper/notify';
 import { iNotification } from 'react-notifications-component';
 import { useNavigate } from 'react-router-dom';
@@ -62,23 +59,12 @@ const CollectInfor: React.FC = () => {
     formData: IColectInfor
   ) => {
     try {
-      const payload: IPayloadStartExam = {
-        topicID: exam.id,
-        username: formData.user_name,
-      };
-      const { data } = await examServices.startExam(payload);
+      setUserData({
+        user_name: formData.user_name,
+      } as IInforUserDoExam);
 
-      if (data.success) {
-        localServices.setData(START_TIME, Date.now());
-
-        setUserData({
-          user_name: formData.user_name,
-          user_id: data.data.userid,
-        } as IInforUserDoExam);
-
-        const urlNavigate = '/exam/' + exam.url + '/do-exam';
-        navigate(urlNavigate);
-      }
+      const urlNavigate = '/exam/' + exam.url + '/do-exam';
+      navigate(urlNavigate);
     } catch (error) {
       notify({
         message: 'Something went wrong !',

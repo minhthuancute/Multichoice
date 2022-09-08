@@ -22,7 +22,6 @@ import PageNotFound from '../pages/Notfound/Notfound';
 
 import { ReactNotifications } from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
-import BlankLayout from '../layouts/BlankLayout';
 import Intro from '../pages/Exam/Intro/Intro';
 import CollectInfor from '../pages/Exam/CollectInfor/CollectInfor';
 import DoExam from '../pages/Exam/DoExam/DoExam';

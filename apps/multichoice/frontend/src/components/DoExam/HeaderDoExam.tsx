@@ -1,6 +1,11 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ANSWERS_EXAM, START_TIME } from '../../constants/contstants';
+import {
+  ANSWERS_EXAM,
+  START_EXAM,
+  START_TIME,
+} from '../../constants/contstants';
+import { cookieServices } from '../../services/CookieServices';
 import { localServices } from '../../services/LocalServices';
 import { examStore, IInforUserDoExam } from '../../store/rootReducer';
 import CountDown from '../Commons/CountDown/CountDown';
@@ -17,9 +22,11 @@ const HeaderDoExam: React.FC = () => {
   const handleExitExam = () => {
     localServices.clearItem(START_TIME);
     localServices.clearItem(ANSWERS_EXAM);
+
+    // cookieServices.
     setUserData({} as IInforUserDoExam);
 
-    handleLoggout();
+    // handleLoggout();
 
     const urlNavigate = '/exam/' + exam_id;
     navigate(urlNavigate);
