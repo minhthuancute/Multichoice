@@ -6,6 +6,30 @@ import ShowQuestion from './ShowQuestion';
 const MainDoExam: React.FC = () => {
   const [indexQuestion, setIndexQuestion] = useState<number>(0);
 
+  const startExam = () => {
+    // try {
+    //   const payload: IPayloadStartExam = {
+    //     topicID: exam.id,
+    //     username: formData.user_name,
+    //   };
+    //   const { data } = await examServices.startExam(payload);
+    //   if (data.success) {
+    //     localServices.setData(START_TIME, Date.now());
+    //     setUserData({
+    //       user_name: formData.user_name,
+    //       user_id: data.data.userid,
+    //     } as IInforUserDoExam);
+    //     const urlNavigate = '/exam/' + exam.url + '/do-exam';
+    //     navigate(urlNavigate);
+    //   }
+    // } catch (error) {
+    //   notify({
+    //     message: 'Something went wrong !',
+    //     type: 'danger',
+    //   } as iNotification);
+    // }
+  };
+
   return (
     <div
       className="relative"

@@ -3,23 +3,23 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ANSWERS_EXAM, START_TIME } from '../../constants/contstants';
 import { localServices } from '../../services/LocalServices';
 import { examStore, IInforUserDoExam } from '../../store/rootReducer';
-// import { minutesToSeconds } from '../../utils/minutesToSeconds';
 import CountDown from '../Commons/CountDown/CountDown';
 
 const HeaderDoExam: React.FC = () => {
   const { exam_id } = useParams();
   const navigate = useNavigate();
 
-  const { exam, userDoExam, setUserData } = examStore();
+  const { exam, userDoExam, setUserData, handleLoggout } = examStore();
 
   const startTime: number = localServices.getData(START_TIME) || 0;
-  // const endTime: number = minutesToSeconds(+exam.expirationTime);
   const endTime: number = +exam.expirationTime;
 
   const handleExitExam = () => {
     localServices.clearItem(START_TIME);
     localServices.clearItem(ANSWERS_EXAM);
     setUserData({} as IInforUserDoExam);
+
+    handleLoggout();
 
     const urlNavigate = '/exam/' + exam_id;
     navigate(urlNavigate);

@@ -9,10 +9,12 @@ export interface IInforUserDoExam {
 }
 
 export interface IExamStore {
+  isLoggout: boolean;
   exam: IExamResponse;
   userDoExam: IInforUserDoExam;
   setExamData: (examData: IExamResponse) => void;
   setUserData: (userData: IInforUserDoExam) => void;
+  handleLoggout: () => void;
 }
 
 // Topic detail
@@ -20,6 +22,7 @@ export const examStore = create<IExamStore>()(
   devtools(
     persist(
       (set) => ({
+        isLoggout: false,
         exam: {} as IExamResponse,
         userDoExam: {} as IInforUserDoExam,
         setExamData: (examData: IExamResponse) =>
@@ -33,6 +36,13 @@ export const examStore = create<IExamStore>()(
           set(() => {
             return {
               userDoExam: userData,
+            };
+          }),
+
+        handleLoggout: () =>
+          set(() => {
+            return {
+              isLoggout: true,
             };
           }),
       }),

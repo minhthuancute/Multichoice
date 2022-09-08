@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import Input from '../../../components/Commons/Input/Input';
 import {
   examStore,
-  IAnswers,
   IDataUser,
   IInforUserDoExam,
 } from '../../../store/rootReducer';
@@ -15,10 +14,9 @@ import {
 } from '../../../services/ExamServices';
 import { notify } from '../../../helper/notify';
 import { iNotification } from 'react-notifications-component';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { CURRENT_USER, START_TIME } from '../../../constants/contstants';
 import { localServices } from '../../../services/LocalServices';
-import { IExamResponse, IQuestion } from '../../../types';
 
 const schemaInfor = yup
   .object()
@@ -33,9 +31,8 @@ interface IColectInfor {
 
 const CollectInfor: React.FC = () => {
   const navigate = useNavigate();
-  const { exam_id } = useParams();
 
-  const { exam, setUserData, setExamData } = examStore();
+  const { exam, setUserData } = examStore();
 
   const {
     register,
@@ -44,21 +41,6 @@ const CollectInfor: React.FC = () => {
   } = useForm<IColectInfor>({
     resolver: yupResolver(schemaInfor),
   });
-
-  const getExamInfor = async () => {
-    try {
-      const { data } = await examServices.getExamInfor(exam_id || '');
-      setExamData(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    if (Object.keys(exam).length === 0) {
-      getExamInfor();
-    }
-  }, []);
 
   useEffect(() => {
     const currentUser = localServices.getData(CURRENT_USER);

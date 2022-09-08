@@ -1,15 +1,25 @@
 import React, { useLayoutEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { CURRENT_USER, START_TIME } from '../../../constants/contstants';
 import { examServices } from '../../../services/ExamServices';
-import { examStore, answerStore, IAnswers } from '../../../store/rootReducer';
+import { localServices } from '../../../services/LocalServices';
+import {
+  examStore,
+  answerStore,
+  IAnswers,
+  IDataUser,
+  IInforUserDoExam,
+} from '../../../store/rootReducer';
 import { IExamResponse, IQuestion } from '../../../types';
 
 const Intro: React.FC = () => {
+  const navigate = useNavigate();
+
   const { exam_id } = useParams();
-  const { setExamData } = examStore();
+  const { isLoggout, exam, setExamData, setUserData } = examStore();
   const { setAnswers } = answerStore();
 
-  const [exam, setExam] = useState<IExamResponse>();
+  const [examData, setExam] = useState<IExamResponse>();
 
   const getExamInfor = async () => {
     try {
@@ -32,6 +42,25 @@ const Intro: React.FC = () => {
     }
   };
 
+  const onNavigateLoginExam = () => {
+    const currentUser = localServices.getData(CURRENT_USER);
+    const userData: IDataUser = currentUser.state.user;
+
+    if (currentUser.state.user.token && isLoggout === false) {
+      localServices.setData(START_TIME, Date.now());
+
+      setUserData({
+        user_name: userData.username,
+        user_id: userData.id,
+      } as IInforUserDoExam);
+      const urlNavigate = '/exam/' + exam.url + '/do-exam';
+      navigate(urlNavigate);
+    } else {
+      const urlNavigate = '/exam/' + exam.url + '/login';
+      navigate(urlNavigate);
+    }
+  };
+
   useLayoutEffect(() => {
     getExamInfor();
   }, []);
@@ -46,7 +75,6 @@ const Intro: React.FC = () => {
       >
         <div className="left h-full w-[500px]">
           <img
-            // src={imgExam}
             src="https://images.unsplash.com/photo-1457369804613-52c61a468e7d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
             alt="exam multichoice"
             className="block h-full w-full object-cover"
@@ -59,13 +87,13 @@ const Intro: React.FC = () => {
               <p className="mt-2">{exam.description}</p>
             </div>
             <div className="pt-8 px-10">
-              <Link
-                to="login"
+              <button
                 className="create-test btn-primary rounded-md flex justify-center items-center w-full h-11 text-sm
               text-white font-bold bg-primary-900 transition-all duration-200 hover:bg-opacity-90"
+                onClick={() => onNavigateLoginExam()}
               >
                 Tham gia ngay
-              </Link>
+              </button>
             </div>
           </div>
 
