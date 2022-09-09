@@ -1,6 +1,11 @@
 import React, { useLayoutEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { CURRENT_USER, START_TIME } from '../../../constants/contstants';
+import {
+  CURRENT_USER,
+  IS_LOGGOUT_EXAM,
+  START_TIME,
+} from '../../../constants/contstants';
+import { cookieServices } from '../../../services/CookieServices';
 import { examServices } from '../../../services/ExamServices';
 import { localServices } from '../../../services/LocalServices';
 import {
@@ -43,10 +48,14 @@ const Intro: React.FC = () => {
   };
 
   const onNavigateLoginExam = () => {
+    const isLoggout =
+      Boolean(cookieServices.getCookie(IS_LOGGOUT_EXAM)) || false;
+    console.log(isLoggout);
+
     const currentUser = localServices.getData(CURRENT_USER);
     const userData: IDataUser = currentUser.state.user;
 
-    if (currentUser.state.user.token) {
+    if (currentUser.state.user.token && !isLoggout) {
       localServices.setData(START_TIME, Date.now());
 
       setUserData({
@@ -62,6 +71,7 @@ const Intro: React.FC = () => {
   };
 
   useLayoutEffect(() => {
+    cookieServices.deleteCookie(IS_LOGGOUT_EXAM);
     getExamInfor();
   }, []);
 

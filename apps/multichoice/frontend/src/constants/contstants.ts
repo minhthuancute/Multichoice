@@ -1,4 +1,5 @@
 export const START_EXAM = 'START_EXAM';
+export const IS_LOGGOUT_EXAM = 'IS_LOGGOUT_EXAM';
 
 export const USER = 'USER';
 export const TOKEN = 'TOKEN';

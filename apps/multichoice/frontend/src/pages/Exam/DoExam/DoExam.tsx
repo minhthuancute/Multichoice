@@ -29,8 +29,6 @@ const DoExam: React.FC = () => {
   };
 
   const startExam = async () => {
-    cookieServices.setCookie(START_EXAM, true, 30);
-
     try {
       const payload: IPayloadStartExam = {
         topicID: exam.id,

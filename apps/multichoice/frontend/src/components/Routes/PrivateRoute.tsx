@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom';
 import { isLogin } from '../../utils/authen';
 
 interface IPrivateRoute {
-  Component?: any;
+  Component: React.FunctionComponent<any>;
   rest?: any;
 }
 

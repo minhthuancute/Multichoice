@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   ANSWERS_EXAM,
+  IS_LOGGOUT_EXAM,
   START_EXAM,
   START_TIME,
 } from '../../constants/contstants';
@@ -23,7 +24,8 @@ const HeaderDoExam: React.FC = () => {
     localServices.clearItem(START_TIME);
     localServices.clearItem(ANSWERS_EXAM);
 
-    // cookieServices.
+    // cookieServices.deleteCookie(IS_LOGGOUT_EXAM);
+    cookieServices.setCookie(IS_LOGGOUT_EXAM, true, 30);
     setUserData({} as IInforUserDoExam);
 
     // handleLoggout();
