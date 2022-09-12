@@ -3,7 +3,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import {
   CURRENT_USER,
   DATA_USER_DO_EXAM,
-  IS_LOGGOUT_CURRENT_USER,
   START_TIME,
 } from '../../../constants/contstants';
 import { cookieServices } from '../../../services/CookieServices';
@@ -62,10 +61,12 @@ const Intro: React.FC = () => {
   }, []);
 
   const onNavigateLoginExam = () => {
-    const isLoggout = getUserDoexamData()?.is_loggout_current_user;
-
+    const userDoExam = getUserDoexamData();
     const currentUser = localServices.getData(CURRENT_USER);
     const userData: IDataUser = currentUser.state.user;
+
+    const isLoggout =
+      userDoExam?.is_loggout_current_user && userData.id !== userDoExam.user_id;
 
     if (currentUser.state.user.token && !isLoggout) {
       localServices.setData(START_TIME, Date.now());
@@ -83,7 +84,6 @@ const Intro: React.FC = () => {
   };
 
   useLayoutEffect(() => {
-    cookieServices.deleteCookie(IS_LOGGOUT_CURRENT_USER);
     getExamInfor();
   }, []);
 

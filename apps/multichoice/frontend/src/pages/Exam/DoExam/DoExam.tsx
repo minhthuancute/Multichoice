@@ -28,12 +28,12 @@ const DoExam: React.FC = () => {
   };
 
   const handleCookieDoexam = () => {
-    const dataExam: IUserDoExam = {
-      exam_title: exam.title,
-      user_id: userDoExam.user_id,
-      is_loggout_current_user: false,
-    };
-    cookieServices.setCookie(DATA_USER_DO_EXAM, dataExam, 30);
+    // const dataExam: IUserDoExam = {
+    //   exam_title: exam.title,
+    //   user_id: userDoExam.user_id,
+    //   is_loggout_current_user: false,
+    // };
+    // cookieServices.setCookie(DATA_USER_DO_EXAM, dataExam, 30);
   };
 
   const startExam = async () => {
