@@ -1,8 +1,9 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   CURRENT_USER,
-  IS_LOGGOUT_EXAM,
+  DATA_USER_DO_EXAM,
+  IS_LOGGOUT_CURRENT_USER,
   START_TIME,
 } from '../../../constants/contstants';
 import { cookieServices } from '../../../services/CookieServices';
@@ -15,16 +16,14 @@ import {
   IDataUser,
   IInforUserDoExam,
 } from '../../../store/rootReducer';
-import { IExamResponse, IQuestion } from '../../../types';
+import { IExamResponse, IQuestion, IUserDoExam } from '../../../types';
 
 const Intro: React.FC = () => {
   const navigate = useNavigate();
 
   const { exam_id } = useParams();
-  const { isLoggout, exam, setExamData, setUserData } = examStore();
+  const { exam, setExamData, setUserData } = examStore();
   const { setAnswers } = answerStore();
-
-  const [examData, setExam] = useState<IExamResponse>();
 
   const getExamInfor = async () => {
     try {
@@ -40,17 +39,30 @@ const Intro: React.FC = () => {
         }
       );
       setAnswers(initAnswers);
-      setExam(data);
       setExamData(data);
     } catch (error) {
       console.log(error);
     }
   };
 
+  const getUserDoexamData = (): IUserDoExam | null => {
+    const cookieData = cookieServices.getCookie(DATA_USER_DO_EXAM);
+    if (cookieData) {
+      const userDoExam: IUserDoExam = JSON.parse(
+        cookieServices.getCookie(DATA_USER_DO_EXAM)
+      );
+      console.log(userDoExam);
+      return userDoExam;
+    }
+    return null;
+  };
+
+  useEffect(() => {
+    getUserDoexamData();
+  }, []);
+
   const onNavigateLoginExam = () => {
-    const isLoggout =
-      Boolean(cookieServices.getCookie(IS_LOGGOUT_EXAM)) || false;
-    console.log(isLoggout);
+    const isLoggout = getUserDoexamData()?.is_loggout_current_user;
 
     const currentUser = localServices.getData(CURRENT_USER);
     const userData: IDataUser = currentUser.state.user;
@@ -71,7 +83,7 @@ const Intro: React.FC = () => {
   };
 
   useLayoutEffect(() => {
-    cookieServices.deleteCookie(IS_LOGGOUT_EXAM);
+    cookieServices.deleteCookie(IS_LOGGOUT_CURRENT_USER);
     getExamInfor();
   }, []);
 

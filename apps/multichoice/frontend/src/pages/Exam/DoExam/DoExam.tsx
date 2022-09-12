@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { iNotification } from 'react-notifications-component';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import HeaderDoExam from '../../../components/DoExam/HeaderDoExam';
 import MainDoExam from '../../../components/DoExam/MainDoExam';
-import { START_EXAM, START_TIME } from '../../../constants/contstants';
+import { DATA_USER_DO_EXAM, START_TIME } from '../../../constants/contstants';
 import { notify } from '../../../helper/notify';
 import { cookieServices } from '../../../services/CookieServices';
 import {
@@ -12,10 +12,9 @@ import {
 } from '../../../services/ExamServices';
 import { localServices } from '../../../services/LocalServices';
 import { examStore, IInforUserDoExam } from '../../../store/rootReducer';
+import { IUserDoExam } from '../../../types';
 
 const DoExam: React.FC = () => {
-  const navigate = useNavigate();
-
   const { exam_id } = useParams();
   const { setExamData, exam, userDoExam, setUserData } = examStore();
 
@@ -28,7 +27,17 @@ const DoExam: React.FC = () => {
     }
   };
 
+  const handleCookieDoexam = () => {
+    const dataExam: IUserDoExam = {
+      exam_title: exam.title,
+      user_id: userDoExam.user_id,
+      is_loggout_current_user: false,
+    };
+    cookieServices.setCookie(DATA_USER_DO_EXAM, dataExam, 30);
+  };
+
   const startExam = async () => {
+    handleCookieDoexam();
     try {
       const payload: IPayloadStartExam = {
         topicID: exam.id,

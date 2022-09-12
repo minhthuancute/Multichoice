@@ -2,33 +2,41 @@ import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   ANSWERS_EXAM,
-  IS_LOGGOUT_EXAM,
-  START_EXAM,
+  DATA_USER_DO_EXAM,
+  IS_LOGGOUT_CURRENT_USER,
   START_TIME,
 } from '../../constants/contstants';
 import { cookieServices } from '../../services/CookieServices';
 import { localServices } from '../../services/LocalServices';
 import { examStore, IInforUserDoExam } from '../../store/rootReducer';
+import { IUserDoExam } from '../../types';
 import CountDown from '../Commons/CountDown/CountDown';
 
 const HeaderDoExam: React.FC = () => {
   const { exam_id } = useParams();
   const navigate = useNavigate();
 
-  const { exam, userDoExam, setUserData, handleLoggout } = examStore();
+  const { exam, userDoExam, setUserData } = examStore();
 
   const startTime: number = localServices.getData(START_TIME) || 0;
   const endTime: number = +exam.expirationTime;
 
+  const handleCookieDoexam = () => {
+    const dataExam: IUserDoExam = {
+      exam_title: exam.title,
+      user_id: userDoExam.user_id,
+      is_loggout_current_user: true,
+    };
+    cookieServices.setCookie(DATA_USER_DO_EXAM, dataExam, 30);
+  };
+
   const handleExitExam = () => {
+    handleCookieDoexam();
     localServices.clearItem(START_TIME);
     localServices.clearItem(ANSWERS_EXAM);
 
-    // cookieServices.deleteCookie(IS_LOGGOUT_EXAM);
-    cookieServices.setCookie(IS_LOGGOUT_EXAM, true, 30);
+    cookieServices.setCookie(IS_LOGGOUT_CURRENT_USER, true, 30);
     setUserData({} as IInforUserDoExam);
-
-    // handleLoggout();
 
     const urlNavigate = '/exam/' + exam_id;
     navigate(urlNavigate);

@@ -12,8 +12,13 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { notify } from '../../../helper/notify';
 import { iNotification } from 'react-notifications-component';
 import { useNavigate } from 'react-router-dom';
-import { CURRENT_USER, START_TIME } from '../../../constants/contstants';
+import {
+  CURRENT_USER,
+  IS_LOGGOUT_CURRENT_USER,
+  START_TIME,
+} from '../../../constants/contstants';
 import { localServices } from '../../../services/LocalServices';
+import { cookieServices } from '../../../services/CookieServices';
 
 const schemaInfor = yup
   .object()
@@ -40,10 +45,14 @@ const CollectInfor: React.FC = () => {
   });
 
   useEffect(() => {
+    const isLoggout = Boolean(
+      cookieServices.getCookie(IS_LOGGOUT_CURRENT_USER)
+    );
+
     const currentUser = localServices.getData(CURRENT_USER);
     const userData: IDataUser = currentUser.state.user;
 
-    if (currentUser.state.user.token) {
+    if (currentUser.state.user.token && !isLoggout) {
       localServices.setData(START_TIME, Date.now());
 
       setUserData({
