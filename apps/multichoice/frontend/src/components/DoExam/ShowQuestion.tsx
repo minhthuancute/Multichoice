@@ -7,10 +7,13 @@ import { answerStore, examStore, IAnswers } from '../../store/rootReducer';
 import { IAnswer } from '../../types';
 import ExamResult from './ExamResult';
 import ConfirmSubmit from './ConfirmSubmit';
-
 import { useNavigate, useParams } from 'react-router-dom';
+import CountDown from '../Commons/CountDown/CountDown';
+import { localServices } from '../../services/LocalServices';
+import { START_TIME } from '../../constants/contstants';
 
 import './doExam.scss';
+import { classNames } from '../../helper/classNames';
 
 interface IShowQuestion {
   indexQuestion: number;
@@ -40,6 +43,9 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
   const [openModalConfirm, setOpenModalConfirm] = useState<boolean>(false);
   const [openModalResult, setOpenModalResult] = useState<boolean>(false);
   const [examResult, setExamResult] = useState<IExamResult>();
+
+  const startTime: number = localServices.getData(START_TIME) || 0;
+  const endTime: number = +exam.expirationTime;
 
   const nextQuestion = (e: React.MouseEvent<HTMLElement>) => {
     const questionLength = questions.length;
@@ -90,8 +96,6 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
         } as iNotification);
       }
     } catch (error: any) {
-      console.log(error);
-
       notify({
         message: error.response.data.message,
         type: 'danger',
@@ -154,15 +158,23 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
         />
       </div>
 
-      <button
-        className="px-6 py-2.5 bg-violet-600 rounded-md text-sm
-        text-white flex items-center ml-auto mb-4 font-semibold
-        focus:ring-violet-300 focus:ring
-        "
-        onClick={() => setOpenModalConfirm(true)}
-      >
-        Nộp bài
-      </button>
+      <header className="flex items-start justify-between">
+        <button
+          className={classNames(`px-6 py-2.5 bg-violet-600 rounded-md text-sm
+            text-white flex items-center mb-4 font-semibold
+            focus:ring-violet-300 focus:ring`)}
+          onClick={() => setOpenModalConfirm(true)}
+        >
+          Nộp bài
+        </button>
+        <CountDown
+          startTime={startTime}
+          endTime={endTime}
+          key="count-down"
+          textColor="text-green-600"
+        />
+      </header>
+
       <div className="p-10 bg-slate-50 shadow-xl min-h-[268px]">
         <h4 className="text-slate-800 text-xl font-semibold">
           Câu hỏi {indexQuestion + 1}:{' '}
@@ -195,7 +207,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
                         className="radio mt-0.5 w-4 h-4 border border-solid rounded-full
                     border-primary-900 before:bg-primary-900 before:w-2.5 before:h-2.5 before:block
                     before:rounded-full flex items-center justify-center before:opacity-0
-                    peer-checked:before:opacity-100 "
+                    peer-checked:before:opacity-100"
                       ></div>
                     </div>
                     <span className="font-semibold mr-2">

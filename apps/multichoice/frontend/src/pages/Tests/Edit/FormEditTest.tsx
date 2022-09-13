@@ -192,7 +192,7 @@ const FormEditTest: React.FC<IFormEditTest> = ({
           errMessage={errors.description?.message}
         />
 
-        <div className="ctas flex items-center justify-center gap-x-2 mt-8">
+        <div className="ctas flex items-center justify-end gap-x-2 mt-8">
           <button
             type="button"
             className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm

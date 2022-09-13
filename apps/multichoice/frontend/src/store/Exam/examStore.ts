@@ -9,9 +9,11 @@ export interface IInforUserDoExam {
 }
 
 export interface IExamStore {
+  isExpriedExam: boolean;
   isLoggout: boolean;
   exam: IExamResponse;
   userDoExam: IInforUserDoExam;
+  setIsExpriedExam: (isExpriedExam: boolean) => void;
   setExamData: (examData: IExamResponse) => void;
   setUserData: (userData: IInforUserDoExam) => void;
   handleLoggout: () => void;
@@ -22,6 +24,7 @@ export const examStore = create<IExamStore>()(
   devtools(
     persist(
       (set) => ({
+        isExpriedExam: false,
         isLoggout: false,
         exam: {} as IExamResponse,
         userDoExam: {} as IInforUserDoExam,
@@ -43,6 +46,13 @@ export const examStore = create<IExamStore>()(
           set(() => {
             return {
               isLoggout: true,
+            };
+          }),
+
+        setIsExpriedExam: (isExpriedExam: boolean) =>
+          set(() => {
+            return {
+              isExpriedExam: isExpriedExam,
             };
           }),
       }),

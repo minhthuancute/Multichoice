@@ -44,7 +44,11 @@ const CreateAnswer: React.FC<ICreateAnswer> = ({
   const [correctAnswer, setCorrectAnswer] = useState<string>('');
 
   const addNewAnswer = () => {
-    if (answerLength.length > 64) {
+    if (answerLength.length + 1 > 4) {
+      notify({
+        message: 'Số câu trả lời tối đa là 4 !',
+        type: 'danger',
+      } as iNotification);
       return;
     }
 

@@ -9,16 +9,11 @@ import { cookieServices } from '../../services/CookieServices';
 import { localServices } from '../../services/LocalServices';
 import { examStore, IInforUserDoExam } from '../../store/rootReducer';
 import { IUserDoExam } from '../../types';
-import CountDown from '../Commons/CountDown/CountDown';
 
 const HeaderDoExam: React.FC = () => {
   const { exam_id } = useParams();
   const navigate = useNavigate();
-
   const { exam, userDoExam, setUserData } = examStore();
-
-  const startTime: number = localServices.getData(START_TIME) || 0;
-  const endTime: number = +exam.expirationTime;
 
   const handleCookieDoexam = () => {
     const dataExam: IUserDoExam = {
@@ -36,7 +31,6 @@ const HeaderDoExam: React.FC = () => {
     localServices.clearItem(ANSWERS_EXAM);
 
     setUserData({} as IInforUserDoExam);
-
     const urlNavigate = '/exam/' + exam_id;
     navigate(urlNavigate);
   };
@@ -48,8 +42,6 @@ const HeaderDoExam: React.FC = () => {
           <p className="text-tiny text-white">Hello, {userDoExam.user_name}</p>
         </div>
         <div className="header-right flex items-center">
-          <CountDown startTime={startTime} endTime={endTime} key="count-down" />
-
           <button
             className="px-8 py-2 bg-slate-100 rounded-md text-sm ml-5
           text-black flex items-center font-semibold"

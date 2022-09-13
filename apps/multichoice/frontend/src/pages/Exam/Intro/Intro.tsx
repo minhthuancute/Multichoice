@@ -63,10 +63,14 @@ const Intro: React.FC = () => {
   const onNavigateLoginExam = () => {
     const userDoExam = getUserDoexamData();
     const currentUser = localServices.getData(CURRENT_USER);
+    const currentExamTitle = exam.title;
     const userData: IDataUser = currentUser.state.user;
 
     const isLoggout =
-      userDoExam?.is_loggout_current_user && userData.id !== userDoExam.user_id;
+      userDoExam?.is_loggout_current_user &&
+      userDoExam.exam_title === currentExamTitle &&
+      userData.id !== userDoExam.user_id;
+    console.log(isLoggout);
 
     if (currentUser.state.user.token && !isLoggout) {
       localServices.setData(START_TIME, Date.now());
@@ -78,6 +82,8 @@ const Intro: React.FC = () => {
       const urlNavigate = '/exam/' + exam.url + '/do-exam';
       navigate(urlNavigate);
     } else {
+      localServices.setData(START_TIME, Date.now());
+
       const urlNavigate = '/exam/' + exam.url + '/login';
       navigate(urlNavigate);
     }
