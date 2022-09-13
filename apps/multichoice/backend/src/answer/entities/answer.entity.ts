@@ -12,7 +12,6 @@ export class Answer extends Timestamp {
   content: string;
 
   @Column({ default: false })
-  @Column({ select: false })
   isCorrect: boolean;
 
   @ManyToOne(() => Question, (qs) => qs.answers, {

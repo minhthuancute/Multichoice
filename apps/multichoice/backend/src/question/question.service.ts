@@ -70,6 +70,20 @@ export class QuestionService {
       where: { id },
       relations: ['answers'],
     });
+    if (result != null && result.answers != null) {
+      result.answers.map((x) => {
+        delete x.isCorrect;
+        return x;
+      });
+    }
+    return result;
+  }
+
+  async getQestionIsCorrectByID(id: number): Promise<Question> {
+    const result = await this.questionRepository.findOne({
+      where: { id },
+      relations: ['answers'],
+    });
     return result;
   }
 

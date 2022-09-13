@@ -94,4 +94,12 @@ export class QuestionController {
     );
     return res.status(200).json(result);
   }
+
+  @UseGuards(AuthenticationGuard)
+  @ApiBearerAuth()
+  @Get('iscorrect/:id')
+  async getQestionIsCorreectByID(@Param('id') id: number, @Res() res) {
+    const result = await this.questionService.getQestionIsCorrectByID(id);
+    return res.status(200).json(new SucessResponse(200, { result }));
+  }
 }
