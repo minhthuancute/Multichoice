@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import {
   CreateUserDto,
   ResultUserDto,
@@ -20,11 +25,11 @@ import { SucessResponse } from '../model/SucessResponse';
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(UserExam)
     private readonly userExamRepository: Repository<UserExam>,
     @InjectRepository(UserAnswer)
     private readonly userAnswerRepository: Repository<UserAnswer>,
+    @Inject(forwardRef(() => TopicService))
     private readonly topicService: TopicService
   ) {}
 
@@ -41,7 +46,7 @@ export class UserService {
 
     //check user da thi hay chua
     if (userExam.startTime != 0 && userExam.endTime != 0)
-      throw new BadRequestException('user nay da thi');
+      throw new BadRequestException('bạn đã nộp bài');
 
     const topic: Topic = await this.topicService.getIsCorrectByTopicID(
       userExam.topic.id
@@ -52,11 +57,9 @@ export class UserService {
     exam.point = this.pointCount(topic.questions, resultUserDto);
     exam.topic = topic;
     exam.endTime = endDate;
-
-    if (
-      Number(endDate) - Number(userExam.startTime) <=
-      Number(topic.expirationTime) + Number(over)
-    ) {
+    // thoi gian làm bài của user
+    const time = Number(endDate) - Number(userExam.startTime);
+    if (time <= Number(topic.expirationTime) + Number(over)) {
       exam.status = true;
     }
     // update exam
@@ -77,12 +80,13 @@ export class UserService {
       await this.userAnswerRepository.save(lst);
     }
     if (exam.status !== true) {
-      throw new BadRequestException('muộn màng rồi bé ơi!!!');
+      throw new BadRequestException('Hết thời gian làm bài');
     }
 
     return new SucessResponse(200, {
       username: userExam.username,
       point: exam.point,
+      time,
     });
   }
 
@@ -144,12 +148,18 @@ export class UserService {
 
   async findTopicByUrl(url: string): Promise<Topic> {
     const result = await this.topicService.fineOneByUrl(url);
-    if (!result) throw new BadRequestException('topic is not found');
+    if (!result)
+      throw new BadRequestException(
+        "This topic already has contestants who can't be deleted"
+      );
     return result;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOneByTopicID(topicId: number): Promise<UserExam> {
+    return this.userExamRepository
+      .createQueryBuilder('userExam')
+      .where('userExam.topicId = :topicId', { topicId })
+      .getOne();
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
