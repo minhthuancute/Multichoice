@@ -49,6 +49,7 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
     const submitBtnRef: any = useRef<HTMLButtonElement>(null);
 
     const {
+      resetField,
       register,
       handleSubmit,
       setValue,
@@ -103,7 +104,7 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
         });
         if (!validAnswers) {
           notify({
-            message: 'Please choose the correct answer for the answer !',
+            message: 'Bạn chưa chọn đáp án đúng cho câu hỏi !',
             type: 'danger',
           } as iNotification);
           return;
@@ -135,13 +136,13 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
       clearErrors('answers');
     };
 
-    const onRemoveAnswer = (indexAnswer: number) => {
+    const onRemoveAnswer = (filterAnswer: CreatAnswer[]) => {
+      resetField('answers');
+
       const answers = getValues('answers');
       if (answers) {
-        const filterAnswer = answers.filter((_, index) => {
-          return indexAnswer !== index;
-        });
         setValue('answers', filterAnswer);
+        resetField('answers');
       }
     };
 

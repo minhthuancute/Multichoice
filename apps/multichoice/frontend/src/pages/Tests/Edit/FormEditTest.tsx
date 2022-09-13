@@ -16,6 +16,10 @@ import TextArea from '../../../components/Commons/TextArea/TextArea';
 import { IoMdClose } from 'react-icons/io';
 import ToolTip from '../../../components/Commons/ToolTip/ToolTip';
 import { topicStore } from '../../../store/rootReducer';
+import {
+  minutesToSeconds,
+  secondsToMinutes,
+} from '../../../utils/minutesToSeconds';
 
 const schemaFormLogin = yup.object().shape({
   timeType: yup.string().required(),
@@ -28,12 +32,16 @@ const schemaFormLogin = yup.object().shape({
 
 interface IFormEditTest {
   setOpenModalEditTest: React.Dispatch<React.SetStateAction<boolean>>;
+  cbOnUpdateTopic: () => void;
 }
 
-const FormEditTest: React.FC<IFormEditTest> = ({ setOpenModalEditTest }) => {
+const FormEditTest: React.FC<IFormEditTest> = ({
+  setOpenModalEditTest,
+  cbOnUpdateTopic,
+}) => {
   const { id: topicId } = useParams();
 
-  const { topic, setTopicData } = topicStore();
+  const { topic } = topicStore();
   const { expirationTime, typeCategoryName, timeType, title, description } =
     topic;
 
@@ -83,7 +91,7 @@ const FormEditTest: React.FC<IFormEditTest> = ({ setOpenModalEditTest }) => {
     setValue('typeCategoryName', typeCategoryName);
     setValue('title', title);
     setValue('description', description || '');
-    setValue('expirationTime', expirationTime);
+    setValue('expirationTime', +secondsToMinutes(+expirationTime));
   };
 
   useLayoutEffect(() => {
@@ -100,26 +108,18 @@ const FormEditTest: React.FC<IFormEditTest> = ({ setOpenModalEditTest }) => {
     setValue('timeType', optionVal);
   };
 
-  const getTopicDetail = async () => {
-    try {
-      const { data } = await topicServices.getTopicById(topicId || '');
-      setTopicData(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   // create TOPIC
   const onSubmit: SubmitHandler<CreateTopicDto> = async (
     formData: CreateTopicDto
   ) => {
     try {
+      formData.expirationTime = minutesToSeconds(formData.expirationTime);
       const id = topicId || -1;
       const { data } = await topicServices.updateTopicById(+id, formData);
       console.log(data);
       if (data.success) {
-        getTopicDetail();
         setOpenModalEditTest(false);
+        cbOnUpdateTopic();
       }
     } catch (error) {
       console.log(error);
@@ -145,7 +145,7 @@ const FormEditTest: React.FC<IFormEditTest> = ({ setOpenModalEditTest }) => {
         </div>
         <Input
           registerField={register('expirationTime')}
-          defaultValue={expirationTime}
+          defaultValue={+secondsToMinutes(+expirationTime)}
           typeInput="number"
           textLabel="Thời gian làm bài (phút)"
           id="expirationTime"
@@ -192,7 +192,7 @@ const FormEditTest: React.FC<IFormEditTest> = ({ setOpenModalEditTest }) => {
           errMessage={errors.description?.message}
         />
 
-        <div className="ctas flex items-center justify-center gap-x-2 mt-8">
+        <div className="ctas flex items-center justify-end gap-x-2 mt-8">
           <button
             type="button"
             className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm

@@ -1,5 +1,6 @@
 import create from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
+import { CURRENT_USER } from '../../constants/contstants';
 import { AuthPayload } from '../../types/LoginResponse';
 
 export interface IDataUser extends AuthPayload {
@@ -26,7 +27,7 @@ export const userStore = create<IUserStore>()(
           }),
       }),
       {
-        name: 'user',
+        name: CURRENT_USER,
       }
     )
   )

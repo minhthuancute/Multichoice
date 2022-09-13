@@ -1,5 +1,6 @@
 import create from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
+import { ANSWERS_EXAM } from '../../constants/contstants';
 
 export interface IAnswers {
   questionID: number;
@@ -49,7 +50,7 @@ export const answerStore = create<IAnswersStore>()(
           }),
       }),
       {
-        name: 'answers',
+        name: ANSWERS_EXAM,
       }
     )
   )

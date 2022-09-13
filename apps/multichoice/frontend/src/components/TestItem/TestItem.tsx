@@ -35,9 +35,8 @@ interface ITestItemProp {
 }
 
 const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
-  const examUrl = () => {
-    // must change to use .env
-    const host = 'http://localhost:4200/exam/';
+  const examUrl = (): string => {
+    const host = window.location.origin + '/exam/';
     return host + test.topicUrl;
   };
 
@@ -61,7 +60,12 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
   return (
     <div className="test-item cursor-pointer p-4 rounded-md bg-white mb-3 last:mb-0">
       <div className="test-item__header title">
-        <h3 className="font-semibold text-tiny">{test.title}</h3>
+        <Link
+          className="font-semibold text-lg hover:underline text-slate-800"
+          to={'/tests/edit/' + test.id}
+        >
+          {test.title}
+        </Link>
       </div>
       <div className="test-item__body mt-2 flex items-center justify-between">
         <ul className="left flex items-center">

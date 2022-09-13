@@ -1,5 +1,6 @@
 import create from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
+import { LOADING } from '../../constants/contstants';
 
 export interface ILoadingStore {
   isLoading: boolean;
@@ -19,7 +20,7 @@ export const loadingStore = create<ILoadingStore>()(
           }),
       }),
       {
-        name: 'loading',
+        name: LOADING,
       }
     )
   )

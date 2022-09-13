@@ -1,0 +1,10 @@
+.answer-item {
+  &:hover {
+    .radio {
+      &::before {
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+  }
+}

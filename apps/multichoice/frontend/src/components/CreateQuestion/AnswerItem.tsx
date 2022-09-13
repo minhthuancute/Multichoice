@@ -5,7 +5,8 @@ import ToolTip from '../Commons/ToolTip/ToolTip';
 import { MdOutlineClear } from 'react-icons/md';
 
 interface IAnswerItem {
-  indexCorrectAnswers?: number;
+  correctAnswer?: string;
+  answerValue?: string;
   registerFieldContent: any;
   registerFieldIsCorrect: any;
   indexAnswer: number;
@@ -14,7 +15,8 @@ interface IAnswerItem {
 }
 
 const AnswerItem: React.FC<IAnswerItem> = ({
-  indexCorrectAnswers = -1,
+  correctAnswer = '',
+  answerValue = '',
   registerFieldContent,
   registerFieldIsCorrect,
   indexAnswer,
@@ -27,8 +29,7 @@ const AnswerItem: React.FC<IAnswerItem> = ({
   };
 
   const shouldDisableCheckbox = (): boolean => {
-    const shouldDisable =
-      indexCorrectAnswers !== indexAnswer && indexCorrectAnswers !== -1;
+    const shouldDisable = correctAnswer !== answerValue && correctAnswer !== '';
     return shouldDisable;
   };
 

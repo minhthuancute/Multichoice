@@ -24,14 +24,20 @@ const HeaderAuthen: React.FC = () => {
         {isLoginPage ? (
           <p className="text-sm">
             Don't have account ?
-            <Link to="/register" className="inline-block ml-1 text-primary-900">
+            <Link
+              to="/register"
+              className="inline-block ml-1 text-primary-900 font-semibold"
+            >
               Sign up now !
             </Link>
           </p>
         ) : (
           <p className="text-sm">
             Already have an account ?
-            <Link to="/login" className="inline-block ml-1 text-primary-900">
+            <Link
+              to="/login"
+              className="inline-block ml-1 text-primary-900 font-semibold"
+            >
               Log in !
             </Link>
           </p>

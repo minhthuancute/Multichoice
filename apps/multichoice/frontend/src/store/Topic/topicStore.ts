@@ -1,5 +1,6 @@
 import create from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
+import { TOPIC_DATA } from '../../constants/contstants';
 import { ITopicResponse } from '../../types';
 
 export interface ITopicStore {
@@ -21,7 +22,7 @@ export const topicStore = create<ITopicStore>()(
           }),
       }),
       {
-        name: 'topic',
+        name: TOPIC_DATA,
       }
     )
   )

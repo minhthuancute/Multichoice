@@ -11,6 +11,7 @@ import { AiOutlineFieldTime, AiOutlineQuestionCircle } from 'react-icons/ai';
 import { FaPlus } from 'react-icons/fa';
 import Modal from '../Modal/Modal';
 import FormEditTest from '../../pages/Tests/Edit/FormEditTest';
+import { secondsToMinutes } from '../../utils/minutesToSeconds';
 
 const HeaderEditTest: React.FC = () => {
   const { id: topicId } = useParams();
@@ -32,6 +33,10 @@ const HeaderEditTest: React.FC = () => {
     getTopicById();
   }, [topicId]);
 
+  const cbOnUpdateTopic = () => {
+    getTopicById();
+  };
+
   if (!topicInfor) {
     return null;
   }
@@ -39,7 +44,10 @@ const HeaderEditTest: React.FC = () => {
   return (
     <div className="header-edit-test">
       <Modal openModal={openModalEditTest}>
-        <FormEditTest setOpenModalEditTest={setOpenModalEditTest} />
+        <FormEditTest
+          setOpenModalEditTest={setOpenModalEditTest}
+          cbOnUpdateTopic={cbOnUpdateTopic}
+        />
       </Modal>
       <div className="container py-4 border-b border-solid border-slate-200">
         <Breadcrumb>
@@ -81,7 +89,7 @@ const HeaderEditTest: React.FC = () => {
           </li>
           <li className="flex items-center text-sm">
             <AiOutlineFieldTime className="text-slate-800 mr-1 text-base" />
-            <span>{topicInfor.expirationTime} phút</span>
+            <span>{secondsToMinutes(topicInfor.expirationTime)} phút</span>
           </li>
         </ul>
         <div className="right">

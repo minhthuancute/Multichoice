@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import FooterDoExam from './FooterDoExam';
 import NavQuestion from './NavQuestion';
 import ShowQuestion from './ShowQuestion';
 
@@ -6,8 +7,13 @@ const MainDoExam: React.FC = () => {
   const [indexQuestion, setIndexQuestion] = useState<number>(0);
 
   return (
-    <div>
-      <div className="container mx-auto flex mt-10 gap-x-8">
+    <div
+      className="relative"
+      style={{
+        minHeight: 'calc(100vh - 69px)',
+      }}
+    >
+      <div className="container mx-auto pt-10 flex gap-x-8">
         <div className="w-2/3">
           <ShowQuestion
             indexQuestion={indexQuestion}
@@ -21,6 +27,8 @@ const MainDoExam: React.FC = () => {
           />
         </div>
       </div>
+
+      <FooterDoExam />
     </div>
   );
 };

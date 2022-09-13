@@ -1,18 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Input from '../../../components/Commons/Input/Input';
-import { examStore, IInforUserDoExam } from '../../../store/rootReducer';
+import {
+  examStore,
+  IDataUser,
+  IInforUserDoExam,
+} from '../../../store/rootReducer';
 import * as yup from 'yup';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import {
-  examServices,
-  IPayloadStartExam,
-} from '../../../services/ExamServices';
+
 import { notify } from '../../../helper/notify';
 import { iNotification } from 'react-notifications-component';
 import { useNavigate } from 'react-router-dom';
-import { START_TIME } from '../../../constants/contstants';
+import {
+  CURRENT_USER,
+  IS_LOGGOUT_CURRENT_USER,
+  START_TIME,
+} from '../../../constants/contstants';
 import { localServices } from '../../../services/LocalServices';
+import { cookieServices } from '../../../services/CookieServices';
 
 const schemaInfor = yup
   .object()
@@ -27,6 +33,7 @@ interface IColectInfor {
 
 const CollectInfor: React.FC = () => {
   const navigate = useNavigate();
+
   const { exam, setUserData } = examStore();
 
   const {
@@ -37,27 +44,36 @@ const CollectInfor: React.FC = () => {
     resolver: yupResolver(schemaInfor),
   });
 
+  useEffect(() => {
+    const isLoggout = Boolean(
+      cookieServices.getCookie(IS_LOGGOUT_CURRENT_USER)
+    );
+
+    const currentUser = localServices.getData(CURRENT_USER);
+    const userData: IDataUser = currentUser.state.user;
+
+    if (currentUser.state.user.token && !isLoggout) {
+      localServices.setData(START_TIME, Date.now());
+
+      setUserData({
+        user_name: userData.username,
+        user_id: userData.id,
+      } as IInforUserDoExam);
+      const urlNavigate = '/exam/' + exam.url + '/do-exam';
+      navigate(urlNavigate);
+    }
+  }, [navigate, exam.url]);
+
   const onSubmit: SubmitHandler<IColectInfor> = async (
     formData: IColectInfor
   ) => {
     try {
-      const payload: IPayloadStartExam = {
-        topicID: exam.id,
-        username: formData.user_name,
-      };
-      const { data } = await examServices.startExam(payload);
+      setUserData({
+        user_name: formData.user_name,
+      } as IInforUserDoExam);
 
-      if (data.success) {
-        localServices.setData(START_TIME, Date.now());
-
-        setUserData({
-          user_name: formData.user_name,
-          user_id: data.data.userid,
-        } as IInforUserDoExam);
-
-        const urlNavigate = '/exam/' + exam.url + '/do-exam';
-        navigate(urlNavigate);
-      }
+      const urlNavigate = '/exam/' + exam.url + '/do-exam';
+      navigate(urlNavigate);
     } catch (error) {
       notify({
         message: 'Something went wrong !',
@@ -75,7 +91,6 @@ const CollectInfor: React.FC = () => {
       >
         <div className="left h-full w-[500px]">
           <img
-            // src={require('../../../assets/images/bg-exam.png')}
             src="https://images.unsplash.com/photo-1457369804613-52c61a468e7d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
             alt="exam multichoice"
             className="block h-full w-full object-cover"

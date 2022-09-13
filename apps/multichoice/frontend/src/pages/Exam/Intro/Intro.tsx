@@ -1,17 +1,28 @@
-import React, { useLayoutEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import React, { useEffect, useLayoutEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import {
+  CURRENT_USER,
+  DATA_USER_DO_EXAM,
+  START_TIME,
+} from '../../../constants/contstants';
+import { cookieServices } from '../../../services/CookieServices';
 import { examServices } from '../../../services/ExamServices';
-import { examStore, answerStore, IAnswers } from '../../../store/rootReducer';
-import { IExamResponse, IQuestion } from '../../../types';
-
-import imgExam from '../../../assets/images/bg-exam.png';
+import { localServices } from '../../../services/LocalServices';
+import {
+  examStore,
+  answerStore,
+  IAnswers,
+  IDataUser,
+  IInforUserDoExam,
+} from '../../../store/rootReducer';
+import { IExamResponse, IQuestion, IUserDoExam } from '../../../types';
 
 const Intro: React.FC = () => {
-  const { exam_id } = useParams();
-  const { setExamData } = examStore();
-  const { setAnswers } = answerStore();
+  const navigate = useNavigate();
 
-  const [exam, setExam] = useState<IExamResponse>();
+  const { exam_id } = useParams();
+  const { exam, setExamData, setUserData } = examStore();
+  const { setAnswers } = answerStore();
 
   const getExamInfor = async () => {
     try {
@@ -27,10 +38,54 @@ const Intro: React.FC = () => {
         }
       );
       setAnswers(initAnswers);
-      setExam(data);
       setExamData(data);
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const getUserDoexamData = (): IUserDoExam | null => {
+    const cookieData = cookieServices.getCookie(DATA_USER_DO_EXAM);
+    if (cookieData) {
+      const userDoExam: IUserDoExam = JSON.parse(
+        cookieServices.getCookie(DATA_USER_DO_EXAM)
+      );
+      console.log(userDoExam);
+      return userDoExam;
+    }
+    return null;
+  };
+
+  useEffect(() => {
+    getUserDoexamData();
+  }, []);
+
+  const onNavigateLoginExam = () => {
+    const userDoExam = getUserDoexamData();
+    const currentUser = localServices.getData(CURRENT_USER);
+    const currentExamTitle = exam.title;
+    const userData: IDataUser = currentUser.state.user;
+
+    const isLoggout =
+      userDoExam?.is_loggout_current_user &&
+      userDoExam.exam_title === currentExamTitle &&
+      userData.id !== userDoExam.user_id;
+    console.log(isLoggout);
+
+    if (currentUser.state.user.token && !isLoggout) {
+      localServices.setData(START_TIME, Date.now());
+
+      setUserData({
+        user_name: userData.username,
+        user_id: userData.id,
+      } as IInforUserDoExam);
+      const urlNavigate = '/exam/' + exam.url + '/do-exam';
+      navigate(urlNavigate);
+    } else {
+      localServices.setData(START_TIME, Date.now());
+
+      const urlNavigate = '/exam/' + exam.url + '/login';
+      navigate(urlNavigate);
     }
   };
 
@@ -48,7 +103,6 @@ const Intro: React.FC = () => {
       >
         <div className="left h-full w-[500px]">
           <img
-            // src={imgExam}
             src="https://images.unsplash.com/photo-1457369804613-52c61a468e7d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
             alt="exam multichoice"
             className="block h-full w-full object-cover"
@@ -61,13 +115,13 @@ const Intro: React.FC = () => {
               <p className="mt-2">{exam.description}</p>
             </div>
             <div className="pt-8 px-10">
-              <Link
-                to="login"
+              <button
                 className="create-test btn-primary rounded-md flex justify-center items-center w-full h-11 text-sm
               text-white font-bold bg-primary-900 transition-all duration-200 hover:bg-opacity-90"
+                onClick={() => onNavigateLoginExam()}
               >
                 Tham gia ngay
-              </Link>
+              </button>
             </div>
           </div>
 
