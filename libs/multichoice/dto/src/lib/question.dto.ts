@@ -1,28 +1,40 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { CreatAnswer } from "./answer.dto";
+import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
+import { ApiProperty } from '@nestjs/swagger';
+import { CreatAnswer, UpdateAnswer } from './answer.dto';
 
 export class CreateQuestionDto {
-    @ApiProperty()
-    topicID: number
+  @ApiProperty()
+  topicID: number;
 
-    @ApiProperty()
-    questionTypeID: number
+  @ApiProperty({ enum: QuestionTypeEnum, default: QuestionTypeEnum.SINGLE })
+  type: QuestionTypeEnum;
 
-    @ApiProperty()
-    content: string
+  @ApiProperty()
+  content: string;
 
-    @ApiProperty()
-    time: number
+  @ApiProperty()
+  time: number;
 
-    @ApiProperty()
-    image: string
+  @ApiProperty({ default: true })
+  isActive: boolean;
 
-    @ApiProperty()
-    audio: string
+  @ApiProperty({ type: [CreatAnswer] })
+  answers: CreatAnswer[];
+}
 
-    @ApiProperty({ default: true })
-    isActive: boolean
+export class UpdateQuestionDto {
+  @ApiProperty({ enum: QuestionTypeEnum, default: QuestionTypeEnum.SINGLE })
+  type: QuestionTypeEnum;
 
-    @ApiProperty({ type: [CreatAnswer] })
-    answers: CreatAnswer[]
+  @ApiProperty()
+  content: string;
+
+  @ApiProperty()
+  time: number;
+
+  @ApiProperty({ default: true })
+  isActive: boolean;
+
+  @ApiProperty({ type: [UpdateAnswer] })
+  answers: UpdateAnswer[];
 }

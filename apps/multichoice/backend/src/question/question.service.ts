@@ -1,51 +1,139 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateQuestionDto } from '@monorepo/multichoice/dto';
-import { UpdateQuestionDto } from './dto/update-question.dto';
+import {
+  CreateQuestionDto,
+  UpdateQuestionDto,
+} from '@monorepo/multichoice/dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Question } from './entities/question.entity';
 import { Repository } from 'typeorm';
 import { SucessResponse } from '../model/SucessResponse';
 import { plainToClass } from 'class-transformer';
 import { Topic } from './entities/topic.entity';
-import { QuestionType } from './entities/question-type.entity';
 import { Answer } from '../answer/entities/answer.entity';
 
 @Injectable()
 export class QuestionService {
-  constructor(@InjectRepository(Question) private readonly questionRepository: Repository<Question>,
-    @InjectRepository(QuestionType) private readonly questionTypeRepository: Repository<QuestionType>,
-    @InjectRepository(Answer) private readonly answerRepository: Repository<Answer>) { }
+  constructor(
+    @InjectRepository(Question)
+    private readonly questionRepository: Repository<Question>,
+    @InjectRepository(Answer)
+    private readonly answerRepository: Repository<Answer>
+  ) {}
 
-
-  async fineOneByID(id: number): Promise<QuestionType> {
-
-    const result = await this.questionTypeRepository.findOneById(id)
-    return result;
+  async deleteByID(id: number): Promise<boolean> {
+    await this.questionRepository.delete(id);
+    return true;
   }
 
-  async create(createQuestionDto: CreateQuestionDto, topic: Topic): Promise<SucessResponse> {
+  async create(
+    createQuestionDto: CreateQuestionDto,
+    topic: Topic,
+    files: any
+  ): Promise<SucessResponse> {
+    const QuestionEntity: Question = plainToClass(Question, createQuestionDto);
+    if (
+      createQuestionDto.answers == undefined &&
+      createQuestionDto.answers.length == 0
+    ) {
+      throw new BadRequestException('answers is not  empty');
+    }
+    if (files !== undefined) {
+      //save image}||audio
+      if (files.audio !== undefined) {
+        QuestionEntity.audio = files.audio.filename;
+      }
+      if (files.image !== undefined) {
+        QuestionEntity.image = files.image.filename;
+      }
+    }
 
-    const questionType: QuestionType = await this.fineOneByID(createQuestionDto.questionTypeID)
-    if (!questionType) throw new BadRequestException('questionTypeID is not found')
-
-    const QuestionEntity: Question = plainToClass(Question, createQuestionDto)
-
-    QuestionEntity.topic = topic
-    QuestionEntity.type = questionType
+    QuestionEntity.topic = topic;
 
     // save question
     const saveQuestion = await this.questionRepository.save(QuestionEntity);
 
     // save list answer
-    const answers: Answer[] = createQuestionDto.answers.map(opt => {
+    const answers: Answer[] = createQuestionDto.answers.map((opt) => {
       const questionOption = new Answer();
-      questionOption.content = opt.content
-      questionOption.isCorrect = opt.isCorrect
+      questionOption.content = opt.content;
+      questionOption.isCorrect = opt.isCorrect;
       questionOption.question = saveQuestion;
       return questionOption;
     });
-    await this.answerRepository.save(answers)
+    await this.answerRepository.save(answers);
 
-    return new SucessResponse(200, "Sucess");
+    return new SucessResponse(201, 'Sucess');
+  }
+
+  async getQestionByID(id: number): Promise<Question> {
+    const result = await this.questionRepository.findOne({
+      where: { id },
+      relations: ['answers'],
+    });
+    if (result != null && result.answers != null) {
+      result.answers.map((x) => {
+        delete x.isCorrect;
+        return x;
+      });
+    }
+    return result;
+  }
+
+  async getQestionIsCorrectByID(id: number): Promise<Question> {
+    const result = await this.questionRepository.findOne({
+      where: { id },
+      relations: ['answers'],
+    });
+    return result;
+  }
+
+  convertQuestionEntity(
+    files: any,
+    updateQuestionDto: UpdateQuestionDto
+  ): Question {
+    const QuestionEntity: Question = new Question();
+    QuestionEntity.type = updateQuestionDto.type;
+    QuestionEntity.content = updateQuestionDto.content;
+    QuestionEntity.time = updateQuestionDto.time;
+    QuestionEntity.isActive = updateQuestionDto.isActive;
+    if (files !== undefined) {
+      //save image}||audio
+      if (files.audio !== undefined) {
+        QuestionEntity.audio = files.audio.filename;
+      }
+      if (files.image !== undefined) {
+        QuestionEntity.image = files.image.filename;
+      }
+    }
+    return QuestionEntity;
+  }
+
+  async update(
+    id: number,
+    updateQuestionDto: UpdateQuestionDto,
+    files: any
+  ): Promise<SucessResponse> {
+    const question = await this.getQestionByID(id);
+    if (!question) throw new BadRequestException('Question is not found');
+
+    const QuestionEntity = this.convertQuestionEntity(files, updateQuestionDto);
+    // update question
+    await this.questionRepository.update({ id }, QuestionEntity);
+
+    // update list answer
+    if (
+      updateQuestionDto.answers != undefined &&
+      updateQuestionDto.answers.length > 0
+    ) {
+      const answers = updateQuestionDto.answers.map((opt) => {
+        const questionOption = new Answer();
+        questionOption.content = opt.content;
+        questionOption.isCorrect = opt.isCorrect;
+        return this.answerRepository.update({ id: opt.id }, questionOption);
+      });
+      await Promise.all(answers);
+    }
+
+    return new SucessResponse(200, 'Sucess');
   }
 }

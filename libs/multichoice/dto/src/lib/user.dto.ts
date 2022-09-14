@@ -1,6 +1,7 @@
 import { IsEmail, MaxLength, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { validation } from '@monorepo/multichoice/validation';
+import { type } from 'os';
 
 export class CreateUserDto {
   @ApiProperty()
@@ -44,4 +45,27 @@ export class LoginUserDto {
   @ApiProperty()
   @MinLength(validation().password.minLength)
   password: string;
+}
+
+export class AnswersUserDto {
+  @ApiProperty()
+  questionID: number;
+
+  @ApiProperty({ type: [Number] })
+  answerID: number[];
+}
+
+export class UserExamDto {
+  @ApiProperty()
+  username: string;
+
+  @ApiProperty()
+  topicID: number;
+}
+export class ResultUserDto {
+  @ApiProperty()
+  userID: number;
+
+  @ApiProperty({ type: [AnswersUserDto] })
+  AnswersUsers: AnswersUserDto[];
 }

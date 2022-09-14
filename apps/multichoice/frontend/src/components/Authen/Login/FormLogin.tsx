@@ -5,19 +5,21 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { titleServices } from '../../../services/TitleServices';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { Link } from 'react-router-dom';
-import { USER } from '../../../constants/contstants';
+import { Link, useNavigate } from 'react-router-dom';
+import { TOKEN, USER } from '../../../constants/contstants';
 import Checkbox from '../../Commons/Checkbox/Checkbox';
 import InputAuthen from '../InputAuthen';
 import { validation } from '@monorepo/multichoice/validation';
-import SignUpOptions from '../SignUpOptions';
+// import SignUpOptions from '../SignUpOptions';
 import { cookieServices } from '../../../services/CookieServices';
 import { authenServices } from '../../../services/AuthenServices';
-
-export interface IFormLogin {
-  email: string;
-  password: string;
-}
+import { LoginUserDto } from '@monorepo/multichoice/dto';
+import { AxiosResponse } from 'axios';
+import { userStore } from '../../../store/User/userStore';
+import { ILoginResponse } from '../../../types/LoginResponse';
+import { localServices } from '../../../services/LocalServices';
+import { iNotification } from 'react-notifications-component';
+import { notify } from '../../../helper/notify';
 
 const { email, password } = validation();
 const schemaFormLogin = yup
@@ -33,16 +35,17 @@ const schemaFormLogin = yup
   .required();
 
 const FormLogin: React.FC = () => {
-  const [userLocal, setUserLocal] = useState<IFormLogin>();
+  const navigate = useNavigate();
+  const { setInforUser } = userStore();
+  const [userLocal, setUserLocal] = useState<LoginUserDto>();
   const [isRememberUser, setIsRememberUser] = useState<boolean>(false);
 
   const {
     register,
     handleSubmit,
-    watch,
     reset,
     formState: { errors },
-  } = useForm<IFormLogin>({
+  } = useForm<LoginUserDto>({
     resolver: yupResolver(schemaFormLogin),
   });
 
@@ -53,22 +56,35 @@ const FormLogin: React.FC = () => {
       setUserLocal(JSON.parse(dataUser));
       reset({ ...JSON.parse(dataUser) });
     }
-  }, []);
+  }, [reset]);
 
-  // save form data to Localstorage
-  const handleRememberUser = (data: IFormLogin): void => {
+  // save form data to Cookie
+  const handleRememberUser = (data: LoginUserDto): void => {
     // expried in 30 days
     cookieServices.setCookie(USER, data, 30);
   };
 
-  const onSubmit: SubmitHandler<IFormLogin> = async (formData: IFormLogin) => {
+  const onSubmit: SubmitHandler<LoginUserDto> = async (
+    formData: LoginUserDto
+  ) => {
     if (isRememberUser) {
       handleRememberUser(formData);
     }
     try {
-      const data = await authenServices.login(formData);
+      const data: AxiosResponse = await authenServices.login(formData);
+      const loginResponse: ILoginResponse = data.data;
+      if (loginResponse.success) {
+        const { payload, token } = loginResponse.data;
+        localServices.setData(TOKEN, token);
+        setInforUser(payload, token);
+        navigate('/tests');
+      }
     } catch (error) {
       console.log(error);
+      notify({
+        message: 'Wrong user name or password !',
+        type: 'danger',
+      } as iNotification);
     }
   };
 
@@ -80,7 +96,7 @@ const FormLogin: React.FC = () => {
         autoComplete="off"
       >
         <div className="form-header mb-10 flex items-center md:flex-col xs:flex-col text-center">
-          <h2 className="font-semibold text-black mb-5 text-3xl">Login</h2>
+          <h2 className="font-medium text-black mb-5 text-3xl">Login</h2>
           <p className="text-slate-800">
             Enter yor email address and password <br />
             to get access account
@@ -95,6 +111,7 @@ const FormLogin: React.FC = () => {
           placeholder="Email Address"
           typeInput="email"
           Icon={MdOutlineMail}
+          id="email"
         />
 
         <InputAuthen
@@ -106,15 +123,20 @@ const FormLogin: React.FC = () => {
           placeholder="Password"
           typeInput="password"
           Icon={VscUnlock}
+          id="password"
         />
 
         <div className="remember-me flex items-center justify-between mt-5 text-slate-800">
           <div className="check-box cursor-pointer flex items-center">
-            <Checkbox onChange={setIsRememberUser} textLabel="Remember me" />
+            <Checkbox
+              onChange={setIsRememberUser}
+              textLabel="Remember me"
+              id="remember-me"
+            />
           </div>
           <Link
             to="/"
-            className="text-sm transition-all duration-200 hover:text-primary"
+            className="hidden text-sm transition-all duration-200 hover:text-primary-900"
           >
             Forget password?
           </Link>
@@ -122,14 +144,14 @@ const FormLogin: React.FC = () => {
 
         <div className="submit mt-5">
           <button
-            className="w-full py-4 bg-primary rounded-md text-white font-medium"
+            className="w-full py-3 bg-primary-900 rounded-md text-white font-medium"
             type="submit"
           >
             Sign in Now
           </button>
         </div>
 
-        <SignUpOptions isLoginPage={true} />
+        {/* <SignUpOptions isLoginPage={true} /> */}
       </form>
     </div>
   );

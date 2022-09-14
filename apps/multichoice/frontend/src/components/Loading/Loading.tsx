@@ -8,7 +8,10 @@ interface ILoading {
 const Loading: React.FC<ILoading> = ({ isLoading = true }) => {
   return isLoading ? (
     <div className="flex py-5">
-      <div className="wrapper-loading mx-auto w-8 h-8 rounded-full border border-solid border-primary border-t-transparent"></div>
+      <div
+        className="wrapper-loading mx-auto w-8 h-8 rounded-full border border-solid border-primary-900
+        border-t-transparent"
+      ></div>
     </div>
   ) : null;
 };

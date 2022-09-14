@@ -6,13 +6,13 @@ import {
   Get,
   NotFoundException,
   Param,
+  Patch,
   Post,
   Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { get } from 'https';
 import { AuthenticationGuard } from '../auth/guards/auth.guard';
 import { SucessResponse } from '../model/SucessResponse';
 import { Topic } from '../question/entities/topic.entity';
@@ -34,6 +34,14 @@ export class TopicController {
     return res.status(201).json(result);
   }
 
+  @UseGuards(AuthenticationGuard)
+  @Get('/all')
+  @ApiBearerAuth()
+  async getTopicAll(@Req() req, @Res() res): Promise<Topic[]> {
+    const result = await this.topicService.fileAll(req.user);
+    return res.status(200).json(new SucessResponse(200, result));
+  }
+
   @Get(':id')
   async getTopicById(@Param('id') id: number, @Res() res): Promise<Topic> {
     const result = await this.topicService.fineOneByID(id);
@@ -49,5 +57,18 @@ export class TopicController {
   async deleteTopicById(@Param('id') id: number, @Res() res) {
     await this.topicService.deleteById(id);
     return res.status(200).json(new SucessResponse(200, {}));
+  }
+
+  @UseGuards(AuthenticationGuard)
+  @Patch(':id')
+  @ApiBearerAuth()
+  async update(
+    @Param('id') id: number,
+    @Body() topic: CreateTopicDto,
+    @Req() req,
+    @Res() res
+  ): Promise<SucessResponse> {
+    const result = await this.topicService.update(id, topic, req.user);
+    return res.status(200).json(result);
   }
 }

@@ -1,11 +1,15 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
+import { isLogin } from '../../utils/authen';
 
 interface IPrivateRoute {
-  children: JSX.Element | JSX.Element[] | string | string[];
-  rest: any;
+  Component: React.FunctionComponent<any>;
+  rest?: any;
 }
 
-const PrivateRoute: React.FC<IPrivateRoute> = ({ children, ...rest }) => {
-  return <div></div>;
+const PrivateRoute: React.FC<IPrivateRoute> = ({ Component, ...rest }) => {
+  const loggedIn = isLogin();
+  return loggedIn ? <Component {...rest} /> : <Navigate to="/login" />;
 };
+
+export default PrivateRoute;

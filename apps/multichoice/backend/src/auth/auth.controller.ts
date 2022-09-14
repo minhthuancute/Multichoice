@@ -32,6 +32,6 @@ export class authController {
     @Req() req,
     @Res() res
   ): Promise<any> {
-    return res.json(new SucessResponse(200, req.user));
+    return res.status(200).json(new SucessResponse(200, req.user));
   }
 }

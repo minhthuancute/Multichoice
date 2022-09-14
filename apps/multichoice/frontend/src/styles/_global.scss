@@ -1,0 +1,31 @@
+.container {
+  max-width: 1200px;
+}
+
+.btn-primary {
+  &:focus {
+    box-shadow: rgba(22, 160, 133, 0.2) 0 0 0 3px;
+  }
+}
+
+.wrapper-input {
+  &.no-error {
+    input:focus ~ label {
+      svg {
+        fill: var(--primaryColor);
+      }
+    }
+  }
+}
+
+.content-page {
+  min-height: calc(100vh - 125px);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primaryColor);
+}
