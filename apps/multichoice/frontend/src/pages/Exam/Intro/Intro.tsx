@@ -21,10 +21,13 @@ const Intro: React.FC = () => {
   const navigate = useNavigate();
 
   const { exam_id } = useParams();
-  const { exam, setExamData, setUserData } = examStore();
+  const { exam, setExamData, setUserData, userDoExam, setIsSubmitExam } =
+    examStore();
   const { setAnswers } = answerStore();
 
   const getExamInfor = async () => {
+    setIsSubmitExam(false);
+
     try {
       const { data } = await examServices.getExamInfor(exam_id || '');
       const examInfor: IExamResponse = data;
@@ -50,7 +53,6 @@ const Intro: React.FC = () => {
       const userDoExam: IUserDoExam = JSON.parse(
         cookieServices.getCookie(DATA_USER_DO_EXAM)
       );
-      console.log(userDoExam);
       return userDoExam;
     }
     return null;
@@ -61,21 +63,14 @@ const Intro: React.FC = () => {
   }, []);
 
   const onNavigateLoginExam = () => {
-    const userDoExam = getUserDoexamData();
     const currentUser = localServices.getData(CURRENT_USER);
-    const currentExamTitle = exam.title;
     const userData: IDataUser = currentUser.state.user;
 
-    const isLoggout =
-      userDoExam?.is_loggout_current_user &&
-      userDoExam.exam_title === currentExamTitle &&
-      userData.id !== userDoExam.user_id;
-    console.log(isLoggout);
-
-    if (currentUser.state.user.token && !isLoggout) {
+    if (currentUser.state.user.token && !userDoExam.is_guest) {
       localServices.setData(START_TIME, Date.now());
 
       setUserData({
+        is_guest: false,
         user_name: userData.username,
         user_id: userData.id,
       } as IInforUserDoExam);
