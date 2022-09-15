@@ -4,16 +4,19 @@ import { EXAM_DATA } from '../../constants/contstants';
 import { IExamResponse } from '../../types';
 
 export interface IInforUserDoExam {
+  is_guest: boolean;
   user_name: string;
   user_id: number;
 }
 
 export interface IExamStore {
   isExpriedExam: boolean;
+  isSubmitExam: boolean;
   isLoggout: boolean;
   exam: IExamResponse;
   userDoExam: IInforUserDoExam;
   setIsExpriedExam: (isExpriedExam: boolean) => void;
+  setIsSubmitExam: (isSubmitExam: boolean) => void;
   setExamData: (examData: IExamResponse) => void;
   setUserData: (userData: IInforUserDoExam) => void;
   handleLoggout: () => void;
@@ -24,6 +27,7 @@ export const examStore = create<IExamStore>()(
   devtools(
     persist(
       (set) => ({
+        isSubmitExam: false,
         isExpriedExam: false,
         isLoggout: false,
         exam: {} as IExamResponse,
@@ -53,6 +57,13 @@ export const examStore = create<IExamStore>()(
           set(() => {
             return {
               isExpriedExam: isExpriedExam,
+            };
+          }),
+
+        setIsSubmitExam: (isSubmitExam: boolean) =>
+          set(() => {
+            return {
+              isSubmitExam: isSubmitExam,
             };
           }),
       }),
