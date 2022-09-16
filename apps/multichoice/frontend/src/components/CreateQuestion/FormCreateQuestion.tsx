@@ -99,6 +99,8 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
     ) => {
       try {
         const answers = getValues('answers');
+        console.log(answers);
+
         const validAnswers = answers.some((answers: CreatAnswer) => {
           return answers.isCorrect;
         });

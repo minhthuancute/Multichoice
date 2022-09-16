@@ -3,7 +3,6 @@ import { CreatAnswer } from '@monorepo/multichoice/dto';
 import React, { useEffect, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import * as yup from 'yup';
-import { generateArray } from '../../utils/generateArray';
 import AnswerItem from './AnswerItem';
 import { HiInformationCircle } from 'react-icons/hi';
 import { iNotification } from 'react-notifications-component';
@@ -24,42 +23,73 @@ interface ICreateAnswer {
   invalidAnswers?: boolean;
 }
 
+interface IAnswers {
+  answers: CreatAnswer[];
+}
+
 const CreateAnswer: React.FC<ICreateAnswer> = ({
   onAddAnswer,
   onRemoveAnswer,
   invalidAnswers = false,
 }) => {
-  const { getValues, register, unregister, watch, control, resetField } =
-    useForm<[CreatAnswer]>({
-      resolver: yupResolver(answerSchema),
-    });
-
-  const { remove } = useFieldArray({
-    control,
-    shouldUnregister: true,
-    name: 'answers' as never,
+  const { setValue, getValues, register, control, watch } = useForm<IAnswers>({
+    resolver: yupResolver(answerSchema),
   });
 
-  const [answerLength, setAnswerLength] = useState<number[]>(generateArray(4));
+  const { remove, fields, append } = useFieldArray({
+    control,
+    shouldUnregister: true,
+    name: 'answers',
+  });
+
+  useEffect(() => {
+    const answers = Array.from({ length: 4 }).map((item) => {
+      const answer: CreatAnswer = {
+        content: '',
+        isCorrect: false,
+      };
+      return answer;
+    });
+    setValue('answers', answers);
+  }, []);
+
   const [correctAnswer, setCorrectAnswer] = useState<string>('');
 
   const addNewAnswer = () => {
-    if (answerLength.length + 1 > 4) {
+    const canAddNewAnswer = getValues('answers').length + 1 <= 4;
+    if (canAddNewAnswer) {
+      const newAnswer: CreatAnswer = {
+        content: '',
+        isCorrect: false,
+      };
+      append(newAnswer);
+    } else {
       notify({
         message: 'Số câu trả lời tối đa là 4 !',
         type: 'danger',
       } as iNotification);
       return;
     }
-
-    setAnswerLength([
-      ...answerLength,
-      answerLength[answerLength.length - 1] + 1,
-    ]);
   };
 
-  const onDeleteAnswer = (index: number) => {
-    if (answerLength.length - 1 === 1) {
+  const onDeleteAnswer = (indexAnswer: number) => {
+    const canDeleteAnswer = getValues('answers').length - 1 !== 1;
+    if (canDeleteAnswer) {
+      const nameContent =
+        `answers.${indexAnswer}.content` as `answers.${number}.content`;
+      const valueItem = getValues(nameContent);
+      if (valueItem === correctAnswer) {
+        setCorrectAnswer('');
+      }
+
+      const answers: CreatAnswer[] = getValues('answers');
+      const filterAnswer = answers.filter((_: any, indexAnswer: number) => {
+        return indexAnswer !== indexAnswer;
+      });
+
+      onRemoveAnswer(filterAnswer);
+      remove(indexAnswer);
+    } else {
       notify({
         message: 'Câu hỏi phải có ít nhất hai câu trả lời !',
         type: 'danger',
@@ -67,31 +97,6 @@ const CreateAnswer: React.FC<ICreateAnswer> = ({
 
       return;
     }
-
-    const nameContent = `answers[${index}].content` as any;
-    const valueItem = getValues(nameContent) as any;
-    if (valueItem === correctAnswer) {
-      setCorrectAnswer('');
-    }
-
-    const filterAnswerLength = answerLength.filter((item: number) => {
-      return item !== index;
-    });
-
-    if (getValues('0')) {
-      const nameContent = `answers[${index}]` as any;
-      unregister(nameContent);
-      resetField('answers' as any);
-    }
-
-    const answers: any = getValues('answers' as any);
-    const filterAnswer = answers.filter((_: any, indexAnswer: number) => {
-      return indexAnswer !== index;
-    });
-
-    setAnswerLength(filterAnswerLength);
-    onRemoveAnswer(filterAnswer);
-    remove(index);
   };
 
   const indexCorrectAnswer = (answers: CreatAnswer[] = []) => {
@@ -111,6 +116,11 @@ const CreateAnswer: React.FC<ICreateAnswer> = ({
     };
   }, [watch]);
 
+  // const invalidAnswers = ():boolean => {
+  //   const answers = getValues('answers')
+  //   const isInvalidAnswers =
+  // }
+
   return (
     <div>
       <div className="answer mt-4">
@@ -121,21 +131,23 @@ const CreateAnswer: React.FC<ICreateAnswer> = ({
           </label>
         </div>
         <div className="answer-body">
-          {answerLength.map((item: number, index: number) => {
-            const nameContent = `answers[${index}].content` as any;
-            const nameIsCorrect = `answers[${index}].isCorrect` as any;
+          {fields.map((item: CreatAnswer, index: number) => {
+            const nameContent =
+              `answers.${index}.content` as `answers.${number}.content`;
+            const nameIsCorrect =
+              `answers.${index}.isCorrect` as `answers.${number}.isCorrect`;
 
             const registerContent = register(nameContent);
             const registerIsCorrect = register(nameIsCorrect);
 
             return (
               <AnswerItem
-                key={item}
+                key={index}
                 registerFieldContent={registerContent}
                 registerFieldIsCorrect={registerIsCorrect}
                 onDeleteAnswer={onDeleteAnswer}
                 correctAnswer={correctAnswer}
-                answerValue={(getValues(nameContent) as any) || ''}
+                answerValue={getValues(nameContent) || ''}
                 indexAnswer={index}
                 indexAscii={index}
               />

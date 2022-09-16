@@ -39,7 +39,7 @@ const QuestionList: React.FC = () => {
       console.log(data);
       if (data.status === 200) {
         notify({
-          message: 'Delete question succesfully !',
+          message: 'Xóa câu hỏi thành công !',
           type: 'success',
         } as iNotification);
 
