@@ -11,6 +11,7 @@ import {
   UseGuards,
   UseInterceptors,
   UploadedFiles,
+  Req,
 } from '@nestjs/common';
 import { QuestionService } from './question.service';
 import {
@@ -70,8 +71,8 @@ export class QuestionController {
   @UseGuards(AuthenticationGuard)
   @ApiBearerAuth()
   @Get(':id')
-  async findByID(@Param('id') id: number, @Res() res) {
-    const result = await this.questionService.getQestionByID(id);
+  async findByID(@Param('id') id: number, @Res() res, @Req() req) {
+    const result = await this.questionService.getQestionByID(id, req.user);
     return res.status(200).json(new SucessResponse(200, { result }));
   }
 
@@ -85,21 +86,15 @@ export class QuestionController {
     @Param('id') id: number,
     @Body() updateQuestionDto: UpdateQuestionDto,
     @UploadedFiles() files,
-    @Res() res
+    @Res() res,
+    @Req() req
   ): Promise<SucessResponse> {
     const result = await this.questionService.update(
       id,
       updateQuestionDto,
-      files
+      files,
+      req.user
     );
     return res.status(200).json(result);
-  }
-
-  @UseGuards(AuthenticationGuard)
-  @ApiBearerAuth()
-  @Get('iscorrect/:id')
-  async getQestionIsCorreectByID(@Param('id') id: number, @Res() res) {
-    const result = await this.questionService.getQestionIsCorrectByID(id);
-    return res.status(200).json(new SucessResponse(200, { result }));
   }
 }
