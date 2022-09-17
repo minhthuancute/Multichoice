@@ -13,6 +13,8 @@ export class UserAnswer extends Timestamp {
   @Column()
   answerID: number;
 
-  @ManyToOne(() => UserExam, (userExam) => userExam.UserAnswer)
+  @ManyToOne(() => UserExam, (userExam) => userExam.UserAnswer, {
+    onDelete: 'CASCADE',
+  })
   userExam: UserExam;
 }

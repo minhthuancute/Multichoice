@@ -30,9 +30,13 @@ export class QuestionService {
 
   async create(
     createQuestionDto: CreateQuestionDto,
-    topic: Topic,
     files: any
   ): Promise<SucessResponse> {
+    const checkTopic = await this.topicService.fineOneByID(
+      createQuestionDto.topicID
+    );
+    if (!checkTopic) throw new BadRequestException('topicid is not found');
+
     const QuestionEntity: Question = plainToClass(Question, createQuestionDto);
     if (
       createQuestionDto.answers == undefined &&
@@ -50,7 +54,7 @@ export class QuestionService {
       }
     }
 
-    QuestionEntity.topic = topic;
+    QuestionEntity.topic = checkTopic;
 
     // save question
     const saveQuestion = await this.questionRepository.save(QuestionEntity);
@@ -68,38 +72,35 @@ export class QuestionService {
     return new SucessResponse(201, 'Sucess');
   }
 
+  //lay day du thong tin question
+  async getFullQuestionByID(id: number): Promise<Question> {
+    const result = await this.questionRepository.findOne({
+      where: { id },
+      relations: ['topic.owner', 'answers'],
+    });
+    return result;
+  }
+
   async getQestionByID(id: number, user: User): Promise<Question> {
-    const question = await this.getQestionTopicByID(id);
-    const checkOwner = await this.topicService.fineOneByID(question.id);
-
-    const result = await this.getQestionByyID(id);
-    if (!checkOwner && checkOwner.owner.id === user.id) {
-      return result;
+    const question = await this.getFullQuestionByID(id);
+    if (
+      question &&
+      !this.checkOwnerQuestion(question.topic.owner.id, user.id)
+    ) {
+      if (question != null && question.answers != null) {
+        question.answers.map((x) => {
+          delete x.isCorrect;
+          return x;
+        });
+      }
+      delete question.topic;
     }
-
-    if (question != null && question.answers != null) {
-      result.answers.map((x) => {
-        delete x.isCorrect;
-        return x;
-      });
-    }
-    return result;
+    return question;
   }
 
-  async getQestionByyID(id: number): Promise<Question> {
-    const result = await this.questionRepository.findOne({
-      where: { id },
-      relations: ['answers'],
-    });
-    return result;
-  }
-
-  async getQestionTopicByID(id: number): Promise<Question> {
-    const result = await this.questionRepository.findOne({
-      where: { id },
-      relations: ['topic'],
-    });
-    return result;
+  checkOwnerQuestion(id: number, userID: number): boolean {
+    if (id === userID) return true;
+    return false;
   }
 
   convertQuestionEntity(
@@ -129,8 +130,11 @@ export class QuestionService {
     files: any,
     user: User
   ): Promise<SucessResponse> {
-    const question = await this.getQestionByID(id, user);
+    const question = await this.getFullQuestionByID(id);
     if (!question) throw new BadRequestException('Question is not found');
+
+    if (!this.checkOwnerQuestion(user.id, question.topic.owner.id))
+      throw new BadRequestException('You do not have permission to edit');
 
     const QuestionEntity = this.convertQuestionEntity(files, updateQuestionDto);
     // update question

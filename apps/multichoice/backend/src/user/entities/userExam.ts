@@ -29,7 +29,7 @@ export class UserExam extends Timestamp {
   @Column({ default: false })
   status: boolean;
 
-  @ManyToOne(() => Topic, (topic) => topic.userExams)
+  @ManyToOne(() => Topic, (topic) => topic.userExams, { onDelete: 'CASCADE' })
   topic: Topic;
 
   @OneToMany(() => UserAnswer, (qs) => qs.userExam)
