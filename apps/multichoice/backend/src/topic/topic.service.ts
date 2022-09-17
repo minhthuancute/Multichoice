@@ -55,13 +55,15 @@ export class TopicService {
     return result;
   }
 
-  async deleteById(id: number): Promise<boolean> {
-    // check xem topic co ai thi chua
-    const check = await this.userExamService.findOneByTopicID(id);
-    if (check)
-      throw new BadRequestException(
-        'The topic cannot be deleted because there are already contestants'
-      );
+  async deleteById(id: number, user: User): Promise<boolean> {
+    const topic = await this.topicRepository.findOne({
+      where: {
+        id,
+      },
+      relations: ['owner'],
+    });
+    if (topic && topic.owner.id !== user.id)
+      throw new BadRequestException('You do not have permission to delete');
     await this.topicRepository.delete(id);
     return true;
   }
