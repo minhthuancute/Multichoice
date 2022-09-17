@@ -10,6 +10,8 @@ import { SucessResponse } from '../model/SucessResponse';
 import { plainToClass } from 'class-transformer';
 import { Topic } from './entities/topic.entity';
 import { Answer } from '../answer/entities/answer.entity';
+import { TopicService } from '../topic/topic.service';
+import { User } from '../user/entities/user.entity';
 
 @Injectable()
 export class QuestionService {
@@ -17,7 +19,8 @@ export class QuestionService {
     @InjectRepository(Question)
     private readonly questionRepository: Repository<Question>,
     @InjectRepository(Answer)
-    private readonly answerRepository: Repository<Answer>
+    private readonly answerRepository: Repository<Answer>,
+    private readonly topicService: TopicService
   ) {}
 
   async deleteByID(id: number): Promise<boolean> {
@@ -65,12 +68,16 @@ export class QuestionService {
     return new SucessResponse(201, 'Sucess');
   }
 
-  async getQestionByID(id: number): Promise<Question> {
-    const result = await this.questionRepository.findOne({
-      where: { id },
-      relations: ['answers'],
-    });
-    if (result != null && result.answers != null) {
+  async getQestionByID(id: number, user: User): Promise<Question> {
+    const question = await this.getQestionTopicByID(id);
+    const checkOwner = await this.topicService.fineOneByID(question.id);
+
+    const result = await this.getQestionByyID(id);
+    if (!checkOwner && checkOwner.owner.id === user.id) {
+      return result;
+    }
+
+    if (question != null && question.answers != null) {
       result.answers.map((x) => {
         delete x.isCorrect;
         return x;
@@ -79,10 +86,18 @@ export class QuestionService {
     return result;
   }
 
-  async getQestionIsCorrectByID(id: number): Promise<Question> {
+  async getQestionByyID(id: number): Promise<Question> {
     const result = await this.questionRepository.findOne({
       where: { id },
       relations: ['answers'],
+    });
+    return result;
+  }
+
+  async getQestionTopicByID(id: number): Promise<Question> {
+    const result = await this.questionRepository.findOne({
+      where: { id },
+      relations: ['topic'],
     });
     return result;
   }
@@ -111,9 +126,10 @@ export class QuestionService {
   async update(
     id: number,
     updateQuestionDto: UpdateQuestionDto,
-    files: any
+    files: any,
+    user: User
   ): Promise<SucessResponse> {
-    const question = await this.getQestionByID(id);
+    const question = await this.getQestionByID(id, user);
     if (!question) throw new BadRequestException('Question is not found');
 
     const QuestionEntity = this.convertQuestionEntity(files, updateQuestionDto);
