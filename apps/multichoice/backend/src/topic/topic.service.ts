@@ -58,7 +58,10 @@ export class TopicService {
   async deleteById(id: number): Promise<boolean> {
     // check xem topic co ai thi chua
     const check = await this.userExamService.findOneByTopicID(id);
-    if (check) throw new BadRequestException('topic is not  deleted');
+    if (check)
+      throw new BadRequestException(
+        'The topic cannot be deleted because there are already contestants'
+      );
     await this.topicRepository.delete(id);
     return true;
   }
