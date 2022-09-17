@@ -24,17 +24,11 @@ import { TopicService } from '../topic/topic.service';
 import { AuthenticationGuard } from '../auth/guards/auth.guard';
 import { multerOptions } from '../uploads/upload';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { UpdateAnswerDto } from '../answer/dto/update-answer.dto';
-import { Question } from './entities/question.entity';
-import { plainToClass } from 'class-transformer';
 
 @Controller('question')
 @ApiTags('question')
 export class QuestionController {
-  constructor(
-    private readonly questionService: QuestionService,
-    private readonly topicService: TopicService
-  ) {}
+  constructor(private readonly questionService: QuestionService) {}
 
   @UseGuards(AuthenticationGuard)
   @Post('create')
@@ -47,16 +41,7 @@ export class QuestionController {
     @UploadedFiles() files,
     @Res() res
   ): Promise<SucessResponse> {
-    const topic = await this.topicService.fineOneByID(
-      createQuestionDto.topicID
-    );
-    if (!topic) throw new BadRequestException('topicid is not found');
-
-    const result = await this.questionService.create(
-      createQuestionDto,
-      topic,
-      files
-    );
+    const result = await this.questionService.create(createQuestionDto, files);
     return res.status(201).json(result);
   }
 
