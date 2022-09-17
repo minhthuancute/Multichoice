@@ -9,6 +9,4 @@ services:
       - ~/apps/mysql:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=24EN4SPVSrTdyjS4hYrx
-      - MYSQL_PASSWORD=SD7Xdf393wjkohYS264K
-      - MYSQL_USER=root
       - MYSQL_DATABASE=multichoice
