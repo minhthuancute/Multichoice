@@ -4,11 +4,11 @@
   "license": "MIT",
   "scripts": {
     "start": "nx serve",
-    "build": "nx build",
     "test": "nx test",
     "dev": "nx run-many --target=serve --projects=multichoice-frontend,multichoice-backend --parallel",
     "fe:dev": "nx serve multichoice-frontend",
-    "be:dev": "nx serve multichoice-backend"
+    "be:dev": "nx serve multichoice-backend",
+    "build": "nx affected --target=build"
   },
   "private": true,
   "dependencies": {
