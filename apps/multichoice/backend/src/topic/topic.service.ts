@@ -17,6 +17,7 @@ import { UserExam } from '../user/entities/userExam';
 import { Question } from '../question/entities/question.entity';
 import { UserService } from '../user/user.service';
 import { QuestionService } from '../question/question.service';
+import { Answer } from '../answer/entities/answer.entity';
 
 @Injectable()
 export class TopicService {
@@ -26,6 +27,18 @@ export class TopicService {
     @Inject(forwardRef(() => UserService))
     private readonly userExamService: UserService
   ) {}
+
+  deleteCorrect(questions: Question[]) {
+    if (questions) {
+      questions.map((x) => {
+        x.answers.map((a) => {
+          delete a.isCorrect;
+          return a;
+        });
+        return x;
+      });
+    }
+  }
 
   async create(topic: CreateTopicDto, user: User): Promise<SucessResponse> {
     const topicEntity: Topic = plainToClass(Topic, topic);
@@ -42,6 +55,8 @@ export class TopicService {
       },
       relations: ['questions', 'questions.answers'],
     });
+    if (!result) throw new BadRequestException('topic is not found');
+    this.deleteCorrect(result.questions);
     return result;
   }
 
@@ -52,17 +67,26 @@ export class TopicService {
       },
       relations: ['questions', 'questions.answers'],
     });
+
+    if (!result) throw new BadRequestException('topic is not found');
+    this.deleteCorrect(result.questions);
     return result;
   }
 
-  async deleteById(id: number, user: User): Promise<boolean> {
+  async checkAuth(id: number, user: User): Promise<boolean> {
     const topic = await this.topicRepository.findOne({
       where: {
         id,
       },
       relations: ['owner'],
     });
-    if (topic && topic.owner.id !== user.id)
+    if (topic && topic.owner.id === user.id) return true;
+
+    return false;
+  }
+
+  async deleteById(id: number, user: User): Promise<boolean> {
+    if (!this.checkAuth(id, user))
       throw new BadRequestException('You do not have permission to delete');
     await this.topicRepository.delete(id);
     return true;
