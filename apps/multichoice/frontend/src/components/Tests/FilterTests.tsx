@@ -41,7 +41,7 @@ const FilterTests: React.FC<IFilterTests> = ({ onFilter }) => {
         onSubmit={handleSubmit(onSubmit)}
       >
         <Input
-          className="w-1/3 ml-auto"
+          className="w-1/3"
           placeholder="Tìm kiếm đề thi"
           registerField={register('title')}
           inputSize="md"

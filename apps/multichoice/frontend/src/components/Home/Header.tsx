@@ -15,12 +15,12 @@ const Header: React.FC = () => {
 
   const [demo, setDemo] = useState<[]>([]);
 
-  useEffect(() => {
-    fireGet('/test-1').then((data: any) => {
-      console.log(data);
-      setDemo(data);
-    });
-  }, []);
+  // useEffect(() => {
+  //   fireGet('/test-1').then((data: any) => {
+  //     console.log(data);
+  //     setDemo(data);
+  //   });
+  // }, []);
 
   const handleLogout = () => {
     localServices.clearItem(TOKEN);
