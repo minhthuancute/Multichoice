@@ -17,7 +17,7 @@ import {
   UpdateUserDto,
   UserExamDto,
 } from '@monorepo/multichoice/dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthenticationGuard } from '../auth/guards/auth.guard';
 import { User } from './entities/user.entity';
 import { TopicService } from '../topic/topic.service';
@@ -26,7 +26,6 @@ import { url } from 'inspector';
 
 @ApiTags('Exam')
 @Controller()
-// @UseGuards(AuthenticationGuard)
 export class UserController {
   constructor(
     private readonly userService: UserService,
@@ -48,6 +47,13 @@ export class UserController {
   @Get(':url')
   async findTopicByUrl(@Param('url') url: string, @Res() res) {
     const result = await this.userService.findTopicByUrl(url);
+    return res.status(200).json(result);
+  }
+  @UseGuards(AuthenticationGuard)
+  @ApiBearerAuth()
+  @Get('/getlistexambytopicid/:id')
+  async getListExamByTopicID(@Param('id') id: number, @Res() res, @Req() req) {
+    const result = await this.userService.getUserExamByTopic(id, req.user);
     return res.status(200).json(result);
   }
 }

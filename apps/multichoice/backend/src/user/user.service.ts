@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import {
   CreateUserDto,
+  IUserDoExam,
   ResultUserDto,
   UpdateUserDto,
   UserExamDto,
@@ -32,6 +33,29 @@ export class UserService {
     @Inject(forwardRef(() => TopicService))
     private readonly topicService: TopicService
   ) {}
+
+  convertUserDoExam(userExams: UserExam[]): IUserDoExam[] {
+    const lst: IUserDoExam[] = [];
+    userExams.forEach((element) => {
+      const userDoExam: IUserDoExam = {
+        userName: element.username,
+        start_time: Number(element.startTime),
+        end_time: Number(element.endTime),
+        duration: Number(element.endTime) - Number(element.startTime),
+        point: element.point,
+      };
+      lst.push(userDoExam);
+    });
+    return lst;
+  }
+
+  async getUserExamByTopic(id: number, user: User) {
+    if (await this.topicService.checkAuth(id, user)) {
+      const result = await this.findOneByTopicID(id);
+      return new SucessResponse(200, this.convertUserDoExam(result));
+    }
+    throw new BadRequestException('You do not have permission');
+  }
 
   async endExam(resultUserDto: ResultUserDto) {
     const endDate = new Date().getTime();
@@ -148,18 +172,14 @@ export class UserService {
 
   async findTopicByUrl(url: string): Promise<Topic> {
     const result = await this.topicService.fineOneByUrl(url);
-    if (!result)
-      throw new BadRequestException(
-        "This topic already has contestants who can't be deleted"
-      );
     return result;
   }
 
-  async findOneByTopicID(topicId: number): Promise<UserExam> {
+  async findOneByTopicID(topicId: number): Promise<UserExam[]> {
     return this.userExamRepository
       .createQueryBuilder('userExam')
       .where('userExam.topicId = :topicId', { topicId })
-      .getOne();
+      .getMany();
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
