@@ -54,8 +54,8 @@ export class TopicController {
   @UseGuards(AuthenticationGuard)
   @Delete(':id')
   @ApiBearerAuth()
-  async deleteTopicById(@Param('id') id: number, @Res() res) {
-    await this.topicService.deleteById(id);
+  async deleteTopicById(@Param('id') id: number, @Res() res, @Req() req) {
+    await this.topicService.deleteById(id, req.user);
     return res.status(200).json(new SucessResponse(200, {}));
   }
 

@@ -13,7 +13,7 @@ import { IUserDoExam } from '../../types';
 const HeaderDoExam: React.FC = () => {
   const { exam_id } = useParams();
   const navigate = useNavigate();
-  const { exam, userDoExam, setUserData } = examStore();
+  const { exam, userDoExam, setUserData, setIsSubmitExam } = examStore();
 
   const handleCookieDoexam = () => {
     const dataExam: IUserDoExam = {
@@ -30,7 +30,8 @@ const HeaderDoExam: React.FC = () => {
     localServices.clearItem(START_TIME);
     localServices.clearItem(ANSWERS_EXAM);
 
-    setUserData({} as IInforUserDoExam);
+    setIsSubmitExam(false);
+    setUserData({ is_guest: true } as IInforUserDoExam);
     const urlNavigate = '/exam/' + exam_id;
     navigate(urlNavigate);
   };

@@ -10,10 +10,13 @@ import ConfirmSubmit from './ConfirmSubmit';
 import { useNavigate, useParams } from 'react-router-dom';
 import CountDown from '../Commons/CountDown/CountDown';
 import { localServices } from '../../services/LocalServices';
-import { START_TIME } from '../../constants/contstants';
+import { IS_SUBMIT_EXAM, START_TIME } from '../../constants/contstants';
+
+import { classNames } from '../../helper/classNames';
+import { cookieServices } from '../../services/CookieServices';
 
 import './doExam.scss';
-import { classNames } from '../../helper/classNames';
+import ToolTip from '../Commons/ToolTip/ToolTip';
 
 interface IShowQuestion {
   indexQuestion: number;
@@ -36,13 +39,14 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
     exam: { questions },
   } = examStore();
   const { userDoExam } = examStore();
-  const { exam } = examStore();
+  const { exam, setIsSubmitExam, isSubmitExam, isExpriedExam } = examStore();
   const { answers, updateAnswer } = answerStore();
 
   const [confirmSubmit, setConfirmSubmit] = useState<boolean>(false);
   const [openModalConfirm, setOpenModalConfirm] = useState<boolean>(false);
   const [openModalResult, setOpenModalResult] = useState<boolean>(false);
   const [examResult, setExamResult] = useState<IExamResult>();
+  const [errorMsgSubmit, setErrorMsgSubmit] = useState<string>('');
 
   const startTime: number = localServices.getData(START_TIME) || 0;
   const endTime: number = +exam.expirationTime;
@@ -77,6 +81,8 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
   };
 
   const onSumitAnswers = async () => {
+    setIsSubmitExam(true);
+    setErrorMsgSubmit('Bạn đã nộp bài');
     try {
       const payload: IPayloadEndExam = {
         userID: userDoExam.user_id,
@@ -90,6 +96,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
           point: data.data.point,
         } as IExamResult);
 
+        cookieServices.setCookie(IS_SUBMIT_EXAM, true, 30);
         setOpenModalResult(true);
         notify({
           message: 'Nộp bài thành công!',
@@ -103,6 +110,26 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
     }
     setOpenModalConfirm(false);
     setConfirmSubmit(false);
+  };
+
+  const requestSubmit = () => {
+    if (isExpriedExam) {
+      setErrorMsgSubmit('Hết thời gian nộp bài');
+      notify({
+        message: 'Hết thời gian nộp bài !',
+        type: 'danger',
+      } as iNotification);
+      return;
+    }
+    if (isSubmitExam) {
+      setErrorMsgSubmit('Bạn đã nộp bài');
+      notify({
+        message: 'Bạn đã nộp bài !',
+        type: 'danger',
+      } as iNotification);
+      return;
+    }
+    setOpenModalConfirm(true);
   };
 
   const onCancleModalConfirm = () => {
@@ -159,14 +186,22 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
       </div>
 
       <header className="flex items-start justify-between">
-        <button
-          className={classNames(`px-6 py-2.5 bg-violet-600 rounded-md text-sm
+        <ToolTip title={errorMsgSubmit}>
+          <button
+            className={classNames(
+              `px-6 py-2.5 bg-violet-600 rounded-md text-sm
             text-white flex items-center mb-4 font-semibold
-            focus:ring-violet-300 focus:ring`)}
-          onClick={() => setOpenModalConfirm(true)}
-        >
-          Nộp bài
-        </button>
+            focus:ring-violet-300 focus:ring`,
+              {
+                'cursor-not-allowed opacity-60': isSubmitExam,
+              }
+            )}
+            onClick={() => requestSubmit()}
+          >
+            Nộp bài
+          </button>
+        </ToolTip>
+
         <CountDown
           startTime={startTime}
           endTime={endTime}
