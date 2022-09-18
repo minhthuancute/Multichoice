@@ -83,15 +83,14 @@ export class QuestionService {
 
   async getQestionByID(id: number, user: User): Promise<Question> {
     const question = await this.getFullQuestionByID(id);
-    if (
-      question &&
-      !this.checkOwnerQuestion(question.topic.owner.id, user.id)
-    ) {
-      if (question != null && question.answers != null) {
-        question.answers.map((x) => {
-          delete x.isCorrect;
-          return x;
-        });
+    if (question) {
+      if (!this.checkOwnerQuestion(question.topic.owner.id, user.id)) {
+        if (question.answers != null) {
+          question.answers.map((x) => {
+            delete x.isCorrect;
+            return x;
+          });
+        }
       }
       delete question.topic;
     }

@@ -69,3 +69,11 @@ export class ResultUserDto {
   @ApiProperty({ type: [AnswersUserDto] })
   AnswersUsers: AnswersUserDto[];
 }
+
+export interface IUserDoExam {
+  userName: string;
+  point: number;
+  start_time: number;
+  end_time: number;
+  duration: number;
+}
