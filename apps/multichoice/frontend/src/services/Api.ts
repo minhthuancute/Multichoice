@@ -11,7 +11,7 @@ export class Api {
   axiosInstance: AxiosInstance;
   constructor() {
     this.axiosInstance = axios.create({
-      baseURL: 'http://localhost:3333/api',
+      baseURL: 'https://detracnghiem.vn/api',
     });
 
     this.axiosInstance.interceptors.request.use(
