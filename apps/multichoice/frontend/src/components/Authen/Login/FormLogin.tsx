@@ -77,7 +77,7 @@ const FormLogin: React.FC = () => {
         const { payload, token } = loginResponse.data;
         localServices.setData(TOKEN, token);
         setInforUser(payload, token);
-        navigate('/tests');
+        navigate('/');
       }
     } catch (error) {
       console.log(error);

@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { TOKEN } from '../../constants/contstants';
 import { classNames } from '../../helper/classNames';
 import { localServices } from '../../services/LocalServices';
 import { userStore } from '../../store/rootReducer';
+import { fireGet } from '../../utils/firebase_utils';
 import Navabar from '../Navbar/Navabar';
 
 const Header: React.FC = () => {
@@ -11,6 +12,15 @@ const Header: React.FC = () => {
   const { user } = userStore();
 
   const [openDropdown, setOpenDropdown] = useState<boolean>(false);
+
+  const [demo, setDemo] = useState<[]>([]);
+
+  useEffect(() => {
+    fireGet('/test-1').then((data: any) => {
+      console.log(data);
+      setDemo(data);
+    });
+  }, []);
 
   const handleLogout = () => {
     localServices.clearItem(TOKEN);
@@ -24,6 +34,13 @@ const Header: React.FC = () => {
         boxShadow: 'rgba(0, 0, 0, 0.075) 0 2px 10px 0',
       }}
     >
+      {/* <div>
+        <ul>
+          {demo &&
+            demo.map((demo: any) => <li key={demo.start}>{demo.start}</li>)}
+        </ul>
+      </div> */}
+
       <div className="wrapper-header container flex items-center justify-between">
         <div className="header-left logo">
           <h1 className="logo font-semibold text-xl">

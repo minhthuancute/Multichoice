@@ -1,21 +1,22 @@
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as yup from 'yup';
 import Input from '../Commons/Input/Input';
 import TextArea from '../Commons/TextArea/TextArea';
-import { CreatAnswer, CreateQuestionDto } from '@monorepo/multichoice/dto';
+import { CreatAnswer } from '@monorepo/multichoice/dto';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Select, { IOption } from '../Commons/Select/Select';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
-import { useNavigate } from 'react-router-dom';
 import { questionServices } from '../../services/QuestionServices';
 import { topicStore } from '../../store/rootReducer';
-import { useQuery } from '../../hooks/useQuery';
 import { notify } from '../../helper/notify';
 import { iNotification } from 'react-notifications-component';
-import CreateAnswer from '../CreateQuestion/CreateAnswer';
+import ToolTip from '../Commons/ToolTip/ToolTip';
+import { IoMdClose } from 'react-icons/io';
+import { IQuestion } from '../../types';
+import UpdateAnswer from '../CreateQuestion/UpdateAnswers';
 
-const schemaFormLogin = yup.object().shape({
+const schemaFormUpdateQuestion = yup.object().shape({
   topicID: yup.number(),
   content: yup.string().required('Question content is a required field'),
   time: yup.number(),
@@ -32,15 +33,30 @@ const schemaFormLogin = yup.object().shape({
 });
 
 interface IFormEditQuestion {
-  setOpenModalEditTest: React.Dispatch<React.SetStateAction<boolean>>;
-  cbOnUpdateTopic: () => void;
+  questionData: IQuestion;
+  setOpenModalEditQuestion: React.Dispatch<React.SetStateAction<boolean>>;
+  cbOnUpdateQuestion: () => void;
 }
 
-const FormEditQuestion: React.FC<IFormEditQuestion> = () => {
-  const navigate = useNavigate();
-  const query = useQuery();
+export interface IUpdateAnswer {
+  content: string;
+  isCorrect: boolean;
+  id?: number;
+}
+export interface IUpdateQuestion {
+  type: QuestionTypeEnum;
+  content: string;
+  time: number;
+  isActive: boolean;
+  answers: IUpdateAnswer[];
+}
+
+const FormEditQuestion: React.FC<IFormEditQuestion> = ({
+  questionData,
+  setOpenModalEditQuestion,
+  cbOnUpdateQuestion,
+}) => {
   const { topic } = topicStore();
-  const submitBtnRef: any = useRef<HTMLButtonElement>(null);
 
   const {
     resetField,
@@ -50,8 +66,8 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = () => {
     getValues,
     clearErrors,
     formState: { errors },
-  } = useForm<CreateQuestionDto>({
-    resolver: yupResolver(schemaFormLogin),
+  } = useForm<IUpdateQuestion>({
+    resolver: yupResolver(schemaFormUpdateQuestion),
   });
 
   const [questionTypes] = useState<IOption[]>(() => {
@@ -70,26 +86,22 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = () => {
   });
 
   const initForm = () => {
-    const topicId = query.get('topic_id') || -1;
-    setValue('type', QuestionTypeEnum.SINGLE);
-    setValue('time', 0);
-    setValue('isActive', true);
-    setValue('topicID', +topicId);
+    const { type, content, time, isActive, answers } = questionData;
+
+    setValue('type', type);
+    setValue('content', content);
+    setValue('time', time);
+    setValue('isActive', isActive);
+    setValue('answers', answers);
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     initForm();
   }, []);
 
-  const onSelectQuestionType = (item: IOption) => {
-    const optionVal: QuestionTypeEnum = item.value as QuestionTypeEnum;
-    setValue('type', optionVal);
-    setValue('isActive', true);
-  };
-
   // create Question
-  const onSubmit: SubmitHandler<CreateQuestionDto> = async (
-    formData: CreateQuestionDto
+  const onSubmit: SubmitHandler<IUpdateQuestion> = async (
+    formData: IUpdateQuestion
   ) => {
     try {
       const answers = getValues('answers');
@@ -104,23 +116,26 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = () => {
         return;
       }
 
-      const { data } = await questionServices.createQuestion(formData);
+      const { data } = await questionServices.updateQuestion(
+        questionData.id,
+        formData
+      );
+
       if (data.success) {
-        const topicId = query.get('topic_id') || -1;
-        const urlNavigate = '/tests/edit/' + topicId;
-        navigate(urlNavigate);
+        setOpenModalEditQuestion(false);
+        cbOnUpdateQuestion();
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  const onAddAnswer = (answers: CreatAnswer[]) => {
+  const onAddAnswer = (answers: IUpdateAnswer[]) => {
     setValue('answers', answers);
     clearErrors('answers');
   };
 
-  const onRemoveAnswer = (filterAnswer: CreatAnswer[]) => {
+  const onRemoveAnswer = (filterAnswer: IUpdateAnswer[]) => {
     resetField('answers');
 
     const answers = getValues('answers');
@@ -130,10 +145,31 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = () => {
     }
   };
 
+  const onSelectQuestionType = (item: IOption) => {
+    const optionVal: QuestionTypeEnum = item.value as QuestionTypeEnum;
+    setValue('type', optionVal);
+    setValue('isActive', true);
+  };
+
   return (
-    <div className="container">
-      <form className="form flex items-start" onSubmit={handleSubmit(onSubmit)}>
-        <div className="form-left w-1/3 p-4 bg-white rounded-md">
+    <div className="max-w-xl w-full h-max py-4 px-5 mx-auto rounded-md bg-white">
+      <form className="form" onSubmit={handleSubmit(onSubmit)}>
+        <div className="form-header flex items-center justify-between mb-8">
+          <h4 className="text-slate-800 text-xl font-semibold">
+            Cập nhật câu hỏi
+          </h4>
+          <ToolTip title="Đóng">
+            <button
+              type="button"
+              className="text-lg"
+              onClick={() => setOpenModalEditQuestion(false)}
+            >
+              <IoMdClose />
+            </button>
+          </ToolTip>
+        </div>
+
+        <div className="bg-white rounded-md">
           {topic.typeCategoryName === 'GAME' ? (
             <Input
               registerField={register('time')}
@@ -152,7 +188,7 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = () => {
             textLabel="Loại câu hỏi"
           />
         </div>
-        <div className="form-right w-2/3 ml-4 p-4 bg-white rounded-md">
+        <div className="bg-white rounded-md mt-5">
           <TextArea
             registerField={register('content')}
             textLabel="Câu hỏi"
@@ -164,7 +200,8 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = () => {
             isRequired={true}
           />
           <div className="create-answer">
-            <CreateAnswer
+            <UpdateAnswer
+              answers={questionData.answers}
               onAddAnswer={onAddAnswer}
               onRemoveAnswer={onRemoveAnswer}
               invalidAnswers={Boolean(errors.answers)}
@@ -172,8 +209,22 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = () => {
           </div>
         </div>
 
-        <div className="submit">
-          <button ref={submitBtnRef} hidden></button>
+        <div className="ctas flex items-center justify-end gap-x-2 mt-8">
+          <button
+            type="button"
+            className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
+          text-slate-800 font-bold border border-solid border-slate-800"
+            onClick={() => setOpenModalEditQuestion(false)}
+          >
+            Huỷ
+          </button>
+          <button
+            type="submit"
+            className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
+          text-white font-bold bg-primary-900 transition-all duration-200 hover:bg-primary-800"
+          >
+            Cập nhật
+          </button>
         </div>
       </form>
     </div>

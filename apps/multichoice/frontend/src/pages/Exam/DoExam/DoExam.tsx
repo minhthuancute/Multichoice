@@ -3,7 +3,7 @@ import { iNotification } from 'react-notifications-component';
 import { useParams } from 'react-router-dom';
 import HeaderDoExam from '../../../components/DoExam/HeaderDoExam';
 import MainDoExam from '../../../components/DoExam/MainDoExam';
-import { IS_EXPRIED_TIME, START_TIME } from '../../../constants/contstants';
+import { START_TIME } from '../../../constants/contstants';
 import { notify } from '../../../helper/notify';
 import {
   examServices,
@@ -62,9 +62,6 @@ const DoExam: React.FC = () => {
 
   useEffect(() => {
     startExam();
-  }, []);
-
-  useEffect(() => {
     getExamInfor();
   }, []);
 

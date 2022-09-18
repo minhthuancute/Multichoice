@@ -22,7 +22,7 @@ const ConfirmSubmit: React.FC<IExamResult> = ({
     <Modal openModal={openModalConfirm}>
       <div
         className="modal-content mx-auto mt-10 px-5 flex flex-col justify-center
-       bg-white rounded-md max-w-2xl w-full h-80"
+       bg-white rounded-md max-w-lg w-full h-80"
       >
         <div className="header text-center">
           {unSelectAnswer > 0 ? (

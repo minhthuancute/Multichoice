@@ -20,6 +20,7 @@ async function bootstrap() {
   const allowedDomains = [
     'https://dev.detracnghiem.vn',
     'https://detracnghiem.vn',
+    'http://localhost:4200',
   ];
   const options = {
     origin: (origin, cb) => {

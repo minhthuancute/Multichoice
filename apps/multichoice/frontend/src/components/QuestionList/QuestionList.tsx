@@ -20,7 +20,6 @@ const QuestionList: React.FC = () => {
   const handleDeleteQuestion = (question: IQuestion) => {
     setQuestionDel(question);
     setOpenModalDelete(true);
-    console.log(question);
   };
 
   const getTopicDetail = async () => {
@@ -55,6 +54,10 @@ const QuestionList: React.FC = () => {
     }
   };
 
+  const onUpdateQuestionSuccess = () => {
+    getTopicDetail();
+  };
+
   return (
     <div>
       <Modal openModal={openModalDelete}>
@@ -77,7 +80,7 @@ const QuestionList: React.FC = () => {
 
             <button
               className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
-        text-slate-800 font-bold border border-solid border-slate-800"
+          text-slate-800 font-bold border border-solid border-slate-800"
               onClick={() => setOpenModalDelete(false)}
             >
               Huỷ
@@ -91,6 +94,7 @@ const QuestionList: React.FC = () => {
           return (
             <QuestionItem
               handleDeleteQuestion={handleDeleteQuestion}
+              onUpdateQuestionSuccess={onUpdateQuestionSuccess}
               question={question}
               index={index + 1}
               key={question.id}

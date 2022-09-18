@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import './app.scss';
@@ -27,8 +27,19 @@ import CollectInfor from '../pages/Exam/CollectInfor/CollectInfor';
 import DoExam from '../pages/Exam/DoExam/DoExam';
 import Home from '../pages/Home/Home';
 import Statistical from '../pages/Statistical/Statistical';
+import { firePush, fireSet } from '../utils/firebase_utils';
+import StatisticExam from '../pages/Exam/StatisticExam/StatisticExam';
 
 export const App: React.FC = () => {
+  // useEffect(() => {
+  //   firePush('/test-1', {
+  //     start: Date.now(),
+  //     time: '60',
+  //   }).then((data) => {
+  //     console.log(data);
+  //   });
+  // }, []);
+
   return (
     <BrowserRouter>
       <ReactNotifications />
@@ -58,6 +69,7 @@ export const App: React.FC = () => {
                 </Suspense>
               }
             />
+            <Route path=":id/statistic" element={<StatisticExam />} />
           </Route>
 
           <Route path="questions/create" element={<CreateQuestion />} />

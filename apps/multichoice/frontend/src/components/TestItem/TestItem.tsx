@@ -1,10 +1,6 @@
 import React from 'react';
 import { BsCalendarDate } from 'react-icons/bs';
-import {
-  AiOutlineQuestionCircle,
-  AiOutlineFieldTime,
-  AiOutlineCaretDown,
-} from 'react-icons/ai';
+import { AiOutlineQuestionCircle, AiOutlineFieldTime } from 'react-icons/ai';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 
 import { getDate } from '../../utils/formatDate';
@@ -69,15 +65,15 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
       </div>
       <div className="test-item__body mt-2 flex items-center justify-between">
         <ul className="left flex items-center">
-          <li className="flex items-center text-sm mr-3">
+          <li className="flex items-center text-tiny mr-3">
             <BsCalendarDate className="text-slate-500 mr-2" />
             <span>{getDate(test.date)}</span>
           </li>
-          <li className="flex items-center text-sm mr-3">
+          <li className="flex items-center text-tiny mr-3">
             <AiOutlineQuestionCircle className="text-slate-800 mr-1" />
             <span>{test.questionCount} câu hỏi</span>
           </li>
-          <li className="flex items-center text-sm mr-3">
+          <li className="flex items-center text-tiny mr-3">
             <AiOutlineFieldTime className="text-slate-800 mr-1 text-base" />
             <span>{secondsToMinutes(test.expirationTime)} phút</span>
           </li>
@@ -87,24 +83,17 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
         </ul>
         <div className="right">
           <ul className="ctas flex items-center">
-            <li className="relative group mr-4">
+            <li className="relative group mr-4 mb-0.5">
               <ToolTip title="Cập nhật đề thi">
                 <Link to={'/tests/edit/' + test.id}>
-                  <TiPencil className="text-slate-800 text-tiny" />
+                  <TiPencil className="text-slate-800" />
                 </Link>
               </ToolTip>
             </li>
             <li className="relative group mr-4">
               <ToolTip title="Xóa">
                 <button onClick={() => handleDeleteTest(test.id, test.title)}>
-                  <RiDeleteBin6Line className="text-red-500 text-tiny" />
-                </button>
-              </ToolTip>
-            </li>
-            <li>
-              <ToolTip title="Actions">
-                <button className="text-sm">
-                  <AiOutlineCaretDown />
+                  <RiDeleteBin6Line className="text-red-500" />
                 </button>
               </ToolTip>
             </li>
@@ -117,11 +106,15 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
         border-t border-solid border-slate-200"
       >
         <div className="left">
-          <span className="text-sm text-slate-900 inline-block">
+          <Link
+            to={'/exam/' + test.topicUrl}
+            target="_blank"
+            className="text-sm text-primary-900 font-semibold inline-block"
+          >
             {test.questionCount === 0
               ? 'Bộ đề chưa có câu hỏi nào. Hãy thêm câu hỏi cho bộ đề'
-              : examUrl()}
-          </span>
+              : 'Liên kết: ' + examUrl()}
+          </Link>
         </div>
         <div className="right">
           <button
@@ -130,6 +123,12 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
           >
             Sao chép liên kết
           </button>
+          <Link
+            className="ml-5 text-sm text-primary-900 font-semibold hover:underline"
+            to={`/tests/${test.id}/statistic?topic_id=${test.id}`}
+          >
+            Thống kê kết quả
+          </Link>
         </div>
       </div>
     </div>

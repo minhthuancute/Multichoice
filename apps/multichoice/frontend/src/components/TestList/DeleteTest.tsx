@@ -1,5 +1,7 @@
 import React from 'react';
 import { RiErrorWarningLine } from 'react-icons/ri';
+import { iNotification } from 'react-notifications-component';
+import { notify } from '../../helper/notify';
 import { topicServices } from '../../services/TopicServices';
 import Modal from '../Modal/Modal';
 
@@ -20,9 +22,13 @@ const DeleteTest: React.FC<IDeleteTest> = ({
 }) => {
   const deleteTopic = async () => {
     try {
-      const { data } = await topicServices.deleteTopicById(testID);
-      console.log(data);
-      cbConfirmDel();
+      const { data, status } = await topicServices.deleteTopicById(testID);
+      if (status === 200) {
+        notify({
+          message: 'Xóa đề thi thành công !',
+        } as iNotification);
+        cbConfirmDel();
+      }
     } catch (error) {
       console.log(error);
     }

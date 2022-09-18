@@ -21,7 +21,7 @@ import { useQuery } from '../../hooks/useQuery';
 import { notify } from '../../helper/notify';
 import { iNotification } from 'react-notifications-component';
 
-const schemaFormLogin = yup.object().shape({
+const schemaFormCreateQuestion = yup.object().shape({
   topicID: yup.number(),
   content: yup.string().required('Question content is a required field'),
   time: yup.number(),
@@ -57,7 +57,7 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
       clearErrors,
       formState: { errors },
     } = useForm<CreateQuestionDto>({
-      resolver: yupResolver(schemaFormLogin),
+      resolver: yupResolver(schemaFormCreateQuestion),
     });
 
     const [questionTypes] = useState<IOption[]>(() => {

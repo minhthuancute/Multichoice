@@ -2,6 +2,7 @@ import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { useQuery } from '../../hooks/useQuery';
 import { topicServices } from '../../services/TopicServices';
 import { ITopicResponse } from '../../types/TopicResponse';
+import { removeVietnameseTones } from '../../utils/removeVietnameseTones';
 import TestItem, { ITestItem } from '../TestItem/TestItem';
 import DeleteTest from './DeleteTest';
 
@@ -17,6 +18,11 @@ const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
   const [openModalDelete, setOpenModalDelete] = useState<boolean>(false);
   const [testIdDel, setTestIdDel] = useState<number>(-1);
   const [testTitleDel, setTestTitleDel] = useState<string>('');
+  const [paramSearch] = useState<string>(() => {
+    const params = query.get('search') || '';
+    const formatParamSearch = removeVietnameseTones(params).toLowerCase();
+    return formatParamSearch;
+  });
 
   const getListTest = async () => {
     try {
@@ -36,10 +42,11 @@ const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
       });
       setTestList(topicsData);
 
-      const paramSearch = query.get('search') || '';
       if (paramSearch) {
         const filterResult = topicsData.filter((test: ITestItem) => {
-          return test.title.includes(paramSearch);
+          const title = removeVietnameseTones(test.title).toLowerCase();
+          const isMatched: boolean = title.includes(paramSearch);
+          return isMatched;
         });
         setTestsFilter(filterResult.reverse());
       } else {
@@ -56,7 +63,10 @@ const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
 
   const filterTest = (keyword = '') => {
     const filterResult = testList.filter((test: ITestItem) => {
-      return test.title.includes(keyword);
+      const title = removeVietnameseTones(test.title).toLowerCase();
+      const formatKeyword = removeVietnameseTones(keyword).toLowerCase();
+      const isMatched: boolean = title.includes(formatKeyword);
+      return isMatched;
     });
     setTestsFilter(filterResult);
   };
@@ -87,7 +97,7 @@ const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
       />
 
       <div className="mt-4">
-        {testsFilter &&
+        {testsFilter && testsFilter.length > 0 ? (
           testsFilter.map((test: ITestItem) => {
             return (
               <TestItem
@@ -96,7 +106,12 @@ const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
                 handleDeleteTest={handleDeleteTest}
               />
             );
-          })}
+          })
+        ) : (
+          <p className="font-semibold text-red-500 text-center mt-10 text-tiny">
+            Không có dữ liệu
+          </p>
+        )}
       </div>
     </div>
   );

@@ -11,6 +11,10 @@ export interface IPayloadEndExam {
   AnswersUsers: IAnswers[];
 }
 
+export interface IPayloadgetListExamByTopicId {
+  topicID: number;
+}
+
 class ExamServices extends Api {
   getExamInfor(examUrl: string) {
     const data = this.get('/' + examUrl);
@@ -25,6 +29,11 @@ class ExamServices extends Api {
   // end Exam
   submitExam(payload: IPayloadEndExam) {
     const data = this.post('/exam/end', payload);
+    return data;
+  }
+
+  getListExamByTopicId(payload: IPayloadgetListExamByTopicId) {
+    const data = this.get('/getListexambytopicid/' + payload.topicID);
     return data;
   }
 }
