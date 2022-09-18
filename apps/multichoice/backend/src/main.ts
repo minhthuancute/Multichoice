@@ -17,7 +17,22 @@ async function bootstrap() {
   app.setGlobalPrefix(globalPrefix);
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters(new HttpErrorFilterr());
-  app.enableCors({ credentials: true, origin: '*' });
+  const allowedDomains = [
+    'https://dev.detracnghiem.vn',
+    'https://detracnghiem.vn',
+  ];
+  const options = {
+    origin: (origin, cb) => {
+      if (allowedDomains.includes(origin)) {
+        cb(null, origin);
+      } else {
+        cb(Error('invalid origin'));
+      }
+    },
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  };
+  app.enableCors(options);
   // swagger
   const config = new DocumentBuilder()
     .setTitle('Multichoice')
