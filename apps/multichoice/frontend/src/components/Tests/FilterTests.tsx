@@ -11,7 +11,7 @@ const schemaFormFilter = yup.object().shape({
 });
 
 interface IFormFilterTest {
-  title: string;
+  title: string; // keyword search Test
 }
 
 interface IFilterTests {
@@ -28,7 +28,6 @@ const FilterTests: React.FC<IFilterTests> = ({ onFilter }) => {
   const onSubmit: SubmitHandler<IFormFilterTest> = (
     formData: IFormFilterTest
   ) => {
-    console.log(searchParams);
     setSearchParams('?search=' + formData.title);
     if (onFilter) {
       onFilter(formData.title);
@@ -42,10 +41,11 @@ const FilterTests: React.FC<IFilterTests> = ({ onFilter }) => {
         onSubmit={handleSubmit(onSubmit)}
       >
         <Input
-          className="flex-1"
+          className="w-1/3 ml-auto"
           placeholder="Tìm kiếm đề thi"
           registerField={register('title')}
           inputSize="md"
+          defaultValue={searchParams.get('search')}
         />
         <button className="btn-primary bg-violet-600 text-white py-3.5 px-4 rounded-md ml-1">
           <BiSearchAlt />

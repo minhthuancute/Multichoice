@@ -11,7 +11,7 @@ interface IAnswerItem {
   registerFieldIsCorrect: any;
   indexAnswer: number;
   indexAscii: number;
-  onDeleteAnswer: (index: number) => void;
+  onDeleteAnswer: (indexAnswer: number) => void;
 }
 
 const AnswerItem: React.FC<IAnswerItem> = ({

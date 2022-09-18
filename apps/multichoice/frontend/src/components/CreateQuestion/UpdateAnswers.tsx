@@ -17,7 +17,8 @@ const answerSchema = yup.object().shape({
   ),
 });
 
-interface ICreateAnswer {
+interface IUpdateAnswer {
+  answers: CreatAnswer[];
   onRemoveAnswer: (filterAnswer: CreatAnswer[]) => void;
   onAddAnswer: (answers: CreatAnswer[]) => void;
   invalidAnswers?: boolean;
@@ -27,7 +28,8 @@ interface IAnswers {
   answers: CreatAnswer[];
 }
 
-const CreateAnswer: React.FC<ICreateAnswer> = ({
+const UpdateAnswer: React.FC<IUpdateAnswer> = ({
+  answers,
   onAddAnswer,
   onRemoveAnswer,
   invalidAnswers = false,
@@ -43,13 +45,6 @@ const CreateAnswer: React.FC<ICreateAnswer> = ({
   });
 
   useEffect(() => {
-    const answers = Array.from({ length: 4 }).map((item) => {
-      const answer: CreatAnswer = {
-        content: '',
-        isCorrect: false,
-      };
-      return answer;
-    });
     setValue('answers', answers);
   }, []);
 
@@ -184,4 +179,4 @@ const CreateAnswer: React.FC<ICreateAnswer> = ({
   );
 };
 
-export default CreateAnswer;
+export default UpdateAnswer;

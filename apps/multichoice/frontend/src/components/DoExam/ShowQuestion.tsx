@@ -37,6 +37,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
 
   const {
     exam: { questions },
+    setDataExamResult,
   } = examStore();
   const { userDoExam } = examStore();
   const { exam, setIsSubmitExam, isSubmitExam, isExpriedExam } = examStore();
@@ -95,11 +96,15 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
           user_name: data.data.username,
           point: data.data.point,
         } as IExamResult);
+        setDataExamResult({
+          user_name: data.data.username,
+          point: data.data.point,
+        });
 
         cookieServices.setCookie(IS_SUBMIT_EXAM, true, 30);
         setOpenModalResult(true);
         notify({
-          message: 'Nộp bài thành công!',
+          message: 'Nộp bài thành công !',
         } as iNotification);
       }
     } catch (error: any) {

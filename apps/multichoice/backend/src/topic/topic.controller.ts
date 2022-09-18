@@ -4,7 +4,6 @@ import {
   Controller,
   Delete,
   Get,
-  NotFoundException,
   Param,
   Patch,
   Post,
@@ -42,12 +41,16 @@ export class TopicController {
     return res.status(200).json(new SucessResponse(200, result));
   }
 
+  @UseGuards(AuthenticationGuard)
+  @ApiBearerAuth()
   @Get(':id')
-  async getTopicById(@Param('id') id: number, @Res() res): Promise<Topic> {
-    const result = await this.topicService.fineOneByID(id);
-    if (!result) {
-      throw new NotFoundException('Topic not found');
-    }
+  async getTopicById(
+    @Param('id') id: number,
+    @Res() res,
+    @Req() req
+  ): Promise<Topic> {
+    const result = await this.topicService.getTopicByID(id, req.user);
+
     return res.status(200).json(result);
   }
 

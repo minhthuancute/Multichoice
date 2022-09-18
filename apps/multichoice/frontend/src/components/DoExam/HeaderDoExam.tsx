@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   ANSWERS_EXAM,
@@ -9,11 +9,21 @@ import { cookieServices } from '../../services/CookieServices';
 import { localServices } from '../../services/LocalServices';
 import { examStore, IInforUserDoExam } from '../../store/rootReducer';
 import { IUserDoExam } from '../../types';
+import ExamResult from './ExamResult';
 
 const HeaderDoExam: React.FC = () => {
   const { exam_id } = useParams();
   const navigate = useNavigate();
-  const { exam, userDoExam, setUserData, setIsSubmitExam } = examStore();
+  const {
+    exam,
+    userDoExam,
+    setUserData,
+    setIsSubmitExam,
+    dataExamResult,
+    isSubmitExam,
+  } = examStore();
+
+  const [openModalResult, setOpenModalResult] = useState<boolean>(false);
 
   const handleCookieDoexam = () => {
     const dataExam: IUserDoExam = {
@@ -38,11 +48,27 @@ const HeaderDoExam: React.FC = () => {
 
   return (
     <header className="header py-4 shadow-md bg-primary-900">
-      <div className="container flex items-center justify-between">
+      <ExamResult
+        setOpenModalResult={setOpenModalResult}
+        openModalResult={openModalResult}
+        user_name={dataExamResult?.user_name || ''}
+        point={dataExamResult?.point || 0}
+      />
+      <div className="container xs:px-4 md:px-10 flex items-center justify-between">
         <div className="header-left">
           <p className="text-tiny text-white">Hello, {userDoExam.user_name}</p>
         </div>
         <div className="header-right flex items-center">
+          {isSubmitExam && (
+            <button
+              className="px-8 py-2 bg-slate-100 rounded-md text-sm ml-5
+          text-black flex items-center font-semibold xs:hidden lg:block"
+              onClick={() => setOpenModalResult(true)}
+            >
+              Xem lại kết quả
+            </button>
+          )}
+
           <button
             className="px-8 py-2 bg-slate-100 rounded-md text-sm ml-5
           text-black flex items-center font-semibold"

@@ -86,10 +86,10 @@ const CollectInfor: React.FC = () => {
     <div className="container h-screen flex items-center">
       <form
         className="form colect-infor max-h-[450px] h-full w-full flex items-center
-        shadow-xl"
+        lg:shadow-xl"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <div className="left h-full w-[500px]">
+        <div className="left h-full w-[500px] hidden lg:block">
           <img
             src="https://images.unsplash.com/photo-1457369804613-52c61a468e7d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
             alt="exam multichoice"
@@ -102,7 +102,7 @@ const CollectInfor: React.FC = () => {
               <h4 className="text-slate-800 text-3xl">{exam.title}</h4>
               <p className="mt-2">{exam.description}</p>
             </div>
-            <div className="pt-8 px-10">
+            <div className="pt-8 xs:px-4 md:px-10 lg:px-10">
               <Input
                 registerField={register('user_name')}
                 placeholder="Họ và tên"

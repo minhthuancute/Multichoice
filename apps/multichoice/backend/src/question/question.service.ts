@@ -83,15 +83,14 @@ export class QuestionService {
 
   async getQestionByID(id: number, user: User): Promise<Question> {
     const question = await this.getFullQuestionByID(id);
-    if (
-      question &&
-      !this.checkOwnerQuestion(question.topic.owner.id, user.id)
-    ) {
-      if (question != null && question.answers != null) {
-        question.answers.map((x) => {
-          delete x.isCorrect;
-          return x;
-        });
+    if (question) {
+      if (!this.checkOwnerQuestion(question.topic.owner.id, user.id)) {
+        if (question.answers != null) {
+          question.answers.map((x) => {
+            delete x.isCorrect;
+            return x;
+          });
+        }
       }
       delete question.topic;
     }
@@ -124,6 +123,12 @@ export class QuestionService {
     return QuestionEntity;
   }
 
+  getanswers(lst: Answer[]): number[] {
+    return lst.map((x) => {
+      return x.id;
+    });
+  }
+
   async update(
     id: number,
     updateQuestionDto: UpdateQuestionDto,
@@ -145,13 +150,22 @@ export class QuestionService {
       updateQuestionDto.answers != undefined &&
       updateQuestionDto.answers.length > 0
     ) {
-      const answers = updateQuestionDto.answers.map((opt) => {
+      // lay ds questionOption dc phep
+      const check = this.getanswers(question.answers);
+
+      updateQuestionDto.answers.forEach((opt) => {
         const questionOption = new Answer();
         questionOption.content = opt.content;
         questionOption.isCorrect = opt.isCorrect;
-        return this.answerRepository.update({ id: opt.id }, questionOption);
+        if (!opt.id) {
+          questionOption.question = question;
+          this.answerRepository.insert(questionOption);
+        } else {
+          if (check.includes(opt.id)) {
+            this.answerRepository.update({ id: opt.id }, questionOption);
+          }
+        }
       });
-      await Promise.all(answers);
     }
 
     return new SucessResponse(200, 'Sucess');

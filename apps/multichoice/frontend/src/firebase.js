@@ -4,6 +4,7 @@ import { getDatabase } from 'firebase/database';
 const firebaseConfig = {
   apiKey: 'AIzaSyCihCdv7i7wsA83W_enR3xGj9-9s9aVNXo',
   authDomain: 'multichoice-90758.firebaseapp.com',
+  databaseURL: 'https://multichoice-90758-default-rtdb.firebaseio.com',
   projectId: 'multichoice-90758',
   storageBucket: 'multichoice-90758.appspot.com',
   messagingSenderId: '223955823655',

@@ -9,16 +9,23 @@ export interface IInforUserDoExam {
   user_id: number;
 }
 
+interface IExamResult {
+  point: number;
+  user_name: string;
+}
+
 export interface IExamStore {
   isExpriedExam: boolean;
   isSubmitExam: boolean;
   isLoggout: boolean;
   exam: IExamResponse;
   userDoExam: IInforUserDoExam;
+  dataExamResult: IExamResult;
   setIsExpriedExam: (isExpriedExam: boolean) => void;
   setIsSubmitExam: (isSubmitExam: boolean) => void;
   setExamData: (examData: IExamResponse) => void;
   setUserData: (userData: IInforUserDoExam) => void;
+  setDataExamResult: (examResult: IExamResult) => void;
   handleLoggout: () => void;
 }
 
@@ -32,6 +39,7 @@ export const examStore = create<IExamStore>()(
         isLoggout: false,
         exam: {} as IExamResponse,
         userDoExam: {} as IInforUserDoExam,
+        dataExamResult: {} as IExamResult,
         setExamData: (examData: IExamResponse) =>
           set(() => {
             return {
@@ -64,6 +72,13 @@ export const examStore = create<IExamStore>()(
           set(() => {
             return {
               isSubmitExam: isSubmitExam,
+            };
+          }),
+
+        setDataExamResult: (examResult: IExamResult) =>
+          set(() => {
+            return {
+              dataExamResult: examResult,
             };
           }),
       }),

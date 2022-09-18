@@ -127,7 +127,7 @@ const FormEditTest: React.FC<IFormEditTest> = ({
   };
 
   return (
-    <div className="max-w-lg w-full h-max p-4 mx-auto rounded-md bg-white">
+    <div className="max-w-xl w-full h-max py-4 px-5 mx-auto rounded-md bg-white">
       <form className="form" onSubmit={handleSubmit(onSubmit)}>
         <div className="form-header flex items-center justify-between mb-8">
           <h4 className="text-slate-800 text-xl font-semibold">
@@ -206,7 +206,7 @@ const FormEditTest: React.FC<IFormEditTest> = ({
             className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
           text-white font-bold bg-primary-900 transition-all duration-200 hover:bg-primary-800"
           >
-            Xác nhận
+            Cập nhật
           </button>
         </div>
       </form>

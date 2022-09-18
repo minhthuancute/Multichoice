@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { examStore, topicStore } from '../../store/rootReducer';
 import Breadcrumb from '../Commons/Breadcrumb/Breadcrumb';
 
 interface IHeaderCreateTest {
@@ -8,16 +9,17 @@ interface IHeaderCreateTest {
 
 const HeaderCreateQuestion: React.FC<IHeaderCreateTest> = ({ submitForm }) => {
   const navigate = useNavigate();
+  const { topic } = topicStore();
 
   return (
     <div className="header-create-test">
       <div className="container flex justify-between py-4">
         <Breadcrumb>
           <Breadcrumb.Item>
-            <Link to="/tests">Đề thi</Link>
+            <Link to={'/tests/edit/' + topic.id}>{topic.title}</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
-            <Link to="/tests">Câu hỏi</Link>
+            <Link to={'/questions/create?topic_id=' + topic.id}>Câu hỏi</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
             <div>Tạo mới câu hỏi</div>

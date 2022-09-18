@@ -21,7 +21,7 @@ import { useNavigate } from 'react-router-dom';
 import { topicStore } from '../../store/rootReducer';
 import { minutesToSeconds } from '../../utils/minutesToSeconds';
 
-const schemaFormLogin = yup.object().shape({
+const schemaFormCreateTest = yup.object().shape({
   timeType: yup.string().required(),
   typeCategoryName: yup.string().required(),
   title: yup.string().required(),
@@ -45,7 +45,7 @@ const FormCreateTest: React.FC<IFormCreateTest> = forwardRef((props, ref) => {
     setValue,
     formState: { errors },
   } = useForm<CreateTopicDto>({
-    resolver: yupResolver(schemaFormLogin),
+    resolver: yupResolver(schemaFormCreateTest),
   });
 
   const [topicCategories] = useState<IOption[]>(() => {
