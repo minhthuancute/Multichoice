@@ -159,7 +159,7 @@ export class QuestionService {
         questionOption.isCorrect = opt.isCorrect;
         if (!opt.id) {
           questionOption.question = question;
-          this.answerRepository.save(questionOption);
+          this.answerRepository.insert(questionOption);
         } else {
           if (check.includes(opt.id)) {
             this.answerRepository.update({ id: opt.id }, questionOption);
