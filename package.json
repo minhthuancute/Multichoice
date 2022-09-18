@@ -8,7 +8,7 @@
     "dev": "nx run-many --target=serve --projects=multichoice-frontend,multichoice-backend --parallel",
     "fe:dev": "nx serve multichoice-frontend",
     "be:dev": "nx serve multichoice-backend",
-    "build": "nx affected --target=build"
+    "build": "nx affected --target=build --configuration=production"
   },
   "private": true,
   "dependencies": {
