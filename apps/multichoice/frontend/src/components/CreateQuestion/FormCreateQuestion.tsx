@@ -150,6 +150,11 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
       }
     };
 
+    const onChangeEditor = (value: string) => {
+      console.log(value);
+      setValue('content', value);
+    };
+
     return (
       <div className="container">
         <form
@@ -177,7 +182,11 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
           </div>
           <div className="form-right w-2/3 ml-4 p-4 bg-white rounded-md">
             <div className="relative">
-              <QuillEditor />
+              <QuillEditor
+                placeholder="Nội dung câu hỏi"
+                className="h-[248px]"
+                onChange={onChangeEditor}
+              />
             </div>
             {/* <TextArea
               registerField={register('content')}

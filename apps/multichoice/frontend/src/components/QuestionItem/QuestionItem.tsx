@@ -39,9 +39,13 @@ const QuestionItem: React.FC<IQuestionItem> = ({
       <div className="container mb-4 last:mb-0">
         <div className="question-content py-4 px-6 bg-white rounded-lg">
           <div className="header pb-4 text-slate-800 text-tiny flex justify-between">
-            <div className="header-left flex items-center text-tiny">
+            <div className="header-left flex text-tiny">
               <span className="font-semibold mr-2">Câu hỏi {index}:</span>
-              <p>{question.content}</p>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: question.content,
+                }}
+              ></p>
             </div>
             <div className="header-right">
               <ul className="ctas flex items-center ml-auto">
