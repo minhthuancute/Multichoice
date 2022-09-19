@@ -109,7 +109,7 @@ const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
           })
         ) : (
           <p className="font-semibold text-red-500 text-center mt-10 text-tiny">
-            Không có dữ liệu
+            Hiện tại bạn chưa có đề thi nào!
           </p>
         )}
       </div>

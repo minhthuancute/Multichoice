@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { TOKEN } from '../../constants/contstants';
 import { classNames } from '../../helper/classNames';
 import { localServices } from '../../services/LocalServices';
 import { userStore } from '../../store/rootReducer';
-import { fireGet } from '../../utils/firebase_utils';
 import Navabar from '../Navbar/Navabar';
 import Logo from '../Logo/Logo';
 
@@ -13,15 +12,6 @@ const Header: React.FC = () => {
   const { user } = userStore();
 
   const [openDropdown, setOpenDropdown] = useState<boolean>(false);
-
-  const [demo, setDemo] = useState<[]>([]);
-
-  useEffect(() => {
-    fireGet('/test-1').then((data: any) => {
-      console.log(data);
-      setDemo(data);
-    });
-  }, []);
 
   const handleLogout = () => {
     localServices.clearItem(TOKEN);

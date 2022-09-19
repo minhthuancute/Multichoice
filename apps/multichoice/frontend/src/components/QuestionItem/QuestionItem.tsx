@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { BiCheckDouble } from 'react-icons/bi';
 import { FaPencilAlt } from 'react-icons/fa';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { classNames } from '../../helper/classNames';

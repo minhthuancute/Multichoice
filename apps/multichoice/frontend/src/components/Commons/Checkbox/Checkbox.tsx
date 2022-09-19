@@ -20,7 +20,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
   className = '',
   isChecked = false,
   onChange,
-  textLabel,
+  textLabel = '',
 }) => {
   const [toggleChecked, setToggleChecked] = useState<boolean>(isChecked);
 
@@ -67,7 +67,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
         <span
           className="text-slate-800 text-sm"
           dangerouslySetInnerHTML={{
-            __html: textLabel ? textLabel : '',
+            __html: textLabel,
           }}
         ></span>
       </label>
