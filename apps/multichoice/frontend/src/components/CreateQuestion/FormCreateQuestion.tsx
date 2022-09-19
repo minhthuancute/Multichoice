@@ -20,6 +20,7 @@ import { topicStore } from '../../store/rootReducer';
 import { useQuery } from '../../hooks/useQuery';
 import { notify } from '../../helper/notify';
 import { iNotification } from 'react-notifications-component';
+import QuillEditor from '../QuillEditor/QuillEditor';
 
 const schemaFormCreateQuestion = yup.object().shape({
   topicID: yup.number(),
@@ -175,7 +176,10 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
             />
           </div>
           <div className="form-right w-2/3 ml-4 p-4 bg-white rounded-md">
-            <TextArea
+            <div className="relative">
+              <QuillEditor />
+            </div>
+            {/* <TextArea
               registerField={register('content')}
               textLabel="Câu hỏi"
               placeholder="Nội dung câu hỏi"
@@ -184,7 +188,7 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
               isError={Boolean(errors.content)}
               errMessage={errors.content?.message}
               isRequired={true}
-            />
+            /> */}
             <div className="create-answer">
               <CreateAnswer
                 onAddAnswer={onAddAnswer}
