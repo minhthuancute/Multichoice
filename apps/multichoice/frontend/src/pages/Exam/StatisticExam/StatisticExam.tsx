@@ -49,7 +49,7 @@ const StatisticExam: React.FC = () => {
         <div className="container">
           <div className=" content-page pt-5 pb-10">
             <table className="shadow-xl w-full">
-              <thead className="bg-primary-900 text-white text-tiny">
+              <thead className="bg-slate-800 text-white text-tiny">
                 <tr>
                   <th className="py-2 pl-4 text-left capitalize">Stt</th>
                   <th className="py-2 pl-4 text-left capitalize">
