@@ -1,26 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { TOKEN } from '../../constants/contstants';
 import { classNames } from '../../helper/classNames';
 import { localServices } from '../../services/LocalServices';
 import { userStore } from '../../store/rootReducer';
-import { fireGet } from '../../utils/firebase_utils';
 import Navabar from '../Navbar/Navabar';
+import Logo from '../Logo/Logo';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const { user } = userStore();
 
   const [openDropdown, setOpenDropdown] = useState<boolean>(false);
-
-  const [demo, setDemo] = useState<[]>([]);
-
-  // useEffect(() => {
-  //   fireGet('/test-1').then((data: any) => {
-  //     console.log(data);
-  //     setDemo(data);
-  //   });
-  // }, []);
 
   const handleLogout = () => {
     localServices.clearItem(TOKEN);
@@ -43,9 +34,7 @@ const Header: React.FC = () => {
 
       <div className="wrapper-header container flex items-center justify-between">
         <div className="header-left logo">
-          <h1 className="logo font-semibold text-xl">
-            <Link to="/">MultiChoice</Link>
-          </h1>
+          <Logo />
         </div>
 
         <div className="header-right flex items-center relative">

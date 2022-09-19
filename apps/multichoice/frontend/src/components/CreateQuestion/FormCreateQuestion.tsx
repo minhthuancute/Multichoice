@@ -134,13 +134,14 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
     );
 
     const onAddAnswer = (answers: CreatAnswer[]) => {
+      clearErrors('answers');
       setValue('answers', answers);
       clearErrors('answers');
     };
 
     const onRemoveAnswer = (filterAnswer: CreatAnswer[]) => {
+      clearErrors('answers');
       resetField('answers');
-
       const answers = getValues('answers');
       if (answers) {
         setValue('answers', filterAnswer);

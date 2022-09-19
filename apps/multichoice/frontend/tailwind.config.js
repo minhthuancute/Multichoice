@@ -39,16 +39,14 @@ module.exports = {
     colors: {
       ...baseColors,
       primary: {
-        800: '#316B83',
-        900: '#316B83',
+        800: '#28c6d7',
+        900: '#24b2c2',
       },
       secondary: {
         200: '#C4D7E0',
         700: '#f1f2f6',
         800: '#256D85',
       },
-
-      black: '#1c2437',
     },
     screens: {
       xs: '0',
