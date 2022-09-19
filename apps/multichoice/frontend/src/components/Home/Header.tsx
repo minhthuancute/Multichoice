@@ -6,6 +6,7 @@ import { localServices } from '../../services/LocalServices';
 import { userStore } from '../../store/rootReducer';
 import { fireGet } from '../../utils/firebase_utils';
 import Navabar from '../Navbar/Navabar';
+import Logo from '../Logo/Logo';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -43,9 +44,7 @@ const Header: React.FC = () => {
 
       <div className="wrapper-header container flex items-center justify-between">
         <div className="header-left logo">
-          <h1 className="logo font-semibold text-xl">
-            <Link to="/">MultiChoice</Link>
-          </h1>
+          <Logo />
         </div>
 
         <div className="header-right flex items-center relative">
