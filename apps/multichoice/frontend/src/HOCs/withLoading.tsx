@@ -1,8 +1,8 @@
 import React, { ComponentType } from 'react';
-import { loadingStore, userStore } from '../store/rootReducer';
+import { loadingStore } from '../store/rootReducer';
 import './style.css';
 
-export function withLoading<T>(Component: ComponentType<T>) {
+export function withLoading<T>(Component: ComponentType<T & any>) {
   const loadingModal = () => (
     <div
       className="fixed top-0 left-0 z-50 w-screen h-screen flex items-center justify-center"

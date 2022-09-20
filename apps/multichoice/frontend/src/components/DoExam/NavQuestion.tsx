@@ -30,7 +30,7 @@ const NavQuestion: React.FC<INavQuestion> = ({
           questions.map((question: IQuestion, index: number) => {
             return (
               <li
-                className="mb-1.5 last:mb-0 cursor-pointer flex items-center"
+                className="mb-1.5 last:mb-0 cursor-pointer flex"
                 onClick={() => navigateQuestion(index)}
                 key={question.id}
               >
@@ -43,14 +43,20 @@ const NavQuestion: React.FC<INavQuestion> = ({
                 />
                 <h4
                   className={classNames(
-                    `text-sm whitespace-nowrap overflow-ellipsis overflow-hidden text-slate-800
-                    hover:underline`,
+                    `text-sm text-slate-800 whitespace-nowrap overflow-ellipsis overflow-hidden
+                    hover:underline flex`,
                     {
                       'font-semibold': index === indexQuestion,
                     }
                   )}
                 >
-                  Câu hỏi {index + 1}: <span>{question.content}</span>
+                  Câu hỏi {index + 1}:{' '}
+                  <span
+                    className="ml-2 h-6 inline-block whitespace-nowrap overflow-ellipsis overflow-hidden"
+                    dangerouslySetInnerHTML={{
+                      __html: question.content,
+                    }}
+                  ></span>
                 </h4>
               </li>
             );

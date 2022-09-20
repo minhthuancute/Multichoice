@@ -15,6 +15,8 @@ import ToolTip from '../Commons/ToolTip/ToolTip';
 import { IoMdClose } from 'react-icons/io';
 import { IQuestion } from '../../types';
 import UpdateAnswer from '../CreateQuestion/UpdateAnswers';
+import QuillEditor from '../QuillEditor/QuillEditor';
+import { emptyContentEditor } from '../../utils/emptyContentEditor';
 
 const schemaFormUpdateQuestion = yup.object().shape({
   topicID: yup.number(),
@@ -65,6 +67,7 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
     setValue,
     getValues,
     clearErrors,
+    setError,
     formState: { errors },
   } = useForm<IUpdateQuestion>({
     resolver: yupResolver(schemaFormUpdateQuestion),
@@ -125,7 +128,9 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
         setOpenModalEditQuestion(false);
         cbOnUpdateQuestion();
       }
-    } catch (error) {}
+    } catch (error) {
+      //
+    }
   };
 
   const onAddAnswer = (answers: IUpdateAnswer[]) => {
@@ -147,6 +152,19 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
     const optionVal: QuestionTypeEnum = item.value as QuestionTypeEnum;
     setValue('type', optionVal);
     setValue('isActive', true);
+  };
+
+  const onChangeEditor = (value: string) => {
+    if (emptyContentEditor(value)) {
+      clearErrors('content');
+    } else {
+      setError(
+        'content',
+        { message: 'Question content is a required field' },
+        { shouldFocus: true }
+      );
+    }
+    setValue('content', value);
   };
 
   return (
@@ -187,7 +205,15 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
           />
         </div>
         <div className="bg-white rounded-md mt-5">
-          <TextArea
+          <QuillEditor
+            placeholder="Nội dung câu hỏi"
+            className="h-[248px]"
+            onChange={onChangeEditor}
+            isError={Boolean(errors.content)}
+            errMessage={errors.content?.message}
+            defaultValue={questionData.content}
+          />
+          {/* <TextArea
             registerField={register('content')}
             textLabel="Câu hỏi"
             placeholder="Nội dung câu hỏi"
@@ -196,7 +222,7 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
             isError={Boolean(errors.content)}
             errMessage={errors.content?.message}
             isRequired={true}
-          />
+          /> */}
           <div className="create-answer">
             <UpdateAnswer
               answers={questionData.answers}
