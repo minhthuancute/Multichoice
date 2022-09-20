@@ -57,7 +57,7 @@ const Header: React.FC = () => {
             </div>
             <div
               className={classNames(
-                `dropdown-user p-3 pt-20 bg-slate-50 shadow-md absolute right-0 top-full w-[248px] z-50
+                `dropdown-user p-3 pt-20 bg-slate-50 shadow-md absolute right-0 top-full w-[248px] z-40
                 transition-all duration-200 transform scale-y-0 origin-top`,
                 {
                   'scale-y-100': openDropdown,

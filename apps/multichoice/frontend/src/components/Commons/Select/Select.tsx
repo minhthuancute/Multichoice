@@ -73,7 +73,7 @@ const Select: React.FC<ISelect> = ({
         <ul
           className={classNames(
             `wrapper-options overflow-hidden w-full bg-white mt-2  border border-solid border-primary-900
-            rounded-md absolute z-50 top-full transform origin-top transition-all duration-300`,
+            rounded-md absolute z-40 top-full transform origin-top transition-all duration-300`,
             {
               'scale-y-0': collapseSelect,
             }

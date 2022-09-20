@@ -29,6 +29,7 @@ import Home from '../pages/Home/Home';
 import Statistical from '../pages/Statistical/Statistical';
 import { firePush, fireSet } from '../utils/firebase_utils';
 import StatisticExam from '../pages/Exam/StatisticExam/StatisticExam';
+import { withLoading } from '../HOCs/withLoading';
 
 export const App: React.FC = () => {
   return (
@@ -78,4 +79,4 @@ export const App: React.FC = () => {
   );
 };
 
-export default App;
+export default withLoading(App);

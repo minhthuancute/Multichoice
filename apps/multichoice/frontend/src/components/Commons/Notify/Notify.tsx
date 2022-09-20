@@ -42,7 +42,7 @@ const Notify: React.FC<INotifications> = ({
   return ReactDOM.createPortal(
     <div
       className={classNames(
-        `fixed z-50 max-w-xs w-full cursor-pointer transition-all duration-200`,
+        `fixed z-40 max-w-xs w-full cursor-pointer transition-all duration-200`,
         {
           'left-4 top-4': placement === 'top-left',
           'right-4 top-4': placement === 'top-right',
