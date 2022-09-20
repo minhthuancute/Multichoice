@@ -5,13 +5,13 @@ import {
   Injectable,
 } from '@nestjs/common';
 import {
-  CreateUserDto,
+  AnswersUserDto,
   IUserDoExam,
+  IUserDoExamdetail,
   ResultUserDto,
   UpdateUserDto,
   UserExamDto,
 } from '@monorepo/multichoice/dto';
-import configuration from '../config/configuration';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
@@ -34,25 +34,76 @@ export class UserService {
     private readonly topicService: TopicService
   ) {}
 
-  convertUserDoExam(userExams: UserExam[]): IUserDoExam[] {
+  convertListUserDoExam(userExams: UserExam[]): IUserDoExam[] {
     const lst: IUserDoExam[] = [];
     userExams.forEach((element) => {
-      const userDoExam: IUserDoExam = {
-        userName: element.username,
-        start_time: Number(element.startTime),
-        end_time: Number(element.endTime),
-        duration: Number(element.endTime) - Number(element.startTime),
-        point: element.point,
-      };
-      lst.push(userDoExam);
+      lst.push(this.convertUserDoExam(element));
     });
     return lst;
+  }
+  convertUserDoExam(userExams: UserExam): IUserDoExam {
+    const userDoExam: IUserDoExam = {
+      userName: userExams.username,
+      start_time: Number(userExams.startTime),
+      end_time: Number(userExams.endTime),
+      duration: Number(userExams.endTime) - Number(userExams.startTime),
+      point: userExams.point,
+    };
+
+    return userDoExam;
+  }
+
+  convertUserDoExamdetal(userExams: UserExam): IUserDoExamdetail {
+    const result: IUserDoExamdetail = {
+      userName: userExams.username,
+      start_time: Number(userExams.startTime),
+      end_time: Number(userExams.endTime),
+      duration: Number(userExams.endTime) - Number(userExams.startTime),
+      point: userExams.point,
+      AnswersUsers: this.genarateAnswersUser(userExams.UserAnswer),
+    };
+
+    return result;
+  }
+
+  genarateAnswersUser(lst: UserAnswer[]): AnswersUserDto[] {
+    const result: AnswersUserDto[] = [];
+    const check: number[] = []; // check xem question ton tai chua?
+    lst.forEach((element) => {
+      if (check.includes(element.questionID)) {
+        result[check.indexOf(element.questionID)].answerID.push(
+          element.answerID
+        );
+      } else {
+        const tam: AnswersUserDto = new AnswersUserDto();
+        tam.questionID = element.questionID;
+        tam.answerID.push(element.answerID);
+        result.push(tam);
+        check.push(element.questionID);
+      }
+    });
+    return result;
+  }
+
+  async getUserExamdetail(topicID: number, userID: number, user: User) {
+    if (!(await this.topicService.checkAuth(topicID, user)))
+      throw new BadRequestException('You do not have permission');
+
+    const result = await this.userExamRepository.findOne({
+      where: {
+        id: userID,
+        topic: { id: topicID },
+      },
+      relations: ['UserAnswer'],
+    });
+    if (!result) throw new BadRequestException('User is not found');
+    return new SucessResponse(200, this.convertUserDoExamdetal(result));
   }
 
   async getUserExamByTopic(id: number, user: User) {
     if (await this.topicService.checkAuth(id, user)) {
       const result = await this.findOneByTopicID(id);
-      return new SucessResponse(200, this.convertUserDoExam(result));
+      return new SucessResponse(200, this.convertListUserDoExam(result));
     }
     throw new BadRequestException('You do not have permission');
   }
@@ -71,7 +122,7 @@ export class UserService {
     //check user da thi hay chua
     if (userExam.startTime != 0 && userExam.endTime != 0)
       throw new BadRequestException('Bạn đã nộp bài');
-
+    console.log(userExam.topic.id);
     const topic: Topic = await this.topicService.getIsCorrectByTopicID(
       userExam.topic.id
     );
