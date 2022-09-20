@@ -142,9 +142,7 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
           const urlNavigate = '/tests/edit/' + topicId;
           navigate(urlNavigate);
         }
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
     };
 
     useImperativeHandle(

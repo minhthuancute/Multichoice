@@ -106,16 +106,13 @@ const FormCreateTest: React.FC<IFormCreateTest> = forwardRef((props, ref) => {
     try {
       formData.expirationTime = minutesToSeconds(formData.expirationTime);
       const { data } = await topicServices.createTopic(formData);
-      console.log(data);
       if (data.success) {
         const topicId = data.data.id;
         const urlNavigate = '/tests/edit/' + topicId;
         setTopicData(data.data);
         navigate(urlNavigate);
       }
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   useImperativeHandle(

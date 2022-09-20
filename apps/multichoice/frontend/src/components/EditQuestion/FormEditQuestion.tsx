@@ -125,9 +125,7 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
         setOpenModalEditQuestion(false);
         cbOnUpdateQuestion();
       }
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   const onAddAnswer = (answers: IUpdateAnswer[]) => {

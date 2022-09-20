@@ -42,9 +42,7 @@ const Intro: React.FC = () => {
       );
       setAnswers(initAnswers);
       setExamData(data);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   const getUserDoexamData = (): IUserDoExam | null => {
