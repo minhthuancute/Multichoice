@@ -7,10 +7,13 @@ import { MdOutlineClear } from 'react-icons/md';
 interface IAnswerItem {
   correctAnswer?: string;
   answerValue?: string;
+  checkedValue?: boolean;
   registerFieldContent: any;
   registerFieldIsCorrect: any;
   indexAnswer: number;
   indexAscii: number;
+  isMultilCorrectAnswer: boolean;
+  isCheckedAnswer: boolean;
   onDeleteAnswer: (indexAnswer: number) => void;
 }
 
@@ -22,6 +25,8 @@ const AnswerItem: React.FC<IAnswerItem> = ({
   indexAnswer,
   indexAscii,
   onDeleteAnswer,
+  isMultilCorrectAnswer,
+  isCheckedAnswer,
 }) => {
   const getAsciiCode = (): string => {
     const startCharacter = 65; // 'A'
@@ -29,6 +34,7 @@ const AnswerItem: React.FC<IAnswerItem> = ({
   };
 
   const shouldDisableCheckbox = (): boolean => {
+    if (isMultilCorrectAnswer) return false;
     const shouldDisable = correctAnswer !== answerValue && correctAnswer !== '';
     return shouldDisable;
   };
@@ -48,6 +54,7 @@ const AnswerItem: React.FC<IAnswerItem> = ({
               disable={shouldDisableCheckbox()}
               registerField={registerFieldIsCorrect}
               className="mt-1"
+              isChecked={isCheckedAnswer}
               id={'answers-' + indexAnswer}
             />
           </ToolTip>

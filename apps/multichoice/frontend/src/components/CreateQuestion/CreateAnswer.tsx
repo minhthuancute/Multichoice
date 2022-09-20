@@ -1,6 +1,11 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { CreatAnswer } from '@monorepo/multichoice/dto';
-import React, { useEffect, useState } from 'react';
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import AnswerItem from './AnswerItem';
@@ -21,17 +26,25 @@ interface ICreateAnswer {
   onRemoveAnswer: (filterAnswer: CreatAnswer[]) => void;
   onAddAnswer: (answers: CreatAnswer[]) => void;
   invalidAnswers?: boolean;
+  isMultilCorrectAnswer: boolean;
+}
+
+interface ICreateAnswerProps {
+  props: ICreateAnswer;
+  ref: any;
 }
 
 interface IAnswers {
   answers: CreatAnswer[];
 }
 
-const CreateAnswer: React.FC<ICreateAnswer> = ({
-  onAddAnswer,
-  onRemoveAnswer,
-  invalidAnswers = false,
-}) => {
+const CreateAnswer: React.FC<ICreateAnswerProps> = forwardRef((props, ref) => {
+  const {
+    onAddAnswer,
+    onRemoveAnswer,
+    invalidAnswers = false,
+    isMultilCorrectAnswer = false,
+  } = props.props;
   const { setValue, getValues, register, control, watch } = useForm<IAnswers>({
     resolver: yupResolver(answerSchema),
   });
@@ -83,8 +96,8 @@ const CreateAnswer: React.FC<ICreateAnswer> = ({
       }
 
       const answers: CreatAnswer[] = getValues('answers');
-      const filterAnswer = answers.filter((_: any, indexAnswer: number) => {
-        return indexAnswer !== indexAnswer;
+      const filterAnswer = answers.filter((_: any, index: number) => {
+        return indexAnswer !== index;
       });
 
       onRemoveAnswer(filterAnswer);
@@ -99,7 +112,10 @@ const CreateAnswer: React.FC<ICreateAnswer> = ({
     }
   };
 
-  const indexCorrectAnswer = (answers: CreatAnswer[] = []) => {
+  const handleIndexCorrectAnswer = (answers: CreatAnswer[] = []) => {
+    if (isMultilCorrectAnswer) {
+      return;
+    }
     const valueCorrect = answers.find((answer: CreatAnswer) => {
       return answer.isCorrect;
     })?.content;
@@ -109,17 +125,30 @@ const CreateAnswer: React.FC<ICreateAnswer> = ({
   useEffect(() => {
     const subscription = watch((value: any) => {
       onAddAnswer(value.answers as CreatAnswer[]);
-      indexCorrectAnswer(value.answers);
+      handleIndexCorrectAnswer(value.answers);
     });
     return () => {
       subscription.unsubscribe();
     };
   }, [watch]);
 
-  // const invalidAnswers = ():boolean => {
-  //   const answers = getValues('answers')
-  //   const isInvalidAnswers =
-  // }
+  useEffect(() => {
+    console.log(isMultilCorrectAnswer);
+
+    if (isMultilCorrectAnswer) {
+      setCorrectAnswer('');
+    }
+  }, [isMultilCorrectAnswer]);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      submitForm: () => {
+        // submitBtnRef.current.click();
+      },
+    }),
+    []
+  );
 
   return (
     <div>
@@ -150,6 +179,8 @@ const CreateAnswer: React.FC<ICreateAnswer> = ({
                 answerValue={getValues(nameContent) || ''}
                 indexAnswer={index}
                 indexAscii={index}
+                isMultilCorrectAnswer={isMultilCorrectAnswer}
+                isCheckedAnswer={getValues(`answers.${index}.isCorrect`)}
               />
             );
           })}
@@ -182,6 +213,6 @@ const CreateAnswer: React.FC<ICreateAnswer> = ({
       </div>
     </div>
   );
-};
+});
 
 export default CreateAnswer;

@@ -48,8 +48,11 @@ const Checkbox: React.FC<CheckboxProps> = ({
     >
       <input
         {...registerField}
+        {...{
+          checked: registerField.isChecked,
+        }}
         hidden
-        defaultChecked={isChecked}
+        // defaultChecked={isChecked}
         type="checkbox"
         id={id}
       />

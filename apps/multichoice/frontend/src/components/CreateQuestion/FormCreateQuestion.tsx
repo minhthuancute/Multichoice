@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 import * as yup from 'yup';
 import Input from '../Commons/Input/Input';
-import TextArea from '../Commons/TextArea/TextArea';
 import { CreatAnswer, CreateQuestionDto } from '@monorepo/multichoice/dto';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -56,10 +55,15 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
       setValue,
       getValues,
       clearErrors,
+      setError,
+      watch,
+      reset,
       formState: { errors },
     } = useForm<CreateQuestionDto>({
       resolver: yupResolver(schemaFormCreateQuestion),
     });
+
+    const [isMutilAnswer, setIsMutilAnswer] = useState<boolean>(false);
 
     const [questionTypes] = useState<IOption[]>(() => {
       const types: QuestionTypeEnum[] = [];
@@ -92,6 +96,26 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
       const optionVal: QuestionTypeEnum = item.value as QuestionTypeEnum;
       setValue('type', optionVal);
       setValue('isActive', true);
+
+      const isMutilAnswer: boolean = item.value === QuestionTypeEnum.MULTIPLE;
+
+      if (isMutilAnswer) {
+        setIsMutilAnswer(true);
+      } else {
+        const answers = getValues('answers');
+
+        const resetAnswers: CreatAnswer[] = answers.map(
+          (answer: CreatAnswer) => {
+            return {
+              ...answer,
+              isCorrect: false,
+            };
+          }
+        );
+        reset({
+          answers: resetAnswers,
+        });
+      }
     };
 
     // create Question
@@ -100,7 +124,6 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
     ) => {
       try {
         const answers = getValues('answers');
-        console.log(answers);
 
         const validAnswers = answers.some((answers: CreatAnswer) => {
           return answers.isCorrect;
@@ -150,8 +173,22 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
       }
     };
 
+    const emptyContentEditor = (content: string): boolean => {
+      const regex = /(<([^>]+)>)/gi;
+      const hasText = !!content.replace(regex, '').length;
+      return hasText;
+    };
+
     const onChangeEditor = (value: string) => {
-      console.log(value);
+      if (emptyContentEditor(value)) {
+        clearErrors('content');
+      } else {
+        setError(
+          'content',
+          { message: 'Question content is a required field' },
+          { shouldFocus: true }
+        );
+      }
       setValue('content', value);
     };
 
@@ -186,23 +223,17 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
                 placeholder="Nội dung câu hỏi"
                 className="h-[248px]"
                 onChange={onChangeEditor}
+                isError={Boolean(errors.content)}
+                errMessage={errors.content?.message}
               />
             </div>
-            {/* <TextArea
-              registerField={register('content')}
-              textLabel="Câu hỏi"
-              placeholder="Nội dung câu hỏi"
-              className=""
-              classNameTextarea="h-[200px]"
-              isError={Boolean(errors.content)}
-              errMessage={errors.content?.message}
-              isRequired={true}
-            /> */}
             <div className="create-answer">
               <CreateAnswer
                 onAddAnswer={onAddAnswer}
                 onRemoveAnswer={onRemoveAnswer}
                 invalidAnswers={Boolean(errors.answers)}
+                isMultilCorrectAnswer={isMutilAnswer}
+                ref={a}
               />
             </div>
           </div>
