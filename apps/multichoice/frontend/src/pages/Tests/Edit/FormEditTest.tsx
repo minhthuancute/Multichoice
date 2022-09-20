@@ -116,14 +116,11 @@ const FormEditTest: React.FC<IFormEditTest> = ({
       formData.expirationTime = minutesToSeconds(formData.expirationTime);
       const id = topicId || -1;
       const { data } = await topicServices.updateTopicById(+id, formData);
-      console.log(data);
       if (data.success) {
         setOpenModalEditTest(false);
         cbOnUpdateTopic();
       }
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   return (

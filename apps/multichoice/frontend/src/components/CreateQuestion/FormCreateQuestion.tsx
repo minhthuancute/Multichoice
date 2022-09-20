@@ -99,7 +99,6 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
     ) => {
       try {
         const answers = getValues('answers');
-        console.log(answers);
 
         const validAnswers = answers.some((answers: CreatAnswer) => {
           return answers.isCorrect;
@@ -118,9 +117,7 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
           const urlNavigate = '/tests/edit/' + topicId;
           navigate(urlNavigate);
         }
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
     };
 
     useImperativeHandle(

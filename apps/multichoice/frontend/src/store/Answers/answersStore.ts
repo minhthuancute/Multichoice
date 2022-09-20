@@ -34,7 +34,6 @@ export const answerStore = create<IAnswersStore>()(
             const answerIndex = tempAnswers.findIndex((answer: IAnswers) => {
               return answer.questionID === questionID;
             });
-            console.log(answerIndex);
 
             if (answerIndex !== -1) {
               tempAnswers[answerIndex].answerID = answerID;

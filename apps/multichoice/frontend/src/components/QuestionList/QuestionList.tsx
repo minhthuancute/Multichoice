@@ -27,15 +27,12 @@ const QuestionList: React.FC = () => {
     try {
       const { data } = await topicServices.getTopicById(id || '');
       setTopicData(data);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   const deleteQuestion = async (questionId = -1) => {
     try {
       const data = await questionServices.deleteQuestion(questionId);
-      console.log(data);
       if (data.status === 200) {
         notify({
           message: 'Xóa câu hỏi thành công !',

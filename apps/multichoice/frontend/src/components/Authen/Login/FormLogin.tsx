@@ -80,7 +80,6 @@ const FormLogin: React.FC = () => {
         navigate('/');
       }
     } catch (error) {
-      console.log(error);
       notify({
         message: 'Wrong user name or password !',
         type: 'danger',

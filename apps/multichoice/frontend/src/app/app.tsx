@@ -31,15 +31,6 @@ import { firePush, fireSet } from '../utils/firebase_utils';
 import StatisticExam from '../pages/Exam/StatisticExam/StatisticExam';
 
 export const App: React.FC = () => {
-  // useEffect(() => {
-  //   firePush('/test-1', {
-  //     start: Date.now(),
-  //     time: '60',
-  //   }).then((data) => {
-  //     console.log(data);
-  //   });
-  // }, []);
-
   return (
     <BrowserRouter>
       <ReactNotifications />

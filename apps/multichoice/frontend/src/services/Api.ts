@@ -31,7 +31,6 @@ export class Api {
         return response;
       },
       (err: AxiosError): Promise<AxiosError> => {
-        console.log(err);
         return Promise.reject(err);
       }
     );
