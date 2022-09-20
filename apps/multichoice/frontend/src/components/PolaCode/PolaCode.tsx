@@ -1,13 +1,18 @@
 import React from 'react';
+import { classNames } from '../../helper/classNames';
 
 interface IPolaCodeProps {
-  content?: string;
+  content: string;
+  className?: string;
 }
 
-const PolaCode: React.FC<IPolaCodeProps> = ({ content = '' }) => {
+const PolaCode: React.FC<IPolaCodeProps> = ({
+  content = '',
+  className = '',
+}) => {
   return (
     <div
-      className="w-max p-5 rounded-sm"
+      className={classNames(['w-max rounded-sm', className])}
       dangerouslySetInnerHTML={{
         __html: content,
       }}

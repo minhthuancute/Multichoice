@@ -9,6 +9,7 @@ interface IQuillEditorProps {
   placeholder?: string;
   isError?: boolean;
   errMessage?: string;
+  defaultValue?: string;
   onChange: (value: string) => void;
 }
 
@@ -19,8 +20,9 @@ const QuillEditor: React.FC<IQuillEditorProps> = ({
   placeholder = 'Write something',
   isError = true,
   errMessage = '',
+  defaultValue = '',
 }) => {
-  const [value, setValue] = useState<string>('');
+  const [value, setValue] = useState<string>(defaultValue);
 
   const Editor: ReactQuillProps = {};
   Editor.modules = {
@@ -77,6 +79,7 @@ const QuillEditor: React.FC<IQuillEditorProps> = ({
       <ReactQuill
         theme="snow"
         value={value}
+        defaultValue={defaultValue}
         onChange={handleChange}
         className={classNames(['editor'], {
           'border border-red-500': isError,

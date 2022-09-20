@@ -125,7 +125,7 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
           </button>
           <Link
             className="ml-5 text-sm text-slate-800 font-semibold hover:underline"
-            to={`/tests/${test.id}/statistic?topic_id=${test.id}`}
+            to={`/tests/${test.id}/statistic`}
           >
             Thống kê kết quả
           </Link>

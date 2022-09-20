@@ -17,6 +17,7 @@ import { cookieServices } from '../../services/CookieServices';
 
 import './doExam.scss';
 import ToolTip from '../Commons/ToolTip/ToolTip';
+import PolaCode from '../PolaCode/PolaCode';
 
 interface IShowQuestion {
   indexQuestion: number;
@@ -216,9 +217,12 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
       </header>
 
       <div className="p-10 bg-slate-50 shadow-xl min-h-[268px]">
-        <h4 className="text-slate-800 text-xl font-semibold">
+        <h4 className="text-slate-800 text-lg flex items-start">
           Câu hỏi {indexQuestion + 1}:{' '}
-          <span>{questions[indexQuestion].content}</span>{' '}
+          <PolaCode
+            content={questions[indexQuestion].content}
+            className="ml-2"
+          />
         </h4>
 
         <div className="mt-5">

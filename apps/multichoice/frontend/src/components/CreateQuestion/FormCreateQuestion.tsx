@@ -20,6 +20,7 @@ import { useQuery } from '../../hooks/useQuery';
 import { notify } from '../../helper/notify';
 import { iNotification } from 'react-notifications-component';
 import QuillEditor from '../QuillEditor/QuillEditor';
+import { emptyContentEditor } from '../../utils/emptyContentEditor';
 
 const schemaFormCreateQuestion = yup.object().shape({
   topicID: yup.number(),
@@ -47,6 +48,7 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
     const query = useQuery();
     const { topic } = topicStore();
     const submitBtnRef: any = useRef<HTMLButtonElement>(null);
+    const createAnswerRef: any = useRef();
 
     const {
       resetField,
@@ -56,7 +58,6 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
       getValues,
       clearErrors,
       setError,
-      watch,
       reset,
       formState: { errors },
     } = useForm<CreateQuestionDto>({
@@ -102,8 +103,10 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
       if (isMutilAnswer) {
         setIsMutilAnswer(true);
       } else {
-        const answers = getValues('answers');
+        setIsMutilAnswer(false);
+        createAnswerRef.current.resetAnswers();
 
+        const answers = getValues('answers');
         const resetAnswers: CreatAnswer[] = answers.map(
           (answer: CreatAnswer) => {
             return {
@@ -142,7 +145,9 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
           const urlNavigate = '/tests/edit/' + topicId;
           navigate(urlNavigate);
         }
-      } catch (error) {}
+      } catch (error) {
+        //
+      }
     };
 
     useImperativeHandle(
@@ -169,12 +174,6 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
         setValue('answers', filterAnswer);
         resetField('answers');
       }
-    };
-
-    const emptyContentEditor = (content: string): boolean => {
-      const regex = /(<([^>]+)>)/gi;
-      const hasText = !!content.replace(regex, '').length;
-      return hasText;
     };
 
     const onChangeEditor = (value: string) => {
@@ -231,7 +230,7 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
                 onRemoveAnswer={onRemoveAnswer}
                 invalidAnswers={Boolean(errors.answers)}
                 isMultilCorrectAnswer={isMutilAnswer}
-                ref={a}
+                ref={createAnswerRef}
               />
             </div>
           </div>
