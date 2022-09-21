@@ -3,7 +3,7 @@ import { iNotification } from 'react-notifications-component';
 import { useParams } from 'react-router-dom';
 import HeaderDoExam from '../../../components/DoExam/HeaderDoExam';
 import MainDoExam from '../../../components/DoExam/MainDoExam';
-import { START_TIME } from '../../../constants/contstants';
+import { LAST_EXAM, START_TIME } from '../../../constants/contstants';
 import { notify } from '../../../helper/notify';
 import {
   examServices,
@@ -11,6 +11,7 @@ import {
 } from '../../../services/ExamServices';
 import { localServices } from '../../../services/LocalServices';
 import { examStore, IInforUserDoExam } from '../../../store/rootReducer';
+import { IExamResponse } from '../../../types';
 
 const DoExam: React.FC = () => {
   const { exam_id } = useParams();
@@ -26,14 +27,26 @@ const DoExam: React.FC = () => {
 
   const getExamInfor = async () => {
     try {
-      const { data } = await examServices.getExamInfor(exam_id || '');
-      setExamData(data);
+      const { data, status } = await examServices.getExamInfor(exam_id || '');
+      if (status === 200) {
+        console.log(localServices.getData(LAST_EXAM));
+
+        const isEmptyLastExam: boolean =
+          localServices.getData(LAST_EXAM) === '';
+        if (isEmptyLastExam) {
+          localServices.setData(LAST_EXAM, data);
+        }
+        setExamData(data);
+        startExam();
+      }
     } catch (error) {
       //
     }
   };
 
   const startExam = async () => {
+    const lastExam: IExamResponse = localServices.getData(LAST_EXAM);
+    const canStartExam: boolean = exam.id !== lastExam.id;
     if (!isSubmitExam) {
       setIsExpriedExam(false);
       setIsSubmitExam(false);
@@ -61,7 +74,6 @@ const DoExam: React.FC = () => {
   };
 
   useEffect(() => {
-    startExam();
     getExamInfor();
   }, []);
 

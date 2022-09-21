@@ -18,6 +18,7 @@ import { cookieServices } from '../../services/CookieServices';
 import './doExam.scss';
 import ToolTip from '../Commons/ToolTip/ToolTip';
 import PolaCode from '../PolaCode/PolaCode';
+import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 
 interface IShowQuestion {
   indexQuestion: number;
@@ -72,7 +73,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
 
   const onChooseAnswer = (answerID: number) => {
     const questionID = questions[indexQuestion].id;
-    updateAnswer(questionID, [answerID]);
+    updateAnswer(questionID, answerID);
   };
 
   const countUnSelectAnswer = (): number => {
@@ -208,14 +209,12 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
           </button>
         </ToolTip>
 
-        <div className="relative w-44">
-          <CountDown
-            startTime={startTime}
-            endTime={endTime}
-            key="count-down"
-            className="text-green-600 absolute right-0"
-          />
-        </div>
+        <CountDown
+          startTime={startTime}
+          endTime={endTime}
+          key="count-down"
+          className="text-green-600"
+        />
       </header>
 
       <div className="p-4 lg:p-10 bg-slate-50 shadow-xl min-h-[268px]">
@@ -243,11 +242,16 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
                       <input
                         readOnly
                         hidden
-                        type="radio"
+                        type={
+                          questions[indexQuestion].type ===
+                          QuestionTypeEnum.MULTIPLE
+                            ? 'checkbox'
+                            : 'radio'
+                        }
                         name={'correct-answer'}
                         id={'correct-answer-' + index}
-                        className="peer checkbox-answer"
-                        checked={isCheckAnswer(answers.id)}
+                        className="peer select-answer"
+                        defaultChecked={isCheckAnswer(answers.id)}
                       />
                       <div
                         className="radio mt-0.5 w-4 h-4 border border-solid rounded-full
@@ -275,6 +279,9 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
           <BiSkipPrevious className="mr-1 text-xl" />
           Câu hỏi trước
         </button>
+        <span className="text-slate-800 font-semibold">
+          {indexQuestion + 1}/{exam.questions.length}
+        </span>
         <button
           className="px-4 py-1 bg-primary-900 rounded-sm text-sm
           text-white flex items-center focus:ring-primary-200 focus:ring"

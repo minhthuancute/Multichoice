@@ -34,7 +34,7 @@ export class Api {
     this.axiosInstance.interceptors.response.use(
       (response: AxiosResponse): AxiosResponse => {
         this.clearLoading();
-        console.log('pendingRequest', pendingRequest);
+        // console.log('pendingRequest', pendingRequest);
 
         return response;
       },

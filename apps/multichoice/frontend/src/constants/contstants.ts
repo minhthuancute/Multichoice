@@ -3,6 +3,7 @@ export const IS_EXPRIED_TIME = 'IS_EXPRIED_TIME';
 export const START_EXAM = 'START_EXAM';
 export const IS_LOGGOUT_CURRENT_USER = 'IS_LOGGOUT_CURRENT_USER';
 export const DATA_USER_DO_EXAM = 'DATA_USER_DO_EXAM';
+export const LAST_EXAM = 'LAST_EXAM';
 
 export const USER = 'USER';
 export const TOKEN = 'TOKEN';
