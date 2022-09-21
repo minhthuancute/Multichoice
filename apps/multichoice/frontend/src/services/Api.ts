@@ -6,11 +6,9 @@ import axios, {
 } from 'axios';
 import { TOKEN } from '../constants/contstants';
 import { localServices } from './LocalServices';
-import { useState } from 'react';
 import { loadingStore } from '../store/rootReducer';
-import { useStore } from 'zustand';
 
-let pendingRequest: number = 0;
+let pendingRequest = 0;
 
 export class Api {
   axiosInstance: AxiosInstance;

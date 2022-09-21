@@ -6,6 +6,7 @@ import { IAnswer, IQuestion } from '../../types';
 import ToolTip from '../Commons/ToolTip/ToolTip';
 import FormEditQuestion from '../EditQuestion/FormEditQuestion';
 import Modal from '../Modal/Modal';
+import PolaCode from '../PolaCode/PolaCode';
 
 export interface IQuestionItem {
   index: number;
@@ -41,11 +42,7 @@ const QuestionItem: React.FC<IQuestionItem> = ({
           <div className="header pb-4 text-slate-800 text-tiny flex justify-between">
             <div className="header-left flex text-tiny">
               <span className="font-semibold mr-2">Câu hỏi {index}:</span>
-              <p
-                dangerouslySetInnerHTML={{
-                  __html: question.content,
-                }}
-              ></p>
+              <PolaCode content={question.content} />
             </div>
             <div className="header-right">
               <ul className="ctas flex items-center ml-auto">

@@ -61,8 +61,8 @@ const HeaderDoExam: React.FC = () => {
         <div className="header-right flex items-center">
           {isSubmitExam && (
             <button
-              className="px-8 py-2 bg-slate-100 rounded-md text-sm ml-5
-          text-black flex items-center font-semibold xs:hidden lg:block"
+              className="px-6 py-2 bg-slate-100 rounded-md text-sm ml-5
+          text-black flex items-center font-semibold xs:hidden md:block"
               onClick={() => setOpenModalResult(true)}
             >
               Xem lại kết quả
@@ -70,7 +70,7 @@ const HeaderDoExam: React.FC = () => {
           )}
 
           <button
-            className="px-8 py-2 bg-slate-100 rounded-md text-sm ml-5
+            className="px-6 py-2 bg-slate-100 rounded-md text-sm ml-5
           text-black flex items-center font-semibold"
             onClick={handleExitExam}
           >

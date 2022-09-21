@@ -208,15 +208,17 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
           </button>
         </ToolTip>
 
-        <CountDown
-          startTime={startTime}
-          endTime={endTime}
-          key="count-down"
-          textColor="text-green-600"
-        />
+        <div className="relative w-44">
+          <CountDown
+            startTime={startTime}
+            endTime={endTime}
+            key="count-down"
+            className="text-green-600 absolute right-0"
+          />
+        </div>
       </header>
 
-      <div className="p-10 bg-slate-50 shadow-xl min-h-[268px]">
+      <div className="p-4 lg:p-10 bg-slate-50 shadow-xl min-h-[268px]">
         <h4 className="text-slate-800 text-lg flex items-start">
           Câu hỏi {indexQuestion + 1}:{' '}
           <PolaCode

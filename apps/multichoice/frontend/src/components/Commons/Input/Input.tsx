@@ -69,14 +69,14 @@ const Input: React.FC<IInput> = ({
           className={classNames(
             [
               `text-sm transition-all duration-200 w-full text-stone-600 outline-none
-            border px-2.5 border-solid border-stone-200 focus:border-primary-900
+            border px-4 border-solid border-stone-200 focus:border-primary-900
             rounded-md placeholder:text-sm`,
             ],
             {
               'border-stone-200 focus:border-primary-900': !isError,
               'border-red-500 focus:border-red-500': isError,
               'pl-9': Icon,
-              'pl-2.5': !Icon,
+              'pl-4': !Icon,
               'py-2': inputSize === 'sm',
               'py-3': inputSize === 'md',
               'py-4': inputSize === 'lg',

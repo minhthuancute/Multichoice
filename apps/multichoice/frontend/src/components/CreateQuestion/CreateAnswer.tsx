@@ -129,8 +129,6 @@ const CreateAnswer: React.FC<ICreateAnswerProps> = forwardRef(
     }, [watch]);
 
     useEffect(() => {
-      console.log(isMultilCorrectAnswer);
-
       if (isMultilCorrectAnswer) {
         setCorrectAnswer('');
       }

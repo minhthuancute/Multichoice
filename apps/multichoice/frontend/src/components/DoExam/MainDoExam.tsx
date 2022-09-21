@@ -8,7 +8,7 @@ const MainDoExam: React.FC = () => {
 
   return (
     <div
-      className="relative"
+      className="relative bg-doexam"
       style={{
         minHeight: 'calc(100vh - 69px)',
       }}

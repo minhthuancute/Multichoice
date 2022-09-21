@@ -28,7 +28,9 @@ const DoExam: React.FC = () => {
     try {
       const { data } = await examServices.getExamInfor(exam_id || '');
       setExamData(data);
-    } catch (error) {}
+    } catch (error) {
+      //
+    }
   };
 
   const startExam = async () => {
