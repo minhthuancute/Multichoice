@@ -212,16 +212,6 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
             errMessage={errors.content?.message}
             defaultValue={questionData.content}
           />
-          {/* <TextArea
-            registerField={register('content')}
-            textLabel="Câu hỏi"
-            placeholder="Nội dung câu hỏi"
-            className=""
-            classNameTextarea="h-[200px]"
-            isError={Boolean(errors.content)}
-            errMessage={errors.content?.message}
-            isRequired={true}
-          /> */}
           <div className="create-answer">
             <UpdateAnswer
               answers={questionData.answers}
