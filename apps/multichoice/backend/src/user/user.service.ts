@@ -237,7 +237,24 @@ export class UserService {
     return `This action updates a #${id} user`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async getUserExambyID(userID: number): Promise<UserExam> {
+    return await this.userExamRepository.findOne({
+      where: { id: userID },
+      relations: ['topic'],
+    });
+  }
+
+  async deleteUserExamByID(
+    userID: number,
+    user: User
+  ): Promise<SucessResponse> {
+    const userExam = await this.getUserExambyID(userID);
+    if (!userExam) throw new BadRequestException('user is not found');
+
+    if (!(await this.topicService.checkAuth(userExam.topic.id, user)))
+      throw new BadRequestException('You do not have permission');
+
+    await this.userExamRepository.delete({ id: userID });
+    return new SucessResponse(200, 'Sucess');
   }
 }
