@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import * as yup from 'yup';
 import Input from '../Commons/Input/Input';
-import TextArea from '../Commons/TextArea/TextArea';
 import { CreatAnswer } from '@monorepo/multichoice/dto';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';

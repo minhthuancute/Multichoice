@@ -6,11 +6,9 @@ import axios, {
 } from 'axios';
 import { TOKEN } from '../constants/contstants';
 import { localServices } from './LocalServices';
-import { useState } from 'react';
 import { loadingStore } from '../store/rootReducer';
-import { useStore } from 'zustand';
 
-let pendingRequest: number = 0;
+let pendingRequest = 0;
 
 export class Api {
   axiosInstance: AxiosInstance;
@@ -36,7 +34,7 @@ export class Api {
     this.axiosInstance.interceptors.response.use(
       (response: AxiosResponse): AxiosResponse => {
         this.clearLoading();
-        console.log('pendingRequest', pendingRequest);
+        // console.log('pendingRequest', pendingRequest);
 
         return response;
       },

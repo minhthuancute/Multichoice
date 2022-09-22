@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { BsCheck } from 'react-icons/bs';
 import { classNames } from '../../../helper/classNames';
+import PolaCode from '../../PolaCode/PolaCode';
 import './checkbox.scss';
 
 interface CheckboxProps {
@@ -64,12 +65,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
         <div className="box mr-2 w-4 h-4 rounded-sm border border-solid border-slate-400">
           <BsCheck className="icon opacity-0 fill-white" />
         </div>
-        <span
-          className="text-slate-800 text-sm"
-          dangerouslySetInnerHTML={{
-            __html: textLabel,
-          }}
-        ></span>
+        <PolaCode content={textLabel} className="text-slate-800 text-sm" />
       </label>
     </div>
   );

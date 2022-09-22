@@ -3,6 +3,7 @@ import { BiCheckDouble } from 'react-icons/bi';
 import { classNames } from '../../helper/classNames';
 import { answerStore, examStore } from '../../store/rootReducer';
 import { IQuestion } from '../../types';
+import PolaCode from '../PolaCode/PolaCode';
 
 interface INavQuestion {
   indexQuestion: number;
@@ -51,12 +52,10 @@ const NavQuestion: React.FC<INavQuestion> = ({
                   )}
                 >
                   Câu hỏi {index + 1}:{' '}
-                  <span
+                  <PolaCode
+                    content={question.content}
                     className="ml-2 h-6 inline-block whitespace-nowrap overflow-ellipsis overflow-hidden"
-                    dangerouslySetInnerHTML={{
-                      __html: question.content,
-                    }}
-                  ></span>
+                  />
                 </h4>
               </li>
             );

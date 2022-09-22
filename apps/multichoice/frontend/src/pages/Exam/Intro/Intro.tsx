@@ -1,11 +1,6 @@
-import React, { useEffect, useLayoutEffect } from 'react';
+import React, { useLayoutEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import {
-  CURRENT_USER,
-  DATA_USER_DO_EXAM,
-  START_TIME,
-} from '../../../constants/contstants';
-import { cookieServices } from '../../../services/CookieServices';
+import { CURRENT_USER, START_TIME } from '../../../constants/contstants';
 import { examServices } from '../../../services/ExamServices';
 import { localServices } from '../../../services/LocalServices';
 import {
@@ -15,7 +10,7 @@ import {
   IDataUser,
   IInforUserDoExam,
 } from '../../../store/rootReducer';
-import { IExamResponse, IQuestion, IUserDoExam } from '../../../types';
+import { IExamResponse, IQuestion } from '../../../types';
 
 const Intro: React.FC = () => {
   const navigate = useNavigate();
@@ -42,23 +37,10 @@ const Intro: React.FC = () => {
       );
       setAnswers(initAnswers);
       setExamData(data);
-    } catch (error) {}
-  };
-
-  const getUserDoexamData = (): IUserDoExam | null => {
-    const cookieData = cookieServices.getCookie(DATA_USER_DO_EXAM);
-    if (cookieData) {
-      const userDoExam: IUserDoExam = JSON.parse(
-        cookieServices.getCookie(DATA_USER_DO_EXAM)
-      );
-      return userDoExam;
+    } catch (error) {
+      //
     }
-    return null;
   };
-
-  useEffect(() => {
-    getUserDoexamData();
-  }, []);
 
   const onNavigateLoginExam = () => {
     const currentUser = localServices.getData(CURRENT_USER);
@@ -89,19 +71,19 @@ const Intro: React.FC = () => {
   if (!exam) return null;
 
   return (
-    <div className="container h-screen flex items-center">
+    <div className="h-screen flex items-center justify-center bg-doexam">
       <div
-        className="colect-infor max-h-[450px] h-full w-full flex items-center
-        lg:shadow-xl"
+        className="max-w-xl lg:max-w-4xl xl:max-w-5xl mx-4 bg-white colect-infor max-h-[400px] h-full w-full flex items-center
+        shadow-xl"
       >
-        <div className="left h-full max-w-[500px] hidden lg:block">
+        <div className="left h-full w-1/2 hidden lg:block">
           <img
             src="https://images.unsplash.com/photo-1457369804613-52c61a468e7d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
             alt="exam multichoice"
             className="block h-full w-full object-cover"
           />
         </div>
-        <div className="right flex-1 h-full relative">
+        <div className="right w-full lg:w-1/2 h-full relative">
           <div className="top absolute w-full top-1/2 transform -translate-y-1/2">
             <div className="text-center mx-4">
               <h4 className="text-slate-800 text-3xl">{exam.title}</h4>

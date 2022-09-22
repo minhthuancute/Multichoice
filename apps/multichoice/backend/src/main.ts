@@ -33,7 +33,9 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   };
-  app.enableCors(options);
+  app.enableCors({
+    origin: '*',
+  });
   // swagger
   const config = new DocumentBuilder()
     .setTitle('Multichoice')
