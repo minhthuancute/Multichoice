@@ -1,11 +1,6 @@
-import React, { useEffect, useLayoutEffect } from 'react';
+import React, { useLayoutEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import {
-  CURRENT_USER,
-  DATA_USER_DO_EXAM,
-  START_TIME,
-} from '../../../constants/contstants';
-import { cookieServices } from '../../../services/CookieServices';
+import { CURRENT_USER, START_TIME } from '../../../constants/contstants';
 import { examServices } from '../../../services/ExamServices';
 import { localServices } from '../../../services/LocalServices';
 import {
@@ -15,7 +10,7 @@ import {
   IDataUser,
   IInforUserDoExam,
 } from '../../../store/rootReducer';
-import { IExamResponse, IQuestion, IUserDoExam } from '../../../types';
+import { IExamResponse, IQuestion } from '../../../types';
 
 const Intro: React.FC = () => {
   const navigate = useNavigate();
@@ -46,21 +41,6 @@ const Intro: React.FC = () => {
       //
     }
   };
-
-  const getUserDoexamData = (): IUserDoExam | null => {
-    const cookieData = cookieServices.getCookie(DATA_USER_DO_EXAM);
-    if (cookieData) {
-      const userDoExam: IUserDoExam = JSON.parse(
-        cookieServices.getCookie(DATA_USER_DO_EXAM)
-      );
-      return userDoExam;
-    }
-    return null;
-  };
-
-  useEffect(() => {
-    getUserDoexamData();
-  }, []);
 
   const onNavigateLoginExam = () => {
     const currentUser = localServices.getData(CURRENT_USER);

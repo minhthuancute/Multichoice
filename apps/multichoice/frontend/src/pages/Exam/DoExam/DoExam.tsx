@@ -1,9 +1,14 @@
 import React, { useEffect } from 'react';
 import { iNotification } from 'react-notifications-component';
 import { useParams } from 'react-router-dom';
+import { boolean } from 'yup/lib/locale';
 import HeaderDoExam from '../../../components/DoExam/HeaderDoExam';
 import MainDoExam from '../../../components/DoExam/MainDoExam';
-import { LAST_EXAM, START_TIME } from '../../../constants/contstants';
+import {
+  LAST_EXAM,
+  START_EXAM,
+  START_TIME,
+} from '../../../constants/contstants';
 import { notify } from '../../../helper/notify';
 import {
   examServices,
@@ -29,8 +34,6 @@ const DoExam: React.FC = () => {
     try {
       const { data, status } = await examServices.getExamInfor(exam_id || '');
       if (status === 200) {
-        console.log(localServices.getData(LAST_EXAM));
-
         const isEmptyLastExam: boolean =
           localServices.getData(LAST_EXAM) === '';
         if (isEmptyLastExam) {
@@ -45,11 +48,13 @@ const DoExam: React.FC = () => {
   };
 
   const startExam = async () => {
-    const lastExam: IExamResponse = localServices.getData(LAST_EXAM);
-    const canStartExam: boolean = exam.id !== lastExam.id;
-    if (!isSubmitExam) {
+    const canStartExam: boolean =
+      !localServices.getData(START_EXAM) && !isSubmitExam;
+    if (canStartExam) {
       setIsExpriedExam(false);
       setIsSubmitExam(false);
+
+      localServices.setData(START_EXAM, true);
       try {
         const payload: IPayloadStartExam = {
           topicID: exam.id,

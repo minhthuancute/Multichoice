@@ -2,20 +2,17 @@ import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   ANSWERS_EXAM,
-  DATA_USER_DO_EXAM,
+  START_EXAM,
   START_TIME,
 } from '../../constants/contstants';
-import { cookieServices } from '../../services/CookieServices';
 import { localServices } from '../../services/LocalServices';
 import { examStore, IInforUserDoExam } from '../../store/rootReducer';
-import { IUserDoExam } from '../../types';
 import ExamResult from './ExamResult';
 
 const HeaderDoExam: React.FC = () => {
   const { exam_id } = useParams();
   const navigate = useNavigate();
   const {
-    exam,
     userDoExam,
     setUserData,
     setIsSubmitExam,
@@ -25,21 +22,10 @@ const HeaderDoExam: React.FC = () => {
 
   const [openModalResult, setOpenModalResult] = useState<boolean>(false);
 
-  const handleCookieDoexam = () => {
-    const dataExam: IUserDoExam = {
-      exam_title: exam.title,
-      user_id: userDoExam.user_id,
-      is_loggout_current_user: true,
-    };
-    cookieServices.deleteCookie(DATA_USER_DO_EXAM);
-    cookieServices.setCookie(DATA_USER_DO_EXAM, dataExam, 30);
-  };
-
   const handleExitExam = () => {
-    handleCookieDoexam();
     localServices.clearItem(START_TIME);
     localServices.clearItem(ANSWERS_EXAM);
-
+    localServices.setData(START_EXAM, false);
     setIsSubmitExam(false);
     setUserData({ is_guest: true } as IInforUserDoExam);
     const urlNavigate = '/exam/' + exam_id;
