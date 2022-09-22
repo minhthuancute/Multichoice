@@ -36,6 +36,14 @@ module.exports = {
         exam: "url('/assets/images/bg-exam.avif')",
         doexam: "url('/assets/images/bg_do_exam.jpeg')",
       },
+      flex: {
+        '1': 1,
+        '2': 2,
+        '3': 3,
+        '4': 4,
+        '5': 5,
+        '6': 6,
+      },
     },
     colors: {
       ...baseColors,
