@@ -53,6 +53,9 @@ export class AnswersUserDto {
 
   @ApiProperty({ type: [Number] })
   answerID: number[];
+  constructor() {
+    this.answerID = [];
+  }
 }
 
 export class UserExamDto {
@@ -76,4 +79,7 @@ export interface IUserDoExam {
   start_time: number;
   end_time: number;
   duration: number;
+}
+export interface IUserDoExamdetail extends IUserDoExam {
+  AnswersUsers: AnswersUserDto[];
 }

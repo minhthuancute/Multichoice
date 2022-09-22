@@ -56,4 +56,21 @@ export class UserController {
     const result = await this.userService.getUserExamByTopic(id, req.user);
     return res.status(200).json(result);
   }
+
+  @UseGuards(AuthenticationGuard)
+  @ApiBearerAuth()
+  @Get('/getuserexamdetail/:topicid&&:userid')
+  async test(
+    @Param('topicid') topicID: number,
+    @Param('userid') userID: number,
+    @Res() res,
+    @Req() req
+  ) {
+    const result = await this.userService.getUserExamdetail(
+      topicID,
+      userID,
+      req.user
+    );
+    return res.status(200).json(result);
+  }
 }

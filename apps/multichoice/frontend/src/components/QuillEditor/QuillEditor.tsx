@@ -71,7 +71,14 @@ const QuillEditor: React.FC<IQuillEditorProps> = ({
         dangerouslySetInnerHTML={{
           __html: `
           .ql-container{
-            height: ${height}px
+            height: ${height}px;
+          }
+
+          .ql-editor{
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji;
+            font-size: 14px;
+            color: rgb(87, 83, 78);
+            font-weight: 400 !important
           }
         `,
         }}

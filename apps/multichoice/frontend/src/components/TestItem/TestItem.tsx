@@ -113,7 +113,7 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
           >
             {test.questionCount === 0
               ? 'Bộ đề chưa có câu hỏi nào. Hãy thêm câu hỏi cho bộ đề'
-              : 'Liên kết: ' + examUrl()}
+              : examUrl()}
           </Link>
         </div>
         <div className="right">

@@ -1,9 +1,7 @@
 import React from 'react';
 import Countdown from 'react-countdown';
 import { AiOutlineClockCircle } from 'react-icons/ai';
-import { EXPRIED_EXAM, IS_EXPRIED_TIME } from '../../../constants/contstants';
 import { classNames } from '../../../helper/classNames';
-import { localServices } from '../../../services/LocalServices';
 import { examStore } from '../../../store/rootReducer';
 
 interface Renderer {
@@ -13,13 +11,13 @@ interface Renderer {
 interface ICountDown {
   startTime?: number;
   endTime?: number;
-  textColor: string;
+  className: string;
 }
 
 const CountDown: React.FC<ICountDown> = ({
   startTime = 0,
   endTime = 1,
-  textColor = '',
+  className = '',
 }) => {
   const { setIsExpriedExam } = examStore();
   const formatCountdown = (
@@ -50,7 +48,7 @@ const CountDown: React.FC<ICountDown> = ({
         <span
           className={classNames([
             'font-semibold flex items-center text-lg',
-            textColor,
+            className,
           ])}
         >
           <AiOutlineClockCircle className="mr-1" />
