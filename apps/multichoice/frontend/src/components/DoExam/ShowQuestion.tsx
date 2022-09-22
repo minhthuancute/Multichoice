@@ -54,21 +54,21 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
   const startTime: number = localServices.getData(START_TIME) || 0;
   const endTime: number = +exam.expirationTime;
 
-  const nextQuestion = (e: React.MouseEvent<HTMLElement>) => {
+  const nextQuestion = () => {
     const questionLength = questions.length;
     if (indexQuestion + 1 >= questionLength) {
-      e.preventDefault();
-      return;
+      setIndexQuestion(0);
+    } else {
+      setIndexQuestion(indexQuestion + 1);
     }
-    setIndexQuestion(indexQuestion + 1);
   };
 
-  const preQuestion = (e: React.MouseEvent<HTMLElement>) => {
+  const preQuestion = () => {
     if (indexQuestion - 1 < 0) {
-      e.preventDefault();
-      return;
+      setIndexQuestion(exam.questions.length - 1);
+    } else {
+      setIndexQuestion(indexQuestion - 1);
     }
-    setIndexQuestion(indexQuestion - 1);
   };
 
   const onChooseAnswer = (answerID: number) => {
@@ -274,7 +274,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
         <button
           className="px-4 py-1 bg-primary-900 rounded-sm text-sm
           text-white flex items-center focus:ring-primary-200 focus:ring"
-          onClick={(e: React.MouseEvent<HTMLElement>) => preQuestion(e)}
+          onClick={() => preQuestion()}
         >
           <BiSkipPrevious className="mr-1 text-xl" />
           Câu hỏi trước
@@ -285,7 +285,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
         <button
           className="px-4 py-1 bg-primary-900 rounded-sm text-sm
           text-white flex items-center focus:ring-primary-200 focus:ring"
-          onClick={(e: React.MouseEvent<HTMLElement>) => nextQuestion(e)}
+          onClick={() => nextQuestion()}
         >
           Câu hỏi sau
           <BiSkipNext className="ml-1 text-xl" />

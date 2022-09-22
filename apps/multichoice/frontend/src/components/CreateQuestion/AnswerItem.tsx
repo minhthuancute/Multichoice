@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Checkbox from '../Commons/Checkbox/Checkbox';
 import TextArea from '../Commons/TextArea/TextArea';
 import ToolTip from '../Commons/ToolTip/ToolTip';
@@ -36,7 +36,7 @@ const AnswerItem: React.FC<IAnswerItem> = ({
   const shouldDisableCheckbox = (): boolean => {
     if (isMultilCorrectAnswer) return false;
     const shouldDisable = correctAnswer !== answerValue && correctAnswer !== '';
-    return shouldDisable;
+    return shouldDisable || !answerValue;
   };
 
   return (
@@ -45,8 +45,10 @@ const AnswerItem: React.FC<IAnswerItem> = ({
         <div className="check-correct flex items-start mr-2">
           <ToolTip
             title={
-              shouldDisableCheckbox()
-                ? 'The question cannot have two correct answers'
+              !answerValue
+                ? ''
+                : shouldDisableCheckbox()
+                ? 'Câu hỏi không thể có hai đáp án đúng'
                 : ''
             }
           >

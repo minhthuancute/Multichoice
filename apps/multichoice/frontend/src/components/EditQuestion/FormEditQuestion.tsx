@@ -15,7 +15,7 @@ import { IoMdClose } from 'react-icons/io';
 import { IQuestion } from '../../types';
 import UpdateAnswer from '../CreateQuestion/UpdateAnswers';
 import QuillEditor from '../QuillEditor/QuillEditor';
-import { emptyContentEditor } from '../../utils/emptyContentEditor';
+import { hasContentEditor } from '../../utils/emptyContentEditor';
 
 const schemaFormUpdateQuestion = yup.object().shape({
   topicID: yup.number(),
@@ -154,7 +154,7 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
   };
 
   const onChangeEditor = (value: string) => {
-    if (emptyContentEditor(value)) {
+    if (hasContentEditor(value)) {
       clearErrors('content');
     } else {
       setError(

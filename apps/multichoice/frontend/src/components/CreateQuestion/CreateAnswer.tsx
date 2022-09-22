@@ -40,10 +40,18 @@ const CreateAnswer: React.FC<ICreateAnswerProps> = forwardRef(
       invalidAnswers = false,
       isMultilCorrectAnswer = false,
     } = props;
-    const { setValue, getValues, register, control, watch, reset } =
-      useForm<IAnswers>({
-        resolver: yupResolver(answerSchema),
-      });
+    const {
+      setValue,
+      getValues,
+      register,
+      control,
+      watch,
+      reset,
+      setError,
+      formState: { errors },
+    } = useForm<IAnswers>({
+      resolver: yupResolver(answerSchema),
+    });
 
     const { remove, fields, append } = useFieldArray({
       control,
@@ -118,10 +126,22 @@ const CreateAnswer: React.FC<ICreateAnswerProps> = forwardRef(
       setCorrectAnswer(valueCorrect || '');
     };
 
+    // const hasDuplicateAnswer = (asnswers: CreatAnswer[]): boolean => {
+    //   const isDuplicate = asnswers.some((answer: CreatAnswer) => {
+    //     return
+    //   });
+
+    //   return isDuplicate
+    // };
+
     useEffect(() => {
       const subscription = watch((value: any) => {
         onAddAnswer(value.answers as CreatAnswer[]);
         handleIndexCorrectAnswer(value.answers);
+
+        // if (hasDuplicateAnswer(value.answers)) {
+        //   setError('answers', { message: 'Answer content must be unique' });
+        // }
       });
       return () => {
         subscription.unsubscribe();
@@ -193,8 +213,14 @@ const CreateAnswer: React.FC<ICreateAnswerProps> = forwardRef(
           {invalidAnswers ? (
             <div className="show-error mt-3">
               <p className="text-red-500 text-xs">
-                Answers cannot be left blank
+                Answers content is required
               </p>
+            </div>
+          ) : null}
+
+          {errors.answers ? (
+            <div className="show-error mt-3">
+              <p className="text-red-500 text-xs">{errors.answers.message}</p>
             </div>
           ) : null}
           <div className="add-answer mt-5">

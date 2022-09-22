@@ -31,6 +31,12 @@ const DoExam: React.FC = () => {
   } = examStore();
 
   const getExamInfor = async () => {
+    const currentExam = exam;
+    if (Object.keys(currentExam).length && currentExam.id) {
+      startExam();
+      return;
+    }
+
     try {
       const { data, status } = await examServices.getExamInfor(exam_id || '');
       if (status === 200) {

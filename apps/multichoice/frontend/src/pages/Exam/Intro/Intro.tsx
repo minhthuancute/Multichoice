@@ -22,7 +22,10 @@ const Intro: React.FC = () => {
 
   const getExamInfor = async () => {
     setIsSubmitExam(false);
-
+    const currentExam = exam;
+    if (Object.keys(currentExam).length && currentExam.id) {
+      return;
+    }
     try {
       const { data } = await examServices.getExamInfor(exam_id || '');
       const examInfor: IExamResponse = data;

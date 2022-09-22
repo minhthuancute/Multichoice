@@ -27,5 +27,5 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--primaryColor);
+  background: theme('colors.primary.800');
 }

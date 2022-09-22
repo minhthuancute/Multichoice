@@ -26,7 +26,7 @@ const NavQuestion: React.FC<INavQuestion> = ({
   return (
     <div className="shadow-xl w-full min-h-[420px] px-8 py-6 bg-slate-50 ">
       <h2 className="text-center text-xl text-slate-800">Danh sách câu hỏi</h2>
-      <ul className="mt-2 overflow-auto h-max">
+      <ul className="mt-2 overflow-auto max-h-96">
         {questions &&
           questions.map((question: IQuestion, index: number) => {
             return (
@@ -54,7 +54,7 @@ const NavQuestion: React.FC<INavQuestion> = ({
                   Câu hỏi {index + 1}:{' '}
                   <PolaCode
                     content={question.content}
-                    className="ml-2 h-6 inline-block whitespace-nowrap overflow-ellipsis overflow-hidden"
+                    className="ml-2 h-5 inline-block whitespace-nowrap overflow-ellipsis overflow-hidden"
                   />
                 </h4>
               </li>
