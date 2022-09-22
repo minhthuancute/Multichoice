@@ -15,7 +15,7 @@ export class Question extends Timestamp {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'text' })
+  @Column({ type: 'longtext' })
   content: string;
 
   @Column({ default: true })
