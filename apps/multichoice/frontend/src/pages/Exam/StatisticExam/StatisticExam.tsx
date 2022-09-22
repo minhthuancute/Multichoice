@@ -2,16 +2,21 @@ import { IUserDoExam } from '@monorepo/multichoice/dto';
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import Breadcrumb from '../../../components/Commons/Breadcrumb/Breadcrumb';
+import Modal from '../../../components/Modal/Modal';
 import {
   examServices,
   IPayloadgetListExamByTopicId,
 } from '../../../services/ExamServices';
 import { getDate, getTime } from '../../../utils/formatDate';
+import StatisticUserExam from './StatisticUserExam';
 
 const StatisticExam: React.FC = () => {
   const { id: topic_id } = useParams();
 
   const [usersDoExam, setUsersDoExam] = useState<IUserDoExam[]>([]);
+  const [showModalUserExamDetail, setShowModalUserExamDetail] =
+    useState<boolean>(false);
+  const [userExamDetail, setUserExamDetail] = useState<IUserDoExam>();
 
   const getListExamByTopicId = async () => {
     try {
@@ -25,6 +30,11 @@ const StatisticExam: React.FC = () => {
     } catch (error) {
       //
     }
+  };
+
+  const showUserExamDetail = (rowIndex: number) => {
+    setShowModalUserExamDetail(true);
+    setUserExamDetail(usersDoExam[rowIndex]);
   };
 
   useEffect(() => {
@@ -44,6 +54,13 @@ const StatisticExam: React.FC = () => {
         </Breadcrumb>
       </header>
       <main>
+        <Modal openModal={showModalUserExamDetail}>
+          <StatisticUserExam
+            setShowModalUserExamDetail={setShowModalUserExamDetail}
+            userData={userExamDetail || ({} as IUserDoExam)}
+          />
+        </Modal>
+
         <div className="container">
           <div className=" content-page pt-5 pb-10">
             {usersDoExam && usersDoExam.length ? (
@@ -62,6 +79,7 @@ const StatisticExam: React.FC = () => {
                     <th className="py-2 pl-4 text-left capitalize">
                       Thời gian kết thúc
                     </th>
+                    <th className="py-2 pl-4 text-left capitalize">Action</th>
                     {/* <th className="py-2 pl-4 text-left capitalize">
                   Thời gian làm bài
                 </th> */}
@@ -73,7 +91,7 @@ const StatisticExam: React.FC = () => {
                       <tr
                         key={user.start_time + user.userName}
                         className="mb-4 border-b border-slate-200 last:border-none
-                      text-slate-800 text-sm"
+                      text-slate-800 text-sm cursor-pointer"
                       >
                         <td className="pl-4 py-4">{index + 1}</td>
                         <td className="pl-4 font-semibold">{user.userName}</td>
@@ -81,6 +99,13 @@ const StatisticExam: React.FC = () => {
                         <td className="pl-4">{getDate(user.start_time)}</td>
                         <td className="pl-4">{getTime(user.start_time)}</td>
                         <td className="pl-4">{getTime(user.end_time)}</td>
+                        <td
+                          className="pl-4 font-semibold"
+                          onClick={() => showUserExamDetail(index)}
+                        >
+                          Chi tiết
+                        </td>
+
                         {/* <td className="pl-4">
                       {getDistance(user.end_time, user.start_time)}
                     </td> */}
