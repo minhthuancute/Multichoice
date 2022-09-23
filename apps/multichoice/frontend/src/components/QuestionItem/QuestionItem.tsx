@@ -41,7 +41,7 @@ const QuestionItem: React.FC<IQuestionItem> = ({
         <div className="question-content py-4 px-6 bg-white rounded-lg">
           <div className="header pb-4 text-slate-800 text-tiny flex justify-between">
             <div className="header-left flex text-tiny">
-              <span className="w-24 font-semibold mr-2">Câu hỏi {index}:</span>
+              <span className="w-21 font-semibold mr-2">Câu hỏi {index}:</span>
               <PolaCode content={question.content} />
             </div>
             <div className="header-right">
