@@ -3,7 +3,7 @@ import { BiCheckDouble } from 'react-icons/bi';
 import { RiErrorWarningLine } from 'react-icons/ri';
 import Modal from '../Modal/Modal';
 
-interface IExamResult {
+interface IConfirmSubmitProps {
   unSelectAnswer: number;
   onCancleModalConfirm: () => void;
   setConfirmSubmit: React.Dispatch<React.SetStateAction<boolean>>;
@@ -11,11 +11,10 @@ interface IExamResult {
   openModalConfirm?: boolean;
 }
 
-const ConfirmSubmit: React.FC<IExamResult> = ({
+const ConfirmSubmit: React.FC<IConfirmSubmitProps> = ({
   unSelectAnswer,
   onCancleModalConfirm,
   setConfirmSubmit,
-  setOpenModalConfirm,
   openModalConfirm = false,
 }) => {
   return (

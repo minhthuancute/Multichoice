@@ -153,7 +153,7 @@ const UpdateAnswer: React.FC<IUpdateAnswer> = ({
         </div>
         {invalidAnswers ? (
           <div className="show-error mt-3">
-            <p className="text-red-500 text-xs">Answers cannot be left blank</p>
+            <p className="text-red-500 text-xs">Answers content is required</p>
           </div>
         ) : null}
         <div className="add-answer mt-5">

@@ -20,7 +20,7 @@ import { useQuery } from '../../hooks/useQuery';
 import { notify } from '../../helper/notify';
 import { iNotification } from 'react-notifications-component';
 import QuillEditor from '../QuillEditor/QuillEditor';
-import { emptyContentEditor } from '../../utils/emptyContentEditor';
+import { hasContentEditor } from '../../utils/emptyContentEditor';
 
 const schemaFormCreateQuestion = yup.object().shape({
   topicID: yup.number(),
@@ -83,6 +83,7 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
 
     const initForm = () => {
       const topicId = query.get('topic_id') || -1;
+      setValue('content', '');
       setValue('type', QuestionTypeEnum.SINGLE);
       setValue('time', 0);
       setValue('isActive', true);
@@ -177,7 +178,7 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
     };
 
     const onChangeEditor = (value: string) => {
-      if (emptyContentEditor(value)) {
+      if (hasContentEditor(value)) {
         clearErrors('content');
       } else {
         setError(

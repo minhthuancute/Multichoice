@@ -1,6 +1,6 @@
 import React from 'react';
 import { classNames } from '../../helper/classNames';
-
+import './Polacode.scss';
 interface IPolaCodeProps {
   content: string;
   className?: string;
@@ -12,9 +12,13 @@ const PolaCode: React.FC<IPolaCodeProps> = ({
 }) => {
   return (
     <div
-      className={classNames(['w-max rounded-sm', className])}
+      className={classNames(['rounded-sm', className])}
       dangerouslySetInnerHTML={{
-        __html: content,
+        __html: `
+          <div class='show-editor'>
+            ${content}
+          </div>
+        `,
       }}
     ></div>
   );
