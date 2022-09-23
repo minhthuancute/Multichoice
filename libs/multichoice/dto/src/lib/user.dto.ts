@@ -79,6 +79,7 @@ export interface IUserDoExam {
   start_time: number;
   end_time: number;
   duration: number;
+  userId: number;
 }
 export interface IUserDoExamdetail extends IUserDoExam {
   AnswersUsers: AnswersUserDto[];
