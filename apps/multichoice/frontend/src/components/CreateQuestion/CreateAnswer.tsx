@@ -47,7 +47,6 @@ const CreateAnswer: React.FC<ICreateAnswerProps> = forwardRef(
       control,
       watch,
       reset,
-      setError,
       formState: { errors },
     } = useForm<IAnswers>({
       resolver: yupResolver(answerSchema),

@@ -55,9 +55,9 @@ const StatisticExam: React.FC = () => {
     }
   };
 
-  const requestDeleteUserExam = (userId: number) => {
-    setUserIdDelete(userId);
+  const requestDeleteUserExam = (rowIndex: number) => {
     setShowModalConfirmDelete(true);
+    setUserExamDetail(usersDoExam[rowIndex]);
   };
 
   useEffect(() => {
@@ -84,6 +84,7 @@ const StatisticExam: React.FC = () => {
           />
         </Modal>
         <ConfirmDeleteUserExam
+          userData={userExamDetail || ({} as IUserDoExam)}
           onConfirmDelete={handleDeleteUserExam}
           setOpenModalConfirm={setShowModalConfirmDelete}
           openModalConfirm={showModalConfirmDelete}
@@ -135,7 +136,7 @@ const StatisticExam: React.FC = () => {
                           Xem chi tiết
                         </td>
                         <td className="pl-4">
-                          <button onClick={() => requestDeleteUserExam(1)}>
+                          <button onClick={() => requestDeleteUserExam(index)}>
                             <ToolTip title="Xóa">
                               <button>
                                 <RiDeleteBin6Line className="text-red-500" />
