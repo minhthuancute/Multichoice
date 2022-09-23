@@ -10,7 +10,7 @@ export interface IToolTip {
 
 const ToolTip: React.FC<IToolTip> = ({ title, children }) => {
   return (
-    <div className="relative">
+    <div className="relative w-max">
       <div className="childrent-tooltip peer">{children}</div>
       <div
         className={classNames(

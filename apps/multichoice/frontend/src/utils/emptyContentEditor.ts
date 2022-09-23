@@ -1,5 +1,7 @@
-export const emptyContentEditor = (content: string): boolean => {
+export const hasContentEditor = (content: string): boolean => {
   const regex = /(<([^>]+)>)/gi;
+  const regexImg = /src=./gi;
   const hasText = !!content.replace(regex, '').length;
-  return hasText;
+  const hasImg = regexImg.test(content);
+  return hasText || hasImg;
 };

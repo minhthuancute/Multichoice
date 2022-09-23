@@ -31,6 +31,12 @@ const DoExam: React.FC = () => {
   } = examStore();
 
   const getExamInfor = async () => {
+    const currentExam = exam;
+    if (Object.keys(currentExam).length && currentExam.id) {
+      startExam();
+      return;
+    }
+
     try {
       const { data, status } = await examServices.getExamInfor(exam_id || '');
       if (status === 200) {
@@ -70,10 +76,10 @@ const DoExam: React.FC = () => {
           } as IInforUserDoExam);
         }
       } catch (error) {
-        notify({
-          message: 'Something went wrong !',
-          type: 'danger',
-        } as iNotification);
+        // notify({
+        //   message: 'Something went wrong !',
+        //   type: 'danger',
+        // } as iNotification);
       }
     }
   };
@@ -83,7 +89,7 @@ const DoExam: React.FC = () => {
   }, []);
 
   return (
-    <div>
+    <div className="min-h-screen bg-doexam">
       <HeaderDoExam />
       <MainDoExam />
     </div>

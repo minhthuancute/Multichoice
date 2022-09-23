@@ -15,6 +15,16 @@ export interface IPayloadgetListExamByTopicId {
   topicID: number;
 }
 
+export interface IPayloadGetUserExamDetail {
+  topicId: number;
+  userId: number;
+}
+
+export interface IPayloadDeleteUserExam {
+  topicId: number;
+  userId: number;
+}
+
 class ExamServices extends Api {
   getExamInfor(examUrl: string) {
     const data = this.get('/' + examUrl);
@@ -34,6 +44,20 @@ class ExamServices extends Api {
 
   getListExamByTopicId(payload: IPayloadgetListExamByTopicId) {
     const data = this.get('/getListexambytopicid/' + payload.topicID);
+    return data;
+  }
+
+  getUserExamDetail(payload: IPayloadGetUserExamDetail) {
+    const data = this.get(
+      `/getuserexamdetail/${payload.topicId}&&${payload.userId}`
+    );
+    return data;
+  }
+
+  deleteUserExam(payload: IPayloadDeleteUserExam) {
+    const data = this.delete(
+      `/getuserexamdetail/${payload.topicId}&&${payload.userId}`
+    );
     return data;
   }
 }

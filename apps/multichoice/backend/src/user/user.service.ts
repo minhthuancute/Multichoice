@@ -48,6 +48,7 @@ export class UserService {
       end_time: Number(userExams.endTime),
       duration: Number(userExams.endTime) - Number(userExams.startTime),
       point: userExams.point,
+      userId: userExams.id,
     };
 
     return userDoExam;
@@ -61,6 +62,7 @@ export class UserService {
       duration: Number(userExams.endTime) - Number(userExams.startTime),
       point: userExams.point,
       AnswersUsers: this.genarateAnswersUser(userExams.UserAnswer),
+      userId: userExams.id,
     };
 
     return result;

@@ -71,7 +71,8 @@ const QuillEditor: React.FC<IQuillEditorProps> = ({
         dangerouslySetInnerHTML={{
           __html: `
           .ql-container{
-            height: ${height}px;
+            min-height: ${height}px;
+            height: max-content
           }
 
           .ql-editor{
