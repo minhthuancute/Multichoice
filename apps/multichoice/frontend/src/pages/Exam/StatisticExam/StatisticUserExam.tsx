@@ -1,7 +1,12 @@
 import { IUserDoExam } from '@monorepo/multichoice/dto';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { IoMdClose } from 'react-icons/io';
+import { useParams } from 'react-router-dom';
 import ToolTip from '../../../components/Commons/ToolTip/ToolTip';
+import {
+  examServices,
+  IPayloadGetUserExamDetail,
+} from '../../../services/ExamServices';
 import { getDate, getTime } from '../../../utils/formatDate';
 
 interface IStatisticUserExamProps {
@@ -13,6 +18,25 @@ const StatisticUserExam: React.FC<IStatisticUserExamProps> = ({
   setShowModalUserExamDetail,
   userData,
 }) => {
+  const { id: topic_id } = useParams();
+
+  const getStatisticUserDetail = async () => {
+    try {
+      const payload: IPayloadGetUserExamDetail = {
+        topicId: Number(topic_id) || -1,
+        userId: userData.userId,
+      };
+      const response = await examServices.getUserExamDetail(payload);
+      console.log(response);
+    } catch {
+      //
+    }
+  };
+
+  useEffect(() => {
+    getStatisticUserDetail();
+  }, [userData]);
+
   if (!Object.keys(userData).length) return null;
 
   return (

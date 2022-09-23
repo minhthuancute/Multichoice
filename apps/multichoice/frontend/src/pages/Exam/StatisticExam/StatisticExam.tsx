@@ -1,10 +1,12 @@
 import { IUserDoExam } from '@monorepo/multichoice/dto';
 import React, { useEffect, useState } from 'react';
 import { RiDeleteBin6Line } from 'react-icons/ri';
+import { iNotification } from 'react-notifications-component';
 import { Link, useParams } from 'react-router-dom';
 import Breadcrumb from '../../../components/Commons/Breadcrumb/Breadcrumb';
 import ToolTip from '../../../components/Commons/ToolTip/ToolTip';
 import Modal from '../../../components/Modal/Modal';
+import { notify } from '../../../helper/notify';
 import {
   examServices,
   IPayloadDeleteUserExam,
@@ -23,7 +25,6 @@ const StatisticExam: React.FC = () => {
   const [showModalConfirmDelete, setShowModalConfirmDelete] =
     useState<boolean>(false);
   const [userExamDetail, setUserExamDetail] = useState<IUserDoExam>();
-  const [userIdDelete, setUserIdDelete] = useState<number>();
 
   const getListExamByTopicId = async () => {
     try {
@@ -47,9 +48,19 @@ const StatisticExam: React.FC = () => {
   const handleDeleteUserExam = async () => {
     try {
       const payload: IPayloadDeleteUserExam = {
-        topicId: Number(topic_id) || -1,
-        userId: userIdDelete || -1,
+        userId: userExamDetail?.userId || -1,
       };
+      const response = await examServices.deleteUserExam(payload);
+      if (response) {
+        const { status } = response;
+        if (status) {
+          setShowModalConfirmDelete(false);
+          notify({
+            message: 'Xoá kết quả thi thành công !',
+          } as iNotification);
+          getListExamByTopicId();
+        }
+      }
     } catch (error) {
       //
     }

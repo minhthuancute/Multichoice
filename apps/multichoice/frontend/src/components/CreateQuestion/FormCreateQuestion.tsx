@@ -14,7 +14,7 @@ import Select, { IOption } from '../Commons/Select/Select';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 import { useNavigate } from 'react-router-dom';
 import { questionServices } from '../../services/QuestionServices';
-import CreateAnswer from './CreateAnswer';
+import CreateAnswer, { IResetAnswersRef } from './CreateAnswer';
 import { topicStore } from '../../store/rootReducer';
 import { useQuery } from '../../hooks/useQuery';
 import { notify } from '../../helper/notify';
@@ -48,7 +48,8 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
     const query = useQuery();
     const { topic } = topicStore();
     const submitBtnRef: any = useRef<HTMLButtonElement>(null);
-    const createAnswerRef: any = useRef();
+
+    const createAnswerRef = useRef<IResetAnswersRef>();
 
     const {
       resetField,
@@ -105,8 +106,6 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
         setIsMutilAnswer(true);
       } else {
         setIsMutilAnswer(false);
-        createAnswerRef.current.resetAnswers();
-
         const answers = getValues('answers');
         const resetAnswers: CreatAnswer[] = answers.map(
           (answer: CreatAnswer) => {
@@ -119,6 +118,10 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
         reset({
           answers: resetAnswers,
         });
+
+        if (createAnswerRef.current) {
+          createAnswerRef.current.resetAnswers(resetAnswers);
+        }
       }
     };
 

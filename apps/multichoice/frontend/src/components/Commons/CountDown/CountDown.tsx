@@ -39,9 +39,7 @@ const CountDown: React.FC<ICountDown> = ({
   }) => {
     if (completed) {
       return (
-        <p className={classNames(['font-semibold underline text-red-500'])}>
-          Hết thời gian làm bài !
-        </p>
+        <p className={classNames(['font-semibold underline text-red-500'])}></p>
       );
     } else {
       return (
