@@ -8,10 +8,6 @@ const Tests: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchKeyword, setSearchKeyword] = useState<string>('');
 
-  useLayoutEffect(() => {
-    titleServices.setTitle('Multichoice');
-  }, []);
-
   // on search Test
   const onFilter = (keyword: string) => {
     setSearchKeyword(keyword);

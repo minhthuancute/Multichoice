@@ -44,7 +44,7 @@ const Header: React.FC = () => {
           <div className="user group">
             <div className="content flex items-center">
               <img
-                src="https://picsum.photos/200/300"
+                src="../../assets/images/avatar.svg"
                 alt=""
                 className="w-6 h-6 rounded-full mr-2"
               />

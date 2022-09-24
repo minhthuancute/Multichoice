@@ -2,9 +2,6 @@ import React, { useLayoutEffect } from 'react';
 import { titleServices } from '../../services/TitleServices';
 
 const Statistical: React.FC = () => {
-  useLayoutEffect(() => {
-    titleServices.setTitle('Multichoice');
-  }, []);
 
   return (
     <div
