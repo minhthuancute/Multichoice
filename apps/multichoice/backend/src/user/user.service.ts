@@ -8,9 +8,11 @@ import {
   AnswersUserDto,
   IUserDoExam,
   IUserDoExamdetail,
+  Questiondetail,
   ResultUserDto,
   UpdateUserDto,
   UserExamDto,
+  Answer,
 } from '@monorepo/multichoice/dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
@@ -54,42 +56,74 @@ export class UserService {
     return userDoExam;
   }
 
-  convertUserDoExamdetal(userExams: UserExam): IUserDoExamdetail {
+  convertUserDoExamdetal(userExams: UserExam, topic: Topic): IUserDoExamdetail {
     const result: IUserDoExamdetail = {
       userName: userExams.username,
       start_time: Number(userExams.startTime),
       end_time: Number(userExams.endTime),
       duration: Number(userExams.endTime) - Number(userExams.startTime),
       point: userExams.point,
-      AnswersUsers: this.genarateAnswersUser(userExams.UserAnswer),
+      questions: this.genarateAnswersUser(
+        userExams.UserAnswer,
+        topic.questions
+      ),
       userId: userExams.id,
     };
-
     return result;
   }
 
-  genarateAnswersUser(lst: UserAnswer[]): AnswersUserDto[] {
-    const result: AnswersUserDto[] = [];
-    const check: number[] = []; // check xem question ton tai chua?
-    lst.forEach((element) => {
-      if (check.includes(element.questionID)) {
-        result[check.indexOf(element.questionID)].answerID.push(
-          element.answerID
-        );
-      } else {
-        const tam: AnswersUserDto = new AnswersUserDto();
-        tam.questionID = element.questionID;
-        tam.answerID.push(element.answerID);
-        result.push(tam);
-        check.push(element.questionID);
-      }
-    });
-    return result;
+  genarateAnswersUser(
+    lst: UserAnswer[],
+    questions: Question[]
+  ): Questiondetail[] {
+    const answersUser: AnswersUserDto[] = [];
+    const lstQuestion: number[] = []; // check xem question ton tai chua?
+    if (lst && lst.length > 0) {
+      lst.forEach((element) => {
+        if (lstQuestion.includes(element.questionID)) {
+          answersUser[lstQuestion.indexOf(element.questionID)].answerID.push(
+            element.answerID
+          );
+        } else {
+          const tam: AnswersUserDto = new AnswersUserDto();
+          tam.questionID = element.questionID;
+          tam.answerID.push(element.answerID);
+          answersUser.push(tam);
+          lstQuestion.push(element.questionID);
+        }
+      });
+    }
+
+    if (questions && questions.length > 0) {
+      const result: Questiondetail[] = [];
+      questions.forEach((element) => {
+        const question = new Questiondetail();
+        question.id = element.id;
+        question.type = element.type;
+        question.isActive = element.isActive;
+        question.content = element.content;
+        question.time = element.time;
+        const check = lstQuestion.indexOf(element.id);
+        if (check != -1) question.answerUser = answersUser[check].answerID;
+        if (element && element.answers.length > 0) {
+          element.answers.forEach((cc) => {
+            const answer: Answer = {
+              content: cc.content,
+              id: cc.id,
+              isCorrect: cc.isCorrect,
+            };
+            question.answers.push(answer);
+          });
+        }
+        result.push(question);
+      });
+      return result;
+    }
+    return null;
   }
 
   async getUserExamdetail(topicID: number, userID: number, user: User) {
-    if (!(await this.topicService.checkAuth(topicID, user)))
-      throw new BadRequestException('You do not have permission');
+    const topic = await this.topicService.getTopicByID(topicID, user);
 
     const result = await this.userExamRepository.findOne({
       where: {
@@ -99,7 +133,7 @@ export class UserService {
       relations: ['UserAnswer'],
     });
     if (!result) throw new BadRequestException('User is not found');
-    return new SucessResponse(200, this.convertUserDoExamdetal(result));
+    return new SucessResponse(200, this.convertUserDoExamdetal(result, topic));
   }
 
   async getUserExamByTopic(id: number, user: User) {
