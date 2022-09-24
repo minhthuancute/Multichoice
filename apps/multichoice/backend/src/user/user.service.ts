@@ -72,6 +72,25 @@ export class UserService {
     return result;
   }
 
+  convertQuestiondetail(question: Question): Questiondetail {
+    const result = new Questiondetail();
+    result.id = question.id;
+    result.type = question.type;
+    result.isActive = question.isActive;
+    result.content = question.content;
+    result.time = question.time;
+    if (question.answers && question.answers.length > 0) {
+      question.answers.forEach((answer) => {
+        result.answers.push({
+          content: answer.content,
+          id: answer.id,
+          isCorrect: answer.isCorrect,
+        });
+      });
+    }
+    return result;
+  }
+
   genarateAnswersUser(
     lst: UserAnswer[],
     questions: Question[]
@@ -97,24 +116,11 @@ export class UserService {
     if (questions && questions.length > 0) {
       const result: Questiondetail[] = [];
       questions.forEach((element) => {
-        const question = new Questiondetail();
-        question.id = element.id;
-        question.type = element.type;
-        question.isActive = element.isActive;
-        question.content = element.content;
-        question.time = element.time;
+        const question = this.convertQuestiondetail(element);
+        //push dap an user
         const check = lstQuestion.indexOf(element.id);
         if (check != -1) question.answerUser = answersUser[check].answerID;
-        if (element && element.answers.length > 0) {
-          element.answers.forEach((cc) => {
-            const answer: Answer = {
-              content: cc.content,
-              id: cc.id,
-              isCorrect: cc.isCorrect,
-            };
-            question.answers.push(answer);
-          });
-        }
+
         result.push(question);
       });
       return result;
