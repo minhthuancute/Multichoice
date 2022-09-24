@@ -8,7 +8,7 @@ import { HiInformationCircle } from 'react-icons/hi';
 import { iNotification } from 'react-notifications-component';
 import { notify } from '../../helper/notify';
 
-const answerSchema = yup.object().shape({
+export const answerSchema = yup.object().shape({
   answers: yup.array().of(
     yup.object().shape({
       content: yup.string().required(),
@@ -24,7 +24,7 @@ interface IUpdateAnswer {
   invalidAnswers?: boolean;
 }
 
-interface IAnswers {
+export interface IAnswers {
   answers: CreatAnswer[];
 }
 
@@ -145,13 +145,15 @@ const UpdateAnswer: React.FC<IUpdateAnswer> = ({
                 answerValue={getValues(nameContent) || ''}
                 indexAnswer={index}
                 indexAscii={index}
+                isMultilCorrectAnswer={false}
+                isCheckedAnswer={getValues(`answers.${index}.isCorrect`)}
               />
             );
           })}
         </div>
         {invalidAnswers ? (
           <div className="show-error mt-3">
-            <p className="text-red-500 text-xs">Answers cannot be left blank</p>
+            <p className="text-red-500 text-xs">Answers content is required</p>
           </div>
         ) : null}
         <div className="add-answer mt-5">

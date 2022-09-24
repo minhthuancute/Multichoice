@@ -34,21 +34,28 @@ module.exports = {
         authen: "url('/assets/images/bg-login.jpg')",
         notfound: "url('/assets/images/pagenotfound.png')",
         exam: "url('/assets/images/bg-exam.avif')",
+        doexam: "url('/assets/images/bg_do_exam.jpeg')",
+      },
+      flex: {
+        '1': 1,
+        '2': 2,
+        '3': 3,
+        '4': 4,
+        '5': 5,
+        '6': 6,
       },
     },
     colors: {
       ...baseColors,
       primary: {
-        800: '#316B83',
-        900: '#316B83',
+        800: '#28c6d7',
+        900: '#24b2c2',
       },
       secondary: {
         200: '#C4D7E0',
         700: '#f1f2f6',
         800: '#256D85',
       },
-
-      black: '#1c2437',
     },
     screens: {
       xs: '0',

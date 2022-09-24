@@ -1,9 +1,14 @@
 import React, { useEffect } from 'react';
 import { iNotification } from 'react-notifications-component';
 import { useParams } from 'react-router-dom';
+import { boolean } from 'yup/lib/locale';
 import HeaderDoExam from '../../../components/DoExam/HeaderDoExam';
 import MainDoExam from '../../../components/DoExam/MainDoExam';
-import { START_TIME } from '../../../constants/contstants';
+import {
+  LAST_EXAM,
+  START_EXAM,
+  START_TIME,
+} from '../../../constants/contstants';
 import { notify } from '../../../helper/notify';
 import {
   examServices,
@@ -11,6 +16,7 @@ import {
 } from '../../../services/ExamServices';
 import { localServices } from '../../../services/LocalServices';
 import { examStore, IInforUserDoExam } from '../../../store/rootReducer';
+import { IExamResponse } from '../../../types';
 
 const DoExam: React.FC = () => {
   const { exam_id } = useParams();
@@ -25,18 +31,36 @@ const DoExam: React.FC = () => {
   } = examStore();
 
   const getExamInfor = async () => {
+    const currentExam = exam;
+    if (Object.keys(currentExam).length && currentExam.id) {
+      startExam();
+      return;
+    }
+
     try {
-      const { data } = await examServices.getExamInfor(exam_id || '');
-      setExamData(data);
+      const { data, status } = await examServices.getExamInfor(exam_id || '');
+      if (status === 200) {
+        const isEmptyLastExam: boolean =
+          localServices.getData(LAST_EXAM) === '';
+        if (isEmptyLastExam) {
+          localServices.setData(LAST_EXAM, data);
+        }
+        setExamData(data);
+        startExam();
+      }
     } catch (error) {
-      console.log(error);
+      //
     }
   };
 
   const startExam = async () => {
-    if (!isSubmitExam) {
+    const canStartExam: boolean =
+      !localServices.getData(START_EXAM) && !isSubmitExam;
+    if (canStartExam) {
       setIsExpriedExam(false);
       setIsSubmitExam(false);
+
+      localServices.setData(START_EXAM, true);
       try {
         const payload: IPayloadStartExam = {
           topicID: exam.id,
@@ -52,21 +76,20 @@ const DoExam: React.FC = () => {
           } as IInforUserDoExam);
         }
       } catch (error) {
-        notify({
-          message: 'Something went wrong !',
-          type: 'danger',
-        } as iNotification);
+        // notify({
+        //   message: 'Something went wrong !',
+        //   type: 'danger',
+        // } as iNotification);
       }
     }
   };
 
   useEffect(() => {
-    startExam();
     getExamInfor();
   }, []);
 
   return (
-    <div>
+    <div className="min-h-screen bg-doexam">
       <HeaderDoExam />
       <MainDoExam />
     </div>

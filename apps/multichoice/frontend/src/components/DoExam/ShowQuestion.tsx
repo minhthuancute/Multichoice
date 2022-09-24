@@ -17,6 +17,8 @@ import { cookieServices } from '../../services/CookieServices';
 
 import './doExam.scss';
 import ToolTip from '../Commons/ToolTip/ToolTip';
+import PolaCode from '../PolaCode/PolaCode';
+import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 
 interface IShowQuestion {
   indexQuestion: number;
@@ -52,26 +54,26 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
   const startTime: number = localServices.getData(START_TIME) || 0;
   const endTime: number = +exam.expirationTime;
 
-  const nextQuestion = (e: React.MouseEvent<HTMLElement>) => {
+  const nextQuestion = () => {
     const questionLength = questions.length;
     if (indexQuestion + 1 >= questionLength) {
-      e.preventDefault();
-      return;
+      setIndexQuestion(0);
+    } else {
+      setIndexQuestion(indexQuestion + 1);
     }
-    setIndexQuestion(indexQuestion + 1);
   };
 
-  const preQuestion = (e: React.MouseEvent<HTMLElement>) => {
+  const preQuestion = () => {
     if (indexQuestion - 1 < 0) {
-      e.preventDefault();
-      return;
+      setIndexQuestion(exam.questions.length - 1);
+    } else {
+      setIndexQuestion(indexQuestion - 1);
     }
-    setIndexQuestion(indexQuestion - 1);
   };
 
   const onChooseAnswer = (answerID: number) => {
     const questionID = questions[indexQuestion].id;
-    updateAnswer(questionID, [answerID]);
+    updateAnswer(questionID, answerID);
   };
 
   const countUnSelectAnswer = (): number => {
@@ -211,14 +213,19 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
           startTime={startTime}
           endTime={endTime}
           key="count-down"
-          textColor="text-green-600"
+          className="text-green-600"
         />
       </header>
 
-      <div className="p-10 bg-slate-50 shadow-xl min-h-[268px]">
-        <h4 className="text-slate-800 text-xl font-semibold">
-          Câu hỏi {indexQuestion + 1}:{' '}
-          <span>{questions[indexQuestion].content}</span>{' '}
+      <div className="p-4 lg:p-10 bg-slate-50 shadow-xl min-h-[268px]">
+        <h4 className="text-slate-800 text-lg flex items-start">
+          <span className="min-w-max">
+            Câu hỏi {indexQuestion + 1}:{' '}
+          </span>
+          <PolaCode
+            content={questions[indexQuestion].content}
+            className="ml-2"
+          />
         </h4>
 
         <div className="mt-5">
@@ -237,11 +244,16 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
                       <input
                         readOnly
                         hidden
-                        type="radio"
+                        type={
+                          questions[indexQuestion].type ===
+                          QuestionTypeEnum.MULTIPLE
+                            ? 'checkbox'
+                            : 'radio'
+                        }
                         name={'correct-answer'}
                         id={'correct-answer-' + index}
-                        className="peer checkbox-answer"
-                        checked={isCheckAnswer(answers.id)}
+                        className="peer select-answer"
+                        defaultChecked={isCheckAnswer(answers.id)}
                       />
                       <div
                         className="radio mt-0.5 w-4 h-4 border border-solid rounded-full
@@ -264,15 +276,18 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
         <button
           className="px-4 py-1 bg-primary-900 rounded-sm text-sm
           text-white flex items-center focus:ring-primary-200 focus:ring"
-          onClick={(e: React.MouseEvent<HTMLElement>) => preQuestion(e)}
+          onClick={() => preQuestion()}
         >
           <BiSkipPrevious className="mr-1 text-xl" />
           Câu hỏi trước
         </button>
+        <span className="text-slate-800 font-semibold">
+          {indexQuestion + 1}/{exam.questions.length}
+        </span>
         <button
           className="px-4 py-1 bg-primary-900 rounded-sm text-sm
           text-white flex items-center focus:ring-primary-200 focus:ring"
-          onClick={(e: React.MouseEvent<HTMLElement>) => nextQuestion(e)}
+          onClick={() => nextQuestion()}
         >
           Câu hỏi sau
           <BiSkipNext className="ml-1 text-xl" />

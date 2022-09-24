@@ -83,20 +83,20 @@ const CollectInfor: React.FC = () => {
   };
 
   return (
-    <div className="container h-screen flex items-center">
+    <div className="h-screen flex items-center justify-center bg-doexam">
       <form
-        className="form colect-infor max-h-[450px] h-full w-full flex items-center
-        lg:shadow-xl"
+        className="max-w-xl lg:max-w-4xl xl:max-w-5xl mx-4 bg-white colect-infor max-h-[400px] h-full w-full flex items-center
+        shadow-xl"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <div className="left h-full w-[500px] hidden lg:block">
+        <div className="left h-full w-1/2 hidden lg:block">
           <img
             src="https://images.unsplash.com/photo-1457369804613-52c61a468e7d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
             alt="exam multichoice"
             className="block h-full w-full object-cover"
           />
         </div>
-        <div className="right flex-1 h-full relative">
+        <div className="right w-full lg:w-1/2 h-full relative">
           <div className="top absolute w-full top-8 transform">
             <div className="text-center">
               <h4 className="text-slate-800 text-3xl">{exam.title}</h4>

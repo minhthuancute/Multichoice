@@ -7,12 +7,7 @@ const MainDoExam: React.FC = () => {
   const [indexQuestion, setIndexQuestion] = useState<number>(0);
 
   return (
-    <div
-      className="relative"
-      style={{
-        minHeight: 'calc(100vh - 69px)',
-      }}
-    >
+    <div className="main-doexam">
       <div className="container mx-auto pt-10 lg:px-10 flex gap-x-8">
         <div className="w-full xs:px-4 md:px-10 lg:px-0 lg:w-2/3">
           <ShowQuestion

@@ -6,6 +6,9 @@ import axios, {
 } from 'axios';
 import { TOKEN } from '../constants/contstants';
 import { localServices } from './LocalServices';
+import { loadingStore } from '../store/rootReducer';
+
+let pendingRequest = 0;
 
 export class Api {
   axiosInstance: AxiosInstance;
@@ -19,8 +22,10 @@ export class Api {
 
     this.axiosInstance.interceptors.request.use(
       (config: AxiosRequestConfig): AxiosRequestConfig => {
+        pendingRequest += 1;
+        const state = loadingStore.getState();
+        state.setLoading(true);
         const token = localServices.getData(TOKEN);
-
         config!.headers!['Authorization'] = `Bearer ${token}`;
         return config;
       }
@@ -28,13 +33,33 @@ export class Api {
 
     this.axiosInstance.interceptors.response.use(
       (response: AxiosResponse): AxiosResponse => {
+        this.clearLoading();
+        // console.log('pendingRequest', pendingRequest);
+
         return response;
       },
-      (err: AxiosError): Promise<AxiosError> => {
-        console.log(err);
+      async (err: AxiosError): Promise<AxiosError> => {
+        this.clearLoading();
+        await this.sleep(500);
         return Promise.reject(err);
       }
     );
+  }
+
+  sleep(time: number) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, time);
+    });
+  }
+
+  clearLoading() {
+    pendingRequest -= 1;
+    if (pendingRequest === 0) {
+      const state = loadingStore.getState();
+      setTimeout(() => {
+        state.setLoading(false);
+      }, 500);
+    }
   }
 
   get(url: string) {

@@ -3,34 +3,23 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   UseGuards,
   Res,
   Req,
+  Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import {
-  CreateUserDto,
-  ResultUserDto,
-  UpdateUserDto,
-  UserExamDto,
-} from '@monorepo/multichoice/dto';
+import { ResultUserDto, UserExamDto } from '@monorepo/multichoice/dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthenticationGuard } from '../auth/guards/auth.guard';
-import { User } from './entities/user.entity';
-import { TopicService } from '../topic/topic.service';
-import { UserExam } from './entities/userExam';
-import { url } from 'inspector';
+import { SucessResponse } from '../model/SucessResponse';
 
 @ApiTags('Exam')
 @Controller()
 export class UserController {
-  constructor(
-    private readonly userService: UserService,
-    private readonly topicService: TopicService
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
   @Post('/exam/end')
   async endExam(@Body() resultUserDto: ResultUserDto, @Res() res) {
@@ -55,5 +44,35 @@ export class UserController {
   async getListExamByTopicID(@Param('id') id: number, @Res() res, @Req() req) {
     const result = await this.userService.getUserExamByTopic(id, req.user);
     return res.status(200).json(result);
+  }
+
+  @UseGuards(AuthenticationGuard)
+  @ApiBearerAuth()
+  @Get('/userexam/getdetail')
+  async test(
+    @Query('topicID') topicID: number,
+    @Query('userID') userID: number,
+    @Res() res,
+    @Req() req
+  ) {
+    const result = await this.userService.getUserExamdetail(
+      topicID,
+      userID,
+      req.user
+    );
+    return res.status(200).json(result);
+  }
+
+  @UseGuards(AuthenticationGuard)
+  @ApiBearerAuth()
+  @Delete('/userexam/deletebyid')
+  async deleteUserExamByID(
+    @Query('id') id: number,
+    @Res() res,
+    @Req() req
+  ): Promise<SucessResponse> {
+    return res
+      .status(200)
+      .json(await this.userService.deleteUserExamByID(id, req.user));
   }
 }

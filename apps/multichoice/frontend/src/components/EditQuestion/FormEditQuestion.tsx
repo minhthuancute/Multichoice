@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import * as yup from 'yup';
 import Input from '../Commons/Input/Input';
-import TextArea from '../Commons/TextArea/TextArea';
 import { CreatAnswer } from '@monorepo/multichoice/dto';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -15,6 +14,8 @@ import ToolTip from '../Commons/ToolTip/ToolTip';
 import { IoMdClose } from 'react-icons/io';
 import { IQuestion } from '../../types';
 import UpdateAnswer from '../CreateQuestion/UpdateAnswers';
+import QuillEditor from '../QuillEditor/QuillEditor';
+import { hasContentEditor } from '../../utils/emptyContentEditor';
 
 const schemaFormUpdateQuestion = yup.object().shape({
   topicID: yup.number(),
@@ -65,6 +66,7 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
     setValue,
     getValues,
     clearErrors,
+    setError,
     formState: { errors },
   } = useForm<IUpdateQuestion>({
     resolver: yupResolver(schemaFormUpdateQuestion),
@@ -126,7 +128,7 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
         cbOnUpdateQuestion();
       }
     } catch (error) {
-      console.log(error);
+      //
     }
   };
 
@@ -149,6 +151,19 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
     const optionVal: QuestionTypeEnum = item.value as QuestionTypeEnum;
     setValue('type', optionVal);
     setValue('isActive', true);
+  };
+
+  const onChangeEditor = (value: string) => {
+    if (hasContentEditor(value)) {
+      clearErrors('content');
+    } else {
+      setError(
+        'content',
+        { message: 'Question content is a required field' },
+        { shouldFocus: true }
+      );
+    }
+    setValue('content', value);
   };
 
   return (
@@ -189,15 +204,13 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
           />
         </div>
         <div className="bg-white rounded-md mt-5">
-          <TextArea
-            registerField={register('content')}
-            textLabel="Câu hỏi"
+          <QuillEditor
             placeholder="Nội dung câu hỏi"
-            className=""
-            classNameTextarea="h-[200px]"
+            className="h-[248px]"
+            onChange={onChangeEditor}
             isError={Boolean(errors.content)}
             errMessage={errors.content?.message}
-            isRequired={true}
+            defaultValue={questionData.content}
           />
           <div className="create-answer">
             <UpdateAnswer

@@ -6,12 +6,10 @@ import { titleServices } from '../../../services/TitleServices';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Link, useNavigate } from 'react-router-dom';
-import { TOKEN, USER } from '../../../constants/contstants';
+import { TOKEN } from '../../../constants/contstants';
 import Checkbox from '../../Commons/Checkbox/Checkbox';
 import InputAuthen from '../InputAuthen';
 import { validation } from '@monorepo/multichoice/validation';
-// import SignUpOptions from '../SignUpOptions';
-import { cookieServices } from '../../../services/CookieServices';
 import { authenServices } from '../../../services/AuthenServices';
 import { LoginUserDto } from '@monorepo/multichoice/dto';
 import { AxiosResponse } from 'axios';
@@ -43,7 +41,6 @@ const FormLogin: React.FC = () => {
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm<LoginUserDto>({
     resolver: yupResolver(schemaFormLogin),
@@ -51,25 +48,11 @@ const FormLogin: React.FC = () => {
 
   useLayoutEffect(() => {
     titleServices.addSub('Login');
-    const dataUser: string = cookieServices.getCookie('USER');
-    if (dataUser) {
-      setUserLocal(JSON.parse(dataUser));
-      reset({ ...JSON.parse(dataUser) });
-    }
-  }, [reset]);
-
-  // save form data to Cookie
-  const handleRememberUser = (data: LoginUserDto): void => {
-    // expried in 30 days
-    cookieServices.setCookie(USER, data, 30);
-  };
+  }, []);
 
   const onSubmit: SubmitHandler<LoginUserDto> = async (
     formData: LoginUserDto
   ) => {
-    if (isRememberUser) {
-      handleRememberUser(formData);
-    }
     try {
       const data: AxiosResponse = await authenServices.login(formData);
       const loginResponse: ILoginResponse = data.data;
@@ -80,7 +63,6 @@ const FormLogin: React.FC = () => {
         navigate('/');
       }
     } catch (error) {
-      console.log(error);
       notify({
         message: 'Wrong user name or password !',
         type: 'danger',

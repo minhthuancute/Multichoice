@@ -15,13 +15,13 @@ export class Question extends Timestamp {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ type: 'longtext' })
   content: string;
 
   @Column({ default: true })
   isActive: boolean;
 
-  @Column()
+  @Column({ nullable: true })
   time: number;
 
   @Column({ nullable: true })

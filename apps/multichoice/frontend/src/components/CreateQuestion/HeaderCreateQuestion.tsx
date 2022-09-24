@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { examStore, topicStore } from '../../store/rootReducer';
+import { topicStore } from '../../store/rootReducer';
 import Breadcrumb from '../Commons/Breadcrumb/Breadcrumb';
 
 interface IHeaderCreateTest {

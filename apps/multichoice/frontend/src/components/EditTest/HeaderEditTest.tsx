@@ -24,9 +24,7 @@ const HeaderEditTest: React.FC = () => {
       const { data }: { data: ITopicResponse } =
         await topicServices.getTopicById(topicId || '');
       setTopicInfor(data);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   useLayoutEffect(() => {

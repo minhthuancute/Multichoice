@@ -1,12 +1,12 @@
 export const getDate = (date: string | number): string => {
   const d = new Date(date);
-  const result = d.toLocaleDateString('en-US');
+  const result = d.toLocaleDateString('en-GB', { hour12: false });
   return result;
 };
 
 export const getTime = (date: string | number): string => {
   const d = new Date(date);
-  const result = d.toLocaleTimeString('en-US');
+  const result = d.toLocaleTimeString('vn');
   return result;
 };
 

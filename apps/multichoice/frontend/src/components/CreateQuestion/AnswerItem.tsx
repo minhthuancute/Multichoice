@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Checkbox from '../Commons/Checkbox/Checkbox';
 import TextArea from '../Commons/TextArea/TextArea';
 import ToolTip from '../Commons/ToolTip/ToolTip';
@@ -7,10 +7,13 @@ import { MdOutlineClear } from 'react-icons/md';
 interface IAnswerItem {
   correctAnswer?: string;
   answerValue?: string;
+  checkedValue?: boolean;
   registerFieldContent: any;
   registerFieldIsCorrect: any;
   indexAnswer: number;
   indexAscii: number;
+  isMultilCorrectAnswer: boolean;
+  isCheckedAnswer: boolean;
   onDeleteAnswer: (indexAnswer: number) => void;
 }
 
@@ -22,6 +25,8 @@ const AnswerItem: React.FC<IAnswerItem> = ({
   indexAnswer,
   indexAscii,
   onDeleteAnswer,
+  isMultilCorrectAnswer,
+  isCheckedAnswer,
 }) => {
   const getAsciiCode = (): string => {
     const startCharacter = 65; // 'A'
@@ -29,8 +34,9 @@ const AnswerItem: React.FC<IAnswerItem> = ({
   };
 
   const shouldDisableCheckbox = (): boolean => {
+    if (isMultilCorrectAnswer) return false;
     const shouldDisable = correctAnswer !== answerValue && correctAnswer !== '';
-    return shouldDisable;
+    return shouldDisable || !answerValue;
   };
 
   return (
@@ -39,8 +45,10 @@ const AnswerItem: React.FC<IAnswerItem> = ({
         <div className="check-correct flex items-start mr-2">
           <ToolTip
             title={
-              shouldDisableCheckbox()
-                ? 'The question cannot have two correct answers'
+              !answerValue
+                ? ''
+                : shouldDisableCheckbox()
+                ? 'Câu hỏi không thể có hai đáp án đúng'
                 : ''
             }
           >
@@ -48,6 +56,7 @@ const AnswerItem: React.FC<IAnswerItem> = ({
               disable={shouldDisableCheckbox()}
               registerField={registerFieldIsCorrect}
               className="mt-1"
+              isChecked={isCheckedAnswer}
               id={'answers-' + indexAnswer}
             />
           </ToolTip>

@@ -1,10 +1,6 @@
-import React, { useLayoutEffect } from 'react';
-import { titleServices } from '../../services/TitleServices';
+import React from 'react';
 
 const Home: React.FC = () => {
-  useLayoutEffect(() => {
-    titleServices.setTitle('Multichoice');
-  }, []);
 
   return (
     <div

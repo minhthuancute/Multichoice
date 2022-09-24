@@ -29,9 +29,7 @@ const DeleteTest: React.FC<IDeleteTest> = ({
         } as iNotification);
         cbConfirmDel();
       }
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   return (

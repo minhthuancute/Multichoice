@@ -113,19 +113,19 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
           >
             {test.questionCount === 0
               ? 'Bộ đề chưa có câu hỏi nào. Hãy thêm câu hỏi cho bộ đề'
-              : 'Liên kết: ' + examUrl()}
+              : examUrl()}
           </Link>
         </div>
         <div className="right">
           <button
-            className="text-sm text-primary-900 font-semibold hover:underline"
+            className="text-sm text-slate-800 font-semibold"
             onClick={() => onCopyClipboard()}
           >
             Sao chép liên kết
           </button>
           <Link
-            className="ml-5 text-sm text-primary-900 font-semibold hover:underline"
-            to={`/tests/${test.id}/statistic?topic_id=${test.id}`}
+            className="ml-5 text-sm text-slate-800 font-semibold hover:underline"
+            to={`/tests/${test.id}/statistic`}
           >
             Thống kê kết quả
           </Link>

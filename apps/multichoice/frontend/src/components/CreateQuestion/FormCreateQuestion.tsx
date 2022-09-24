@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 import * as yup from 'yup';
 import Input from '../Commons/Input/Input';
-import TextArea from '../Commons/TextArea/TextArea';
 import { CreatAnswer, CreateQuestionDto } from '@monorepo/multichoice/dto';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -20,6 +19,8 @@ import { topicStore } from '../../store/rootReducer';
 import { useQuery } from '../../hooks/useQuery';
 import { notify } from '../../helper/notify';
 import { iNotification } from 'react-notifications-component';
+import QuillEditor from '../QuillEditor/QuillEditor';
+import { hasContentEditor } from '../../utils/emptyContentEditor';
 
 const schemaFormCreateQuestion = yup.object().shape({
   topicID: yup.number(),
@@ -47,6 +48,7 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
     const query = useQuery();
     const { topic } = topicStore();
     const submitBtnRef: any = useRef<HTMLButtonElement>(null);
+    const createAnswerRef: any = useRef();
 
     const {
       resetField,
@@ -55,10 +57,14 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
       setValue,
       getValues,
       clearErrors,
+      setError,
+      reset,
       formState: { errors },
     } = useForm<CreateQuestionDto>({
       resolver: yupResolver(schemaFormCreateQuestion),
     });
+
+    const [isMutilAnswer, setIsMutilAnswer] = useState<boolean>(false);
 
     const [questionTypes] = useState<IOption[]>(() => {
       const types: QuestionTypeEnum[] = [];
@@ -77,6 +83,7 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
 
     const initForm = () => {
       const topicId = query.get('topic_id') || -1;
+      setValue('content', '');
       setValue('type', QuestionTypeEnum.SINGLE);
       setValue('time', 0);
       setValue('isActive', true);
@@ -91,6 +98,28 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
       const optionVal: QuestionTypeEnum = item.value as QuestionTypeEnum;
       setValue('type', optionVal);
       setValue('isActive', true);
+
+      const isMutilAnswer: boolean = item.value === QuestionTypeEnum.MULTIPLE;
+
+      if (isMutilAnswer) {
+        setIsMutilAnswer(true);
+      } else {
+        setIsMutilAnswer(false);
+        createAnswerRef.current.resetAnswers();
+
+        const answers = getValues('answers');
+        const resetAnswers: CreatAnswer[] = answers.map(
+          (answer: CreatAnswer) => {
+            return {
+              ...answer,
+              isCorrect: false,
+            };
+          }
+        );
+        reset({
+          answers: resetAnswers,
+        });
+      }
     };
 
     // create Question
@@ -99,7 +128,6 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
     ) => {
       try {
         const answers = getValues('answers');
-        console.log(answers);
 
         const validAnswers = answers.some((answers: CreatAnswer) => {
           return answers.isCorrect;
@@ -119,7 +147,7 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
           navigate(urlNavigate);
         }
       } catch (error) {
-        console.log(error);
+        //
       }
     };
 
@@ -134,18 +162,32 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
     );
 
     const onAddAnswer = (answers: CreatAnswer[]) => {
+      clearErrors('answers');
       setValue('answers', answers);
       clearErrors('answers');
     };
 
     const onRemoveAnswer = (filterAnswer: CreatAnswer[]) => {
+      clearErrors('answers');
       resetField('answers');
-
       const answers = getValues('answers');
       if (answers) {
         setValue('answers', filterAnswer);
         resetField('answers');
       }
+    };
+
+    const onChangeEditor = (value: string) => {
+      if (hasContentEditor(value)) {
+        clearErrors('content');
+      } else {
+        setError(
+          'content',
+          { message: 'Question content is a required field' },
+          { shouldFocus: true }
+        );
+      }
+      setValue('content', value);
     };
 
     return (
@@ -174,21 +216,22 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
             />
           </div>
           <div className="form-right w-2/3 ml-4 p-4 bg-white rounded-md">
-            <TextArea
-              registerField={register('content')}
-              textLabel="Câu hỏi"
-              placeholder="Nội dung câu hỏi"
-              className=""
-              classNameTextarea="h-[200px]"
-              isError={Boolean(errors.content)}
-              errMessage={errors.content?.message}
-              isRequired={true}
-            />
+            <div className="relative">
+              <QuillEditor
+                placeholder="Nội dung câu hỏi"
+                className="h-[248px]"
+                onChange={onChangeEditor}
+                isError={Boolean(errors.content)}
+                errMessage={errors.content?.message}
+              />
+            </div>
             <div className="create-answer">
               <CreateAnswer
                 onAddAnswer={onAddAnswer}
                 onRemoveAnswer={onRemoveAnswer}
                 invalidAnswers={Boolean(errors.answers)}
+                isMultilCorrectAnswer={isMutilAnswer}
+                ref={createAnswerRef}
               />
             </div>
           </div>

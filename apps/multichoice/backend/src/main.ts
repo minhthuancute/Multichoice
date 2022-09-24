@@ -10,6 +10,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app/app.module';
 import { HttpErrorFilterr } from './app/http-error-filter';
 import configuration from './config/configuration';
+import { json } from 'body-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -17,6 +18,7 @@ async function bootstrap() {
   app.setGlobalPrefix(globalPrefix);
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters(new HttpErrorFilterr());
+  app.use(json({ limit: '50mb' }));
   const allowedDomains = [
     'https://dev.detracnghiem.vn',
     'https://detracnghiem.vn',
@@ -33,7 +35,9 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   };
-  app.enableCors(options);
+  app.enableCors({
+    origin: '*',
+  });
   // swagger
   const config = new DocumentBuilder()
     .setTitle('Multichoice')

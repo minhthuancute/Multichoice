@@ -30,12 +30,12 @@ const schemaFormLogin = yup.object().shape({
   expirationTime: yup.number(),
 });
 
-interface IFormEditTest {
+interface IFormEditTestProps {
   setOpenModalEditTest: React.Dispatch<React.SetStateAction<boolean>>;
   cbOnUpdateTopic: () => void;
 }
 
-const FormEditTest: React.FC<IFormEditTest> = ({
+const FormEditTest: React.FC<IFormEditTestProps> = ({
   setOpenModalEditTest,
   cbOnUpdateTopic,
 }) => {
@@ -116,13 +116,12 @@ const FormEditTest: React.FC<IFormEditTest> = ({
       formData.expirationTime = minutesToSeconds(formData.expirationTime);
       const id = topicId || -1;
       const { data } = await topicServices.updateTopicById(+id, formData);
-      console.log(data);
       if (data.success) {
         setOpenModalEditTest(false);
         cbOnUpdateTopic();
       }
     } catch (error) {
-      console.log(error);
+      //
     }
   };
 
