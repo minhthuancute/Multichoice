@@ -1,5 +1,5 @@
 class TitleServices {
-  defaultTitle = 'MultiChoice';
+  defaultTitle = 'Đề Trắc Nghiệm | Làm Trắc nghiệm online';
   setTitle(title: string = this.defaultTitle): void {
     document.title = title;
   }
