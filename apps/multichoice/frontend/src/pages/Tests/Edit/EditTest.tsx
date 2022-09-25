@@ -14,7 +14,9 @@ const EditTest: React.FC = () => {
     try {
       const { data } = await topicServices.getTopicById(id || '');
       setTopicData(data);
-    } catch (error) {}
+    } catch (error) {
+      //
+    }
   };
 
   useLayoutEffect(() => {

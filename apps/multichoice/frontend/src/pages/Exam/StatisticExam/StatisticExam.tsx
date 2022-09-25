@@ -149,9 +149,7 @@ const StatisticExam: React.FC = () => {
                         <td className="pl-4">
                           <button onClick={() => requestDeleteUserExam(index)}>
                             <ToolTip title="Xóa">
-                              <button>
-                                <RiDeleteBin6Line className="text-red-500" />
-                              </button>
+                              <RiDeleteBin6Line className="text-red-500" />
                             </ToolTip>
                           </button>
                         </td>
