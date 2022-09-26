@@ -46,7 +46,7 @@ export const answerStore = create<IAnswersStore>()(
             console.log(questionType);
 
             if (answerIndex !== -1) {
-              if (questionType.toLowerCase() === 'SINGLE') {
+              if (questionType.toUpperCase() === 'SINGLE') {
                 tempAnswers[answerIndex].answerID = [answerID];
               } else {
                 const shouldRemoveAnswerID =

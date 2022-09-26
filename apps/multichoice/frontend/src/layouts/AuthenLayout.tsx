@@ -1,6 +1,7 @@
 import React, { useLayoutEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import HeaderAuthen from '../components/Authen/HeaderAuthen';
+import { titleServices } from '../services/TitleServices';
 
 interface ILayout {
   children?: React.ReactNode;
@@ -16,6 +17,10 @@ const AuthenLayout: React.FC<ILayout> = ({ children }) => {
     if (!isLoginPage) {
       setIsLoginPage(false);
     }
+
+    return () => {
+      titleServices.setTitle();
+    };
   }, [location.pathname]);
 
   return (

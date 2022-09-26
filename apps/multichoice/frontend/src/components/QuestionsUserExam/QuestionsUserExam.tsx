@@ -5,6 +5,7 @@ import { IAnswer } from '../../types';
 import PolaCode from '../PolaCode/PolaCode';
 import { BiCheckDouble } from 'react-icons/bi';
 import { QuestionType } from '../../types/ICommons';
+import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 
 interface IQuestionsUserExamProps {
   questions: Questiondetail[];
@@ -32,8 +33,7 @@ const QuestionsUserExam: React.FC<IQuestionsUserExamProps> = ({
       return acc;
     }, {});
     const isCorrect =
-      JSON.stringify(correctAnswersObj) ===
-      JSON.stringify(answersUserObj.toString());
+      JSON.stringify(correctAnswersObj) === JSON.stringify(answersUserObj);
     return isCorrect;
   };
 
@@ -77,15 +77,20 @@ const QuestionsUserExam: React.FC<IQuestionsUserExamProps> = ({
                         className={classNames(
                           'font-semibold flex items-center min-w-max',
                           {
+                            // for correct
                             'text-green-600 underline':
-                              (question.answerUser.includes(answer.id) &&
-                                answer.isCorrect) ||
-                              (question.answerUser.includes(answer.id) &&
-                                isCorrectMulti &&
-                                answer.isCorrect),
-                            'text-red-500':
-                              question.answerUser.includes(answer.id) &&
-                              !isCorrectMulti,
+                              question.type === QuestionTypeEnum.SINGLE
+                                ? question.answerUser.includes(answer.id) &&
+                                  answer.isCorrect
+                                : question.answerUser.includes(answer.id) &&
+                                  isCorrectMulti,
+                            // for incorrect
+                            'text-red-500 underline':
+                              question.type === QuestionTypeEnum.SINGLE
+                                ? question.answerUser.includes(answer.id) &&
+                                  !answer.isCorrect
+                                : question.answerUser.includes(answer.id) &&
+                                  !isCorrectMulti,
                           }
                         )}
                       >

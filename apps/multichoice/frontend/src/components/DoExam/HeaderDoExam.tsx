@@ -8,6 +8,7 @@ import {
 import { localServices } from '../../services/LocalServices';
 import { examStore, IInforUserDoExam } from '../../store/rootReducer';
 import ExamResult from './ExamResult';
+import ModalConfirm from '../Commons/ModalConfirm/ModalConfirm';
 
 const HeaderDoExam: React.FC = () => {
   const { exam_id } = useParams();
@@ -21,6 +22,8 @@ const HeaderDoExam: React.FC = () => {
   } = examStore();
 
   const [openModalResult, setOpenModalResult] = useState<boolean>(false);
+  const [openModalConfirmExit, setOpenModalConfirmExit] =
+    useState<boolean>(false);
 
   const handleExitExam = () => {
     localServices.clearItem(START_TIME);
@@ -40,6 +43,13 @@ const HeaderDoExam: React.FC = () => {
         user_name={dataExamResult?.user_name || ''}
         point={dataExamResult?.point || 0}
       />
+      <ModalConfirm
+        isOpen={openModalConfirmExit}
+        title="Bạn có chắc chắn muốn thoát khỏi bài thi.
+        Khi thoát khỏi bài thi, kết quả thi của bạn sẽ không được lưu lại."
+        onClose={() => setOpenModalConfirmExit(false)}
+        onConfirm={handleExitExam}
+      />
       <div className="container xs:px-4 md:px-10 flex items-center justify-between">
         <div className="header-left">
           <p className="text-tiny text-white">Hello, {userDoExam.user_name}</p>
@@ -58,7 +68,7 @@ const HeaderDoExam: React.FC = () => {
           <button
             className="px-6 py-2 bg-slate-100 rounded-md text-sm ml-5
           text-black flex items-center font-semibold"
-            onClick={handleExitExam}
+            onClick={() => setOpenModalConfirmExit(true)}
           >
             Thoát
           </button>

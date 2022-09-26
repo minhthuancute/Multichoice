@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import HeaderDoExam from '../../../components/DoExam/HeaderDoExam';
 import MainDoExam from '../../../components/DoExam/MainDoExam';
@@ -27,6 +27,8 @@ const DoExam: React.FC = () => {
     isSubmitExam,
   } = examStore();
 
+  const isEmptyUserExam: boolean = Object.keys(userDoExam).length === 0;
+
   const getExamInfor = async () => {
     const currentExam = exam;
     if (Object.keys(currentExam).length && currentExam.id) {
@@ -52,7 +54,7 @@ const DoExam: React.FC = () => {
 
   const startExam = async () => {
     const canStartExam: boolean =
-      !localServices.getData(START_EXAM) && !isSubmitExam;
+      !localServices.getData(START_EXAM) && !isSubmitExam && !isEmptyUserExam;
     if (canStartExam) {
       setIsExpriedExam(false);
       setIsSubmitExam(false);
@@ -88,14 +90,6 @@ const DoExam: React.FC = () => {
       setIsSubmitExam(false);
     };
   }, []);
-
-  useEffect(() => {
-    const isEmptyUserExam: boolean = Object.keys(userDoExam).length === 0;
-    if (isEmptyUserExam) {
-      const urlNavigate = '/exam/' + exam_id;
-      navigate(urlNavigate);
-    }
-  });
 
   return (
     <div className="min-h-screen bg-doexam">
