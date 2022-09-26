@@ -1,7 +1,13 @@
-import { IUserDoExam } from '@monorepo/multichoice/dto';
-import React from 'react';
+import { IUserDoExam, IUserDoExamdetail } from '@monorepo/multichoice/dto';
+import React, { useEffect, useState } from 'react';
 import { IoMdClose } from 'react-icons/io';
+import { useParams } from 'react-router-dom';
 import ToolTip from '../../../components/Commons/ToolTip/ToolTip';
+import QuestionsUserExam from '../../../components/QuestionsUserExam/QuestionsUserExam';
+import {
+  examServices,
+  IPayloadGetUserExamDetail,
+} from '../../../services/ExamServices';
 import { getDate, getTime } from '../../../utils/formatDate';
 
 interface IStatisticUserExamProps {
@@ -13,12 +19,39 @@ const StatisticUserExam: React.FC<IStatisticUserExamProps> = ({
   setShowModalUserExamDetail,
   userData,
 }) => {
+  const { id: topic_id } = useParams();
+
+  const [userExamDetail, setUserExamDetail] = useState<IUserDoExamdetail>();
+
+  const getStatisticUserDetail = async () => {
+    try {
+      const payload: IPayloadGetUserExamDetail = {
+        topicId: Number(topic_id) || -1,
+        userId: userData.userId,
+      };
+      const response = await examServices.getUserExamDetail(payload);
+      if (response) {
+        const userExamDetail: IUserDoExamdetail = response.data.data;
+        setUserExamDetail(userExamDetail);
+      }
+    } catch {
+      //
+    }
+  };
+
+  useEffect(() => {
+    getStatisticUserDetail();
+  }, [userData]);
+
   if (!Object.keys(userData).length) return null;
 
   return (
     <div className="max-w-4xl w-full h-max py-8 px-5 mx-auto rounded-md bg-white">
-      <div className="modal-header flex items-center justify-between mb-8">
-        <h4 className="text-slate-800 text-xl font-semibold">Kết quả thi</h4>
+      <div className="modal-header flex items-center justify-between mb-5">
+        <h4 className="text-slate-800 text-xl font-semibold">
+          Kết quả thi của:{' '}
+          <span className="font-semibold">{userData.userName}</span>
+        </h4>
         <ToolTip title="Đóng">
           <button
             type="button"
@@ -30,7 +63,7 @@ const StatisticUserExam: React.FC<IStatisticUserExamProps> = ({
         </ToolTip>
       </div>
       <div className="modal-body">
-        <table className="shadow-xl w-full">
+        <table className="shadow-xl w-full hidden">
           <thead className="bg-slate-800 text-white text-tiny">
             <tr>
               <th className="py-2 pl-4 text-left capitalize">Tên người thi</th>
@@ -47,7 +80,7 @@ const StatisticUserExam: React.FC<IStatisticUserExamProps> = ({
           <tbody className="py-4">
             <tr
               className="mb-4 border-b border-slate-200 last:border-none
-                      text-slate-800 text-sm cursor-pointer"
+              text-slate-800 text-sm cursor-pointer"
             >
               <td className="pl-4 py-10 font-semibold">{userData.userName}</td>
               <td className="pl-4 font-semibold">{userData.point}</td>
@@ -57,6 +90,9 @@ const StatisticUserExam: React.FC<IStatisticUserExamProps> = ({
             </tr>
           </tbody>
         </table>
+      </div>
+      <div>
+        <QuestionsUserExam questions={userExamDetail?.questions || []} />
       </div>
       <div className="modal-footer mt-8 flex justify-end">
         <button

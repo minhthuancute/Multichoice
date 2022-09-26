@@ -8,16 +8,18 @@ interface Renderer {
   (props: any): React.ReactNode;
 }
 
-interface ICountDown {
+interface ICountDownProps {
   startTime?: number;
   endTime?: number;
   className: string;
+  isHidden?: boolean;
 }
 
-const CountDown: React.FC<ICountDown> = ({
+const CountDown: React.FC<ICountDownProps> = ({
   startTime = 0,
   endTime = 1,
   className = '',
+  isHidden = false,
 }) => {
   const { setIsExpriedExam } = examStore();
   const formatCountdown = (
@@ -39,9 +41,7 @@ const CountDown: React.FC<ICountDown> = ({
   }) => {
     if (completed) {
       return (
-        <p className={classNames(['font-semibold underline text-red-500'])}>
-          Hết thời gian làm bài !
-        </p>
+        <p className={classNames(['font-semibold underline text-red-500'])}></p>
       );
     } else {
       return (
@@ -58,7 +58,7 @@ const CountDown: React.FC<ICountDown> = ({
     }
   };
 
-  return (
+  return isHidden ? null : (
     <Countdown
       date={startTime + endTime}
       zeroPadTime={2}

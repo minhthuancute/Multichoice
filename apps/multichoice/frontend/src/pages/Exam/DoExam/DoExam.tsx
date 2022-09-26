@@ -1,7 +1,5 @@
-import React, { useEffect } from 'react';
-import { iNotification } from 'react-notifications-component';
-import { useParams } from 'react-router-dom';
-import { boolean } from 'yup/lib/locale';
+import React, { useEffect, useLayoutEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import HeaderDoExam from '../../../components/DoExam/HeaderDoExam';
 import MainDoExam from '../../../components/DoExam/MainDoExam';
 import {
@@ -9,16 +7,15 @@ import {
   START_EXAM,
   START_TIME,
 } from '../../../constants/contstants';
-import { notify } from '../../../helper/notify';
 import {
   examServices,
   IPayloadStartExam,
 } from '../../../services/ExamServices';
 import { localServices } from '../../../services/LocalServices';
 import { examStore, IInforUserDoExam } from '../../../store/rootReducer';
-import { IExamResponse } from '../../../types';
 
 const DoExam: React.FC = () => {
+  const navigate = useNavigate();
   const { exam_id } = useParams();
   const {
     setExamData,
@@ -29,6 +26,8 @@ const DoExam: React.FC = () => {
     setIsExpriedExam,
     isSubmitExam,
   } = examStore();
+
+  const isEmptyUserExam: boolean = Object.keys(userDoExam).length === 0;
 
   const getExamInfor = async () => {
     const currentExam = exam;
@@ -55,7 +54,7 @@ const DoExam: React.FC = () => {
 
   const startExam = async () => {
     const canStartExam: boolean =
-      !localServices.getData(START_EXAM) && !isSubmitExam;
+      !localServices.getData(START_EXAM) && !isSubmitExam && !isEmptyUserExam;
     if (canStartExam) {
       setIsExpriedExam(false);
       setIsSubmitExam(false);
@@ -86,6 +85,10 @@ const DoExam: React.FC = () => {
 
   useEffect(() => {
     getExamInfor();
+    return () => {
+      localServices.setData(START_EXAM, false);
+      setIsSubmitExam(false);
+    };
   }, []);
 
   return (

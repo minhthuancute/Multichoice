@@ -1,11 +1,9 @@
-import { TopicCategoryEnum } from '@monorepo/multichoice/constant';
 import React from 'react';
 import { classNames } from '../../../helper/classNames';
-
-type CategoryType = keyof typeof TopicCategoryEnum;
+import { TopicCategoryType } from '../../../types/ICommons';
 
 interface IBadge {
-  type?: CategoryType;
+  type?: TopicCategoryType;
   className?: string;
   title?: string;
 }
@@ -15,7 +13,7 @@ const Badge: React.FC<IBadge> = ({
   className = '',
   title = '',
 }) => {
-  const badgeColor = (type: CategoryType = 'NONE'): string => {
+  const badgeColor = (type: TopicCategoryType = 'NONE'): string => {
     const colorTypes = {
       BUSINESS: 'text-green-500',
       ENGLISH: 'text-violet-500',
@@ -23,7 +21,7 @@ const Badge: React.FC<IBadge> = ({
       PROGRAMMING: 'text-red-500',
       NONE: 'text-yellow-300',
     };
-    const upperType = type.toUpperCase() as CategoryType;
+    const upperType = type.toUpperCase() as TopicCategoryType;
     return colorTypes[upperType] || '';
   };
 

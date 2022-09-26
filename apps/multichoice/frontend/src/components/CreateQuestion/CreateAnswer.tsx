@@ -24,6 +24,11 @@ const answerSchema = yup.object().shape({
 interface IAnswers {
   answers: CreatAnswer[];
 }
+
+export interface IResetAnswersRef {
+  resetAnswers: (newAnswers: CreatAnswer[]) => void;
+}
+
 interface ICreateAnswerProps {
   onRemoveAnswer: (filterAnswer: CreatAnswer[]) => void;
   onAddAnswer: (answers: CreatAnswer[]) => void;
@@ -156,18 +161,18 @@ const CreateAnswer: React.FC<ICreateAnswerProps> = forwardRef(
     useImperativeHandle(
       ref,
       () => ({
-        resetAnswers: () => {
-          const answers = getValues('answers');
-          const resetAnswers: CreatAnswer[] = answers.map(
-            (answer: CreatAnswer) => {
-              return {
-                ...answer,
-                isCorrect: false,
-              };
-            }
-          );
+        resetAnswers: (newAnswers: CreatAnswer[]) => {
+          // const answers = getValues('answers');
+          // const resetAnswers: CreatAnswer[] = answers.map(
+          //   (answer: CreatAnswer) => {
+          //     return {
+          //       ...answer,
+          //       isCorrect: false,
+          //     };
+          //   }
+          // );
           reset({
-            answers: resetAnswers,
+            answers: newAnswers,
           });
         },
       }),

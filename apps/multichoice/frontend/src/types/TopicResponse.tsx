@@ -1,9 +1,5 @@
-import {
-  QuestionTypeEnum,
-  TopicCategoryEnum,
-} from '@monorepo/multichoice/constant';
-
-type QuestionCategoryType = keyof typeof TopicCategoryEnum;
+import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
+import { TopicCategoryType } from './ICommons';
 
 export interface IAnswer {
   id: number;
@@ -27,7 +23,7 @@ export interface ITopicResponse {
   createdAt: string;
   updatedAt: string;
   id: number;
-  typeCategoryName: QuestionCategoryType;
+  typeCategoryName: TopicCategoryType;
   timeType: string;
   title: string;
   description: string | null;
