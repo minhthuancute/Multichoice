@@ -222,12 +222,14 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
         />
       </header>
 
-      <div className="p-4 lg:p-10 bg-slate-50 shadow-xl min-h-[268px]">
+      <div className="p-4 lg:p-10 bg-slate-50 shadow-xl min-h-[302px]">
         <h4 className="text-slate-800 text-lg flex items-start">
-          <span className="min-w-max">Câu hỏi {indexQuestion + 1}: </span>
+          <span className="min-w-max font-semibold">
+            Câu hỏi {indexQuestion + 1}:{' '}
+          </span>
           <PolaCode
             content={questions[indexQuestion].content}
-            className="ml-2"
+            className="ml-2 flex-1"
           />
         </h4>
 
@@ -241,7 +243,6 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
                     flex items-center cursor-pointer group"
                     htmlFor={'correct-answer-' + index}
                     key={answers.id}
-                    // onClick={() => onChooseAnswer(answers.id)}
                   >
                     <div className="checkbox mr-4">
                       <input
@@ -256,7 +257,6 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
                         id={'correct-answer-' + index}
                         className="peer select-answer"
                         defaultChecked={isCheckAnswer(answers.id)}
-                        // checked={isCheckAnswer(answers.id)}
                         onChange={() =>
                           onChooseAnswer(
                             answers.id,
@@ -267,18 +267,25 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
                       <div
                         className="radio mt-0.5 w-4 h-4 border border-solid rounded-full
                     border-primary-900 before:bg-primary-900 before:w-2.5 before:h-2.5 before:block
-                    before:rounded-full flex items-center justify-center before:opacity-0
-                    peer-checked:before:opacity-100"
+                      before:rounded-full flex items-center justify-center before:opacity-0
+                      peer-checked:before:opacity-100"
                       ></div>
                     </div>
                     <span className="font-semibold mr-2">
                       {String.fromCharCode(65 + index)}:
                     </span>
-                    <span>{answers.content}</span>
+                    {answers.content}
                   </label>
                 );
               }
             )}
+          {questions[indexQuestion].type === QuestionTypeEnum.MULTIPLE ? (
+            <div className="mt-3">
+              <p className="text-sm text-green-600 font-semibold">
+                (Câu hỏi có nhiều đáp án đúng)
+              </p>
+            </div>
+          ) : null}
         </div>
       </div>
       <div className="ctas mt-10 flex items-center justify-between">

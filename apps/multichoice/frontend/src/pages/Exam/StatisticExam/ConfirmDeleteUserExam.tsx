@@ -16,7 +16,7 @@ const ConfirmDeleteUserExam: React.FC<IConfirmDeleteUserExamProps> = ({
   openModalConfirm = false,
 }) => {
   return (
-    <Modal openModal={openModalConfirm}>
+    <Modal openModal={openModalConfirm} setOpenModal={setOpenModalConfirm}>
       <div
         className="modal-content mx-auto mt-10 px-5
        bg-white rounded-md max-w-lg w-full py-8"

@@ -30,7 +30,10 @@ const QuestionItem: React.FC<IQuestionItem> = ({
 
   return (
     <>
-      <Modal openModal={openModalEditQuestion}>
+      <Modal
+        openModal={openModalEditQuestion}
+        setOpenModal={setOpenModalEditQuestion}
+      >
         <FormEditQuestion
           questionData={question}
           setOpenModalEditQuestion={setOpenModalEditQuestion}

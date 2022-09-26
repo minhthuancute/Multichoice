@@ -29,11 +29,13 @@ const DeleteTest: React.FC<IDeleteTest> = ({
         } as iNotification);
         cbConfirmDel();
       }
-    } catch (error) {}
+    } catch (error) {
+      //
+    }
   };
 
   return (
-    <Modal openModal={openModalDelete}>
+    <Modal openModal={openModalDelete} setOpenModal={setOpenModalDelete}>
       <div className="modal-content mx-auto mt-10 px-5 flex flex-col justify-center bg-white rounded-md max-w-lg w-full h-60">
         <div className="header text-center">
           <RiErrorWarningLine className="text-red-600 text-5xl mx-auto" />

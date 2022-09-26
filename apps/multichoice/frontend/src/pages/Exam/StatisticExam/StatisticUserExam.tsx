@@ -46,7 +46,7 @@ const StatisticUserExam: React.FC<IStatisticUserExamProps> = ({
   if (!Object.keys(userData).length) return null;
 
   return (
-    <div className="max-w-4xl w-full h-max py-8 px-5 mx-auto rounded-md bg-white">
+    <div className="max-w-6xl w-full h-max py-8 px-5 mx-auto rounded-md bg-white pb-10">
       <div className="modal-header flex items-center justify-between mb-5">
         <h4 className="text-slate-800 text-xl font-semibold">
           Kết quả thi của:{' '}
@@ -62,36 +62,42 @@ const StatisticUserExam: React.FC<IStatisticUserExamProps> = ({
           </button>
         </ToolTip>
       </div>
-      <div className="modal-body">
-        <table className="shadow-xl w-full hidden">
-          <thead className="bg-slate-800 text-white text-tiny">
-            <tr>
-              <th className="py-2 pl-4 text-left capitalize">Tên người thi</th>
-              <th className="py-2 pl-4 text-left capitalize">Điểm</th>
-              <th className="py-2 pl-4 text-left capitalize">Ngày</th>
-              <th className="py-2 pl-4 text-left capitalize">
-                Thời gian bắt đầu
-              </th>
-              <th className="py-2 pl-4 text-left capitalize">
-                Thời gian kết thúc
-              </th>
-            </tr>
-          </thead>
-          <tbody className="py-4">
-            <tr
-              className="mb-4 border-b border-slate-200 last:border-none
-              text-slate-800 text-sm cursor-pointer"
-            >
-              <td className="pl-4 py-10 font-semibold">{userData.userName}</td>
-              <td className="pl-4 font-semibold">{userData.point}</td>
-              <td className="pl-4">{getDate(userData.start_time)}</td>
-              <td className="pl-4">{getTime(userData.start_time)}</td>
-              <td className="pl-4">{getTime(userData.end_time)}</td>
-            </tr>
-          </tbody>
-        </table>
+      <div className="modal-body pb-4">
+        <h4 className="text-primary-900 mb-1 font-semibold underline">
+          Chi tiết:
+        </h4>
+        <ul
+          className="relative border-b border-slate-200 last:border-none py-5 px-6 bg-slate-50
+        shadow-md last:mb-0 text-tiny text-slate-800"
+        >
+          <li>
+            <span className="font-semibold mr-2">Điểm:</span>
+            <span className="text-primary-800 font-semibold underline">
+              {userData.point}
+            </span>
+          </li>
+          <li>
+            <span className="font-semibold mr-2">Ngày:</span>
+            {getDate(userData.start_time)}
+          </li>
+          <li>
+            <span className="font-semibold mr-2">Thời gian bắt đầu:</span>
+            {getTime(userData.start_time)}
+          </li>
+          <li>
+            <span className="font-semibold mr-2">Thời gian kết thúc:</span>
+            {userData.end_time ? (
+              getTime(userData.end_time)
+            ) : (
+              <span className="text-red-500 font-semibold">Chưa nộp bài</span>
+            )}
+          </li>
+        </ul>
       </div>
       <div>
+        <h4 className="text-primary-900 mb-1 font-semibold underline">
+          Danh sách câu hỏi:
+        </h4>
         <QuestionsUserExam questions={userExamDetail?.questions || []} />
       </div>
       <div className="modal-footer mt-8 flex justify-end">

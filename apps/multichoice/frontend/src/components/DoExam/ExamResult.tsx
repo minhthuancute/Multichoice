@@ -16,7 +16,7 @@ const ExamResult: React.FC<IExamResult> = ({
   point,
 }) => {
   return (
-    <Modal openModal={openModalResult}>
+    <Modal openModal={openModalResult} setOpenModal={setOpenModalResult}>
       <div
         className="modal-content mx-auto mt-10 px-5 flex flex-col justify-center
        bg-white rounded-md max-w-lg w-full h-72"

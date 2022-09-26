@@ -1,5 +1,5 @@
-import React, { useEffect, useLayoutEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import HeaderDoExam from '../../../components/DoExam/HeaderDoExam';
 import MainDoExam from '../../../components/DoExam/MainDoExam';
 import {
@@ -15,7 +15,6 @@ import { localServices } from '../../../services/LocalServices';
 import { examStore, IInforUserDoExam } from '../../../store/rootReducer';
 
 const DoExam: React.FC = () => {
-  const navigate = useNavigate();
   const { exam_id } = useParams();
   const {
     setExamData,
