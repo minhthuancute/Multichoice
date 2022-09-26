@@ -115,9 +115,10 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
             };
           }
         );
-        reset({
-          answers: resetAnswers,
-        });
+        setValue('answers', resetAnswers);
+        // reset({
+        //   answers: resetAnswers,
+        // });
 
         if (createAnswerRef.current) {
           createAnswerRef.current.resetAnswers(resetAnswers);

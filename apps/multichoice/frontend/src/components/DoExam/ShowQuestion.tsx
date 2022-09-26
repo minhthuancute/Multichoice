@@ -281,7 +281,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
             )}
           {questions[indexQuestion].type === QuestionTypeEnum.MULTIPLE ? (
             <div className="mt-3">
-              <p className="text-sm text-green-600 font-semibold">
+              <p className="text-sm text-green-600 italic">
                 (Câu hỏi có nhiều đáp án đúng)
               </p>
             </div>

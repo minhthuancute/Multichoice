@@ -1,3 +1,4 @@
+import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 import React, { useState } from 'react';
 import { FaPencilAlt } from 'react-icons/fa';
 import { RiDeleteBin6Line } from 'react-icons/ri';
@@ -88,6 +89,14 @@ const QuestionItem: React.FC<IQuestionItem> = ({
                   </li>
                 ))}
             </ul>
+
+            {question.type === QuestionTypeEnum.MULTIPLE ? (
+              <div className="mt-3">
+                <p className="text-sm text-slate-800 italic">
+                  (Câu hỏi có nhiều đáp án đúng)
+                </p>
+              </div>
+            ) : null}
           </div>
         </div>
       </div>

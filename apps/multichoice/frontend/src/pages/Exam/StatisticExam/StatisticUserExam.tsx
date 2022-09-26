@@ -46,7 +46,7 @@ const StatisticUserExam: React.FC<IStatisticUserExamProps> = ({
   if (!Object.keys(userData).length) return null;
 
   return (
-    <div className="max-w-6xl w-full h-max py-8 px-5 mx-auto rounded-md bg-white pb-10">
+    <div className="max-w-6xl w-full h-max py-8 px-5 rounded-md bg-white pb-10">
       <div className="modal-header flex items-center justify-between mb-5">
         <h4 className="text-slate-800 text-xl font-semibold">
           Kết quả thi của:{' '}
@@ -72,9 +72,7 @@ const StatisticUserExam: React.FC<IStatisticUserExamProps> = ({
         >
           <li>
             <span className="font-semibold mr-2">Điểm:</span>
-            <span className="text-primary-800 font-semibold underline">
-              {userData.point}
-            </span>
+            {userData.point}
           </li>
           <li>
             <span className="font-semibold mr-2">Ngày:</span>

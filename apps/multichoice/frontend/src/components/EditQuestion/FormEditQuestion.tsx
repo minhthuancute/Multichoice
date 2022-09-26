@@ -178,9 +178,10 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
           isCorrect: false,
         };
       });
-      reset({
-        answers: resetAnswers,
-      });
+      setValue('answers', resetAnswers);
+      // reset({
+      //   answers: resetAnswers,
+      // });
       if (updateAnswerRef.current) {
         updateAnswerRef.current.resetAnswers(resetAnswers);
       }

@@ -55,7 +55,9 @@ const Modal: React.FC<ILayout> = ({
           }
         )}
       >
-        <div ref={refModal}>{children}</div>
+        <div ref={refModal} className="mx-auto">
+          {children}
+        </div>
       </div>
     ) : null,
     document.getElementById('modal-root') || ({} as HTMLElement)
