@@ -2,6 +2,7 @@ import { IsEmail, MaxLength, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { validation } from '@monorepo/multichoice/validation';
 import { type } from 'os';
+import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 
 export class CreateUserDto {
   @ApiProperty()
@@ -82,5 +83,29 @@ export interface IUserDoExam {
   userId: number;
 }
 export interface IUserDoExamdetail extends IUserDoExam {
-  AnswersUsers: AnswersUserDto[];
+  questions: Questiondetail[];
+}
+
+export class Questiondetail {
+  id: number;
+  type: QuestionTypeEnum;
+
+  content: string;
+
+  time: number;
+
+  isActive: boolean;
+
+  answers: Answer[];
+  answerUser: number[];
+  constructor() {
+    this.answers = [];
+    this.answerUser = [];
+  }
+}
+
+export interface Answer {
+  id: number;
+  content: string;
+  isCorrect: boolean;
 }

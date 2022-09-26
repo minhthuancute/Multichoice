@@ -52,7 +52,9 @@ const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
       } else {
         setTestsFilter(topicsData.reverse());
       }
-    } catch (error) {}
+    } catch (error) {
+      //
+    }
   };
 
   useLayoutEffect(() => {

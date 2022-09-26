@@ -21,7 +21,6 @@ export interface IPayloadGetUserExamDetail {
 }
 
 export interface IPayloadDeleteUserExam {
-  topicId: number;
   userId: number;
 }
 
@@ -49,15 +48,13 @@ class ExamServices extends Api {
 
   getUserExamDetail(payload: IPayloadGetUserExamDetail) {
     const data = this.get(
-      `/getuserexamdetail/${payload.topicId}&&${payload.userId}`
+      `/userexam/getdetail?topicID=${payload.topicId}&userID=${payload.userId}`
     );
     return data;
   }
 
   deleteUserExam(payload: IPayloadDeleteUserExam) {
-    const data = this.delete(
-      `/getuserexamdetail/${payload.topicId}&&${payload.userId}`
-    );
+    const data = this.delete(`/userexam/deletebyid?id=${payload.userId}`);
     return data;
   }
 }

@@ -10,15 +10,16 @@ import ConfirmSubmit from './ConfirmSubmit';
 import { useNavigate, useParams } from 'react-router-dom';
 import CountDown from '../Commons/CountDown/CountDown';
 import { localServices } from '../../services/LocalServices';
-import { IS_SUBMIT_EXAM, START_TIME } from '../../constants/contstants';
+import { START_TIME } from '../../constants/contstants';
 
 import { classNames } from '../../helper/classNames';
-import { cookieServices } from '../../services/CookieServices';
 
-import './doExam.scss';
 import ToolTip from '../Commons/ToolTip/ToolTip';
 import PolaCode from '../PolaCode/PolaCode';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
+
+import './doExam.scss';
+import { QuestionType } from '../../types/ICommons';
 
 interface IShowQuestion {
   indexQuestion: number;
@@ -71,9 +72,10 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
     }
   };
 
-  const onChooseAnswer = (answerID: number) => {
+  const onChooseAnswer = (answerID: number, questionType: QuestionType) => {
     const questionID = questions[indexQuestion].id;
-    updateAnswer(questionID, answerID);
+
+    updateAnswer(questionID, answerID, questionType);
   };
 
   const countUnSelectAnswer = (): number => {
@@ -86,6 +88,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
   const onSumitAnswers = async () => {
     setIsSubmitExam(true);
     setErrorMsgSubmit('Bạn đã nộp bài');
+
     try {
       const payload: IPayloadEndExam = {
         userID: userDoExam.user_id,
@@ -103,17 +106,18 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
           point: data.data.point,
         });
 
-        cookieServices.setCookie(IS_SUBMIT_EXAM, true, 30);
         setOpenModalResult(true);
         notify({
           message: 'Nộp bài thành công !',
         } as iNotification);
       }
     } catch (error: any) {
-      notify({
-        message: error.response.data.message,
-        type: 'danger',
-      } as iNotification);
+      if (error.response.data.statusCode === 400) {
+        notify({
+          message: 'Không thể nộp bài do bạn đã nộp bài thi này trước đó !',
+          type: 'danger',
+        } as iNotification);
+      }
     }
     setOpenModalConfirm(false);
     setConfirmSubmit(false);
@@ -210,6 +214,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
         </ToolTip>
 
         <CountDown
+          isHidden={isSubmitExam}
           startTime={startTime}
           endTime={endTime}
           key="count-down"
@@ -219,9 +224,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
 
       <div className="p-4 lg:p-10 bg-slate-50 shadow-xl min-h-[268px]">
         <h4 className="text-slate-800 text-lg flex items-start">
-          <span className="min-w-max">
-            Câu hỏi {indexQuestion + 1}:{' '}
-          </span>
+          <span className="min-w-max">Câu hỏi {indexQuestion + 1}: </span>
           <PolaCode
             content={questions[indexQuestion].content}
             className="ml-2"
@@ -238,11 +241,10 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
                     flex items-center cursor-pointer group"
                     htmlFor={'correct-answer-' + index}
                     key={answers.id}
-                    onClick={() => onChooseAnswer(answers.id)}
+                    // onClick={() => onChooseAnswer(answers.id)}
                   >
                     <div className="checkbox mr-4">
                       <input
-                        readOnly
                         hidden
                         type={
                           questions[indexQuestion].type ===
@@ -254,6 +256,13 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
                         id={'correct-answer-' + index}
                         className="peer select-answer"
                         defaultChecked={isCheckAnswer(answers.id)}
+                        // checked={isCheckAnswer(answers.id)}
+                        onChange={() =>
+                          onChooseAnswer(
+                            answers.id,
+                            `${questions[indexQuestion].type}` as QuestionType
+                          )
+                        }
                       />
                       <div
                         className="radio mt-0.5 w-4 h-4 border border-solid rounded-full
@@ -297,4 +306,4 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
   );
 };
 
-export default ShowQuestion;
+export default React.memo(ShowQuestion);

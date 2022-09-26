@@ -27,7 +27,9 @@ const QuestionList: React.FC = () => {
     try {
       const { data } = await topicServices.getTopicById(id || '');
       setTopicData(data);
-    } catch (error) {}
+    } catch (error) {
+      //
+    }
   };
 
   const deleteQuestion = async (questionId = -1) => {
