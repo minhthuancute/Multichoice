@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as yup from 'yup';
 import Input from '../Commons/Input/Input';
 import { CreatAnswer } from '@monorepo/multichoice/dto';
@@ -16,6 +16,7 @@ import { IQuestion } from '../../types';
 import UpdateAnswer from '../CreateQuestion/UpdateAnswers';
 import QuillEditor from '../QuillEditor/QuillEditor';
 import { hasContentEditor } from '../../utils/emptyContentEditor';
+import { IResetAnswersRef } from '../CreateQuestion/CreateAnswer';
 
 const schemaFormUpdateQuestion = yup.object().shape({
   topicID: yup.number(),
@@ -59,6 +60,8 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
 }) => {
   const { topic } = topicStore();
 
+  const updateAnswerRef = useRef<IResetAnswersRef>();
+
   const {
     resetField,
     register,
@@ -67,10 +70,13 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
     getValues,
     clearErrors,
     setError,
+    reset,
     formState: { errors },
   } = useForm<IUpdateQuestion>({
     resolver: yupResolver(schemaFormUpdateQuestion),
   });
+
+  const [isMutilAnswer, setIsMutilAnswer] = useState<boolean>(false);
 
   const [questionTypes] = useState<IOption[]>(() => {
     const types: QuestionTypeEnum[] = [];
@@ -148,9 +154,34 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
   };
 
   const onSelectQuestionType = (item: IOption) => {
+    // const optionVal: QuestionTypeEnum = item.value as QuestionTypeEnum;
+    // setValue('type', optionVal);
+    // setValue('isActive', true);
+
     const optionVal: QuestionTypeEnum = item.value as QuestionTypeEnum;
     setValue('type', optionVal);
     setValue('isActive', true);
+
+    const isMutilAnswer: boolean = item.value === QuestionTypeEnum.MULTIPLE;
+
+    if (isMutilAnswer) {
+      setIsMutilAnswer(true);
+    } else {
+      setIsMutilAnswer(false);
+      const answers = getValues('answers');
+      const resetAnswers: CreatAnswer[] = answers.map((answer: CreatAnswer) => {
+        return {
+          ...answer,
+          isCorrect: false,
+        };
+      });
+      reset({
+        answers: resetAnswers,
+      });
+      if (updateAnswerRef.current) {
+        updateAnswerRef.current.resetAnswers(resetAnswers);
+      }
+    }
   };
 
   const onChangeEditor = (value: string) => {
@@ -214,10 +245,12 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
           />
           <div className="create-answer">
             <UpdateAnswer
+              isMultilCorrectAnswer={isMutilAnswer}
               answers={questionData.answers}
               onAddAnswer={onAddAnswer}
               onRemoveAnswer={onRemoveAnswer}
               invalidAnswers={Boolean(errors.answers)}
+              ref={updateAnswerRef}
             />
           </div>
         </div>

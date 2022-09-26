@@ -8,13 +8,13 @@ import ToolTip from '../Commons/ToolTip/ToolTip';
 import { Link } from 'react-router-dom';
 import { TiPencil } from 'react-icons/ti';
 import Badge from '../Commons/Badge/Badge';
-import { TopicCategoryEnum } from '@monorepo/multichoice/constant';
+
 import { copyClipboard } from '../../helper/copyClipboard';
 import { notify } from '../../helper/notify';
 import { iNotification } from 'react-notifications-component';
 import { secondsToMinutes } from '../../utils/minutesToSeconds';
+import { TopicCategoryType } from '../../types/ICommons';
 
-export type CategoryType = keyof typeof TopicCategoryEnum;
 export interface ITestItem {
   topicUrl: string;
   id: number;
@@ -22,7 +22,7 @@ export interface ITestItem {
   date: string;
   questionCount: number;
   expirationTime: number;
-  typeCategoryName: CategoryType;
+  typeCategoryName: TopicCategoryType;
 }
 
 interface ITestItemProp {

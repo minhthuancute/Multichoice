@@ -1,6 +1,10 @@
 import React, { useLayoutEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { CURRENT_USER, START_TIME } from '../../../constants/contstants';
+import {
+  CURRENT_USER,
+  START_EXAM,
+  START_TIME,
+} from '../../../constants/contstants';
 import { examServices } from '../../../services/ExamServices';
 import { localServices } from '../../../services/LocalServices';
 import {
@@ -23,6 +27,9 @@ const Intro: React.FC = () => {
   const getExamInfor = async () => {
     setIsSubmitExam(false);
 
+    console.log(exam);
+    // const isEmptyExam = Object.keys(exam).length === 0;
+    // if (!isEmptyExam) return;
     try {
       const { data } = await examServices.getExamInfor(exam_id || '');
       const examInfor: IExamResponse = data;
@@ -65,6 +72,8 @@ const Intro: React.FC = () => {
   };
 
   useLayoutEffect(() => {
+    localServices.setData(START_EXAM, false);
+    setIsSubmitExam(false);
     getExamInfor();
   }, []);
 
@@ -73,7 +82,7 @@ const Intro: React.FC = () => {
   return (
     <div className="h-screen flex items-center justify-center bg-doexam">
       <div
-        className="max-w-xl lg:max-w-4xl xl:max-w-5xl mx-4 bg-white colect-infor max-h-[400px] h-full w-full flex items-center
+        className="max-w-xl lg:max-w-4xl xl:max-w-6xl mx-4 bg-white colect-infor max-h-[400px] h-full w-full flex items-center
         shadow-xl"
       >
         <div className="left h-full w-1/2 hidden lg:block">

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { TOKEN } from '../../constants/contstants';
 import { classNames } from '../../helper/classNames';
 import { localServices } from '../../services/LocalServices';
 import { userStore } from '../../store/rootReducer';
 import Navabar from '../Navbar/Navabar';
 import Logo from '../Logo/Logo';
+import Avatar from '../../assets/images/avatar.svg';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -43,11 +44,7 @@ const Header: React.FC = () => {
           </div>
           <div className="user group">
             <div className="content flex items-center">
-              <img
-                src="../../assets/images/avatar.svg"
-                alt=""
-                className="w-6 h-6 rounded-full mr-2"
-              />
+              <img src={Avatar} alt="" className="w-6 h-6 rounded-full mr-2" />
               <h3
                 className="text-slate-800 font-medium text-tiny cursor-pointer"
                 onClick={() => setOpenDropdown((state) => !state)}

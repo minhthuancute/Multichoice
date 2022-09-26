@@ -85,7 +85,7 @@ const CollectInfor: React.FC = () => {
   return (
     <div className="h-screen flex items-center justify-center bg-doexam">
       <form
-        className="max-w-xl lg:max-w-4xl xl:max-w-5xl mx-4 bg-white colect-infor max-h-[400px] h-full w-full flex items-center
+        className="max-w-xl lg:max-w-4xl xl:max-w-6xl mx-4 bg-white colect-infor max-h-[400px] h-full w-full flex items-center
         shadow-xl"
         onSubmit={handleSubmit(onSubmit)}
       >

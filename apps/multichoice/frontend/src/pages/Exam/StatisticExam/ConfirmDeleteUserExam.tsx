@@ -1,6 +1,5 @@
 import { IUserDoExam } from '@monorepo/multichoice/dto';
 import React from 'react';
-import { RiErrorWarningLine } from 'react-icons/ri';
 import Modal from '../../../components/Modal/Modal';
 
 interface IConfirmDeleteUserExamProps {
@@ -19,12 +18,11 @@ const ConfirmDeleteUserExam: React.FC<IConfirmDeleteUserExamProps> = ({
   return (
     <Modal openModal={openModalConfirm}>
       <div
-        className="modal-content mx-auto mt-10 px-5 flex flex-col justify-center
-       bg-white rounded-md max-w-lg w-full h-72"
+        className="modal-content mx-auto mt-10 px-5
+       bg-white rounded-md max-w-lg w-full py-8"
       >
         <div>
-          <RiErrorWarningLine className="text-yellow-400 text-5xl mx-auto" />
-          <h4 className="mt-4 text-slate-800 text-xl text-center">
+          <h4 className="text-slate-800 text-lg text-center">
             Bạn có chắc chắn muốn xóa bỏ kết quả thi của:{' '}
             <span className="font-semibold">{userData.userName}</span>
           </h4>

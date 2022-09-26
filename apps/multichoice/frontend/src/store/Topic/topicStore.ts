@@ -1,11 +1,13 @@
 import create from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { TOPIC_DATA } from '../../constants/contstants';
-import { ITopicResponse } from '../../types';
+import { IQuestion, ITopicResponse } from '../../types';
 
 export interface ITopicStore {
   topic: ITopicResponse;
   setTopicData: (topicData: ITopicResponse) => void;
+
+  // getQuestion: () => IQuestion[];
 }
 
 // Topic detail
@@ -27,3 +29,9 @@ export const topicStore = create<ITopicStore>()(
     )
   )
 );
+
+const obj = {
+  answerID: [1, 1],
+  CorrectAnswerID: [1, 1],
+  questionID: 1,
+};
