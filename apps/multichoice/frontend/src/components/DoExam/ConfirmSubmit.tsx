@@ -18,7 +18,7 @@ const ConfirmSubmit: React.FC<IConfirmSubmitProps> = ({
   openModalConfirm = false,
 }) => {
   return (
-    <Modal openModal={openModalConfirm}>
+    <Modal openModal={openModalConfirm} setOpenModal={setConfirmSubmit}>
       <div
         className="modal-content mx-auto mt-10 px-5 flex flex-col justify-center
        bg-white rounded-md max-w-lg w-full h-80"

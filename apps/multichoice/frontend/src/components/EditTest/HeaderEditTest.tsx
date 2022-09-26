@@ -24,7 +24,9 @@ const HeaderEditTest: React.FC = () => {
       const { data }: { data: ITopicResponse } =
         await topicServices.getTopicById(topicId || '');
       setTopicInfor(data);
-    } catch (error) {}
+    } catch (error) {
+      //
+    }
   };
 
   useLayoutEffect(() => {
@@ -41,7 +43,7 @@ const HeaderEditTest: React.FC = () => {
 
   return (
     <div className="header-edit-test">
-      <Modal openModal={openModalEditTest}>
+      <Modal openModal={openModalEditTest} setOpenModal={setOpenModalEditTest}>
         <FormEditTest
           setOpenModalEditTest={setOpenModalEditTest}
           cbOnUpdateTopic={cbOnUpdateTopic}

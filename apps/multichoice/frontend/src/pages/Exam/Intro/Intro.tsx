@@ -26,10 +26,6 @@ const Intro: React.FC = () => {
 
   const getExamInfor = async () => {
     setIsSubmitExam(false);
-
-    console.log(exam);
-    // const isEmptyExam = Object.keys(exam).length === 0;
-    // if (!isEmptyExam) return;
     try {
       const { data } = await examServices.getExamInfor(exam_id || '');
       const examInfor: IExamResponse = data;

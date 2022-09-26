@@ -24,7 +24,7 @@ const NavQuestion: React.FC<INavQuestion> = ({
   };
 
   return (
-    <div className="shadow-xl w-full min-h-[420px] px-8 py-6 bg-slate-50 ">
+    <div className="shadow-xl w-full min-h-[430px] px-8 py-6 bg-slate-50 ">
       <h2 className="text-center text-xl text-slate-800">Danh sách câu hỏi</h2>
       <ul className="mt-2 overflow-auto max-h-96">
         {questions &&

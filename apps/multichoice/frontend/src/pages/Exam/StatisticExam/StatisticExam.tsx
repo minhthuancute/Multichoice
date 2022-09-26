@@ -88,7 +88,10 @@ const StatisticExam: React.FC = () => {
         </Breadcrumb>
       </header>
       <main>
-        <Modal openModal={showModalUserExamDetail}>
+        <Modal
+          openModal={showModalUserExamDetail}
+          setOpenModal={setShowModalUserExamDetail}
+        >
           <StatisticUserExam
             setShowModalUserExamDetail={setShowModalUserExamDetail}
             userData={userExamDetail || ({} as IUserDoExam)}
@@ -132,14 +135,22 @@ const StatisticExam: React.FC = () => {
                       <tr
                         key={user.start_time + user.userName}
                         className="mb-4 border-b border-slate-200 last:border-none
-                      text-slate-800 text-sm cursor-pointer"
+                      text-slate-800 text-sm cursor-pointer even:bg-slate-100"
                       >
                         <td className="pl-4 py-4">{index + 1}</td>
                         <td className="pl-4 font-semibold">{user.userName}</td>
                         <td className="pl-4 font-semibold">{user.point}</td>
                         <td className="pl-4">{getDate(user.start_time)}</td>
                         <td className="pl-4">{getTime(user.start_time)}</td>
-                        <td className="pl-4">{getTime(user.end_time)}</td>
+                        <td className="pl-4">
+                          {user.end_time ? (
+                            getTime(user.end_time)
+                          ) : (
+                            <span className="text-red-500 font-semibold">
+                              Chưa nộp bài
+                            </span>
+                          )}
+                        </td>
                         <td
                           className="pl-4 font-semibold text-primary-800"
                           onClick={() => showUserExamDetail(index)}
@@ -161,13 +172,7 @@ const StatisticExam: React.FC = () => {
                     ))}
                 </tbody>
               </table>
-            ) : (
-              <div className="mt-10">
-                <p className="font-semibold text-red-500 text-center">
-                  Chưa có dữ liệu cho bài thi này
-                </p>
-              </div>
-            )}
+            ) : null}
           </div>
         </div>
       </main>

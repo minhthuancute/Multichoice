@@ -96,6 +96,9 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
   const initForm = () => {
     const { type, content, time, isActive, answers } = questionData;
 
+    const isMutilAnswer: boolean = type === QuestionTypeEnum.MULTIPLE;
+    setIsMutilAnswer(isMutilAnswer);
+
     setValue('type', type);
     setValue('content', content);
     setValue('time', time);
