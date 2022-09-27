@@ -1,6 +1,6 @@
 import { IUserDoExam } from '@monorepo/multichoice/dto';
 import React from 'react';
-import Modal from '../../../components/Modal/Modal';
+import Modal from '../Modal/Modal';
 
 interface IConfirmDeleteUserExamProps {
   userData: IUserDoExam;

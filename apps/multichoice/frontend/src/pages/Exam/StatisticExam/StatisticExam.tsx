@@ -5,7 +5,6 @@ import { iNotification } from 'react-notifications-component';
 import { Link, useParams } from 'react-router-dom';
 import Breadcrumb from '../../../components/Commons/Breadcrumb/Breadcrumb';
 import ToolTip from '../../../components/Commons/ToolTip/ToolTip';
-import Modal from '../../../components/Modal/Modal';
 import { notify } from '../../../helper/notify';
 import {
   examServices,
@@ -13,23 +12,23 @@ import {
   IPayloadgetListExamByTopicId,
 } from '../../../services/ExamServices';
 import { getDate, getTime } from '../../../utils/formatDate';
-import ConfirmDeleteUserExam from './ConfirmDeleteUserExam';
-import StatisticUserExam from './StatisticUserExam';
+import ConfirmDeleteUserExam from '../../../components/Exam/ConfirmDeleteUserExam';
+import { getTopicTitle } from '../../../helper/getTopicTitle';
 
 const StatisticExam: React.FC = () => {
   const { id: topic_id } = useParams();
+  const topicId = Number(topic_id) || -1;
 
   const [usersDoExam, setUsersDoExam] = useState<IUserDoExam[]>([]);
-  const [showModalUserExamDetail, setShowModalUserExamDetail] =
-    useState<boolean>(false);
   const [showModalConfirmDelete, setShowModalConfirmDelete] =
     useState<boolean>(false);
   const [userExamDetail, setUserExamDetail] = useState<IUserDoExam>();
+  const [topicTitle, setTopicTitle] = useState<string>('');
 
   const getListExamByTopicId = async () => {
     try {
       const payload: IPayloadgetListExamByTopicId = {
-        topicID: Number(topic_id) || -1,
+        topicID: topicId,
       };
       const { data, status } = await examServices.getListExamByTopicId(payload);
       if (status === 200) {
@@ -38,11 +37,6 @@ const StatisticExam: React.FC = () => {
     } catch (error) {
       //
     }
-  };
-
-  const showUserExamDetail = (rowIndex: number) => {
-    setShowModalUserExamDetail(true);
-    setUserExamDetail(usersDoExam[rowIndex]);
   };
 
   const handleDeleteUserExam = async () => {
@@ -72,6 +66,7 @@ const StatisticExam: React.FC = () => {
   };
 
   useEffect(() => {
+    setTopicTitle(getTopicTitle(topicId));
     getListExamByTopicId();
   }, []);
 
@@ -83,20 +78,19 @@ const StatisticExam: React.FC = () => {
             <Link to="/tests">Đề thi</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
+            <div>{topicTitle}</div>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>
             <div>Thống kê</div>
           </Breadcrumb.Item>
         </Breadcrumb>
       </header>
-      <main>
-        <Modal
-          openModal={showModalUserExamDetail}
-          setOpenModal={setShowModalUserExamDetail}
-        >
-          <StatisticUserExam
-            setShowModalUserExamDetail={setShowModalUserExamDetail}
-            userData={userExamDetail || ({} as IUserDoExam)}
-          />
-        </Modal>
+      <main
+        className="bg-slate-50"
+        style={{
+          minHeight: 'calc(100vh - 106px)',
+        }}
+      >
         <ConfirmDeleteUserExam
           userData={userExamDetail || ({} as IUserDoExam)}
           onConfirmDelete={handleDeleteUserExam}
@@ -153,9 +147,13 @@ const StatisticExam: React.FC = () => {
                         </td>
                         <td
                           className="pl-4 font-semibold text-primary-800"
-                          onClick={() => showUserExamDetail(index)}
+                          // onClick={() => showUserExamDetail(index)}
                         >
-                          Xem chi tiết
+                          <Link
+                            to={`/tests/${topic_id}/statistic/detail?user_id=${user.userId}`}
+                          >
+                            Xem chi tiết
+                          </Link>
                         </td>
                         <td className="pl-4">
                           <button onClick={() => requestDeleteUserExam(index)}>

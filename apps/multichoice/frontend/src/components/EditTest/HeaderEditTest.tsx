@@ -43,7 +43,11 @@ const HeaderEditTest: React.FC = () => {
 
   return (
     <div className="header-edit-test">
-      <Modal openModal={openModalEditTest} setOpenModal={setOpenModalEditTest}>
+      <Modal
+        openModal={openModalEditTest}
+        setOpenModal={setOpenModalEditTest}
+        size="md"
+      >
         <FormEditTest
           setOpenModalEditTest={setOpenModalEditTest}
           cbOnUpdateTopic={cbOnUpdateTopic}
@@ -66,9 +70,8 @@ const HeaderEditTest: React.FC = () => {
           <div className="ctas">
             <ToolTip title="Cập nhật đề thi">
               <button
-                className="create-test btn-primary rounded-md bg-violet-600 text-xs
-              text-white font-bold flex justify-center items-center px-3 h-8 transition-all
-              duration-200 hover:bg-violet-600"
+                className="create-test btn-primary rounded-md bg-slate-800 text-xs
+              text-white font-bold flex justify-center items-center px-3 h-8"
                 onClick={() => setOpenModalEditTest(true)}
               >
                 <FaPencilAlt />

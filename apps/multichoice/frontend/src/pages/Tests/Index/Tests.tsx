@@ -1,8 +1,8 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import FilterTests from '../../../components/Tests/FilterTests';
 import TestList from '../../../components/TestList/TestList';
-import { titleServices } from '../../../services/TitleServices';
+import { withBackTop } from '../../../HOCs/withBackTop';
 
 const Tests: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -43,4 +43,4 @@ const Tests: React.FC = () => {
   );
 };
 
-export default Tests;
+export default withBackTop(Tests);

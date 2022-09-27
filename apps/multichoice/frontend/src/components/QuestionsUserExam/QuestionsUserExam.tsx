@@ -43,10 +43,11 @@ const QuestionsUserExam: React.FC<IQuestionsUserExamProps> = ({
         questions.map((question: Questiondetail, indexQuestion: number) => {
           return (
             <ul
-              className="relative border-b border-slate-200 last:border-none py-5 px-6 bg-slate-50 shadow-md mb-2.5 last:mb-0"
+              className="relative border-b border-slate-200 last:border-none py-5 px-6
+              bg-white shadow-md mb-3 last:mb-0 rounded-sm"
               key={question.id}
             >
-              <div className="header-left flex text-tiny mb-2">
+              <div className="header-left flex text-tiny mb-2 text-slate-800 underline">
                 <span className="w-21 font-semibold mr-1 min-w-max">
                   Câu hỏi {indexQuestion + 1}:
                 </span>
@@ -100,6 +101,14 @@ const QuestionsUserExam: React.FC<IQuestionsUserExamProps> = ({
                     </li>
                   );
                 })}
+
+              {question.type === QuestionTypeEnum.MULTIPLE ? (
+                <div className="mt-1">
+                  <p className="text-sm text-primary-800 italic">
+                    (Câu hỏi có nhiều đáp án đúng)
+                  </p>
+                </div>
+              ) : null}
             </ul>
           );
         })}
