@@ -111,7 +111,6 @@ export class TopicService {
       where: {
         owner: user,
       },
-      relations: ['questions', 'questions.answers'],
     });
     return result;
   }

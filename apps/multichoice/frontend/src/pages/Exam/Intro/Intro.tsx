@@ -81,7 +81,7 @@ const Intro: React.FC = () => {
         className="max-w-xl lg:max-w-4xl xl:max-w-6xl mx-4 bg-slate-50 colect-infor max-h-[400px] h-full w-full flex items-center
         shadow-xl"
       >
-        <div className="left h-full w-1/2 hidden lg:block">
+        <div className="left h-full w-1/2 xs:hidden lg:block">
           <img
             src="https://images.unsplash.com/photo-1457369804613-52c61a468e7d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
             alt="exam multichoice"
