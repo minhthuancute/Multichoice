@@ -200,7 +200,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
         <ToolTip title={errorMsgSubmit}>
           <button
             className={classNames(
-              `px-6 py-2.5 bg-violet-600 rounded-md text-sm
+              `px-6 py-2.5 bg-primary-800 rounded-md text-sm
             text-white flex items-center mb-4 font-semibold
             focus:ring-violet-300 focus:ring`,
               {
