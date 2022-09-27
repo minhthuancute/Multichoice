@@ -202,7 +202,7 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
   };
 
   return (
-    <div className="max-w-xl w-full h-max py-4 px-5 mx-auto rounded-md bg-white">
+    <div className="py-4 px-5 mx-auto rounded-md bg-white">
       <form className="form" onSubmit={handleSubmit(onSubmit)}>
         <div className="form-header flex items-center justify-between mb-8">
           <h4 className="text-slate-800 text-xl font-semibold">

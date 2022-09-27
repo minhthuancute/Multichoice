@@ -2,6 +2,7 @@ import React, { useLayoutEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import HeaderEditTest from '../../../components/EditTest/HeaderEditTest';
 import QuestionList from '../../../components/QuestionList/QuestionList';
+import { withBackTop } from '../../../HOCs/withBackTop';
 import { topicServices } from '../../../services/TopicServices';
 import { topicStore } from '../../../store/rootReducer';
 
@@ -34,4 +35,4 @@ const EditTest: React.FC = () => {
   );
 };
 
-export default EditTest;
+export default withBackTop(EditTest);

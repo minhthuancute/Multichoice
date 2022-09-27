@@ -40,12 +40,13 @@ const PolaCode: React.FC<IPolaCodeProps> = ({
         openModal={!!srcZoomImage}
         placement="CENTER"
         setOpenModal={setSrcZoomImage}
+        size="3xl"
       >
-        <div className="max-w-6xl w-full h-max mx-auto px-4 py-8 bg-white shadow-lg my-4">
+        <div className="h-max px-4 py-8 bg-white shadow-lg my-4">
           <img
             src={srcZoomImage}
             alt=""
-            className="inline-block max-h-96 h-full w-full object-cover"
+            className="inline-block max-h-[448px] w-full object-cover"
           />
 
           <button

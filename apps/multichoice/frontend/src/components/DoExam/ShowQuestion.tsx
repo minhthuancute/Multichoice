@@ -290,7 +290,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
       </div>
       <div className="ctas mt-10 flex items-center justify-between">
         <button
-          className="px-4 py-1 bg-primary-900 rounded-sm text-sm
+          className="px-4 py-1 bg-slate-800 rounded-sm text-sm
           text-white flex items-center focus:ring-primary-200 focus:ring"
           onClick={() => preQuestion()}
         >
@@ -301,7 +301,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
           {indexQuestion + 1}/{exam.questions.length}
         </span>
         <button
-          className="px-4 py-1 bg-primary-900 rounded-sm text-sm
+          className="px-4 py-1 bg-slate-800 rounded-sm text-sm
           text-white flex items-center focus:ring-primary-200 focus:ring"
           onClick={() => nextQuestion()}
         >

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import FooterDoExam from '../../../components/DoExam/FooterDoExam';
 import HeaderDoExam from '../../../components/DoExam/HeaderDoExam';
 import MainDoExam from '../../../components/DoExam/MainDoExam';
 import {
@@ -91,9 +92,10 @@ const DoExam: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-doexam">
+    <div className="min-h-screen h-max bg-doexam relative">
       <HeaderDoExam />
       <MainDoExam />
+      <FooterDoExam />
     </div>
   );
 };

@@ -1,6 +1,9 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
+import { TOPIC_LIST } from '../../constants/contstants';
 import { useQuery } from '../../hooks/useQuery';
+import { localServices } from '../../services/LocalServices';
 import { topicServices } from '../../services/TopicServices';
+import { ITopicLocal } from '../../types/ICommons';
 import { ITopicResponse } from '../../types/TopicResponse';
 import { removeVietnameseTones } from '../../utils/removeVietnameseTones';
 import TestItem, { ITestItem } from '../TestItem/TestItem';
@@ -41,6 +44,15 @@ const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
         return testData;
       });
       setTestList(topicsData);
+
+      const testsTitle: ITopicLocal[] = topicResponse.map(
+        (test: ITopicResponse) =>
+          ({
+            id: test.id,
+            title: test.title,
+          } as ITopicLocal)
+      );
+      localServices.setData(TOPIC_LIST, testsTitle);
 
       if (paramSearch) {
         const filterResult = topicsData.filter((test: ITestItem) => {

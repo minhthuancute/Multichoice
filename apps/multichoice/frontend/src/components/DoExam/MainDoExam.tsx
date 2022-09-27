@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import FooterDoExam from './FooterDoExam';
 import NavQuestion from './NavQuestion';
 import ShowQuestion from './ShowQuestion';
 
@@ -22,8 +21,6 @@ const MainDoExam: React.FC = () => {
           />
         </div>
       </div>
-
-      <FooterDoExam />
     </div>
   );
 };
