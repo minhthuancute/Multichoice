@@ -32,7 +32,7 @@ interface ITestItemProp {
 
 const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
   const examUrl = (): string => {
-    const host = window.location.origin + '/exam/';
+    const host = window.location.origin + '/e/';
     return host + test.topicUrl;
   };
 
@@ -107,7 +107,7 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
       >
         <div className="left">
           <Link
-            to={'/exam/' + test.topicUrl}
+            to={'/e/' + test.topicUrl}
             target="_blank"
             className="text-sm text-primary-900 font-semibold inline-block"
           >

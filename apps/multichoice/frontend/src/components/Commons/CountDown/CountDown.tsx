@@ -51,8 +51,8 @@ const CountDown: React.FC<ICountDownProps> = ({
             className,
           ])}
         >
-          <AiOutlineClockCircle className="mr-1" />
           {formatCountdown(hours, minutes, seconds)}
+          <AiOutlineClockCircle className="ml-1" />
         </span>
       );
     }

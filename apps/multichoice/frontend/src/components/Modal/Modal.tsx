@@ -62,7 +62,7 @@ const Modal: React.FC<ILayout> = ({
     openModal ? (
       <div
         className={classNames(
-          `modal fixed z-40 top-0 transition-all duration-300 w-full px-4
+          `modal fixed z-40 top-0 transition-all duration-400 w-full px-4
          h-full bg-slate-900 bg-opacity-40 overflow-auto py-10`,
           {
             'visible opacity-100': openModal,
@@ -72,9 +72,10 @@ const Modal: React.FC<ILayout> = ({
       >
         <div
           ref={refModal}
-          className={classNames(['mx-auto mt-5 w-full', getSizeModal()], {
+          className={classNames(['mx-auto w-full', getSizeModal()], {
             'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2':
               placement === 'CENTER',
+            'mt-5': placement !== 'CENTER',
           })}
         >
           {children}

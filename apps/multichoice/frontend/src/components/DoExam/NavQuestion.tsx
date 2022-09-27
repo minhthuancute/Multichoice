@@ -25,7 +25,9 @@ const NavQuestion: React.FC<INavQuestion> = ({
 
   return (
     <div className="shadow-xl w-full min-h-[430px] px-8 py-6 bg-slate-50 ">
-      <h2 className="text-center text-xl text-slate-800">Danh sách câu hỏi</h2>
+      <h2 className="text-center font-semibold text-slate-800">
+        DANH SÁCH CÂU HỎI
+      </h2>
       <ul className="mt-2 overflow-auto max-h-96">
         {questions &&
           questions.map((question: IQuestion, index: number) => {
@@ -38,7 +40,7 @@ const NavQuestion: React.FC<INavQuestion> = ({
                 <BiCheckDouble
                   className={classNames('mr-2 min-w-max', {
                     'opacity-50': answers[index].answerID.length === 0,
-                    'opacity-100 text-green-500':
+                    'opacity-100 text-primary-900':
                       answers[index].answerID.length !== 0,
                   })}
                 />

@@ -25,7 +25,7 @@ const ConfirmSubmit: React.FC<IConfirmSubmitProps> = ({
     >
       <div
         className="modal-content px-5 flex flex-col justify-center
-       bg-white rounded-md h-80"
+       bg-white rounded-md py-8"
       >
         <div className="header text-center">
           {unSelectAnswer > 0 ? (
@@ -44,11 +44,11 @@ const ConfirmSubmit: React.FC<IConfirmSubmitProps> = ({
             </p>
           ) : (
             <p className="mt-4 text-slate-800">
-              Bạn có chắc chắn muốn nộp bài ?
+              Bạn có chắc chắn muốn nộp bài?
             </p>
           )}
         </div>
-        <div className="body ctas flex items-center justify-center gap-x-2 mt-12">
+        <div className="body ctas flex items-center justify-center gap-x-2 mt-5">
           <button
             className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
           text-white font-bold bg-primary-900 transition-all duration-200 hover:bg-primary-800"

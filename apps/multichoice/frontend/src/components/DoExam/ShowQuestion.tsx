@@ -164,7 +164,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
   const checkLogged = () => {
     const preventDoExam = Object.keys(exam).length === 0;
     if (preventDoExam) {
-      const urlNavigate = '/exam/' + exam_id;
+      const urlNavigate = '/e/' + exam_id;
       navigate(urlNavigate);
     }
   };
@@ -202,24 +202,25 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
             className={classNames(
               `px-6 py-2.5 bg-primary-800 rounded-md text-sm
             text-white flex items-center mb-4 font-semibold
-            focus:ring-violet-300 focus:ring`,
+            focus:ring-blue-50 focus:ring`,
               {
                 'cursor-not-allowed opacity-60': isSubmitExam,
               }
             )}
             onClick={() => requestSubmit()}
           >
-            Nộp bài
+            Nộp Bài
           </button>
         </ToolTip>
-
-        <CountDown
-          isHidden={isSubmitExam}
-          startTime={startTime}
-          endTime={endTime}
-          key="count-down"
-          className="text-green-600"
-        />
+        <div className="">
+          <CountDown
+            isHidden={isSubmitExam}
+            startTime={startTime}
+            endTime={endTime}
+            key="count-down"
+            className="text-slate-800 transform"
+          />
+        </div>
       </header>
 
       <div className="p-4 lg:p-10 bg-slate-50 shadow-xl min-h-[302px]">
@@ -281,7 +282,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
             )}
           {questions[indexQuestion].type === QuestionTypeEnum.MULTIPLE ? (
             <div className="mt-3">
-              <p className="text-sm text-green-600 italic">
+              <p className="text-sm text-primary-800 italic text-center">
                 (Câu hỏi có nhiều đáp án đúng)
               </p>
             </div>
@@ -290,8 +291,8 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
       </div>
       <div className="ctas mt-10 flex items-center justify-between">
         <button
-          className="px-4 py-1 bg-slate-800 rounded-sm text-sm
-          text-white flex items-center focus:ring-primary-200 focus:ring"
+          className="px-4 py-1 bg-primary-800 rounded-sm text-sm
+          text-white flex items-center focus:ring-slate-100 focus:ring"
           onClick={() => preQuestion()}
         >
           <BiSkipPrevious className="mr-1 text-xl" />
@@ -301,8 +302,8 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
           {indexQuestion + 1}/{exam.questions.length}
         </span>
         <button
-          className="px-4 py-1 bg-slate-800 rounded-sm text-sm
-          text-white flex items-center focus:ring-primary-200 focus:ring"
+          className="px-4 py-1 bg-primary-800 rounded-sm text-sm
+          text-white flex items-center focus:ring-slate-100 focus:ring"
           onClick={() => nextQuestion()}
         >
           Câu hỏi sau

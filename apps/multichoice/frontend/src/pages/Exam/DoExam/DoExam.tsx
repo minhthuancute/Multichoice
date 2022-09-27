@@ -92,7 +92,7 @@ const DoExam: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen h-max bg-doexam relative">
+    <div className="min-h-screen h-max relative">
       <HeaderDoExam />
       <MainDoExam />
       <FooterDoExam />

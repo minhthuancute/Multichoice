@@ -57,12 +57,12 @@ const Intro: React.FC = () => {
         user_name: userData.username,
         user_id: userData.id,
       } as IInforUserDoExam);
-      const urlNavigate = '/exam/' + exam.url + '/do-exam';
+      const urlNavigate = '/e/' + exam.url + '/do-exam';
       navigate(urlNavigate);
     } else {
       localServices.setData(START_TIME, Date.now());
 
-      const urlNavigate = '/exam/' + exam.url + '/login';
+      const urlNavigate = '/e/' + exam.url + '/login';
       navigate(urlNavigate);
     }
   };
@@ -78,7 +78,7 @@ const Intro: React.FC = () => {
   return (
     <div className="h-screen flex items-center justify-center bg-doexam">
       <div
-        className="max-w-xl lg:max-w-4xl xl:max-w-6xl mx-4 bg-white colect-infor max-h-[400px] h-full w-full flex items-center
+        className="max-w-xl lg:max-w-4xl xl:max-w-6xl mx-4 bg-slate-50 colect-infor max-h-[400px] h-full w-full flex items-center
         shadow-xl"
       >
         <div className="left h-full w-1/2 hidden lg:block">
@@ -91,7 +91,9 @@ const Intro: React.FC = () => {
         <div className="right w-full lg:w-1/2 h-full relative">
           <div className="top absolute w-full top-1/2 transform -translate-y-1/2">
             <div className="text-center mx-4">
-              <h4 className="text-slate-800 text-3xl">{exam.title}</h4>
+              <h4 className="text-slate-800 text-2xl font-semibold">
+                {exam.title}
+              </h4>
               <p className="mt-2">{exam.description}</p>
             </div>
             <div className="pt-8 xs:px-4 md:px-10 lg:px-10">
