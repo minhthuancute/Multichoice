@@ -233,7 +233,7 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
           ) : null}
           <Select
             onChange={onSelectQuestionType}
-            defaultValue={questionTypes[0].label}
+            defaultValue={getValues('type')}
             options={questionTypes}
             textLabel="Loại câu hỏi"
           />
