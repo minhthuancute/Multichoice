@@ -36,7 +36,7 @@ const HeaderDoExam: React.FC = () => {
   };
 
   return (
-    <header className="header py-4 shadow-md bg-primary-900">
+    <header className="header py-3 shadow-md">
       <ExamResult
         setOpenModalResult={setOpenModalResult}
         openModalResult={openModalResult}
@@ -57,8 +57,8 @@ const HeaderDoExam: React.FC = () => {
         <div className="header-right flex items-center">
           {isSubmitExam && (
             <button
-              className="px-6 py-2 bg-slate-100 rounded-md text-sm ml-5
-          text-black flex items-center font-semibold xs:hidden md:block"
+              className="px-4 py-1.5 bg-slate-100 rounded-sm text-sm ml-5
+         flex items-center font-semibold xs:hidden md:block"
               onClick={() => setOpenModalResult(true)}
             >
               Xem lại kết quả
@@ -66,8 +66,8 @@ const HeaderDoExam: React.FC = () => {
           )}
 
           <button
-            className="px-6 py-2 bg-slate-100 rounded-md text-sm ml-5
-          text-black flex items-center font-semibold"
+            className="px-4 py-1.5 border border-slate-800 rounded-sm text-sm ml-5
+           flex items-center font-semibold text-slate-800"
             onClick={() => setOpenModalConfirmExit(true)}
           >
             Thoát

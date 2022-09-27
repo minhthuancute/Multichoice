@@ -21,6 +21,7 @@ import { notify } from '../../helper/notify';
 import { iNotification } from 'react-notifications-component';
 import QuillEditor from '../QuillEditor/QuillEditor';
 import { hasContentEditor } from '../../utils/emptyContentEditor';
+import { classNames } from '../../helper/classNames';
 
 const schemaFormCreateQuestion = yup.object().shape({
   topicID: yup.number(),
@@ -38,6 +39,10 @@ const schemaFormCreateQuestion = yup.object().shape({
     .required(),
 });
 
+export interface IFormCreateQuestionRef {
+  submitFormCreateAnswer: () => void;
+}
+
 interface ICreateQuestion {
   ref: any;
 }
@@ -50,6 +55,9 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
     const submitBtnRef: any = useRef<HTMLButtonElement>(null);
 
     const createAnswerRef = useRef<IResetAnswersRef>();
+
+    const [shouldRemoveAnswers, setShouldRemoveAnswers] =
+      useState<boolean>(false);
 
     const {
       resetField,
@@ -100,30 +108,60 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
       setValue('type', optionVal);
       setValue('isActive', true);
 
-      const isMutilAnswer: boolean = item.value === QuestionTypeEnum.MULTIPLE;
-
-      if (isMutilAnswer) {
-        setIsMutilAnswer(true);
-      } else {
-        setIsMutilAnswer(false);
-        const answers = getValues('answers');
-        const resetAnswers: CreatAnswer[] = answers.map(
-          (answer: CreatAnswer) => {
-            return {
-              ...answer,
-              isCorrect: false,
-            };
-          }
-        );
-        setValue('answers', resetAnswers);
-        // reset({
-        //   answers: resetAnswers,
-        // });
-
-        if (createAnswerRef.current) {
-          createAnswerRef.current.resetAnswers(resetAnswers);
+      switch (item.value) {
+        case QuestionTypeEnum.MULTIPLE: {
+          setIsMutilAnswer(true);
+          setShouldRemoveAnswers(false);
+          break;
         }
+
+        case QuestionTypeEnum.SINGLE: {
+          setIsMutilAnswer(false);
+          setShouldRemoveAnswers(false);
+          const answers = getValues('answers');
+          const resetAnswers: CreatAnswer[] = answers.map(
+            (answer: CreatAnswer) => {
+              return {
+                ...answer,
+                isCorrect: false,
+              };
+            }
+          );
+          setValue('answers', resetAnswers);
+          if (createAnswerRef.current) {
+            createAnswerRef.current.resetAnswers(resetAnswers);
+          }
+          break;
+        }
+
+        case QuestionTypeEnum.TEXT: {
+          setShouldRemoveAnswers(true);
+          break;
+        }
+
+        default:
+          break;
       }
+
+      // const isMutilAnswer: boolean = item.value === QuestionTypeEnum.MULTIPLE;
+      // if (isMutilAnswer) {
+      //   setIsMutilAnswer(true);
+      // } else {
+      //   setIsMutilAnswer(false);
+      //   const answers = getValues('answers');
+      //   const resetAnswers: CreatAnswer[] = answers.map(
+      //     (answer: CreatAnswer) => {
+      //       return {
+      //         ...answer,
+      //         isCorrect: false,
+      //       };
+      //     }
+      //   );
+      //   setValue('answers', resetAnswers);
+      //   if (createAnswerRef.current) {
+      //     createAnswerRef.current.resetAnswers(resetAnswers);
+      //   }
+      // }
     };
 
     // create Question
@@ -158,7 +196,7 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
     useImperativeHandle(
       ref,
       () => ({
-        submitForm: () => {
+        submitFormCreateAnswer: () => {
           submitBtnRef.current.click();
         },
       }),
@@ -229,7 +267,11 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
                 errMessage={errors.content?.message}
               />
             </div>
-            <div className="create-answer">
+            <div
+              className={classNames('create-answer', {
+                hidden: shouldRemoveAnswers,
+              })}
+            >
               <CreateAnswer
                 onAddAnswer={onAddAnswer}
                 onRemoveAnswer={onRemoveAnswer}
