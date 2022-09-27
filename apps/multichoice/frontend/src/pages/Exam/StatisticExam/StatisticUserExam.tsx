@@ -6,6 +6,7 @@ import Breadcrumb from '../../../components/Commons/Breadcrumb/Breadcrumb';
 import ToolTip from '../../../components/Commons/ToolTip/ToolTip';
 import QuestionsUserExam from '../../../components/QuestionsUserExam/QuestionsUserExam';
 import { getTopicTitle } from '../../../helper/getTopicTitle';
+import { withBackTop } from '../../../HOCs/withBackTop';
 import { useQuery } from '../../../hooks/useQuery';
 import {
   examServices,
@@ -114,4 +115,4 @@ const StatisticUserExam: React.FC = () => {
   );
 };
 
-export default StatisticUserExam;
+export default withBackTop(StatisticUserExam);
