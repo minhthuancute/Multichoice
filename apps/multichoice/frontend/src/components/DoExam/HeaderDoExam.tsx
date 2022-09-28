@@ -9,11 +9,13 @@ import { localServices } from '../../services/LocalServices';
 import { examStore, IInforUserDoExam } from '../../store/rootReducer';
 import ExamResult from './ExamResult';
 import ModalConfirm from '../Commons/ModalConfirm/ModalConfirm';
+import { classNames } from '../../helper/classNames';
 
 const HeaderDoExam: React.FC = () => {
   const { exam_id } = useParams();
   const navigate = useNavigate();
   const {
+    exam,
     userDoExam,
     setUserData,
     setIsSubmitExam,
@@ -36,7 +38,12 @@ const HeaderDoExam: React.FC = () => {
   };
 
   return (
-    <header className="header py-3 shadow-md">
+    <header
+      className="header py-3"
+      style={{
+        boxShadow: '0 1px 14px 0 rgb(0 0 0 / 10%)',
+      }}
+    >
       <ExamResult
         setOpenModalResult={setOpenModalResult}
         openModalResult={openModalResult}
@@ -51,27 +58,34 @@ const HeaderDoExam: React.FC = () => {
         onConfirm={handleExitExam}
       />
       <div className="container xs:px-4 md:px-10 flex items-center justify-between">
-        <div className="header-left">
-          <p className="text-tiny text-white">Hello, {userDoExam.user_name}</p>
+        <div className="header-left font-semibold text-lg text-slate-800">
+          <p>{exam.title}</p>
         </div>
-        <div className="header-right flex items-center">
-          {isSubmitExam && (
-            <button
-              className="px-4 py-1.5 bg-slate-100 rounded-sm text-sm ml-5
-         flex items-center font-semibold xs:hidden md:block"
-              onClick={() => setOpenModalResult(true)}
-            >
-              Xem lại kết quả
-            </button>
-          )}
+        <div className="header-right flex items-center text-slate-800 text-sm font-semibold">
+          <button
+            className={classNames(
+              `px-4 py-1.5 bg-green-100 rounded-2xl ml-4
+              flex items-center text-green-600`,
+              {
+                'cursor-not-allowed': !isSubmitExam,
+              }
+            )}
+            onClick={() => {
+              if (!isSubmitExam) return;
+              setOpenModalResult(true);
+            }}
+          >
+            Xem lại kết quả
+          </button>
 
           <button
-            className="px-4 py-1.5 border border-slate-800 rounded-sm text-sm ml-5
-           flex items-center font-semibold text-slate-800"
+            className="px-4 py-1.5 bg-slate-100 rounded-2xl ml-4
+           flex items-center"
             onClick={() => setOpenModalConfirmExit(true)}
           >
             Thoát
           </button>
+          <p className="ml-4">Hello, {userDoExam.user_name}</p>
         </div>
       </div>
     </header>
