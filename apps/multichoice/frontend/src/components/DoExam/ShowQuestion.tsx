@@ -212,6 +212,16 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
             Nộp bài
           </button>
         </ToolTip>
+
+        <div className="lg:hidden">
+          <CountDown
+            isHidden={isSubmitExam}
+            startTime={startTime}
+            endTime={endTime}
+            key="count-down"
+            className="text-slate-800"
+          />
+        </div>
       </header>
 
       <div className="p-4 lg:p-10 bg-slate-50 shadow-xl min-h-[302px]">
