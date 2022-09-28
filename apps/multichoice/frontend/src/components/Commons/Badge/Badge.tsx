@@ -2,6 +2,8 @@ import React from 'react';
 import { classNames } from '../../../helper/classNames';
 import { TopicCategoryType } from '../../../types/ICommons';
 
+type BadgeType = 'SUCCESS' | 'DANGER' | 'WARNING' | 'INFOR' | 'NORMAL';
+
 interface IBadge {
   type?: TopicCategoryType;
   className?: string;

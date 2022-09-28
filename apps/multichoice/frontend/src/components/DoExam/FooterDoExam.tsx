@@ -2,7 +2,7 @@ import React from 'react';
 
 const FooterDoExam: React.FC = () => {
   return (
-    <footer className="absolute bottom-4 pb-4 px-4 text-center w-full mt-10">
+    <footer className="lg:absolute bottom-4 pb-4 px-4 text-center w-full mt-10">
       <p className="text-sm ">
         &copy; 2022 Estates. All rights reserved | Designed by{' '}
         <span className="font-semibold text-primary-900">Multichoice Team</span>

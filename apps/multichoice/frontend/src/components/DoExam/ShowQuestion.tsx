@@ -202,7 +202,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
             className={classNames(
               `px-6 py-2.5 bg-primary-800 rounded-md text-sm
             text-white flex items-center mb-4 font-semibold
-            focus:ring-violet-300 focus:ring`,
+            focus:ring-blue-100 focus:ring`,
               {
                 'cursor-not-allowed opacity-60': isSubmitExam,
               }
@@ -212,14 +212,6 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
             Nộp bài
           </button>
         </ToolTip>
-
-        <CountDown
-          isHidden={isSubmitExam}
-          startTime={startTime}
-          endTime={endTime}
-          key="count-down"
-          className="text-green-600"
-        />
       </header>
 
       <div className="p-4 lg:p-10 bg-slate-50 shadow-xl min-h-[302px]">
@@ -288,10 +280,10 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
           ) : null}
         </div>
       </div>
-      <div className="ctas mt-10 flex items-center justify-between">
+      <div className="ctas mt-5 flex items-center justify-between">
         <button
-          className="px-4 py-1 bg-slate-800 rounded-sm text-sm
-          text-white flex items-center focus:ring-primary-200 focus:ring"
+          className="px-4 py-1 bg-primary-800 rounded-sm text-sm
+          text-white flex items-center focus:ring-blue-100 focus:ring"
           onClick={() => preQuestion()}
         >
           <BiSkipPrevious className="mr-1 text-xl" />
@@ -300,9 +292,10 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
         <span className="text-slate-800 font-semibold">
           {indexQuestion + 1}/{exam.questions.length}
         </span>
+
         <button
-          className="px-4 py-1 bg-slate-800 rounded-sm text-sm
-          text-white flex items-center focus:ring-primary-200 focus:ring"
+          className="px-4 py-1 bg-primary-800 rounded-sm text-sm
+          text-white flex items-center focus:ring-blue-100 focus:ring"
           onClick={() => nextQuestion()}
         >
           Câu hỏi sau
