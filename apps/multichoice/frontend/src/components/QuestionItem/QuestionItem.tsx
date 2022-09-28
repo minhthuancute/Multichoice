@@ -13,21 +13,15 @@ export interface IQuestionItem {
   index: number;
   question: IQuestion;
   handleDeleteQuestion: (question: IQuestion) => void;
-  onUpdateQuestionSuccess: () => void;
 }
 
 const QuestionItem: React.FC<IQuestionItem> = ({
   question,
   index,
   handleDeleteQuestion,
-  onUpdateQuestionSuccess,
 }) => {
   const [openModalEditQuestion, setOpenModalEditQuestion] =
     useState<boolean>(false);
-
-  const cbOnUpdateQuestion = () => {
-    onUpdateQuestionSuccess();
-  };
 
   return (
     <>
@@ -38,7 +32,6 @@ const QuestionItem: React.FC<IQuestionItem> = ({
         <FormEditQuestion
           questionData={question}
           setOpenModalEditQuestion={setOpenModalEditQuestion}
-          cbOnUpdateQuestion={cbOnUpdateQuestion}
         />
       </Modal>
       <div className="container mb-4 last:mb-0">

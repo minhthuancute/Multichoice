@@ -29,5 +29,19 @@ export interface ITopicResponse {
   description: string | null;
   isDraft: boolean;
   expirationTime: number;
+  questionsCount: number;
+}
+
+export interface ITopicDetailResponse {
+  url: string;
+  createdAt: string;
+  updatedAt: string;
+  id: number;
+  typeCategoryName: TopicCategoryType;
+  timeType: string;
+  title: string;
+  description: string | null;
+  isDraft: boolean;
+  expirationTime: number;
   questions: IQuestion[];
 }

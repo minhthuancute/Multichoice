@@ -15,13 +15,9 @@ const PolaCode: React.FC<IPolaCodeProps> = ({
   const [srcZoomImage, setSrcZoomImage] = useState<string>('');
 
   const handleZoomImgae = () => {
-    console.log(editorRef);
-
     const imgsEditor = editorRef.current?.querySelectorAll('img');
     if (imgsEditor) {
       imgsEditor.forEach((imgElement) => {
-        console.log(imgElement);
-
         imgElement.addEventListener('click', function () {
           const src: string = this.getAttribute('src') || '';
           setSrcZoomImage(src);

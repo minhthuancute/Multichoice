@@ -10,7 +10,7 @@ class TopicServices extends Api {
     return this.post('/topic/create', formData);
   }
 
-  getTopicById(id: string) {
+  getTopicById(id: number) {
     return this.get('/topic/' + id);
   }
 
