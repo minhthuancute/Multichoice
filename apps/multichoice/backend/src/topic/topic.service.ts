@@ -107,35 +107,13 @@ export class TopicService {
     return true;
   }
 
-  convertTopicBO(topics: Topic[]): TopicBO[] {
-    const result: TopicBO[] = [];
-    topics.forEach((emlement) => {
-      const topicBO = new TopicBO();
-      topicBO.createdAt = emlement.createdAt;
-      topicBO.updatedAt = emlement.updatedAt;
-      topicBO.description = emlement.description;
-      topicBO.expirationTime = emlement.expirationTime;
-      topicBO.isDraft = emlement.isDraft;
-      topicBO.id = emlement.id;
-      topicBO.title = emlement.title;
-      topicBO.url = emlement.url;
-      topicBO.typeCategoryName = emlement.typeCategoryName;
-      topicBO.timeType = emlement.timeType;
-      topicBO.totalQuestion = emlement.questions.length;
-      result.push(topicBO);
-    });
-    return result;
-  }
-
-  async findAll(user: User): Promise<TopicBO[]> {
-    const lstTopic = await this.topicRepository.find({
-      where: {
-        owner: user,
-      },
-      relations: ['questions'],
-    });
-    if (!lstTopic) return null;
-    const result: TopicBO[] = this.convertTopicBO(lstTopic);
+  async findAllTopics(user: User): Promise<Topic[]> {
+    const result = await this.topicRepository
+      .createQueryBuilder('topic')
+      .where('topic.ownerId = :owner', { owner: user.id })
+      .leftJoin('topic.questions', 'questions')
+      .loadRelationCountAndMap('topic.questionsCount', 'topic.questions')
+      .getMany();
     return result;
   }
 

@@ -37,8 +37,8 @@ export class TopicController {
   @UseGuards(AuthenticationGuard)
   @Get('/all')
   @ApiBearerAuth()
-  async getTopicAll(@Req() req, @Res() res): Promise<TopicBO[]> {
-    const result = await this.topicService.findAll(req.user);
+  async getTopicAll(@Req() req, @Res() res): Promise<Topic[]> {
+    const result = await this.topicService.findAllTopics(req.user);
     return res.status(200).json(new SucessResponse(200, result));
   }
 
