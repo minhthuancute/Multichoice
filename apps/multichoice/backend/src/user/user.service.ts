@@ -264,7 +264,7 @@ export class UserService {
   }
 
   async findTopicByUrl(url: string): Promise<Topic> {
-    const result = await this.topicService.fineOneByUrl(url);
+    const result = await this.topicService.findOneByUrl(url);
     return result;
   }
 

@@ -15,6 +15,7 @@ import { User } from '../user/entities/user.entity';
 
 import { Question } from '../question/entities/question.entity';
 import { UserService } from '../user/user.service';
+import { TopicBO } from './model/topicBO';
 
 @Injectable()
 export class TopicService {
@@ -74,7 +75,7 @@ export class TopicService {
     return result;
   }
 
-  async fineOneByUrl(url: string): Promise<Topic> {
+  async findOneByUrl(url: string): Promise<Topic> {
     const result = await this.topicRepository.findOne({
       where: {
         url,
@@ -106,12 +107,13 @@ export class TopicService {
     return true;
   }
 
-  async fileAll(user: User): Promise<Topic[]> {
-    const result = await this.topicRepository.find({
-      where: {
-        owner: user,
-      },
-    });
+  async findAllTopics(user: User): Promise<Topic[]> {
+    const result = await this.topicRepository
+      .createQueryBuilder('topic')
+      .where('topic.ownerId = :owner', { owner: user.id })
+      .leftJoin('topic.questions', 'questions')
+      .loadRelationCountAndMap('topic.questionsCount', 'topic.questions')
+      .getMany();
     return result;
   }
 

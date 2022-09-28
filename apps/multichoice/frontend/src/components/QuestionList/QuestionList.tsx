@@ -12,7 +12,7 @@ import QuestionItem from '../QuestionItem/QuestionItem';
 
 const QuestionList: React.FC = () => {
   const query = useParams();
-  const { topic, setTopicData } = topicStore();
+  const { topicDetail, setTopicData } = topicStore();
 
   const [openModalDelete, setOpenModalDelete] = useState<boolean>(false);
   const [questionDel, setQuestionDel] = useState<IQuestion>();
@@ -25,7 +25,7 @@ const QuestionList: React.FC = () => {
   const getTopicDetail = async () => {
     const { id } = query;
     try {
-      const { data } = await topicServices.getTopicById(id || '');
+      const { data } = await topicServices.getTopicById(Number(id));
       setTopicData(data);
     } catch (error) {
       //
@@ -51,10 +51,6 @@ const QuestionList: React.FC = () => {
       } as iNotification);
       setOpenModalDelete(false);
     }
-  };
-
-  const onUpdateQuestionSuccess = () => {
-    getTopicDetail();
   };
 
   return (
@@ -88,12 +84,11 @@ const QuestionList: React.FC = () => {
         </div>
       </Modal>
 
-      {topic.questions &&
-        topic.questions.map((question: IQuestion, index: number) => {
+      {topicDetail.questions &&
+        topicDetail.questions.map((question: IQuestion, index: number) => {
           return (
             <QuestionItem
               handleDeleteQuestion={handleDeleteQuestion}
-              onUpdateQuestionSuccess={onUpdateQuestionSuccess}
               question={question}
               index={index + 1}
               key={question.id}
