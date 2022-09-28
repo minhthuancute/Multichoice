@@ -15,6 +15,7 @@ import { User } from '../user/entities/user.entity';
 
 import { Question } from '../question/entities/question.entity';
 import { UserService } from '../user/user.service';
+import { TopicBO } from './model/topicBO';
 
 @Injectable()
 export class TopicService {
@@ -74,7 +75,7 @@ export class TopicService {
     return result;
   }
 
-  async fineOneByUrl(url: string): Promise<Topic> {
+  async findOneByUrl(url: string): Promise<Topic> {
     const result = await this.topicRepository.findOne({
       where: {
         url,
@@ -106,12 +107,35 @@ export class TopicService {
     return true;
   }
 
-  async fileAll(user: User): Promise<Topic[]> {
-    const result = await this.topicRepository.find({
+  convertTopicBO(topics: Topic[]): TopicBO[] {
+    const result: TopicBO[] = [];
+    topics.forEach((emlement) => {
+      const topicBO = new TopicBO();
+      topicBO.createdAt = emlement.createdAt;
+      topicBO.updatedAt = emlement.updatedAt;
+      topicBO.description = emlement.description;
+      topicBO.expirationTime = emlement.expirationTime;
+      topicBO.isDraft = emlement.isDraft;
+      topicBO.id = emlement.id;
+      topicBO.title = emlement.title;
+      topicBO.url = emlement.url;
+      topicBO.typeCategoryName = emlement.typeCategoryName;
+      topicBO.timeType = emlement.timeType;
+      topicBO.totalQuestion = emlement.questions.length;
+      result.push(topicBO);
+    });
+    return result;
+  }
+
+  async findAll(user: User): Promise<TopicBO[]> {
+    const lstTopic = await this.topicRepository.find({
       where: {
         owner: user,
       },
+      relations: ['questions'],
     });
+    if (!lstTopic) return null;
+    const result: TopicBO[] = this.convertTopicBO(lstTopic);
     return result;
   }
 
