@@ -22,6 +22,7 @@ const ConfirmSubmit: React.FC<IConfirmSubmitProps> = ({
       openModal={openModalConfirm}
       setOpenModal={setConfirmSubmit}
       size="sm"
+      placement="CENTER"
     >
       <div
         className="modal-content px-5 flex flex-col justify-center

@@ -20,6 +20,7 @@ const ExamResult: React.FC<IExamResult> = ({
       openModal={openModalResult}
       setOpenModal={setOpenModalResult}
       size="sm"
+      placement="CENTER"
     >
       <div className="flex flex-col justify-center bg-white rounded-md h-72">
         <div className="header text-center">

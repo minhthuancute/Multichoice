@@ -105,16 +105,14 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
         className="test-footer mt-2 pt-4 flex items-center justify-between
         border-t border-solid border-slate-200"
       >
-        <div className="left">
-          <Link
-            to={'/e/' + test.topicUrl}
-            target="_blank"
-            className="text-sm text-primary-900 font-semibold inline-block"
-          >
-            {test.questionCount === 0
-              ? 'Bộ đề chưa có câu hỏi nào. Hãy thêm câu hỏi cho bộ đề'
-              : examUrl()}
-          </Link>
+        <div className="left text-sm text-primary-900 font-semibold inline-block">
+          {test.questionCount === 0 ? (
+            <p>Bộ đề chưa có câu hỏi nào. Hãy thêm câu hỏi cho bộ đề</p>
+          ) : (
+            <Link to={'/e/' + test.topicUrl} target="_blank">
+              {examUrl()}
+            </Link>
+          )}
         </div>
         <div className="right">
           <button

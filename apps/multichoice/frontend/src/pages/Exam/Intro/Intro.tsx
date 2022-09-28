@@ -76,10 +76,10 @@ const Intro: React.FC = () => {
   if (!exam) return null;
 
   return (
-    <div className="h-screen flex items-center justify-center bg-doexam">
+    <div className="h-screen flex items-center justify-center bg-doexam px-4">
       <div
-        className="max-w-xl lg:max-w-4xl xl:max-w-6xl mx-4 bg-slate-50 colect-infor max-h-[400px] h-full w-full flex items-center
-        shadow-xl"
+        className="max-w-xl lg:max-w-4xl xl:max-w-6xl bg-slate-50 colect-infor max-h-[400px] h-full w-full flex items-center
+        shadow-xl mx-auto"
       >
         <div className="left h-full w-1/2 xs:hidden lg:block">
           <img

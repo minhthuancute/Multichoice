@@ -32,7 +32,7 @@ export function withBackTop<T>(Component: ComponentType<T & any>) {
             onClick={handleBackToTop}
             className={classNames(
               `fixed bottom-5 right-5 z-50 bg-primary-800 w-10 h-10
-              flex items-center justify-center rounded-md text-white font-bold
+              flex items-center justify-center rounded-full text-white font-bold
               transform transition-all duration-200 hover:-translate-y-1`,
               {
                 'opacity-0': scrollTop <= 80,
