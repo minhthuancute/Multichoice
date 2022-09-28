@@ -23,7 +23,7 @@ const ModalConfirm: React.FC<IModalConfirmProps> = ({
     <Modal openModal={isOpen} setOpenModal={onClose} placement="CENTER">
       <div
         className="modal-content px-5 flex flex-col justify-center
-      bg-white rounded-md max-w-lg w-full py-10"
+      bg-white rounded-md w-full py-10"
       >
         <div className="header text-center">
           <RiErrorWarningLine className="text-yellow-400 text-5xl mx-auto" />

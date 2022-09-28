@@ -17,6 +17,8 @@ import UpdateAnswer from '../CreateQuestion/UpdateAnswers';
 import QuillEditor from '../QuillEditor/QuillEditor';
 import { hasContentEditor } from '../../utils/emptyContentEditor';
 import { IResetAnswersRef } from '../CreateQuestion/CreateAnswer';
+import { topicServices } from '../../services/TopicServices';
+import { useParams } from 'react-router-dom';
 
 const schemaFormUpdateQuestion = yup.object().shape({
   topicID: yup.number(),
@@ -37,7 +39,7 @@ const schemaFormUpdateQuestion = yup.object().shape({
 interface IFormEditQuestion {
   questionData: IQuestion;
   setOpenModalEditQuestion: React.Dispatch<React.SetStateAction<boolean>>;
-  cbOnUpdateQuestion: () => void;
+  // cbOnUpdateQuestion: () => void;
 }
 
 export interface IUpdateAnswer {
@@ -56,9 +58,10 @@ export interface IUpdateQuestion {
 const FormEditQuestion: React.FC<IFormEditQuestion> = ({
   questionData,
   setOpenModalEditQuestion,
-  cbOnUpdateQuestion,
 }) => {
-  const { topic } = topicStore();
+  const { id } = useParams();
+
+  const { topic, setTopicDetailData } = topicStore();
 
   const updateAnswerRef = useRef<IResetAnswersRef>();
 
@@ -70,7 +73,6 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
     getValues,
     clearErrors,
     setError,
-    reset,
     formState: { errors },
   } = useForm<IUpdateQuestion>({
     resolver: yupResolver(schemaFormUpdateQuestion),
@@ -106,9 +108,14 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
     setValue('answers', answers);
   };
 
-  useEffect(() => {
-    initForm();
-  }, []);
+  const getTopicDetail = async () => {
+    try {
+      const { data } = await topicServices.getTopicById(Number(id) || -1);
+      setTopicDetailData(data);
+    } catch (error) {
+      //
+    }
+  };
 
   // create Question
   const onSubmit: SubmitHandler<IUpdateQuestion> = async (
@@ -134,7 +141,7 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
 
       if (data.success) {
         setOpenModalEditQuestion(false);
-        cbOnUpdateQuestion();
+        getTopicDetail();
       }
     } catch (error) {
       //
@@ -200,6 +207,10 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
     }
     setValue('content', value);
   };
+
+  useEffect(() => {
+    initForm();
+  }, []);
 
   return (
     <div className="py-4 px-5 mx-auto rounded-md bg-white">

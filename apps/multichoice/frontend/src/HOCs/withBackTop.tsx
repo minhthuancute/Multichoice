@@ -18,8 +18,9 @@ export function withBackTop<T>(Component: ComponentType<T & any>) {
         setScrollTop(window.scrollY);
       };
       document.addEventListener('scroll', handleScroll);
+
       return () => {
-        document.removeEventListener('scroll', handleScroll);
+        document.removeEventListener('click', handleScroll);
       };
     }, []);
 
@@ -35,7 +36,7 @@ export function withBackTop<T>(Component: ComponentType<T & any>) {
               transform transition-all duration-200 hover:-translate-y-1`,
               {
                 'opacity-0': scrollTop <= 80,
-                'opacity-1': scrollTop >= 80,
+                'opacity-100': scrollTop >= 80,
               }
             )}
           >

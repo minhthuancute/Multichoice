@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import HeaderEditTest from '../../../components/EditTest/HeaderEditTest';
 import QuestionList from '../../../components/QuestionList/QuestionList';
@@ -8,19 +8,19 @@ import { topicStore } from '../../../store/rootReducer';
 
 const EditTest: React.FC = () => {
   const query = useParams();
-  const { setTopicData } = topicStore();
+  const { setTopicDetailData } = topicStore();
 
   const getTopicDetail = async () => {
     const { id } = query;
     try {
-      const { data } = await topicServices.getTopicById(id || '');
-      setTopicData(data);
+      const { data } = await topicServices.getTopicById(Number(id));
+      setTopicDetailData(data);
     } catch (error) {
       //
     }
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     getTopicDetail();
   }, []);
 

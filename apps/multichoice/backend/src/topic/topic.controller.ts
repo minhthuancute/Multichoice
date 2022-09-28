@@ -15,6 +15,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthenticationGuard } from '../auth/guards/auth.guard';
 import { SucessResponse } from '../model/SucessResponse';
 import { Topic } from '../question/entities/topic.entity';
+import { TopicBO } from './model/topicBO';
 import { TopicService } from './topic.service';
 
 @ApiTags('topic')
@@ -37,7 +38,7 @@ export class TopicController {
   @Get('/all')
   @ApiBearerAuth()
   async getTopicAll(@Req() req, @Res() res): Promise<Topic[]> {
-    const result = await this.topicService.fileAll(req.user);
+    const result = await this.topicService.findAllTopics(req.user);
     return res.status(200).json(new SucessResponse(200, result));
   }
 

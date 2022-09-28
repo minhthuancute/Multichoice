@@ -13,21 +13,15 @@ export interface IQuestionItem {
   index: number;
   question: IQuestion;
   handleDeleteQuestion: (question: IQuestion) => void;
-  onUpdateQuestionSuccess: () => void;
 }
 
 const QuestionItem: React.FC<IQuestionItem> = ({
   question,
   index,
   handleDeleteQuestion,
-  onUpdateQuestionSuccess,
 }) => {
   const [openModalEditQuestion, setOpenModalEditQuestion] =
     useState<boolean>(false);
-
-  const cbOnUpdateQuestion = () => {
-    onUpdateQuestionSuccess();
-  };
 
   return (
     <>
@@ -38,14 +32,13 @@ const QuestionItem: React.FC<IQuestionItem> = ({
         <FormEditQuestion
           questionData={question}
           setOpenModalEditQuestion={setOpenModalEditQuestion}
-          cbOnUpdateQuestion={cbOnUpdateQuestion}
         />
       </Modal>
       <div className="container mb-4 last:mb-0">
         <div className="question-content py-4 px-6 bg-white rounded-lg">
           <div className="header pb-4 text-slate-800 text-tiny flex justify-between">
             <div className="header-left flex text-tiny">
-              <span className="w-21 font-semibold mr-2">Câu hỏi {index}:</span>
+              <span className="font-semibold mr-2">Câu hỏi {index}:</span>
               <PolaCode content={question.content} />
             </div>
             <div className="header-right">

@@ -1,6 +1,6 @@
 import React from 'react';
 import Countdown from 'react-countdown';
-import { AiOutlineClockCircle } from 'react-icons/ai';
+import { BsFillClockFill } from 'react-icons/bs';
 import { classNames } from '../../../helper/classNames';
 import { examStore } from '../../../store/rootReducer';
 
@@ -46,13 +46,10 @@ const CountDown: React.FC<ICountDownProps> = ({
     } else {
       return (
         <span
-          className={classNames([
-            'font-semibold flex items-center text-lg',
-            className,
-          ])}
+          className={classNames(['font-semibold flex items-center', className])}
         >
           {formatCountdown(hours, minutes, seconds)}
-          <AiOutlineClockCircle className="ml-1" />
+          <BsFillClockFill className="ml-1" />
         </span>
       );
     }
