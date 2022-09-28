@@ -72,7 +72,7 @@ export const App: React.FC = () => {
           <Route path="questions/create" element={<CreateQuestion />} />
         </Route>
 
-        <Route path="exam">
+        <Route path="e">
           <Route path=":exam_id" element={<Intro />} />
           <Route path=":exam_id/login" element={<CollectInfor />} />
           <Route path=":exam_id/do-exam" element={<DoExam />} />

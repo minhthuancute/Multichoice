@@ -85,7 +85,7 @@ const QuestionItem: React.FC<IQuestionItem> = ({
 
             {question.type === QuestionTypeEnum.MULTIPLE ? (
               <div className="mt-2">
-                <p className="text-sm text-primary-800 italic">
+                <p className="text-sm text-green-600 italic">
                   (Câu hỏi có nhiều đáp án đúng)
                 </p>
               </div>

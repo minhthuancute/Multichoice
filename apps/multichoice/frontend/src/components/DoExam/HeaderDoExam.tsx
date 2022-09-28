@@ -36,9 +36,10 @@ const HeaderDoExam: React.FC = () => {
     localServices.clearItem(START_TIME);
     localServices.clearItem(ANSWERS_EXAM);
     localServices.setData(START_EXAM, false);
+
     setIsSubmitExam(false);
     setUserData({ is_guest: true } as IInforUserDoExam);
-    const urlNavigate = '/exam/' + exam_id;
+    const urlNavigate = '/e/' + exam_id;
     navigate(urlNavigate);
   };
 
@@ -57,7 +58,7 @@ const HeaderDoExam: React.FC = () => {
     >
       <div
         className={classNames(
-          `side-bar fixed z-40 top-0 transition-all duration-400 w-3/4 px-4
+          `side-bar fixed z-40 top-0 transition-all duration-400 w-4/5 px-4
          h-full bg-slate-800 overflow-auto py-4 transform`,
           {
             '-translate-x-full': !activeSideBar,
@@ -75,11 +76,25 @@ const HeaderDoExam: React.FC = () => {
           </button>
         </div>
         <div className="ctas mt-4 text-sm font-semibold">
-          <p className="pb-3 border-b border-slate-50 border-opacity-40 text-white text-tiny">
+          <h3
+            className="topic-title text-white text-lg pb-4
+           border-b border-slate-50 border-opacity-40"
+          >
+            {exam.title}
+          </h3>
+
+          <p className=" text-white text-tiny mt-4">
             Hello, {userDoExam.user_name}
           </p>
           <button
-            className="w-full rounded-md bg-slate-200 py-2 mt-8"
+            className={classNames(
+              `w-full rounded-md bg-slate-200 py-2 mt-6 text-center
+              justify-center`,
+              {
+                flex: isSubmitExam,
+                hidden: !isSubmitExam,
+              }
+            )}
             onClick={() => {
               if (!isSubmitExam) return;
               setOpenModalResult(true);
@@ -88,7 +103,8 @@ const HeaderDoExam: React.FC = () => {
             Xem lại kết quả
           </button>
           <button
-            className="w-full rounded-md bg-slate-200 py-2 mt-3"
+            className="w-full rounded-md bg-red-100 py-2 mt-4
+            text-red-500"
             onClick={() => setOpenModalConfirmExit(true)}
           >
             Thoát
@@ -104,7 +120,7 @@ const HeaderDoExam: React.FC = () => {
       />
       <ModalConfirm
         isOpen={openModalConfirmExit}
-        title="Bạn có chắc chắn muốn thoát khỏi bài thi.
+        title="Bạn có chắc chắn muốn thoát khỏi bài thi?
         Khi thoát khỏi bài thi, kết quả thi của bạn sẽ không được lưu lại."
         onClose={() => setOpenModalConfirmExit(false)}
         onConfirm={handleExitExam}
@@ -118,20 +134,21 @@ const HeaderDoExam: React.FC = () => {
             className="mr-3 w-max lg:hidden"
             onClick={() => setActiveSideBar(true)}
           >
+            <li className="w-5 h-0.5 bg-slate-600 rounded-md mb-1"></li>
             <li className="w-4 h-0.5 bg-slate-600 rounded-md mb-1"></li>
-            <li className="w-3 h-0.5 bg-slate-600 rounded-md mb-1"></li>
-            <li className="w-2 h-0.5 bg-slate-600 rounded-md"></li>
+            <li className="w-3 h-0.5 bg-slate-600 rounded-md"></li>
           </ul>
-          <p>{exam.title}</p>
+          <p className="topic-title hidden lg:block">{exam.title}</p>
         </div>
         <div className="header-right flex items-center text-slate-800 text-sm font-semibold">
           <div className="ctas items-center hidden lg:flex">
             <button
               className={classNames(
                 `px-4 py-1.5 bg-green-100 rounded-2xl ml-4
-              flex items-center text-green-600`,
+               items-center text-green-600 `,
                 {
-                  'cursor-not-allowed': !isSubmitExam,
+                  flex: isSubmitExam,
+                  hidden: !isSubmitExam,
                 }
               )}
               onClick={() => {

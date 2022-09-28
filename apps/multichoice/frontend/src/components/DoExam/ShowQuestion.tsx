@@ -164,7 +164,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
   const checkLogged = () => {
     const preventDoExam = Object.keys(exam).length === 0;
     if (preventDoExam) {
-      const urlNavigate = '/exam/' + exam_id;
+      const urlNavigate = '/e/' + exam_id;
       navigate(urlNavigate);
     }
   };
@@ -209,7 +209,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
             )}
             onClick={() => requestSubmit()}
           >
-            Nộp bài
+            Nộp Bài
           </button>
         </ToolTip>
 
@@ -283,7 +283,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
             )}
           {questions[indexQuestion].type === QuestionTypeEnum.MULTIPLE ? (
             <div className="mt-3">
-              <p className="text-sm text-green-600 italic">
+              <p className="text-sm text-primary-800 italic text-center">
                 (Câu hỏi có nhiều đáp án đúng)
               </p>
             </div>

@@ -59,7 +59,7 @@ const CollectInfor: React.FC = () => {
         user_name: userData.username,
         user_id: userData.id,
       } as IInforUserDoExam);
-      const urlNavigate = '/exam/' + exam.url + '/do-exam';
+      const urlNavigate = '/e/' + exam.url + '/do-exam';
       navigate(urlNavigate);
     }
   }, [navigate, exam.url]);
@@ -72,7 +72,7 @@ const CollectInfor: React.FC = () => {
         user_name: formData.user_name,
       } as IInforUserDoExam);
 
-      const urlNavigate = '/exam/' + exam.url + '/do-exam';
+      const urlNavigate = '/e/' + exam.url + '/do-exam';
       navigate(urlNavigate);
     } catch (error) {
       notify({
