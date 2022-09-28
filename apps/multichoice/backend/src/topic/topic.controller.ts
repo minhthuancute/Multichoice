@@ -37,7 +37,7 @@ export class TopicController {
   @Get('/all')
   @ApiBearerAuth()
   async getTopicAll(@Req() req, @Res() res): Promise<Topic[]> {
-    const result = await this.topicService.fileAll(req.user);
+    const result = await this.topicService.findAllTopics(req.user);
     return res.status(200).json(new SucessResponse(200, result));
   }
 

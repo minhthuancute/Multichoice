@@ -106,12 +106,13 @@ export class TopicService {
     return true;
   }
 
-  async fileAll(user: User): Promise<Topic[]> {
-    const result = await this.topicRepository.find({
-      where: {
-        owner: user,
-      },
-    });
+  async findAllTopics(user: User): Promise<Topic[]> {
+    const result = await this.topicRepository
+      .createQueryBuilder('topic')
+      .where('topic.ownerId = :owner', { owner: user.id })
+      .leftJoin('topic.questions', 'questions')
+      .loadRelationCountAndMap('topic.questionsCount', 'topic.questions')
+      .getMany();
     return result;
   }
 
