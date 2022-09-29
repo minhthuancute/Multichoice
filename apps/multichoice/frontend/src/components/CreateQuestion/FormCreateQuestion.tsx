@@ -28,15 +28,12 @@ const schemaFormCreateQuestion = yup.object().shape({
   content: yup.string().required('Question content is a required field'),
   time: yup.number(),
   isActive: yup.boolean(),
-  answers: yup
-    .array()
-    .of(
-      yup.object().shape({
-        content: yup.string().required(),
-        isCorrect: yup.boolean(),
-      })
-    )
-    .required(),
+  answers: yup.array().of(
+    yup.object().shape({
+      content: yup.string().required(),
+      isCorrect: yup.boolean(),
+    })
+  ),
 });
 
 export interface IFormCreateQuestionRef {
@@ -99,10 +96,6 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
       setValue('topicID', +topicId);
     };
 
-    useLayoutEffect(() => {
-      initForm();
-    }, []);
-
     const onSelectQuestionType = (item: IOption) => {
       const optionVal: QuestionTypeEnum = item.value as QuestionTypeEnum;
       setValue('type', optionVal);
@@ -142,32 +135,14 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
         default:
           break;
       }
-
-      // const isMutilAnswer: boolean = item.value === QuestionTypeEnum.MULTIPLE;
-      // if (isMutilAnswer) {
-      //   setIsMutilAnswer(true);
-      // } else {
-      //   setIsMutilAnswer(false);
-      //   const answers = getValues('answers');
-      //   const resetAnswers: CreatAnswer[] = answers.map(
-      //     (answer: CreatAnswer) => {
-      //       return {
-      //         ...answer,
-      //         isCorrect: false,
-      //       };
-      //     }
-      //   );
-      //   setValue('answers', resetAnswers);
-      //   if (createAnswerRef.current) {
-      //     createAnswerRef.current.resetAnswers(resetAnswers);
-      //   }
-      // }
     };
 
     // create Question
     const onSubmit: SubmitHandler<CreateQuestionDto> = async (
       formData: CreateQuestionDto
     ) => {
+      console.log('scjskj');
+
       try {
         const answers = getValues('answers');
 
@@ -192,16 +167,6 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
         //
       }
     };
-
-    useImperativeHandle(
-      ref,
-      () => ({
-        submitFormCreateAnswer: () => {
-          submitBtnRef.current.click();
-        },
-      }),
-      []
-    );
 
     const onAddAnswer = (answers: CreatAnswer[]) => {
       clearErrors('answers');
@@ -231,6 +196,20 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
       }
       setValue('content', value);
     };
+
+    useImperativeHandle(
+      ref,
+      () => ({
+        submitFormCreateAnswer: () => {
+          submitBtnRef.current.click();
+        },
+      }),
+      []
+    );
+
+    useLayoutEffect(() => {
+      initForm();
+    }, []);
 
     return (
       <div className="container">

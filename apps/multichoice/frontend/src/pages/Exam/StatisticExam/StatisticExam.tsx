@@ -11,9 +11,13 @@ import {
   IPayloadDeleteUserExam,
   IPayloadgetListExamByTopicId,
 } from '../../../services/ExamServices';
-import { getDate, getTime } from '../../../utils/formatDate';
+import { getDate, getDistance, getTime } from '../../../utils/formatDate';
 import ConfirmDeleteUserExam from '../../../components/Exam/ConfirmDeleteUserExam';
 import { getTopicTitle } from '../../../helper/getTopicTitle';
+import Select from '../../../components/Commons/Select/Select';
+import FilterStatisticExam from '../../../components/Exam/FilterStatisticExam';
+import { withBackTop } from '../../../HOCs/withBackTop';
+import { secondsToMinutes } from '../../../utils/minutesToSeconds';
 
 const StatisticExam: React.FC = () => {
   const { id: topic_id } = useParams();
@@ -32,7 +36,7 @@ const StatisticExam: React.FC = () => {
       };
       const { data, status } = await examServices.getListExamByTopicId(payload);
       if (status === 200) {
-        setUsersDoExam(data.data);
+        setUsersDoExam(data.data.reverse());
       }
     } catch (error) {
       //
@@ -72,16 +76,13 @@ const StatisticExam: React.FC = () => {
 
   return (
     <div>
-      <header className="container py-4">
+      <header className="container py-4 bg-white">
         <Breadcrumb>
           <Breadcrumb.Item>
             <Link to="/tests">Đề thi</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
-            <div>{topicTitle}</div>
-          </Breadcrumb.Item>
-          <Breadcrumb.Item>
-            <div>Thống kê</div>
+            <div>Thống kê đề {topicTitle}</div>
           </Breadcrumb.Item>
         </Breadcrumb>
       </header>
@@ -99,6 +100,9 @@ const StatisticExam: React.FC = () => {
         />
 
         <div className="container">
+          <div className="flex justify-end items-center">
+            <FilterStatisticExam />
+          </div>
           <div className=" content-page pt-5 pb-10">
             {usersDoExam && usersDoExam.length ? (
               <table className="shadow-xl w-full">
@@ -116,11 +120,11 @@ const StatisticExam: React.FC = () => {
                     <th className="py-2 pl-4 text-left capitalize">
                       Thời gian kết thúc
                     </th>
+                    <th className="py-2 pl-4 text-left capitalize">
+                      Thời gian làm bài
+                    </th>
                     <th className="py-2 pl-4 text-left capitalize">Chi tiết</th>
                     <th className="py-2 pl-4 text-left capitalize">Action</th>
-                    {/* <th className="py-2 pl-4 text-left capitalize">
-                  Thời gian làm bài
-                </th> */}
                   </tr>
                 </thead>
                 <tbody className="py-4">
@@ -145,10 +149,12 @@ const StatisticExam: React.FC = () => {
                             </span>
                           )}
                         </td>
-                        <td
-                          className="pl-4 font-semibold text-primary-800"
-                          // onClick={() => showUserExamDetail(index)}
-                        >
+                        <td className="pl-4">
+                          {user.end_time
+                            ? getDistance(user.start_time, user.end_time)
+                            : null}
+                        </td>
+                        <td className="pl-4 font-semibold text-primary-800">
                           <Link
                             to={`/tests/${topic_id}/statistic/detail?user_id=${user.userId}`}
                           >
@@ -162,10 +168,6 @@ const StatisticExam: React.FC = () => {
                             </ToolTip>
                           </button>
                         </td>
-
-                        {/* <td className="pl-4">
-                      {getDistance(user.end_time, user.start_time)}
-                    </td> */}
                       </tr>
                     ))}
                 </tbody>
@@ -178,4 +180,4 @@ const StatisticExam: React.FC = () => {
   );
 };
 
-export default StatisticExam;
+export default withBackTop(StatisticExam);

@@ -54,10 +54,7 @@ const StatisticUserExam: React.FC = () => {
             <Link to="/tests">Đề thi</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
-            <div>{topicTitle}</div>
-          </Breadcrumb.Item>
-          <Breadcrumb.Item>
-            <div>{userExamDetail.userName}</div>
+            <Link to={`/tests/${topicId}/statistic`}>{topicTitle}</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
             <div>Thống kê</div>
@@ -65,12 +62,12 @@ const StatisticUserExam: React.FC = () => {
         </Breadcrumb>
       </header>
       <main
-        className="bg-slate-50"
+        className="bg-slate-50 pt-5"
         style={{
           minHeight: 'calc(100vh - 106px)',
         }}
       >
-        <div className="container h-max py-8 rounded-md pb-10">
+        <div className="container h-max pt-4 rounded-md pb-10">
           <div className="mb-10">
             <h4 className="text-primary-900 mb-2 font-semibold underline">
               Chi tiết:
@@ -79,6 +76,10 @@ const StatisticUserExam: React.FC = () => {
               className="relative border-b border-slate-200 last:border-none py-5 px-6 bg-white
               shadow-md last:mb-0 text-tiny text-slate-800"
             >
+              <li className="capitalize">
+                <span className="font-semibold mr-2">Tên:</span>
+                {userExamDetail.userName}
+              </li>
               <li>
                 <span className="font-semibold mr-2">Điểm:</span>
                 {userExamDetail.point}

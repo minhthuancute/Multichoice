@@ -8,6 +8,7 @@ import { topicServices } from '../../services/TopicServices';
 import { topicStore } from '../../store/rootReducer';
 import { IQuestion } from '../../types';
 import Modal from '../Modal/Modal';
+import PolaCode from '../PolaCode/PolaCode';
 import QuestionItem from '../QuestionItem/QuestionItem';
 
 const QuestionList: React.FC = () => {
@@ -55,13 +56,18 @@ const QuestionList: React.FC = () => {
 
   return (
     <div>
-      <Modal openModal={openModalDelete} setOpenModal={setOpenModalDelete}>
-        <div className="modal-content mt-10 mx-auto px-5 flex flex-col justify-center bg-white rounded-md max-w-lg w-full h-60">
+      <Modal
+        openModal={openModalDelete}
+        setOpenModal={setOpenModalDelete}
+        placement="CENTER"
+      >
+        <div className="modal-content mx-auto px-5 flex flex-col justify-center bg-white rounded-md max-w-lg w-full h-60">
           <div className="header text-center">
             <RiErrorWarningLine className="text-red-600 text-5xl mx-auto" />
-            <h4 className="mt-4 text-slate-800 text-tiny">
+            <h4 className="mt-4 text-slate-800 text-tiny flex justify-center">
               Bạn có chắc chắn muốn xóa bỏ câu hỏi:{' '}
-              <span className="font-semibold">{questionDel?.content}</span> ?
+              <PolaCode content={questionDel?.content || ''} className="ml-2" />
+              ?
             </h4>
           </div>
           <div className="body ctas flex items-center justify-center gap-x-2 mt-12">

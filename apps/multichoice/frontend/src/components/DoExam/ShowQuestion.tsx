@@ -196,7 +196,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
         />
       </div>
 
-      <header className="flex items-start justify-between">
+      <header className="flex items-start justify-between lg:justify-center">
         <ToolTip title={errorMsgSubmit}>
           <button
             className={classNames(
@@ -224,8 +224,31 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
         </div>
       </header>
 
-      <div className="p-4 lg:p-10 bg-slate-50 shadow-xl min-h-[302px]">
-        <h4 className="text-slate-800 text-lg flex items-start">
+      <div className="ctas mb-2 flex items-center justify-between">
+        <button
+          className="px-4 py-1 bg-slate-800 rounded-sm text-sm
+          text-white flex items-center focus:ring-blue-100 focus:ring"
+          onClick={() => preQuestion()}
+        >
+          <BiSkipPrevious className="mr-1 text-xl" />
+          Câu hỏi trước
+        </button>
+        <span className="text-slate-800 font-semibold">
+          {indexQuestion + 1}/{exam.questions.length}
+        </span>
+
+        <button
+          className="px-4 py-1 bg-slate-800 rounded-sm text-sm
+          text-white flex items-center focus:ring-blue-100 focus:ring"
+          onClick={() => nextQuestion()}
+        >
+          Câu hỏi sau
+          <BiSkipNext className="ml-1 text-xl" />
+        </button>
+      </div>
+
+      <div className="p-4 lg:p-10 bg-slate-50 shadow-xl min-h-[335px]">
+        <h4 className="text-slate-800 text-lg lg:flex items-start">
           <span className="min-w-max font-semibold">
             Câu hỏi {indexQuestion + 1}:{' '}
           </span>
@@ -289,28 +312,6 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
             </div>
           ) : null}
         </div>
-      </div>
-      <div className="ctas mt-5 flex items-center justify-between">
-        <button
-          className="px-4 py-1 bg-primary-800 rounded-sm text-sm
-          text-white flex items-center focus:ring-blue-100 focus:ring"
-          onClick={() => preQuestion()}
-        >
-          <BiSkipPrevious className="mr-1 text-xl" />
-          Câu hỏi trước
-        </button>
-        <span className="text-slate-800 font-semibold">
-          {indexQuestion + 1}/{exam.questions.length}
-        </span>
-
-        <button
-          className="px-4 py-1 bg-primary-800 rounded-sm text-sm
-          text-white flex items-center focus:ring-blue-100 focus:ring"
-          onClick={() => nextQuestion()}
-        >
-          Câu hỏi sau
-          <BiSkipNext className="ml-1 text-xl" />
-        </button>
       </div>
     </div>
   );
