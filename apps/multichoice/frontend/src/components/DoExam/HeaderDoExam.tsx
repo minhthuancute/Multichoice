@@ -138,10 +138,10 @@ const HeaderDoExam: React.FC = () => {
             <li className="w-4 h-0.5 bg-slate-600 rounded-md mb-1"></li>
             <li className="w-3 h-0.5 bg-slate-600 rounded-md"></li>
           </ul>
-          <p className="topic-title hidden lg:block">{exam.title}</p>
+          <p className="topic-title xs:hidden lg:block">{exam.title}</p>
         </div>
         <div className="header-right flex items-center text-slate-800 text-sm font-semibold">
-          <div className="ctas items-center hidden lg:flex">
+          <div className="ctas items-center xs:hidden lg:flex">
             <button
               className={classNames(
                 `px-4 py-1.5 bg-green-100 rounded-2xl ml-4
