@@ -16,11 +16,13 @@ const ExamResult: React.FC<IExamResult> = ({
   point,
 }) => {
   return (
-    <Modal openModal={openModalResult}>
-      <div
-        className="modal-content mx-auto mt-10 px-5 flex flex-col justify-center
-       bg-white rounded-md max-w-lg w-full h-72"
-      >
+    <Modal
+      openModal={openModalResult}
+      setOpenModal={setOpenModalResult}
+      size="sm"
+      placement="CENTER"
+    >
+      <div className="flex flex-col justify-center bg-white rounded-md h-72">
         <div className="header text-center">
           <BiCheckDouble className="text-green-600 text-5xl mx-auto" />
           <h4 className="mt-4 text-slate-800">

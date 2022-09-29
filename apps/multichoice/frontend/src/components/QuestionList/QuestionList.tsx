@@ -8,11 +8,12 @@ import { topicServices } from '../../services/TopicServices';
 import { topicStore } from '../../store/rootReducer';
 import { IQuestion } from '../../types';
 import Modal from '../Modal/Modal';
+import PolaCode from '../PolaCode/PolaCode';
 import QuestionItem from '../QuestionItem/QuestionItem';
 
 const QuestionList: React.FC = () => {
   const query = useParams();
-  const { topic, setTopicData } = topicStore();
+  const { topicDetail, setTopicData } = topicStore();
 
   const [openModalDelete, setOpenModalDelete] = useState<boolean>(false);
   const [questionDel, setQuestionDel] = useState<IQuestion>();
@@ -25,7 +26,7 @@ const QuestionList: React.FC = () => {
   const getTopicDetail = async () => {
     const { id } = query;
     try {
-      const { data } = await topicServices.getTopicById(id || '');
+      const { data } = await topicServices.getTopicById(Number(id));
       setTopicData(data);
     } catch (error) {
       //
@@ -53,19 +54,20 @@ const QuestionList: React.FC = () => {
     }
   };
 
-  const onUpdateQuestionSuccess = () => {
-    getTopicDetail();
-  };
-
   return (
     <div>
-      <Modal openModal={openModalDelete}>
-        <div className="modal-content mt-10 mx-auto px-5 flex flex-col justify-center bg-white rounded-md max-w-lg w-full h-60">
+      <Modal
+        openModal={openModalDelete}
+        setOpenModal={setOpenModalDelete}
+        placement="CENTER"
+      >
+        <div className="modal-content mx-auto px-5 flex flex-col justify-center bg-white rounded-md max-w-lg w-full h-60">
           <div className="header text-center">
             <RiErrorWarningLine className="text-red-600 text-5xl mx-auto" />
-            <h4 className="mt-4 text-slate-800 text-tiny">
+            <h4 className="mt-4 text-slate-800 text-tiny flex justify-center">
               Bạn có chắc chắn muốn xóa bỏ câu hỏi:{' '}
-              <span className="font-semibold">{questionDel?.content}</span> ?
+              <PolaCode content={questionDel?.content || ''} className="ml-2" />
+              ?
             </h4>
           </div>
           <div className="body ctas flex items-center justify-center gap-x-2 mt-12">
@@ -88,12 +90,11 @@ const QuestionList: React.FC = () => {
         </div>
       </Modal>
 
-      {topic.questions &&
-        topic.questions.map((question: IQuestion, index: number) => {
+      {topicDetail.questions &&
+        topicDetail.questions.map((question: IQuestion, index: number) => {
           return (
             <QuestionItem
               handleDeleteQuestion={handleDeleteQuestion}
-              onUpdateQuestionSuccess={onUpdateQuestionSuccess}
               question={question}
               index={index + 1}
               key={question.id}

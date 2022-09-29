@@ -1,6 +1,6 @@
 import { IUserDoExam } from '@monorepo/multichoice/dto';
 import React from 'react';
-import Modal from '../../../components/Modal/Modal';
+import Modal from '../Modal/Modal';
 
 interface IConfirmDeleteUserExamProps {
   userData: IUserDoExam;
@@ -16,10 +16,15 @@ const ConfirmDeleteUserExam: React.FC<IConfirmDeleteUserExamProps> = ({
   openModalConfirm = false,
 }) => {
   return (
-    <Modal openModal={openModalConfirm}>
+    <Modal
+      openModal={openModalConfirm}
+      setOpenModal={setOpenModalConfirm}
+      placement="CENTER"
+      size="sm"
+    >
       <div
-        className="modal-content mx-auto mt-10 px-5
-       bg-white rounded-md max-w-lg w-full py-8"
+        className="modal-content px-5
+       bg-white rounded-md w-full py-8"
       >
         <div>
           <h4 className="text-slate-800 text-lg text-center">

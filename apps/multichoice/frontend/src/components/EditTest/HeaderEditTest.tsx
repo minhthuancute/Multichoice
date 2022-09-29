@@ -1,7 +1,7 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { topicServices } from '../../services/TopicServices';
-import { ITopicResponse } from '../../types';
+import { ITopicDetailResponse } from '../../types';
 import Breadcrumb from '../Commons/Breadcrumb/Breadcrumb';
 import { FaPencilAlt } from 'react-icons/fa';
 import ToolTip from '../Commons/ToolTip/ToolTip';
@@ -12,39 +12,41 @@ import { FaPlus } from 'react-icons/fa';
 import Modal from '../Modal/Modal';
 import FormEditTest from '../../pages/Tests/Edit/FormEditTest';
 import { secondsToMinutes } from '../../utils/minutesToSeconds';
+import { topicStore } from '../../store/rootReducer';
 
 const HeaderEditTest: React.FC = () => {
   const { id: topicId } = useParams();
 
-  const [topicInfor, setTopicInfor] = useState<ITopicResponse>();
+  const { topicDetail, setTopicDetailData } = topicStore();
+
   const [openModalEditTest, setOpenModalEditTest] = useState<boolean>(false);
 
   const getTopicById = async () => {
     try {
-      const { data }: { data: ITopicResponse } =
-        await topicServices.getTopicById(topicId || '');
-      setTopicInfor(data);
-    } catch (error) {}
+      const { data }: { data: ITopicDetailResponse } =
+        await topicServices.getTopicById(Number(topicId));
+      console.log(data);
+
+      setTopicDetailData(data);
+    } catch (error) {
+      //
+    }
   };
 
-  useLayoutEffect(() => {
-    getTopicById();
-  }, [topicId]);
-
-  const cbOnUpdateTopic = () => {
-    getTopicById();
-  };
-
-  if (!topicInfor) {
+  if (Object.keys(topicDetail).length === 0) {
     return null;
   }
 
   return (
     <div className="header-edit-test">
-      <Modal openModal={openModalEditTest}>
+      <Modal
+        openModal={openModalEditTest}
+        setOpenModal={setOpenModalEditTest}
+        size="md"
+      >
         <FormEditTest
           setOpenModalEditTest={setOpenModalEditTest}
-          cbOnUpdateTopic={cbOnUpdateTopic}
+          cbOnUpdateTopic={getTopicById}
         />
       </Modal>
       <div className="container py-4 border-b border-solid border-slate-200">
@@ -53,20 +55,19 @@ const HeaderEditTest: React.FC = () => {
             <Link to="/tests">Đề thi</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
-            <div>{topicInfor.title}</div>
+            <div>{topicDetail.title}</div>
           </Breadcrumb.Item>
         </Breadcrumb>
 
         <div className="mt-4 flex items-center justify-between">
           <h3 className="text-slate-800 text-xl font-semibold">
-            {topicInfor.title}
+            {topicDetail.title}
           </h3>
           <div className="ctas">
             <ToolTip title="Cập nhật đề thi">
               <button
-                className="create-test btn-primary rounded-md bg-violet-600 text-xs
-              text-white font-bold flex justify-center items-center px-3 h-8 transition-all
-              duration-200 hover:bg-violet-600"
+                className="create-test btn-primary rounded-md bg-slate-800 text-xs
+              text-white font-bold flex justify-center items-center px-3 h-8"
                 onClick={() => setOpenModalEditTest(true)}
               >
                 <FaPencilAlt />
@@ -79,20 +80,20 @@ const HeaderEditTest: React.FC = () => {
         <ul className="left flex items-center">
           <li className="flex items-center text-sm mr-3">
             <BsCalendarDate className="text-slate-500 mr-2" />
-            <span>{getDate(topicInfor.createdAt)}</span>
+            <span>{getDate(topicDetail.createdAt)}</span>
           </li>
           <li className="flex items-center text-sm mr-3">
             <AiOutlineQuestionCircle className="text-slate-800 mr-1" />
-            <span>{topicInfor.questions.length} câu hỏi</span>
+            <span>{topicDetail.questions.length} câu hỏi</span>
           </li>
           <li className="flex items-center text-sm">
             <AiOutlineFieldTime className="text-slate-800 mr-1 text-base" />
-            <span>{secondsToMinutes(topicInfor.expirationTime)} phút</span>
+            <span>{secondsToMinutes(topicDetail.expirationTime)} phút</span>
           </li>
         </ul>
         <div className="right">
           <Link
-            to={'/questions/create?topic_id=' + topicInfor.id}
+            to={'/questions/create?topic_id=' + topicDetail.id}
             className="create-test btn-primary rounded-md bg-primary-900 text-sm
             text-white font-bold flex justify-center items-center px-4 h-10 transition-all
             duration-200 hover:bg-primary-800

@@ -20,10 +20,10 @@ const ModalConfirm: React.FC<IModalConfirmProps> = ({
   cancelButtonLabel,
 }) => {
   return (
-    <Modal openModal={isOpen}>
+    <Modal openModal={isOpen} setOpenModal={onClose} placement="CENTER">
       <div
-        className="modal-content mx-auto mt-10 px-5 flex flex-col justify-center
-      bg-white rounded-md max-w-lg w-full py-10"
+        className="modal-content px-5 flex flex-col justify-center
+      bg-white rounded-md w-full py-10"
       >
         <div className="header text-center">
           <RiErrorWarningLine className="text-yellow-400 text-5xl mx-auto" />

@@ -164,7 +164,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
   const checkLogged = () => {
     const preventDoExam = Object.keys(exam).length === 0;
     if (preventDoExam) {
-      const urlNavigate = '/exam/' + exam_id;
+      const urlNavigate = '/e/' + exam_id;
       navigate(urlNavigate);
     }
   };
@@ -196,38 +196,65 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
         />
       </div>
 
-      <header className="flex items-start justify-between">
+      <header className="flex items-start justify-between lg:justify-center">
         <ToolTip title={errorMsgSubmit}>
           <button
             className={classNames(
-              `px-6 py-2.5 bg-violet-600 rounded-md text-sm
+              `px-6 py-2.5 bg-primary-800 rounded-md text-sm
             text-white flex items-center mb-4 font-semibold
-            focus:ring-violet-300 focus:ring`,
+            focus:ring-blue-100 focus:ring`,
               {
                 'cursor-not-allowed opacity-60': isSubmitExam,
               }
             )}
             onClick={() => requestSubmit()}
           >
-            Nộp bài
+            Nộp Bài
           </button>
         </ToolTip>
 
-        <CountDown
-          isHidden={isSubmitExam}
-          startTime={startTime}
-          endTime={endTime}
-          key="count-down"
-          className="text-green-600"
-        />
+        <div className="lg:hidden">
+          <CountDown
+            isHidden={isSubmitExam}
+            startTime={startTime}
+            endTime={endTime}
+            key="count-down"
+            className="text-slate-800"
+          />
+        </div>
       </header>
 
-      <div className="p-4 lg:p-10 bg-slate-50 shadow-xl min-h-[268px]">
-        <h4 className="text-slate-800 text-lg flex items-start">
-          <span className="min-w-max">Câu hỏi {indexQuestion + 1}: </span>
+      <div className="ctas mb-2 flex items-center justify-between">
+        <button
+          className="px-4 py-1 bg-slate-800 rounded-sm text-sm
+          text-white flex items-center focus:ring-blue-100 focus:ring"
+          onClick={() => preQuestion()}
+        >
+          <BiSkipPrevious className="mr-1 text-xl" />
+          Câu hỏi trước
+        </button>
+        <span className="text-slate-800 font-semibold">
+          {indexQuestion + 1}/{exam.questions.length}
+        </span>
+
+        <button
+          className="px-4 py-1 bg-slate-800 rounded-sm text-sm
+          text-white flex items-center focus:ring-blue-100 focus:ring"
+          onClick={() => nextQuestion()}
+        >
+          Câu hỏi sau
+          <BiSkipNext className="ml-1 text-xl" />
+        </button>
+      </div>
+
+      <div className="p-4 lg:p-10 bg-slate-50 shadow-xl min-h-[335px]">
+        <h4 className="text-slate-800 text-lg lg:flex items-start">
+          <span className="min-w-max font-semibold">
+            Câu hỏi {indexQuestion + 1}:{' '}
+          </span>
           <PolaCode
             content={questions[indexQuestion].content}
-            className="ml-2"
+            className="ml-2 flex-1"
           />
         </h4>
 
@@ -241,7 +268,6 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
                     flex items-center cursor-pointer group"
                     htmlFor={'correct-answer-' + index}
                     key={answers.id}
-                    // onClick={() => onChooseAnswer(answers.id)}
                   >
                     <div className="checkbox mr-4">
                       <input
@@ -256,7 +282,6 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
                         id={'correct-answer-' + index}
                         className="peer select-answer"
                         defaultChecked={isCheckAnswer(answers.id)}
-                        // checked={isCheckAnswer(answers.id)}
                         onChange={() =>
                           onChooseAnswer(
                             answers.id,
@@ -267,40 +292,26 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
                       <div
                         className="radio mt-0.5 w-4 h-4 border border-solid rounded-full
                     border-primary-900 before:bg-primary-900 before:w-2.5 before:h-2.5 before:block
-                    before:rounded-full flex items-center justify-center before:opacity-0
-                    peer-checked:before:opacity-100"
+                      before:rounded-full flex items-center justify-center before:opacity-0
+                      peer-checked:before:opacity-100"
                       ></div>
                     </div>
                     <span className="font-semibold mr-2">
                       {String.fromCharCode(65 + index)}:
                     </span>
-                    <span>{answers.content}</span>
+                    {answers.content}
                   </label>
                 );
               }
             )}
+          {questions[indexQuestion].type === QuestionTypeEnum.MULTIPLE ? (
+            <div className="mt-3">
+              <p className="text-sm text-primary-800 italic text-center">
+                (Câu hỏi có nhiều đáp án đúng)
+              </p>
+            </div>
+          ) : null}
         </div>
-      </div>
-      <div className="ctas mt-10 flex items-center justify-between">
-        <button
-          className="px-4 py-1 bg-primary-900 rounded-sm text-sm
-          text-white flex items-center focus:ring-primary-200 focus:ring"
-          onClick={() => preQuestion()}
-        >
-          <BiSkipPrevious className="mr-1 text-xl" />
-          Câu hỏi trước
-        </button>
-        <span className="text-slate-800 font-semibold">
-          {indexQuestion + 1}/{exam.questions.length}
-        </span>
-        <button
-          className="px-4 py-1 bg-primary-900 rounded-sm text-sm
-          text-white flex items-center focus:ring-primary-200 focus:ring"
-          onClick={() => nextQuestion()}
-        >
-          Câu hỏi sau
-          <BiSkipNext className="ml-1 text-xl" />
-        </button>
       </div>
     </div>
   );

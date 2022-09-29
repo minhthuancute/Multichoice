@@ -231,7 +231,7 @@ const CreateAnswer: React.FC<ICreateAnswerProps> = forwardRef(
             <button
               type="button"
               className="create-test rounded-md flex justify-center items-center w-32 h-10 text-sm
-            text-white font-bold bg-violet-800"
+            text-white font-bold bg-green-00 ml-auto bg-slate-800"
               onClick={() => addNewAnswer()}
             >
               Thêm đáp án

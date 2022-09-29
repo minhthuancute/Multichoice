@@ -30,6 +30,7 @@ import Statistical from '../pages/Statistical/Statistical';
 import { firePush, fireSet } from '../utils/firebase_utils';
 import StatisticExam from '../pages/Exam/StatisticExam/StatisticExam';
 import { withLoading } from '../HOCs/withLoading';
+import StatisticUserExam from '../pages/Exam/StatisticExam/StatisticUserExam';
 
 export const App: React.FC = () => {
   return (
@@ -62,12 +63,16 @@ export const App: React.FC = () => {
               }
             />
             <Route path=":id/statistic" element={<StatisticExam />} />
+            <Route
+              path=":id/statistic/detail"
+              element={<StatisticUserExam />}
+            />
           </Route>
 
           <Route path="questions/create" element={<CreateQuestion />} />
         </Route>
 
-        <Route path="exam">
+        <Route path="e">
           <Route path=":exam_id" element={<Intro />} />
           <Route path=":exam_id/login" element={<CollectInfor />} />
           <Route path=":exam_id/do-exam" element={<DoExam />} />
