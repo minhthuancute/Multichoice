@@ -44,11 +44,11 @@ const QuestionsUserExam: React.FC<IQuestionsUserExamProps> = ({
           return (
             <ul
               className="relative border-b border-slate-200 last:border-none py-5 px-6
-              bg-white shadow-md mb-3 last:mb-0 rounded-sm"
+              bg-white shadow-sm mb-4 last:mb-0 rounded-sm"
               key={question.id}
             >
               <div className="header-left flex text-tiny mb-2 text-slate-800 underline">
-                <span className="w-21 font-semibold mr-1 min-w-max">
+                <span className="w-21 font-semibold mr-2 min-w-max">
                   Câu hỏi {indexQuestion + 1}:
                 </span>
                 <PolaCode content={question.content} />

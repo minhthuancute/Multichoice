@@ -42,7 +42,7 @@ const PolaCode: React.FC<IPolaCodeProps> = ({
           <img
             src={srcZoomImage}
             alt=""
-            className="inline-block max-h-[448px] w-full object-cover"
+            className="inline-block max-h-[448px] w-full object-cover object-center"
           />
 
           <button
