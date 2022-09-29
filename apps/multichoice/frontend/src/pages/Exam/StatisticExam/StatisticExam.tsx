@@ -76,7 +76,7 @@ const StatisticExam: React.FC = () => {
 
   return (
     <div>
-      <header className="container py-4 bg-white">
+      <header className="container py-4">
         <Breadcrumb>
           <Breadcrumb.Item>
             <Link to="/tests">Đề thi</Link>

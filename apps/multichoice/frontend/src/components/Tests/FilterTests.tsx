@@ -35,7 +35,7 @@ const FilterTests: React.FC<IFilterTests> = ({ onFilter }) => {
   };
 
   return (
-    <div>
+    <div className="filter-test">
       <form
         className="form-search-test flex items-center"
         onSubmit={handleSubmit(onSubmit)}
