@@ -41,9 +41,9 @@ const FormEditTest: React.FC<IFormEditTestProps> = ({
 }) => {
   const { id: topicId } = useParams();
 
-  const { topic } = topicStore();
+  const { topicDetail } = topicStore();
   const { expirationTime, typeCategoryName, timeType, title, description } =
-    topic;
+    topicDetail;
 
   const {
     register,
@@ -85,8 +85,8 @@ const FormEditTest: React.FC<IFormEditTestProps> = ({
   });
 
   const initForm = () => {
-    const timeType = topic.timeType as TopicTimeTypeEnum;
-    const typeCategoryName = topic.typeCategoryName as TopicCategoryEnum;
+    const timeType = topicDetail.timeType as TopicTimeTypeEnum;
+    const typeCategoryName = topicDetail.typeCategoryName as TopicCategoryEnum;
     setValue('timeType', timeType);
     setValue('typeCategoryName', typeCategoryName);
     setValue('title', title);

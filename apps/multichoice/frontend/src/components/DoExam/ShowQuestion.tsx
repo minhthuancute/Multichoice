@@ -249,7 +249,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
 
       <div className="p-4 lg:p-10 bg-slate-50 shadow-xl min-h-[335px]">
         <h4 className="text-slate-800 text-lg lg:flex items-start">
-          <span className="min-w-max font-semibold">
+          <span className="min-w-max flex font-semibold">
             Câu hỏi {indexQuestion + 1}:{' '}
           </span>
           <PolaCode

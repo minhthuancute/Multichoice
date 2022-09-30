@@ -75,7 +75,6 @@ const Modal: React.FC<ILayout> = ({
           className={classNames(['mx-auto w-full px-4', getSizeModal()], {
             'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2':
               placement === 'CENTER',
-            'mt-5': placement !== 'CENTER',
           })}
         >
           {children}

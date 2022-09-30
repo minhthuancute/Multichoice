@@ -38,10 +38,12 @@ const QuestionItem: React.FC<IQuestionItem> = ({
         <div className="question-content py-4 px-6 bg-white rounded-lg">
           <div className="header pb-4 text-slate-800 text-tiny flex justify-between">
             <div className="header-left flex text-tiny">
-              <span className="font-semibold mr-2">Câu hỏi {index}:</span>
+              <span className="font-semibold mr-2 min-w-max">
+                Câu hỏi {index}:
+              </span>
               <PolaCode content={question.content} />
             </div>
-            <div className="header-right">
+            <div className="header-right ml-2">
               <ul className="ctas flex items-center ml-auto">
                 <li className="relative group mr-5 mb-0.5">
                   <ToolTip title="Cập nhật câu hỏi">
