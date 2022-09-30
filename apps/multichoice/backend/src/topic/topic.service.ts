@@ -15,7 +15,6 @@ import { User } from '../user/entities/user.entity';
 
 import { Question } from '../question/entities/question.entity';
 import { UserService } from '../user/user.service';
-import { TopicBO } from './model/topicBO';
 
 @Injectable()
 export class TopicService {
