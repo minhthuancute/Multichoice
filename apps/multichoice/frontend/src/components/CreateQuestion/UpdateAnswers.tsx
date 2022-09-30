@@ -190,7 +190,7 @@ const UpdateAnswer: React.FC<IUpdateAnswerProps> = forwardRef(
             <button
               type="button"
               className="create-test rounded-md flex justify-center items-center w-32 h-10 text-sm
-            text-white font-bold bg-violet-800"
+            text-white font-bold bg-slate-800 ml-auto"
               onClick={() => addNewAnswer()}
             >
               Thêm đáp án
