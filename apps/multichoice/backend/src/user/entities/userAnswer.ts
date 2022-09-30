@@ -10,8 +10,8 @@ export class UserAnswer extends Timestamp {
   @Column()
   questionID: number;
 
-  @Column()
-  answerID: number;
+  @Column({ type: 'nvarchar' })
+  answerID: number | string;
 
   @ManyToOne(() => UserExam, (userExam) => userExam.UserAnswer, {
     onDelete: 'CASCADE',

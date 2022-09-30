@@ -53,7 +53,7 @@ export class AnswersUserDto {
   questionID: number;
 
   @ApiProperty({ type: [Number] })
-  answerID: number[];
+  answerID: number[] | string;
   constructor() {
     this.answerID = [];
   }
@@ -97,7 +97,7 @@ export class Questiondetail {
   isActive: boolean;
 
   answers: Answer[];
-  answerUser: number[];
+  answerUser: number[] | string;
   constructor() {
     this.answers = [];
     this.answerUser = [];

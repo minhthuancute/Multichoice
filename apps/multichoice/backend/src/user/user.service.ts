@@ -24,6 +24,7 @@ import { UserExam } from './entities/userExam';
 import { plainToClass } from 'class-transformer';
 import { UserAnswer } from './entities/userAnswer';
 import { SucessResponse } from '../model/SucessResponse';
+import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 
 @Injectable()
 export class UserService {
@@ -99,14 +100,23 @@ export class UserService {
     const lstQuestion: number[] = []; // check xem question ton tai chua?
     if (lst && lst.length > 0) {
       lst.forEach((element) => {
-        if (lstQuestion.includes(element.questionID)) {
-          answersUser[lstQuestion.indexOf(element.questionID)].answerID.push(
-            element.answerID
-          );
+        const tam: AnswersUserDto = new AnswersUserDto();
+        const answer = Number(element.answerID);
+        if (Number.isFinite(answer)) {
+          if (lstQuestion.includes(element.questionID)) {
+            (
+              answersUser[lstQuestion.indexOf(element.questionID)]
+                .answerID as number[]
+            ).push(answer);
+          } else {
+            tam.questionID = element.questionID;
+            (tam.answerID as number[]).push(answer);
+            answersUser.push(tam);
+            lstQuestion.push(element.questionID);
+          }
         } else {
-          const tam: AnswersUserDto = new AnswersUserDto();
           tam.questionID = element.questionID;
-          tam.answerID.push(element.answerID);
+          (tam.answerID as string) = element.answerID as string;
           answersUser.push(tam);
           lstQuestion.push(element.questionID);
         }
@@ -119,8 +129,13 @@ export class UserService {
         const question = this.convertQuestiondetail(element);
         //push dap an user
         const check = lstQuestion.indexOf(element.id);
-        if (check != -1) question.answerUser = answersUser[check].answerID;
-
+        if (check != -1) {
+          if (element.type === QuestionTypeEnum.TEXT) {
+            question.answerUser = answersUser[check].answerID.toString();
+          } else {
+            question.answerUser = answersUser[check].answerID;
+          }
+        }
         result.push(question);
       });
       return result;
@@ -186,13 +201,21 @@ export class UserService {
     if (resultUserDto.AnswersUsers !== undefined) {
       const lst: UserAnswer[] = [];
       resultUserDto.AnswersUsers.forEach((element) => {
-        element.answerID.forEach((item) => {
+        if (typeof element.answerID === 'object') {
+          element.answerID.forEach((item) => {
+            const userAnswer: UserAnswer = new UserAnswer();
+            userAnswer.answerID = item;
+            userAnswer.questionID = element.questionID;
+            userAnswer.userExam = userExam;
+            lst.push(userAnswer);
+          });
+        } else {
           const userAnswer: UserAnswer = new UserAnswer();
-          userAnswer.answerID = item;
+          userAnswer.answerID = element.answerID;
           userAnswer.questionID = element.questionID;
           userAnswer.userExam = userExam;
           lst.push(userAnswer);
-        });
+        }
       });
       await this.userAnswerRepository.save(lst);
     }
@@ -241,12 +264,16 @@ export class UserService {
 
       const aswersUserDto = resultUserDto.AnswersUsers.reduce(
         (result, item) => {
-          return {
-            ...result,
-            [item.questionID]: item.answerID.reduce((a, b) => {
-              return { ...a, [b]: true };
-            }, {}),
-          };
+          if (typeof item.answerID === 'object') {
+            return {
+              ...result,
+              [item.questionID]: item.answerID.reduce((a, b) => {
+                return { ...a, [b]: true };
+              }, {}),
+            };
+          } else {
+            return { ...result };
+          }
         },
         {}
       );
