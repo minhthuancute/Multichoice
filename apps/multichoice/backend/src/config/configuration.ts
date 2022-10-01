@@ -10,5 +10,9 @@ export default () => ({
   jwt_key: process.env.JWT_KEY,
   token_expired: process.env.TOKEN_EXPIRED,
   upload_location: process.env.UPLOAD_LOCATION,
-  max_file_size: process.env.MAX_FILE_SIZE
+  max_file_size: process.env.MAX_FILE_SIZE,
+  redis: {
+    host: process.env.REDIS_HOST,
+    port: parseInt(process.env.REDIS_PORT, 10) || 6379,
+  },
 });
