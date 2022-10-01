@@ -7,9 +7,12 @@ import { JsonWebTokenStrategy } from '../auth/strategies/jwt-strategy';
 import { UserExam } from '../user/entities/userExam';
 import { UserAnswer } from '../user/entities/userAnswer';
 import { UserService } from '../user/user.service';
-
+import { RedisModule } from '../redis/redis.module';
 @Module({
-  imports: [TypeOrmModule.forFeature([Topic, UserAnswer, UserExam])],
+  imports: [
+    TypeOrmModule.forFeature([Topic, UserAnswer, UserExam]),
+    RedisModule,
+  ],
   controllers: [TopicController],
   providers: [TopicService, JsonWebTokenStrategy, UserService],
 })

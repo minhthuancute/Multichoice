@@ -12,7 +12,6 @@ import {
   ResultUserDto,
   UpdateUserDto,
   UserExamDto,
-  Answer,
 } from '@monorepo/multichoice/dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
@@ -25,6 +24,7 @@ import { plainToClass } from 'class-transformer';
 import { UserAnswer } from './entities/userAnswer';
 import { SucessResponse } from '../model/SucessResponse';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
+import { redisService } from '../redis/redis.service';
 
 @Injectable()
 export class UserService {
@@ -34,7 +34,8 @@ export class UserService {
     @InjectRepository(UserAnswer)
     private readonly userAnswerRepository: Repository<UserAnswer>,
     @Inject(forwardRef(() => TopicService))
-    private readonly topicService: TopicService
+    private readonly topicService: TopicService,
+    private readonly redisService: redisService
   ) {}
 
   convertListUserDoExam(userExams: UserExam[]): IUserDoExam[] {
@@ -166,36 +167,27 @@ export class UserService {
   }
 
   async endExam(resultUserDto: ResultUserDto) {
+    const userExam: UserExam = await this.redisService.get(
+      resultUserDto.userID.toString()
+    );
+    if (!userExam) throw new BadRequestException('Hết thời gian làm bài');
     const endDate = new Date().getTime();
-    const over: number = 5 * 1000; // thơi gian trễ
-    const userExam = await this.userExamRepository.findOne({
-      where: { id: resultUserDto.userID },
-      relations: ['topic'],
+    const userExamDB = await this.userExamRepository.findOne({
+      where: { startTime: userExam.startTime },
     });
 
     //check user thi chua
-    if (!userExam) throw new BadRequestException('user nay chua thi');
-
-    //check user da thi hay chua
-    if (userExam.startTime != 0 && userExam.endTime != 0)
-      throw new BadRequestException('Bạn đã nộp bài');
+    if (userExamDB) throw new BadRequestException('Bạn đã nộp bài');
 
     const topic: Topic = await this.topicService.getIsCorrectByTopicID(
       userExam.topic.id
     );
     if (!topic) throw new BadRequestException('topicid is not found');
 
-    const exam: UserExam = new UserExam();
-    exam.point = this.pointCount(topic.questions, resultUserDto);
-    exam.topic = topic;
-    exam.endTime = endDate;
-    // thoi gian làm bài của user
-    const time = Number(endDate) - Number(userExam.startTime);
-    if (time <= Number(topic.expirationTime) + Number(over)) {
-      exam.status = true;
-    }
-    // update exam
-    await this.userExamRepository.update({ id: userExam.id }, exam);
+    userExam.endTime = endDate;
+    userExam.point = this.pointCount(topic.questions, resultUserDto);
+    userExam.topic = topic;
+    const saveUserExam = await this.userExamRepository.save(userExam);
 
     // save list userAnswer
     if (resultUserDto.AnswersUsers !== undefined) {
@@ -206,28 +198,29 @@ export class UserService {
             const userAnswer: UserAnswer = new UserAnswer();
             userAnswer.answerID = item;
             userAnswer.questionID = element.questionID;
-            userAnswer.userExam = userExam;
+            userAnswer.userExam = saveUserExam;
             lst.push(userAnswer);
           });
         } else {
           const userAnswer: UserAnswer = new UserAnswer();
           userAnswer.answerID = element.answerID;
           userAnswer.questionID = element.questionID;
-          userAnswer.userExam = userExam;
+          userAnswer.userExam = saveUserExam;
           lst.push(userAnswer);
         }
       });
       await this.userAnswerRepository.save(lst);
     }
-    if (exam.status !== true) {
-      throw new BadRequestException('Hết thời gian làm bài');
-    }
 
     return new SucessResponse(200, {
-      username: userExam.username,
-      point: exam.point,
-      time,
+      username: saveUserExam.username,
+      point: saveUserExam.point,
+      time: Number(endDate) - Number(saveUserExam.startTime),
     });
+  }
+
+  uniqueID(): number {
+    return Math.floor(Math.random() * Date.now());
   }
 
   async startExam(userExamDto: UserExamDto) {
@@ -236,8 +229,17 @@ export class UserService {
     const exam: UserExam = plainToClass(UserExam, userExamDto);
     exam.topic = topic;
     exam.startTime = new Date().getTime();
-    const result = await this.userExamRepository.save(exam);
-    return new SucessResponse(200, { userid: result.id });
+
+    const userid = this.uniqueID().toString();
+    const over: number = 5 * 1000; // thời gian trễ
+
+    this.redisService.set(
+      userid,
+      exam,
+      (Number(topic.expirationTime) + Number(over)) / 1000 // chuyển về đơn vị giây
+    );
+
+    return new SucessResponse(200, { userid });
   }
 
   public pointCount(
