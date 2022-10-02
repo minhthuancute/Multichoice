@@ -28,7 +28,12 @@ const EditTest: React.FC = () => {
     <div className="edit-test">
       <HeaderEditTest />
 
-      <div className="content-page pt-5 pb-10 bg-slate-100">
+      <div
+        className="pt-5 pb-10 bg-slate-100"
+        style={{
+          minHeight: 'calc(100vh - 228px)',
+        }}
+      >
         <QuestionList />
       </div>
     </div>

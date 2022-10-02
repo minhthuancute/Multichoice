@@ -10,7 +10,7 @@ import ConfirmSubmit from './ConfirmSubmit';
 import { useNavigate, useParams } from 'react-router-dom';
 import CountDown from '../Commons/CountDown/CountDown';
 import { localServices } from '../../services/LocalServices';
-import { START_TIME } from '../../constants/contstants';
+import { IS_SUBMIT_EXAM, START_TIME } from '../../constants/contstants';
 
 import { classNames } from '../../helper/classNames';
 
@@ -42,7 +42,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
     exam: { questions },
     setDataExamResult,
   } = examStore();
-  const { userDoExam } = examStore();
+  const { userDoExam } = answerStore();
   const { exam, setIsSubmitExam, isSubmitExam, isExpriedExam } = examStore();
   const { answers, updateAnswer } = answerStore();
 
@@ -148,12 +148,6 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
     setConfirmSubmit(false);
   };
 
-  useEffect(() => {
-    if (confirmSubmit) {
-      onSumitAnswers();
-    }
-  }, [confirmSubmit]);
-
   const isCheckAnswer = (answerID: number): boolean => {
     const shouldChecked = answers[indexQuestion].answerID.includes(answerID);
 
@@ -162,23 +156,30 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
 
   // if User not provide infor -> redirect User to page Collect Infor
   const checkLogged = () => {
-    const preventDoExam = Object.keys(exam).length === 0;
-    if (preventDoExam) {
-      const urlNavigate = '/e/' + exam_id;
-      navigate(urlNavigate);
-    }
+    // console.log(exam);
+    // const preventDoExam = Object.keys(exam).length === 0;
+    // if (preventDoExam) {
+    //   const urlNavigate = '/e/' + exam_id;
+    //   navigate(urlNavigate);
+    // }
   };
 
   useEffect(() => {
     checkLogged();
   }, []);
 
+  useEffect(() => {
+    if (confirmSubmit) {
+      onSumitAnswers();
+    }
+  }, [confirmSubmit]);
+
   if (!questions) {
     return null;
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full h-full">
       <div className="modals">
         <ExamResult
           setOpenModalResult={setOpenModalResult}
@@ -196,7 +197,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
         />
       </div>
 
-      <header className="flex items-start justify-between lg:justify-center">
+      <header className="flex items-start xs:justify-between lg:justify-end">
         <ToolTip title={errorMsgSubmit}>
           <button
             className={classNames(
@@ -204,7 +205,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
             text-white flex items-center mb-4 font-semibold
             focus:ring-blue-100 focus:ring`,
               {
-                'cursor-not-allowed opacity-60': isSubmitExam,
+                hidden: isSubmitExam,
               }
             )}
             onClick={() => requestSubmit()}
@@ -307,7 +308,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
           {questions[indexQuestion].type === QuestionTypeEnum.MULTIPLE ? (
             <div className="mt-3">
               <p className="text-sm text-primary-800 italic text-center">
-                (Câu hỏi có nhiều đáp án đúng)
+                (Có thể có nhiều đáp án đúng)
               </p>
             </div>
           ) : null}

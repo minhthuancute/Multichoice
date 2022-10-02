@@ -113,7 +113,7 @@ const QuestionsUserExam: React.FC<IQuestionsUserExamProps> = ({
               {question.type === QuestionTypeEnum.MULTIPLE ? (
                 <div className="mt-1">
                   <p className="text-sm text-primary-800 italic">
-                    (Câu hỏi có nhiều đáp án đúng)
+                    (Có thể có nhiều đáp án đúng)
                   </p>
                 </div>
               ) : null}

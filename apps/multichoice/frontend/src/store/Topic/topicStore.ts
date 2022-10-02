@@ -1,6 +1,5 @@
 import create from 'zustand';
-import { devtools, persist } from 'zustand/middleware';
-import { TOPIC_DATA } from '../../constants/contstants';
+import { devtools } from 'zustand/middleware';
 import { ITopicDetailResponse, ITopicResponse } from '../../types';
 
 export interface ITopicStore {
@@ -8,33 +7,25 @@ export interface ITopicStore {
   topicDetail: ITopicDetailResponse;
   setTopicData: (topicData: ITopicResponse) => void;
   setTopicDetailData: (topicData: ITopicDetailResponse) => void;
-  // getQuestion: () => IQuestion[];
 }
 
 // Topic detail
 export const topicStore = create<ITopicStore>()(
-  devtools(
-    persist(
-      (set) => ({
-        topic: {} as ITopicResponse,
-        topicDetail: {} as ITopicDetailResponse,
-        setTopicData: (topicData: ITopicResponse) =>
-          set(() => {
-            return {
-              topic: topicData,
-            };
-          }),
-
-        setTopicDetailData: (topicDetailData: ITopicDetailResponse) =>
-          set(() => {
-            return {
-              topicDetail: topicDetailData,
-            };
-          }),
+  devtools((set) => ({
+    topic: {} as ITopicResponse,
+    topicDetail: {} as ITopicDetailResponse,
+    setTopicData: (topicData: ITopicResponse) =>
+      set(() => {
+        return {
+          topic: topicData,
+        };
       }),
-      {
-        name: TOPIC_DATA,
-      }
-    )
-  )
+
+    setTopicDetailData: (topicDetailData: ITopicDetailResponse) =>
+      set(() => {
+        return {
+          topicDetail: topicDetailData,
+        };
+      }),
+  }))
 );
