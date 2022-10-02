@@ -52,7 +52,7 @@ const Select: React.FC<ISelect> = ({
   return (
     <div className={classNames(['wrapper-select', className])}>
       {textLabel && (
-        <label className="text-slate-800 inline-block">
+        <label className="text-slate-800 inline-block mb-2 font-semibold text-sm">
           {textLabel}
           {isRequired ? <span className="ml-1 text-red-600">*</span> : null}
         </label>

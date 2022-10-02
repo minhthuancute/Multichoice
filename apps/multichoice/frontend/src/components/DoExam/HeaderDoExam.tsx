@@ -6,7 +6,11 @@ import {
   START_TIME,
 } from '../../constants/contstants';
 import { localServices } from '../../services/LocalServices';
-import { examStore, IInforUserDoExam } from '../../store/rootReducer';
+import {
+  answerStore,
+  examStore,
+  IInforUserDoExam,
+} from '../../store/rootReducer';
 import ExamResult from './ExamResult';
 import ModalConfirm from '../Commons/ModalConfirm/ModalConfirm';
 import { classNames } from '../../helper/classNames';
@@ -20,12 +24,12 @@ const HeaderDoExam: React.FC = () => {
   const navigate = useNavigate();
   const {
     exam,
-    userDoExam,
-    setUserData,
+
     setIsSubmitExam,
     dataExamResult,
     isSubmitExam,
   } = examStore();
+  const { userDoExam, setUserDoexamData } = answerStore();
 
   const [openModalResult, setOpenModalResult] = useState<boolean>(false);
   const [openModalConfirmExit, setOpenModalConfirmExit] =
@@ -38,7 +42,7 @@ const HeaderDoExam: React.FC = () => {
     localServices.setData(START_EXAM, false);
 
     setIsSubmitExam(false);
-    setUserData({ is_guest: true } as IInforUserDoExam);
+    setUserDoexamData({} as IInforUserDoExam);
     const urlNavigate = '/e/' + exam_id;
     navigate(urlNavigate);
   };

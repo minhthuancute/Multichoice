@@ -1,9 +1,7 @@
-import { IUserDoExam, IUserDoExamdetail } from '@monorepo/multichoice/dto';
+import { IUserDoExamdetail } from '@monorepo/multichoice/dto';
 import React, { useEffect, useState } from 'react';
-import { IoMdClose } from 'react-icons/io';
 import { Link, useParams } from 'react-router-dom';
 import Breadcrumb from '../../../components/Commons/Breadcrumb/Breadcrumb';
-import ToolTip from '../../../components/Commons/ToolTip/ToolTip';
 import QuestionsUserExam from '../../../components/QuestionsUserExam/QuestionsUserExam';
 import { getTopicTitle } from '../../../helper/getTopicTitle';
 import { withBackTop } from '../../../HOCs/withBackTop';

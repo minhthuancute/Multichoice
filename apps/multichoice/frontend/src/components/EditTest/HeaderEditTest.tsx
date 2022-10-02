@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { topicServices } from '../../services/TopicServices';
-import { ITopicDetailResponse } from '../../types';
+import { Link } from 'react-router-dom';
 import Breadcrumb from '../Commons/Breadcrumb/Breadcrumb';
 import { FaPencilAlt } from 'react-icons/fa';
 import ToolTip from '../Commons/ToolTip/ToolTip';
@@ -15,23 +13,8 @@ import { secondsToMinutes } from '../../utils/minutesToSeconds';
 import { topicStore } from '../../store/rootReducer';
 
 const HeaderEditTest: React.FC = () => {
-  const { id: topicId } = useParams();
-
-  const { topicDetail, setTopicDetailData } = topicStore();
-
+  const { topicDetail } = topicStore();
   const [openModalEditTest, setOpenModalEditTest] = useState<boolean>(false);
-
-  const getTopicById = async () => {
-    try {
-      const { data }: { data: ITopicDetailResponse } =
-        await topicServices.getTopicById(Number(topicId));
-      console.log(data);
-
-      setTopicDetailData(data);
-    } catch (error) {
-      //
-    }
-  };
 
   if (Object.keys(topicDetail).length === 0) {
     return null;
@@ -44,10 +27,7 @@ const HeaderEditTest: React.FC = () => {
         setOpenModal={setOpenModalEditTest}
         size="md"
       >
-        <FormEditTest
-          setOpenModalEditTest={setOpenModalEditTest}
-          cbOnUpdateTopic={getTopicById}
-        />
+        <FormEditTest setOpenModalEditTest={setOpenModalEditTest} />
       </Modal>
       <div className="container py-4 border-b border-solid border-slate-200">
         <Breadcrumb>

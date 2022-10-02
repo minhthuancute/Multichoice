@@ -20,6 +20,7 @@ import {
   minutesToSeconds,
   secondsToMinutes,
 } from '../../../utils/minutesToSeconds';
+import { ITopicDetailResponse } from '../../../types';
 
 const schemaFormLogin = yup.object().shape({
   timeType: yup.string().required(),
@@ -32,16 +33,14 @@ const schemaFormLogin = yup.object().shape({
 
 interface IFormEditTestProps {
   setOpenModalEditTest: React.Dispatch<React.SetStateAction<boolean>>;
-  cbOnUpdateTopic: () => void;
 }
 
 const FormEditTest: React.FC<IFormEditTestProps> = ({
   setOpenModalEditTest,
-  cbOnUpdateTopic,
 }) => {
   const { id: topicId } = useParams();
 
-  const { topicDetail } = topicStore();
+  const { topicDetail, setTopicDetailData } = topicStore();
   const { expirationTime, typeCategoryName, timeType, title, description } =
     topicDetail;
 
@@ -108,6 +107,16 @@ const FormEditTest: React.FC<IFormEditTestProps> = ({
     setValue('timeType', optionVal);
   };
 
+  const getTopicById = async () => {
+    try {
+      const { data }: { data: ITopicDetailResponse } =
+        await topicServices.getTopicById(Number(topicId));
+      setTopicDetailData(data);
+    } catch (error) {
+      //
+    }
+  };
+
   // create TOPIC
   const onSubmit: SubmitHandler<CreateTopicDto> = async (
     formData: CreateTopicDto
@@ -118,7 +127,7 @@ const FormEditTest: React.FC<IFormEditTestProps> = ({
       const { data } = await topicServices.updateTopicById(+id, formData);
       if (data.success) {
         setOpenModalEditTest(false);
-        cbOnUpdateTopic();
+        getTopicById();
       }
     } catch (error) {
       //

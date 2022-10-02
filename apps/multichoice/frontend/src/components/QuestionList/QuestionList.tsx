@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { RiErrorWarningLine } from 'react-icons/ri';
 import { iNotification } from 'react-notifications-component';
 import { useParams } from 'react-router-dom';
@@ -6,14 +6,17 @@ import { notify } from '../../helper/notify';
 import { questionServices } from '../../services/QuestionServices';
 import { topicServices } from '../../services/TopicServices';
 import { topicStore } from '../../store/rootReducer';
-import { IQuestion } from '../../types';
+import { IQuestion, ITopicDetailResponse } from '../../types';
 import Modal from '../Modal/Modal';
 import PolaCode from '../PolaCode/PolaCode';
 import QuestionItem from '../QuestionItem/QuestionItem';
 
 const QuestionList: React.FC = () => {
   const query = useParams();
+
   const { topicDetail, setTopicData } = topicStore();
+
+  // const [topicDetail, setTopicDetail] = useState<ITopicDetailResponse>();
 
   const [openModalDelete, setOpenModalDelete] = useState<boolean>(false);
   const [questionDel, setQuestionDel] = useState<IQuestion>();
@@ -27,6 +30,7 @@ const QuestionList: React.FC = () => {
     const { id } = query;
     try {
       const { data } = await topicServices.getTopicById(Number(id));
+      // setTopicData(data);
       setTopicData(data);
     } catch (error) {
       //
@@ -53,6 +57,10 @@ const QuestionList: React.FC = () => {
       setOpenModalDelete(false);
     }
   };
+
+  useLayoutEffect(() => {
+    getTopicDetail();
+  }, []);
 
   return (
     <div>

@@ -17,19 +17,16 @@ const NavQuestion: React.FC<INavQuestion> = ({
   indexQuestion = 0,
   setIndexQuestion,
 }) => {
+  const { answers } = answerStore();
+
   const {
     exam,
-    setIsSubmitExam,
     isSubmitExam,
-    isExpriedExam,
     exam: { questions },
   } = examStore();
+
   const startTime: number = localServices.getData(START_TIME) || 0;
   const endTime: number = +exam.expirationTime;
-
-  // const { exam, setIsSubmitExam, isSubmitExam, isExpriedExam } = examStore();
-
-  const { answers } = answerStore();
 
   const navigateQuestion = (index: number) => {
     setIndexQuestion(index);
@@ -83,13 +80,15 @@ const NavQuestion: React.FC<INavQuestion> = ({
         className="border-b border-slate-200 absolute top-0 left-1/2 transform -translate-x-1/2
         w-full flex justify-center items-center h-10"
       >
-        <CountDown
-          isHidden={isSubmitExam}
-          startTime={startTime}
-          endTime={endTime}
-          key="count-down"
-          className="text-primary-900 text-lg"
-        />
+        {exam.expirationTime && (
+          <CountDown
+            isHidden={isSubmitExam}
+            startTime={startTime}
+            endTime={endTime}
+            className="text-primary-900 text-lg"
+            key={'count-down' + startTime}
+          />
+        )}
       </div>
     </div>
   );
