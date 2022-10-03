@@ -10,7 +10,7 @@ import { localServices } from '../../services/LocalServices';
 import {
   answerStore,
   examStore,
-  IInforUserDoExam,
+  IInforUserDoExam, userStore,
 } from '../../store/rootReducer';
 import ExamResult from './ExamResult';
 import ModalConfirm from '../Commons/ModalConfirm/ModalConfirm';
@@ -26,11 +26,11 @@ const HeaderDoExam: React.FC = () => {
   const navigate = useNavigate();
   const {
     exam,
-
     setIsSubmitExam,
     dataExamResult,
     isSubmitExam,
   } = examStore();
+  const { user } = userStore();
   const { userDoExam, setUserDoexamData } = answerStore();
 
   const [openModalIntro, setOpenModalIntro] = useState<boolean>(false);
@@ -47,8 +47,13 @@ const HeaderDoExam: React.FC = () => {
 
     setIsSubmitExam(false);
     setUserDoexamData({} as IInforUserDoExam);
-    const urlNavigate = '/e/' + exam_id;
-    navigate(urlNavigate);
+    if (user)  {
+      navigate("/");
+    } else {
+      const urlNavigate = '/e/' + exam_id;
+      navigate(urlNavigate);
+    }
+
   };
 
   const clickOutSideSidebar = () => {

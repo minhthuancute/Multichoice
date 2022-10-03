@@ -74,7 +74,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
 
   const countUnSelectAnswer = (): number => {
     const count = answers.filter((answer: IAnswers) => {
-      return answer.answerID.length === 0;
+      return answer?.answerID.length === 0;
     });
     return count.length;
   };
@@ -143,7 +143,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
   };
 
   const isCheckAnswer = (answerID: number): boolean => {
-    const shouldChecked = answers[indexQuestion].answerID.includes(answerID);
+    const shouldChecked = answers[indexQuestion]?.answerID?.includes(answerID);
 
     return shouldChecked;
   };

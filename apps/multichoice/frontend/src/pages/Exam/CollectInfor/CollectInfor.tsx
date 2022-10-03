@@ -88,7 +88,7 @@ const CollectInfor: React.FC = () => {
       } as iNotification);
     }
   };
-  
+
   useEffect(() => {
     localServices.setData(START_EXAM, false);
     localServices.clearItem(START_TIME);
@@ -96,9 +96,14 @@ const CollectInfor: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    setUserDoexamData({
-      user_name: user.username,
-    } as IInforUserDoExam);
+    console.log('111', user);
+    if (Object.keys(user).length) {
+      setUserDoexamData({
+        user_name: user.username,
+      } as IInforUserDoExam);
+      const urlNavigate = '/e/' + exam_id + '/do-exam';
+      navigate(urlNavigate);
+    }
   }, []);
 
   return (
