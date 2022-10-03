@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import Input from '../../../components/Commons/Input/Input';
 import {
   answerStore,
@@ -17,7 +17,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { examServices } from '../../../services/ExamServices';
 import { IExamResponse, IQuestion } from '../../../types';
 import { localServices } from '../../../services/LocalServices';
-import { START_EXAM, START_TIME } from '../../../constants/contstants';
+import {
+  IS_LOGGOUT_CURRENT_USER,
+  START_EXAM,
+  START_TIME,
+  TOKEN,
+} from '../../../constants/contstants';
 
 const schemaInfor = yup
   .object()
@@ -83,6 +88,10 @@ const CollectInfor: React.FC = () => {
     }
   };
 
+  useLayoutEffect(() => {
+    localServices.setData(START_EXAM, false);
+  });
+
   useEffect(() => {
     localServices.setData(START_EXAM, false);
     localServices.clearItem(START_TIME);
@@ -90,10 +99,16 @@ const CollectInfor: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // if (localServices.getData(TOKEN)) {
-    //   const urlNavigate = '/e/' + exam.url + '/do-exam';
-    //   navigate(urlNavigate);
-    // }
+    // IS_LOGGOUT_CURRENT_USER
+    const isLoggoutCurrentUser = localServices.getData(IS_LOGGOUT_CURRENT_USER);
+    if (localServices.getData(TOKEN) && !isLoggoutCurrentUser) {
+      // setUserDoexamData({
+      //   user_name: userd.user_name,
+      // } as IInforUserDoExam);
+      localServices.setData(START_EXAM, false);
+      const urlNavigate = '/e/' + exam_id + '/do-exam';
+      navigate(urlNavigate);
+    }
   }, []);
 
   return (

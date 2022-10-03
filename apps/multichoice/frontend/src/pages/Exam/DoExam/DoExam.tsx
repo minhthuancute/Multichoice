@@ -25,6 +25,7 @@ const DoExam: React.FC = () => {
   const { answers, userDoExam, setUserDoexamData } = answerStore();
 
   const getExamInfor = async () => {
+    if (Object.keys(exam).length) return;
     try {
       const { data, status } = await examServices.getExamInfor(exam_id || '');
       if (status === 200) {
@@ -42,6 +43,8 @@ const DoExam: React.FC = () => {
 
   const startExam = async () => {
     const canStartExam: boolean = localServices.getData(START_EXAM) === false;
+    console.log(canStartExam);
+
     if (canStartExam) {
       setIsExpriedExam(false);
       setIsSubmitExam(false);
@@ -73,7 +76,10 @@ const DoExam: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    Promise.all([getExamInfor(), startExam()]);
+    (async () => {
+      await Promise.all([getExamInfor(), startExam()]);
+    })();
+
     return () => {
       localServices.setData(START_EXAM, false);
       localServices.clearItem(START_TIME);
