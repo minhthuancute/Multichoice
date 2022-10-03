@@ -37,7 +37,7 @@ export class QuestionService {
     );
     if (!checkTopic) throw new BadRequestException('topicid is not found');
 
-    const QuestionEntity: Question = plainToClass(Question, createQuestionDto);
+    const questionEntity: Question = plainToClass(Question, createQuestionDto);
     if (
       createQuestionDto.type !== QuestionTypeEnum.TEXT &&
       (createQuestionDto.answers == undefined ||
@@ -48,17 +48,17 @@ export class QuestionService {
     if (files !== undefined) {
       //save image}||audio
       if (files.audio !== undefined) {
-        QuestionEntity.audio = files.audio.filename;
+        questionEntity.audio = files.audio.filename;
       }
       if (files.image !== undefined) {
-        QuestionEntity.image = files.image.filename;
+        questionEntity.image = files.image.filename;
       }
     }
 
-    QuestionEntity.topic = checkTopic;
+    questionEntity.topic = checkTopic;
 
     // save question
-    const saveQuestion = await this.questionRepository.save(QuestionEntity);
+    const saveQuestion = await this.questionRepository.save(questionEntity);
 
     // save list answer
     if (
@@ -129,7 +129,7 @@ export class QuestionService {
     return QuestionEntity;
   }
 
-  getanswers(lst: Answer[]): number[] {
+  getAnswers(lst: Answer[]): number[] {
     return lst.map((x) => {
       return x.id;
     });
@@ -157,7 +157,7 @@ export class QuestionService {
       updateQuestionDto.answers.length > 0
     ) {
       // lay ds questionOption dc phep
-      const check = this.getanswers(question.answers);
+      const check = this.getAnswers(question.answers);
 
       updateQuestionDto.answers.forEach((opt) => {
         const questionOption = new Answer();

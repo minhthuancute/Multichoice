@@ -20,7 +20,7 @@ export class User extends Timestamp {
   id: number;
 
   @Column()
-  username: string;
+  userName: string;
 
   @Column({ unique: true })
   email: string;
