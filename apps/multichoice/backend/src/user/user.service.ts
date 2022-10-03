@@ -103,7 +103,7 @@ export class UserService {
     if (lst && lst.length > 0) {
       lst.forEach((element) => {
         const tam: AnswersUserDto = new AnswersUserDto();
-        const answer = Number(element.answerID);
+        const answer = Number(element?.answerID);
         if (Number.isFinite(answer)) {
           if (lstQuestion.includes(element.questionID)) {
             (
