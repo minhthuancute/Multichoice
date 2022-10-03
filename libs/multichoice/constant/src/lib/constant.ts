@@ -5,14 +5,14 @@ export enum QuestionTypeEnum {
 }
 
 export enum TopicCategoryEnum {
+  PROGRAMMING = 'programming',
   GAME = 'game',
   ENGLISH = 'english',
-  PROGRAMMING = 'programming',
   BUSINESS = 'business',
   NONE = 'none',
 }
 
 export enum TopicTimeTypeEnum {
-  REALTIME = 'realtime',
   FIXEDTIME = 'fixedtime',
+  REALTIME = 'realtime',
 }

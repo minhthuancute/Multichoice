@@ -4,7 +4,7 @@ import {
   answerStore,
   examStore,
   IAnswers,
-  IInforUserDoExam,
+  IInforUserDoExam, userStore,
 } from '../../../store/rootReducer';
 import * as yup from 'yup';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -41,6 +41,7 @@ const CollectInfor: React.FC = () => {
 
   const { exam, setExamData } = examStore();
   const { setUserDoexamData, setAnswers } = answerStore();
+  const {user} = userStore();
 
   const {
     register,
@@ -87,11 +88,7 @@ const CollectInfor: React.FC = () => {
       } as iNotification);
     }
   };
-
-  useLayoutEffect(() => {
-    localServices.setData(START_EXAM, false);
-  });
-
+  
   useEffect(() => {
     localServices.setData(START_EXAM, false);
     localServices.clearItem(START_TIME);
@@ -99,16 +96,9 @@ const CollectInfor: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // IS_LOGGOUT_CURRENT_USER
-    const isLoggoutCurrentUser = localServices.getData(IS_LOGGOUT_CURRENT_USER);
-    if (localServices.getData(TOKEN) && !isLoggoutCurrentUser) {
-      // setUserDoexamData({
-      //   user_name: userd.user_name,
-      // } as IInforUserDoExam);
-      localServices.setData(START_EXAM, false);
-      const urlNavigate = '/e/' + exam_id + '/do-exam';
-      navigate(urlNavigate);
-    }
+    setUserDoexamData({
+      user_name: user.username,
+    } as IInforUserDoExam);
   }, []);
 
   return (
@@ -136,6 +126,7 @@ const CollectInfor: React.FC = () => {
                 errMessage={errors.user_name?.message}
                 isRequired={true}
                 inputSize="md"
+                defaultValue={user.username ?? ''}
               />
               <button
                 type="submit"
