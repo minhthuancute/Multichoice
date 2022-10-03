@@ -25,7 +25,6 @@ const DoExam: React.FC = () => {
   const { answers, userDoExam, setUserDoexamData } = answerStore();
 
   const getExamInfor = async () => {
-    if (Object.keys(exam).length) return;
     try {
       const { data, status } = await examServices.getExamInfor(exam_id || '');
       if (status === 200) {
@@ -35,16 +34,15 @@ const DoExam: React.FC = () => {
           localServices.setData(LAST_EXAM, data);
         }
         setExamData(data);
+        startExam(data.id);
       }
     } catch {
       //
     }
   };
 
-
-  const startExam = async () => {
+  const startExam = async (id: number) => {
     const canStartExam: boolean = localServices.getData(START_EXAM) === false;
-    console.log(canStartExam);
 
     if (canStartExam) {
       setIsExpriedExam(false);
@@ -53,8 +51,8 @@ const DoExam: React.FC = () => {
       localServices.setData(START_EXAM, true);
       try {
         const payload: IPayloadStartExam = {
-          topicID: exam.id,
-          userName: userDoExam.user_name,
+          topicID: id,
+          username: userDoExam.user_name,
         };
         const { data } = await examServices.startExam(payload);
         if (data.success) {
@@ -77,7 +75,7 @@ const DoExam: React.FC = () => {
 
   useEffect(() => {
     (async () => {
-      await Promise.all([getExamInfor(), startExam()]);
+      await getExamInfor();
     })();
 
     return () => {
@@ -88,8 +86,8 @@ const DoExam: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const emptyUsername = userDoExam.user_name;
-    if (!emptyUsername) {
+    const emptyusername = userDoExam.user_name;
+    if (!emptyusername) {
       navigate('/e/' + exam_id);
     }
   }, []);

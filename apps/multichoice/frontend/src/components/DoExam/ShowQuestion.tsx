@@ -74,7 +74,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
 
   const countUnSelectAnswer = (): number => {
     const count = answers.filter((answer: IAnswers) => {
-      return answer.answerID.length === 0;
+      return answer?.answerID.length === 0;
     });
     return count.length;
   };
@@ -143,24 +143,10 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
   };
 
   const isCheckAnswer = (answerID: number): boolean => {
-    const shouldChecked = answers[indexQuestion].answerID.includes(answerID);
+    const shouldChecked = answers[indexQuestion]?.answerID?.includes(answerID);
 
     return shouldChecked;
   };
-
-  // if User not provide infor -> redirect User to page Collect Infor
-  const checkLogged = () => {
-    // console.log(exam);
-    // const preventDoExam = Object.keys(exam).length === 0;
-    // if (preventDoExam) {
-    //   const urlNavigate = '/e/' + exam_id;
-    //   navigate(urlNavigate);
-    // }
-  };
-
-  useEffect(() => {
-    checkLogged();
-  }, []);
 
   useEffect(() => {
     if (confirmSubmit) {
