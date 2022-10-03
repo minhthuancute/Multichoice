@@ -2,7 +2,7 @@ import { IAnswers } from '../store/rootReducer';
 import { Api } from './Api';
 
 export interface IPayloadStartExam {
-  userName: string;
+  username: string;
   topicID: number;
 }
 
@@ -31,7 +31,6 @@ class ExamServices extends Api {
   }
 
   startExam(payload: IPayloadStartExam) {
-    console.log(payload);
     const data = this.post('/exam/start', payload);
     return data;
   }

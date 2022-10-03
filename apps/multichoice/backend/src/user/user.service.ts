@@ -45,7 +45,7 @@ export class UserService {
   }
   convertUserDoExam(userExams: UserExam): IUserDoExam {
     const userDoExam: IUserDoExam = {
-      userName: userExams.userName,
+      username: userExams.username,
       startTime: Number(userExams.startTime),
       endTime: Number(userExams.endTime),
       duration: Number(userExams.endTime) - Number(userExams.startTime),
@@ -61,7 +61,7 @@ export class UserService {
     topic: Topic
   ): IUserDoExamdetail {
     const result: IUserDoExamdetail = {
-      userName: userExams.userName,
+      username: userExams.username,
       startTime: Number(userExams.startTime),
       endTime: Number(userExams.endTime),
       duration: Number(userExams.endTime) - Number(userExams.startTime),
@@ -103,7 +103,7 @@ export class UserService {
     if (lst && lst.length > 0) {
       lst.forEach((element) => {
         const tam: AnswersUserDto = new AnswersUserDto();
-        const answer = Number(element.answerID);
+        const answer = Number(element?.answerID);
         if (Number.isFinite(answer)) {
           if (lstQuestion.includes(element.questionID)) {
             (
@@ -168,18 +168,15 @@ export class UserService {
   }
 
   async endExam(resultUserDto: ResultUserDto) {
-    const userExam: UserExam = await this.redisService.get(
-      resultUserDto.userID.toString()
-    );
-    console.log('-------', userExam);
-    if (!userExam) throw new BadRequestException('Hết thời gian làm bài');
     const endTime = new Date().getTime();
-    const userExamDB = await this.userExamRepository.findOne({
-      where: { startTime: userExam.startTime },
-    });
+    const userID: string = resultUserDto.userID.toString();
 
-    //check user thi chua
-    if (userExamDB) throw new BadRequestException('Bạn đã nộp bài');
+    // get data redis
+    const userExam: UserExam = await this.redisService.get(userID);
+    if (!userExam) throw new BadRequestException('Hết thời gian làm bài');
+
+    //xóa key trong redis
+    this.redisService.delete(userID);
 
     const topic: Topic = await this.topicService.getIsCorrectByTopicID(
       userExam.topic.id
@@ -215,7 +212,7 @@ export class UserService {
     }
 
     return new SucessResponse(200, {
-      userName: saveUserExam.userName,
+      username: saveUserExam.username,
       point: saveUserExam.point,
       time: Number(endTime) - Number(saveUserExam.startTime),
     });
@@ -229,7 +226,7 @@ export class UserService {
     const topic = await this.topicService.fineOneByID(userExamDto.topicID);
     if (!topic) throw new BadRequestException('topic is not found');
     const exam: UserExam = new UserExam();
-    exam.userName = userExamDto.userName;
+    exam.username = userExamDto.username;
     exam.topic = new Topic(topic.id);
     exam.startTime = new Date().getTime();
 
