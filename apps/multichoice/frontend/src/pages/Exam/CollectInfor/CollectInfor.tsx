@@ -96,7 +96,6 @@ const CollectInfor: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    console.log('111', user);
     if (Object.keys(user).length) {
       setUserDoexamData({
         user_name: user.username,

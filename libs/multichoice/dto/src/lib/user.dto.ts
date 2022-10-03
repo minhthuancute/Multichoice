@@ -8,7 +8,7 @@ export class CreateUserDto {
   @ApiProperty()
   @MinLength(validation().username.minLength)
   @MaxLength(validation().username.maxLength)
-  userName: string;
+  username: string;
 
   @ApiProperty()
   @IsEmail()
@@ -24,7 +24,7 @@ export class UpdateUserDto {
   @ApiProperty()
   @MinLength(validation().username.minLength)
   @MaxLength(validation().username.maxLength)
-  userName: string;
+  username: string;
 }
 
 export class UpdateUserPasswordDto {
@@ -61,7 +61,7 @@ export class AnswersUserDto {
 
 export class UserExamDto {
   @ApiProperty()
-  userName: string;
+  username: string;
 
   @ApiProperty()
   topicID: number;
@@ -75,7 +75,7 @@ export class ResultUserDto {
 }
 
 export interface IUserDoExam {
-  userName: string;
+  username: string;
   point: number;
   startTime: number;
   endTime: number;

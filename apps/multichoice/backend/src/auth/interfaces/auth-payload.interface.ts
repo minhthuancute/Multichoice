@@ -1,5 +1,5 @@
 export interface AuthPayload {
   id: number;
-  userName: string;
+  username: string;
   email: string;
 }

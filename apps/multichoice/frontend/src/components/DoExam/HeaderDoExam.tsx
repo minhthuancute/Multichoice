@@ -47,7 +47,7 @@ const HeaderDoExam: React.FC = () => {
 
     setIsSubmitExam(false);
     setUserDoexamData({} as IInforUserDoExam);
-    if (user)  {
+    if (Object.keys(user).length)  {
       navigate("/");
     } else {
       const urlNavigate = '/e/' + exam_id;
