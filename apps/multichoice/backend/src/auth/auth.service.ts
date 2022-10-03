@@ -49,7 +49,7 @@ export class authService {
 
   async login(user: User) {
     const payload: AuthPayload = {
-      userName: user.userName,
+      username: user.username,
       email: user.email,
       id: user.id,
     };

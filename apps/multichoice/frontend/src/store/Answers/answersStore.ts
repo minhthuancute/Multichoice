@@ -61,7 +61,6 @@ export const answerStore = create<IAnswersStore>()(
             const answerIndex = tempAnswers.findIndex((answer: IAnswers) => {
               return answer.questionID === questionID;
             });
-            console.log(questionType);
 
             if (answerIndex !== -1) {
               if (questionType.toUpperCase() === 'SINGLE') {

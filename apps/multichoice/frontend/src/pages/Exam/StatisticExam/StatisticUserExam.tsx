@@ -76,7 +76,7 @@ const StatisticUserExam: React.FC = () => {
             >
               <li className="capitalize">
                 <span className="font-semibold mr-2">Tên:</span>
-                {userExamDetail.userName}
+                {userExamDetail.username}
               </li>
               <li>
                 <span className="font-semibold mr-2">Điểm:</span>

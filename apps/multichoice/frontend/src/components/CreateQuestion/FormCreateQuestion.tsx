@@ -141,8 +141,6 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
     const onSubmit: SubmitHandler<CreateQuestionDto> = async (
       formData: CreateQuestionDto
     ) => {
-      console.log('scjskj');
-
       try {
         const answers = getValues('answers');
 

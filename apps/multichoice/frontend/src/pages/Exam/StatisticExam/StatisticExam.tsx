@@ -129,12 +129,12 @@ const StatisticExam: React.FC = () => {
                   {usersDoExam.length &&
                     usersDoExam.map((user: IUserDoExam, index: number) => (
                       <tr
-                        key={user.startTime + user.userName}
+                        key={user.startTime + user.username}
                         className="mb-4 border-b border-slate-200 last:border-none
                       text-slate-800 text-sm cursor-pointer even:bg-slate-100"
                       >
                         <td className="pl-4 py-4">{index + 1}</td>
-                        <td className="pl-4 font-semibold">{user.userName}</td>
+                        <td className="pl-4 font-semibold">{user.username}</td>
                         <td className="pl-4 font-semibold">{user.point}</td>
                         <td className="pl-4">{getDate(user.startTime)}</td>
                         <td className="pl-4">{getTime(user.startTime)}</td>

@@ -51,9 +51,9 @@ const NavQuestion: React.FC<INavQuestion> = ({
               >
                 <BiCheckDouble
                   className={classNames('mr-2 mt-1 min-w-max', {
-                    'opacity-50': answers[index].answerID.length === 0,
+                    'opacity-50': answers[index]?.answerID?.length === 0,
                     'opacity-100 text-primary-800':
-                      answers[index].answerID.length !== 0,
+                      answers[index]?.answerID.length !== 0,
                   })}
                 />
                 <h4
