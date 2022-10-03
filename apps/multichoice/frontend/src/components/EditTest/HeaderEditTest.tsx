@@ -39,10 +39,13 @@ const HeaderEditTest: React.FC = () => {
           </Breadcrumb.Item>
         </Breadcrumb>
 
-        <div className="mt-4 flex items-center justify-between">
-          <h3 className="text-slate-800 text-xl font-semibold">
-            {topicDetail.title}
-          </h3>
+        <div className="mt-4 flex items-start justify-between">
+          <div>
+            <h3 className="text-slate-800 text-xl font-semibold">
+              {topicDetail.title}
+            </h3>
+            <p className="text-slate-800 text-sm">{topicDetail.description}</p>
+          </div>
           <div className="ctas">
             <ToolTip title="Cập nhật đề thi">
               <button

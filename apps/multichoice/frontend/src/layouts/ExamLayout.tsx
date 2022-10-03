@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
-import { START_EXAM } from '../constants/contstants';
+import { IS_LOGGOUT_CURRENT_USER } from '../constants/contstants';
 import { localServices } from '../services/LocalServices';
 
 interface ILayout {
@@ -9,9 +9,7 @@ interface ILayout {
 
 const ExamLayout: React.FC<ILayout> = ({ children }) => {
   useEffect(() => {
-    // localServices.setData(START_EXAM, false);
-    //   localServices.clearItem(START_TIME);
-    //   setIsSubmitExam(false);
+    localServices.setData(IS_LOGGOUT_CURRENT_USER, false);
   }, []);
 
   return (
