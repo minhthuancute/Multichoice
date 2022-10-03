@@ -17,4 +17,8 @@ export class redisService {
       ttl: expirTime,
     });
   }
+
+  public async delete(key: string) {
+    return await this.cacheManager.del(key);
+  }
 }
