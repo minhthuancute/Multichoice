@@ -9,8 +9,8 @@ import { Topic } from './entities/topic.entity';
 import { Answer } from '../answer/entities/answer.entity';
 import { JsonWebTokenStrategy } from '../auth/strategies/jwt-strategy';
 import { UserService } from '../user/user.service';
-import { UserExam } from '../user/entities/userExam';
-import { UserAnswer } from '../user/entities/userAnswer';
+import { UserExam } from '../user/entities/userExam.entity';
+import { UserAnswer } from '../user/entities/userAnswer.entity';
 import { RedisModule } from '../redis/redis.module';
 
 @Module({

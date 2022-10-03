@@ -4,8 +4,8 @@ import { TopicController } from './topic.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Topic } from '../question/entities/topic.entity';
 import { JsonWebTokenStrategy } from '../auth/strategies/jwt-strategy';
-import { UserExam } from '../user/entities/userExam';
-import { UserAnswer } from '../user/entities/userAnswer';
+import { UserExam } from '../user/entities/userExam.entity';
+import { UserAnswer } from '../user/entities/userAnswer.entity';
 import { UserService } from '../user/user.service';
 import { RedisModule } from '../redis/redis.module';
 @Module({

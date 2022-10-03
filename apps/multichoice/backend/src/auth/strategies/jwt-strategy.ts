@@ -15,6 +15,6 @@ export class JsonWebTokenStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: AuthPayload) {
-    return { username: payload.username, email: payload.email, id: payload.id };
+    return { userName: payload.userName, email: payload.email, id: payload.id };
   }
 }
