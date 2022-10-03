@@ -5,8 +5,8 @@ import { JsonWebTokenStrategy } from '../auth/strategies/jwt-strategy';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TopicService } from '../topic/topic.service';
 import { Topic } from '../question/entities/topic.entity';
-import { UserExam } from './entities/userExam';
-import { UserAnswer } from './entities/userAnswer';
+import { UserExam } from './entities/userExam.entity';
+import { UserAnswer } from './entities/userAnswer.entity';
 import { RedisModule } from '../redis/redis.module';
 
 @Module({

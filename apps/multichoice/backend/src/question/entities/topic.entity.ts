@@ -13,10 +13,14 @@ import {
 import { Question } from './question.entity';
 import { Timestamp } from '../../orm/timestamp.entity';
 import { User } from '../../user/entities/user.entity';
-import { UserExam } from '../../user/entities/userExam';
+import { UserExam } from '../../user/entities/userExam.entity';
 
 @Entity()
 export class Topic extends Timestamp {
+  constructor(id: number) {
+    super();
+    this.id = id;
+  }
   @PrimaryGeneratedColumn()
   id: number;
 
