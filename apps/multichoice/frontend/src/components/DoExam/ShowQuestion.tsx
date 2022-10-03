@@ -148,20 +148,6 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
     return shouldChecked;
   };
 
-  // if User not provide infor -> redirect User to page Collect Infor
-  const checkLogged = () => {
-    // console.log(exam);
-    // const preventDoExam = Object.keys(exam).length === 0;
-    // if (preventDoExam) {
-    //   const urlNavigate = '/e/' + exam_id;
-    //   navigate(urlNavigate);
-    // }
-  };
-
-  useEffect(() => {
-    checkLogged();
-  }, []);
-
   useEffect(() => {
     if (confirmSubmit) {
       onSumitAnswers();

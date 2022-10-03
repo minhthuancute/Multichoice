@@ -8,7 +8,6 @@ export class redisController {
   @Get('test/test')
   async getNumber(): Promise<any> {
     const randomNumDbs = Math.floor(Math.random() * Date.now());
-    console.log(randomNumDbs);
     const val = await this.redisService.get('number');
     if (val) {
       return {

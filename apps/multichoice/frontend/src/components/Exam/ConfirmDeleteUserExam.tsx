@@ -29,7 +29,7 @@ const ConfirmDeleteUserExam: React.FC<IConfirmDeleteUserExamProps> = ({
         <div>
           <h4 className="text-slate-800 text-lg text-center">
             Bạn có chắc chắn muốn xóa bỏ kết quả thi của:{' '}
-            <span className="font-semibold">{userData.userName}</span>
+            <span className="font-semibold">{userData.username}</span>
           </h4>
         </div>
         <div className="body ctas flex items-center justify-center gap-x-2 mt-12">
