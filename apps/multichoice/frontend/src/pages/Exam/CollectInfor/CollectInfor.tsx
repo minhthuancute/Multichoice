@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import Input from '../../../components/Commons/Input/Input';
 import {
+  answerStore,
   examStore,
-  IDataUser,
+  IAnswers,
   IInforUserDoExam,
 } from '../../../store/rootReducer';
 import * as yup from 'yup';
@@ -11,14 +12,17 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 import { notify } from '../../../helper/notify';
 import { iNotification } from 'react-notifications-component';
-import { useNavigate } from 'react-router-dom';
-import {
-  CURRENT_USER,
-  IS_LOGGOUT_CURRENT_USER,
-  START_TIME,
-} from '../../../constants/contstants';
+import { useNavigate, useParams } from 'react-router-dom';
+
+import { examServices } from '../../../services/ExamServices';
+import { IExamResponse, IQuestion } from '../../../types';
 import { localServices } from '../../../services/LocalServices';
-import { cookieServices } from '../../../services/CookieServices';
+import {
+  IS_LOGGOUT_CURRENT_USER,
+  START_EXAM,
+  START_TIME,
+  TOKEN,
+} from '../../../constants/contstants';
 
 const schemaInfor = yup
   .object()
@@ -27,48 +31,50 @@ const schemaInfor = yup
   })
   .required();
 
-interface IColectInfor {
+interface IColectInforForm {
   user_name: string;
 }
 
 const CollectInfor: React.FC = () => {
   const navigate = useNavigate();
+  const { exam_id } = useParams();
 
-  const { exam, setUserData } = examStore();
+  const { exam, setExamData } = examStore();
+  const { setUserDoexamData, setAnswers } = answerStore();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<IColectInfor>({
+  } = useForm<IColectInforForm>({
     resolver: yupResolver(schemaInfor),
   });
 
-  useEffect(() => {
-    const isLoggout = Boolean(
-      cookieServices.getCookie(IS_LOGGOUT_CURRENT_USER)
-    );
-
-    const currentUser = localServices.getData(CURRENT_USER);
-    const userData: IDataUser = currentUser.state.user;
-
-    if (currentUser.state.user.token && !isLoggout) {
-      localServices.setData(START_TIME, Date.now());
-
-      setUserData({
-        user_name: userData.username,
-        user_id: userData.id,
-      } as IInforUserDoExam);
-      const urlNavigate = '/e/' + exam.url + '/do-exam';
-      navigate(urlNavigate);
+  const getExamInfor = async () => {
+    try {
+      const { data } = await examServices.getExamInfor(exam_id || '');
+      const examInfor: IExamResponse = data;
+      const initAnswers: IAnswers[] = examInfor.questions.map(
+        (questions: IQuestion) => {
+          const tempArr: IAnswers = {
+            questionID: questions.id,
+            answerID: [],
+          };
+          return tempArr;
+        }
+      );
+      setAnswers(initAnswers);
+      setExamData(data);
+    } catch {
+      //
     }
-  }, [navigate, exam.url]);
+  };
 
-  const onSubmit: SubmitHandler<IColectInfor> = async (
-    formData: IColectInfor
+  const onSubmit: SubmitHandler<IColectInforForm> = async (
+    formData: IColectInforForm
   ) => {
     try {
-      setUserData({
+      setUserDoexamData({
         user_name: formData.user_name,
       } as IInforUserDoExam);
 
@@ -82,27 +88,46 @@ const CollectInfor: React.FC = () => {
     }
   };
 
+  useLayoutEffect(() => {
+    localServices.setData(START_EXAM, false);
+  });
+
+  useEffect(() => {
+    localServices.setData(START_EXAM, false);
+    localServices.clearItem(START_TIME);
+    getExamInfor();
+  }, []);
+
+  useEffect(() => {
+    // IS_LOGGOUT_CURRENT_USER
+    const isLoggoutCurrentUser = localServices.getData(IS_LOGGOUT_CURRENT_USER);
+    if (localServices.getData(TOKEN) && !isLoggoutCurrentUser) {
+      // setUserDoexamData({
+      //   user_name: userd.user_name,
+      // } as IInforUserDoExam);
+      localServices.setData(START_EXAM, false);
+      const urlNavigate = '/e/' + exam_id + '/do-exam';
+      navigate(urlNavigate);
+    }
+  }, []);
+
   return (
-    <div className="h-screen flex items-center justify-center bg-doexam">
+    <div className="h-screen flex items-center justify-center bg-doexam py-6">
       <form
-        className="max-w-xl lg:max-w-4xl xl:max-w-6xl mx-4 bg-white colect-infor max-h-[400px] h-full w-full flex items-center
-        shadow-xl"
+        className="max-w-xl lg:max-w-4xl xl:max-w-6xl mx-4 bg-white colect-infor flex items-center
+        shadow-xl min-h-[448px] h-[448px] w-full"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <div className="left h-full w-1/2 hidden lg:block">
-          <img
-            src="https://images.unsplash.com/photo-1457369804613-52c61a468e7d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
-            alt="exam multichoice"
-            className="block h-full w-full object-cover"
-          />
-        </div>
+        <div className="left h-full w-1/2 xs:hidden lg:block bg-exam bg-cover bg-no-repeat bg-center"></div>
         <div className="right w-full lg:w-1/2 h-full relative">
-          <div className="top absolute w-full top-8 transform">
+          <div className="top absolute w-full top-1/2 transform -translate-y-1/2 p-4">
             <div className="text-center">
-              <h4 className="text-slate-800 text-3xl">{exam.title}</h4>
+              <h4 className="text-slate-800 text-2xl font-semibold">
+                {exam.title}
+              </h4>
               <p className="mt-2">{exam.description}</p>
             </div>
-            <div className="pt-8 xs:px-4 md:px-10 lg:px-10">
+            <div className="mt-5 p-4">
               <Input
                 registerField={register('user_name')}
                 placeholder="Họ và tên"
@@ -114,7 +139,7 @@ const CollectInfor: React.FC = () => {
               />
               <button
                 type="submit"
-                className="mt-10 btn-primary rounded-md flex justify-center items-center w-full h-12 text-sm
+                className="mt-5 btn-primary rounded-md flex justify-center items-center w-full h-12 text-sm
               text-white font-bold bg-primary-900 transition-all duration-200 hover:bg-opacity-90"
               >
                 Bắt đầu thi

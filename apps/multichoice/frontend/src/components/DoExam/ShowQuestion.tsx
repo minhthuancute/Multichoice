@@ -7,19 +7,16 @@ import { answerStore, examStore, IAnswers } from '../../store/rootReducer';
 import { IAnswer } from '../../types';
 import ExamResult from './ExamResult';
 import ConfirmSubmit from './ConfirmSubmit';
-import { useNavigate, useParams } from 'react-router-dom';
 import CountDown from '../Commons/CountDown/CountDown';
 import { localServices } from '../../services/LocalServices';
 import { START_TIME } from '../../constants/contstants';
-
 import { classNames } from '../../helper/classNames';
-
 import ToolTip from '../Commons/ToolTip/ToolTip';
 import PolaCode from '../PolaCode/PolaCode';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
+import { QuestionType } from '../../types/ICommons';
 
 import './doExam.scss';
-import { QuestionType } from '../../types/ICommons';
 
 interface IShowQuestion {
   indexQuestion: number;
@@ -35,14 +32,11 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
   indexQuestion = 0,
   setIndexQuestion,
 }) => {
-  const navigate = useNavigate();
-  const { exam_id } = useParams();
-
   const {
     exam: { questions },
     setDataExamResult,
   } = examStore();
-  const { userDoExam } = examStore();
+  const { userDoExam } = answerStore();
   const { exam, setIsSubmitExam, isSubmitExam, isExpriedExam } = examStore();
   const { answers, updateAnswer } = answerStore();
 
@@ -148,12 +142,6 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
     setConfirmSubmit(false);
   };
 
-  useEffect(() => {
-    if (confirmSubmit) {
-      onSumitAnswers();
-    }
-  }, [confirmSubmit]);
-
   const isCheckAnswer = (answerID: number): boolean => {
     const shouldChecked = answers[indexQuestion].answerID.includes(answerID);
 
@@ -162,23 +150,30 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
 
   // if User not provide infor -> redirect User to page Collect Infor
   const checkLogged = () => {
-    const preventDoExam = Object.keys(exam).length === 0;
-    if (preventDoExam) {
-      const urlNavigate = '/e/' + exam_id;
-      navigate(urlNavigate);
-    }
+    // console.log(exam);
+    // const preventDoExam = Object.keys(exam).length === 0;
+    // if (preventDoExam) {
+    //   const urlNavigate = '/e/' + exam_id;
+    //   navigate(urlNavigate);
+    // }
   };
 
   useEffect(() => {
     checkLogged();
   }, []);
 
+  useEffect(() => {
+    if (confirmSubmit) {
+      onSumitAnswers();
+    }
+  }, [confirmSubmit]);
+
   if (!questions) {
     return null;
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full h-full">
       <div className="modals">
         <ExamResult
           setOpenModalResult={setOpenModalResult}
@@ -196,7 +191,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
         />
       </div>
 
-      <header className="flex items-start justify-between lg:justify-center">
+      <header className="flex items-start xs:justify-between lg:justify-center">
         <ToolTip title={errorMsgSubmit}>
           <button
             className={classNames(
@@ -204,7 +199,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
             text-white flex items-center mb-4 font-semibold
             focus:ring-blue-100 focus:ring`,
               {
-                'cursor-not-allowed opacity-60': isSubmitExam,
+                hidden: isSubmitExam,
               }
             )}
             onClick={() => requestSubmit()}
@@ -219,7 +214,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
             startTime={startTime}
             endTime={endTime}
             key="count-down"
-            className="text-slate-800"
+            className="text-primary-800"
           />
         </div>
       </header>
@@ -247,14 +242,14 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
         </button>
       </div>
 
-      <div className="p-4 lg:p-10 bg-slate-50 shadow-xl min-h-[335px]">
-        <h4 className="text-slate-800 text-lg lg:flex items-start">
+      <div className="p-4 lg:p-10 bg-slate-50 shadow-xl lg:min-h-[335px] xs:min-h-[435px]">
+        <h4 className="text-slate-800 xs:text-tiny lg:text-lg lg:flex items-start">
           <span className="min-w-max flex font-semibold">
             Câu hỏi {indexQuestion + 1}:{' '}
           </span>
           <PolaCode
             content={questions[indexQuestion].content}
-            className="ml-2 flex-1"
+            className="lg:ml-2 flex-1"
           />
         </h4>
 
@@ -307,7 +302,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
           {questions[indexQuestion].type === QuestionTypeEnum.MULTIPLE ? (
             <div className="mt-3">
               <p className="text-sm text-primary-800 italic text-center">
-                (Câu hỏi có nhiều đáp án đúng)
+                (Có thể có nhiều đáp án đúng)
               </p>
             </div>
           ) : null}

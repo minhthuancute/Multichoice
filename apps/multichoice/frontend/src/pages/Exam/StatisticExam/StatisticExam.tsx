@@ -14,10 +14,8 @@ import {
 import { getDate, getDistance, getTime } from '../../../utils/formatDate';
 import ConfirmDeleteUserExam from '../../../components/Exam/ConfirmDeleteUserExam';
 import { getTopicTitle } from '../../../helper/getTopicTitle';
-import Select from '../../../components/Commons/Select/Select';
 import FilterStatisticExam from '../../../components/Exam/FilterStatisticExam';
 import { withBackTop } from '../../../HOCs/withBackTop';
-import { secondsToMinutes } from '../../../utils/minutesToSeconds';
 
 const StatisticExam: React.FC = () => {
   const { id: topic_id } = useParams();

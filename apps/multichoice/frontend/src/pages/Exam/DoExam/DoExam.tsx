@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import FooterDoExam from '../../../components/DoExam/FooterDoExam';
+import React, { useEffect, useLayoutEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import HeaderDoExam from '../../../components/DoExam/HeaderDoExam';
 import MainDoExam from '../../../components/DoExam/MainDoExam';
 import {
@@ -13,29 +12,20 @@ import {
   IPayloadStartExam,
 } from '../../../services/ExamServices';
 import { localServices } from '../../../services/LocalServices';
-import { examStore, IInforUserDoExam } from '../../../store/rootReducer';
+import {
+  answerStore,
+  examStore,
+  IInforUserDoExam,
+} from '../../../store/rootReducer';
 
 const DoExam: React.FC = () => {
+  const navigate = useNavigate();
   const { exam_id } = useParams();
-  const {
-    setExamData,
-    exam,
-    userDoExam,
-    setUserData,
-    setIsSubmitExam,
-    setIsExpriedExam,
-    isSubmitExam,
-  } = examStore();
-
-  const isEmptyUserExam: boolean = Object.keys(userDoExam).length === 0;
+  const { setExamData, exam, setIsSubmitExam, setIsExpriedExam } = examStore();
+  const { answers, userDoExam, setUserDoexamData } = answerStore();
 
   const getExamInfor = async () => {
-    const currentExam = exam;
-    if (Object.keys(currentExam).length && currentExam.id) {
-      startExam();
-      return;
-    }
-
+    if (Object.keys(exam).length) return;
     try {
       const { data, status } = await examServices.getExamInfor(exam_id || '');
       if (status === 200) {
@@ -45,16 +35,16 @@ const DoExam: React.FC = () => {
           localServices.setData(LAST_EXAM, data);
         }
         setExamData(data);
-        startExam();
       }
-    } catch (error) {
+    } catch {
       //
     }
   };
 
   const startExam = async () => {
-    const canStartExam: boolean =
-      !localServices.getData(START_EXAM) && !isSubmitExam && !isEmptyUserExam;
+    const canStartExam: boolean = localServices.getData(START_EXAM) === false;
+    console.log(canStartExam);
+
     if (canStartExam) {
       setIsExpriedExam(false);
       setIsSubmitExam(false);
@@ -68,34 +58,46 @@ const DoExam: React.FC = () => {
         const { data } = await examServices.startExam(payload);
 
         if (data.success) {
-          localServices.setData(START_TIME, Date.now());
-          setUserData({
+          setUserDoexamData({
             user_name: userDoExam.user_name,
             user_id: data.data.userid,
           } as IInforUserDoExam);
         }
-      } catch (error) {
-        // notify({
-        //   message: 'Something went wrong !',
-        //   type: 'danger',
-        // } as iNotification);
+      } catch {
+        //
       }
     }
   };
 
+  useLayoutEffect(() => {
+    if (!localServices.getData(START_TIME)) {
+      localServices.setData(START_TIME, Date.now());
+    }
+  }, []);
+
   useEffect(() => {
-    getExamInfor();
+    (async () => {
+      await Promise.all([getExamInfor(), startExam()]);
+    })();
+
     return () => {
       localServices.setData(START_EXAM, false);
+      localServices.clearItem(START_TIME);
       setIsSubmitExam(false);
     };
+  }, []);
+
+  useEffect(() => {
+    const emptyUsername = userDoExam.user_name === '';
+    if (emptyUsername || answers.length === 0) {
+      navigate('/e/' + exam_id);
+    }
   }, []);
 
   return (
     <div className="h-max relative">
       <HeaderDoExam />
       <MainDoExam />
-      {/* <FooterDoExam /> */}
     </div>
   );
 };

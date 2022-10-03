@@ -8,10 +8,10 @@ import { Question } from './entities/question.entity';
 import { Repository } from 'typeorm';
 import { SucessResponse } from '../model/SucessResponse';
 import { plainToClass } from 'class-transformer';
-import { Topic } from './entities/topic.entity';
 import { Answer } from '../answer/entities/answer.entity';
 import { TopicService } from '../topic/topic.service';
 import { User } from '../user/entities/user.entity';
+import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 
 @Injectable()
 export class QuestionService {
@@ -39,8 +39,9 @@ export class QuestionService {
 
     const QuestionEntity: Question = plainToClass(Question, createQuestionDto);
     if (
-      createQuestionDto.answers == undefined &&
-      createQuestionDto.answers.length == 0
+      createQuestionDto.type !== QuestionTypeEnum.TEXT &&
+      (createQuestionDto.answers == undefined ||
+        createQuestionDto.answers.length == 0)
     ) {
       throw new BadRequestException('answers is not  empty');
     }
@@ -60,14 +61,19 @@ export class QuestionService {
     const saveQuestion = await this.questionRepository.save(QuestionEntity);
 
     // save list answer
-    const answers: Answer[] = createQuestionDto.answers.map((opt) => {
-      const questionOption = new Answer();
-      questionOption.content = opt.content;
-      questionOption.isCorrect = opt.isCorrect;
-      questionOption.question = saveQuestion;
-      return questionOption;
-    });
-    await this.answerRepository.save(answers);
+    if (
+      createQuestionDto.answers != undefined &&
+      createQuestionDto.type !== QuestionTypeEnum.TEXT
+    ) {
+      const answers: Answer[] = createQuestionDto.answers.map((opt) => {
+        const questionOption = new Answer();
+        questionOption.content = opt.content;
+        questionOption.isCorrect = opt.isCorrect;
+        questionOption.question = saveQuestion;
+        return questionOption;
+      });
+      await this.answerRepository.save(answers);
+    }
 
     return new SucessResponse(201, 'Sucess');
   }
