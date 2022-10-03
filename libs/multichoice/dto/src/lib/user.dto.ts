@@ -8,7 +8,7 @@ export class CreateUserDto {
   @ApiProperty()
   @MinLength(validation().username.minLength)
   @MaxLength(validation().username.maxLength)
-  username: string;
+  userName: string;
 
   @ApiProperty()
   @IsEmail()
@@ -24,7 +24,7 @@ export class UpdateUserDto {
   @ApiProperty()
   @MinLength(validation().username.minLength)
   @MaxLength(validation().username.maxLength)
-  username: string;
+  userName: string;
 }
 
 export class UpdateUserPasswordDto {
@@ -53,7 +53,7 @@ export class AnswersUserDto {
   questionID: number;
 
   @ApiProperty({ type: [Number] })
-  answerID: number[];
+  answerID: number[] | string;
   constructor() {
     this.answerID = [];
   }
@@ -61,7 +61,7 @@ export class AnswersUserDto {
 
 export class UserExamDto {
   @ApiProperty()
-  username: string;
+  userName: string;
 
   @ApiProperty()
   topicID: number;
@@ -71,16 +71,16 @@ export class ResultUserDto {
   userID: number;
 
   @ApiProperty({ type: [AnswersUserDto] })
-  AnswersUsers: AnswersUserDto[];
+  answerUsers: AnswersUserDto[];
 }
 
 export interface IUserDoExam {
   userName: string;
   point: number;
-  start_time: number;
-  end_time: number;
+  startTime: number;
+  endTime: number;
   duration: number;
-  userId: number;
+  userID: number;
 }
 export interface IUserDoExamdetail extends IUserDoExam {
   questions: Questiondetail[];
@@ -97,7 +97,7 @@ export class Questiondetail {
   isActive: boolean;
 
   answers: Answer[];
-  answerUser: number[];
+  answerUser: number[] | string;
   constructor() {
     this.answers = [];
     this.answerUser = [];

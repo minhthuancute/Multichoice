@@ -8,10 +8,10 @@ import { Question } from './entities/question.entity';
 import { Repository } from 'typeorm';
 import { SucessResponse } from '../model/SucessResponse';
 import { plainToClass } from 'class-transformer';
-import { Topic } from './entities/topic.entity';
 import { Answer } from '../answer/entities/answer.entity';
 import { TopicService } from '../topic/topic.service';
 import { User } from '../user/entities/user.entity';
+import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 
 @Injectable()
 export class QuestionService {
@@ -37,37 +37,43 @@ export class QuestionService {
     );
     if (!checkTopic) throw new BadRequestException('topicid is not found');
 
-    const QuestionEntity: Question = plainToClass(Question, createQuestionDto);
+    const questionEntity: Question = plainToClass(Question, createQuestionDto);
     if (
-      createQuestionDto.answers == undefined &&
-      createQuestionDto.answers.length == 0
+      createQuestionDto.type !== QuestionTypeEnum.TEXT &&
+      (createQuestionDto.answers == undefined ||
+        createQuestionDto.answers.length == 0)
     ) {
       throw new BadRequestException('answers is not  empty');
     }
     if (files !== undefined) {
       //save image}||audio
       if (files.audio !== undefined) {
-        QuestionEntity.audio = files.audio.filename;
+        questionEntity.audio = files.audio.filename;
       }
       if (files.image !== undefined) {
-        QuestionEntity.image = files.image.filename;
+        questionEntity.image = files.image.filename;
       }
     }
 
-    QuestionEntity.topic = checkTopic;
+    questionEntity.topic = checkTopic;
 
     // save question
-    const saveQuestion = await this.questionRepository.save(QuestionEntity);
+    const saveQuestion = await this.questionRepository.save(questionEntity);
 
     // save list answer
-    const answers: Answer[] = createQuestionDto.answers.map((opt) => {
-      const questionOption = new Answer();
-      questionOption.content = opt.content;
-      questionOption.isCorrect = opt.isCorrect;
-      questionOption.question = saveQuestion;
-      return questionOption;
-    });
-    await this.answerRepository.save(answers);
+    if (
+      createQuestionDto.answers != undefined &&
+      createQuestionDto.type !== QuestionTypeEnum.TEXT
+    ) {
+      const answers: Answer[] = createQuestionDto.answers.map((opt) => {
+        const questionOption = new Answer();
+        questionOption.content = opt.content;
+        questionOption.isCorrect = opt.isCorrect;
+        questionOption.question = saveQuestion;
+        return questionOption;
+      });
+      await this.answerRepository.save(answers);
+    }
 
     return new SucessResponse(201, 'Sucess');
   }
@@ -123,7 +129,7 @@ export class QuestionService {
     return QuestionEntity;
   }
 
-  getanswers(lst: Answer[]): number[] {
+  getAnswers(lst: Answer[]): number[] {
     return lst.map((x) => {
       return x.id;
     });
@@ -151,7 +157,7 @@ export class QuestionService {
       updateQuestionDto.answers.length > 0
     ) {
       // lay ds questionOption dc phep
-      const check = this.getanswers(question.answers);
+      const check = this.getAnswers(question.answers);
 
       updateQuestionDto.answers.forEach((opt) => {
         const questionOption = new Answer();

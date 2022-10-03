@@ -36,12 +36,14 @@ const QuestionItem: React.FC<IQuestionItem> = ({
       </Modal>
       <div className="container mb-4 last:mb-0">
         <div className="question-content py-4 px-6 bg-white rounded-lg">
-          <div className="header pb-4 text-slate-800 text-tiny flex justify-between">
+          <div className="header pb-2 text-slate-800 text-tiny flex justify-between">
             <div className="header-left flex text-tiny">
-              <span className="font-semibold mr-2">Câu hỏi {index}:</span>
+              <span className="font-semibold mr-2 min-w-max">
+                Câu hỏi {index}:
+              </span>
               <PolaCode content={question.content} />
             </div>
-            <div className="header-right">
+            <div className="header-right ml-2">
               <ul className="ctas flex items-center ml-auto">
                 <li className="relative group mr-5 mb-0.5">
                   <ToolTip title="Cập nhật câu hỏi">
@@ -60,7 +62,7 @@ const QuestionItem: React.FC<IQuestionItem> = ({
               </ul>
             </div>
           </div>
-          <div className="body pt-4 border-t border-slate-200">
+          <div className="body pt-2 border-t border-slate-200">
             <ul>
               {question &&
                 question.answers.map((answer: IAnswer, index: number) => (
@@ -86,7 +88,7 @@ const QuestionItem: React.FC<IQuestionItem> = ({
             {question.type === QuestionTypeEnum.MULTIPLE ? (
               <div className="mt-2">
                 <p className="text-sm text-green-600 italic">
-                  (Câu hỏi có nhiều đáp án đúng)
+                  (Có thể có nhiều đáp án đúng)
                 </p>
               </div>
             ) : null}

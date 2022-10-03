@@ -86,9 +86,9 @@ const FormRegister: React.FC = () => {
         {/* <SignUpOptions isLoginPage={false} /> */}
 
         <InputAuthen
-          registerField={register('username')}
-          isError={Boolean(errors.username)}
-          errMessage={errors.username?.message}
+          registerField={register('userName')}
+          isError={Boolean(errors.userName)}
+          errMessage={errors.userName?.message}
           placeholder="User Name"
           typeInput="text"
           Icon={AiOutlineUser}

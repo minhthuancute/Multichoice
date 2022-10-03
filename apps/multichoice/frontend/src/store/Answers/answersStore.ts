@@ -3,13 +3,21 @@ import { devtools, persist } from 'zustand/middleware';
 import { ANSWERS_EXAM } from '../../constants/contstants';
 import { QuestionType } from '../../types/ICommons';
 
+export interface IInforUserDoExam {
+  is_guest: boolean;
+  user_name: string;
+  user_id: number;
+}
+
 export interface IAnswers {
   questionID: number;
   answerID: number[];
 }
 
 export interface IAnswersStore {
+  userDoExam: IInforUserDoExam;
   answers: IAnswers[];
+  isSubmitExam: boolean;
   setAnswers: (answers: IAnswers[]) => void;
   updateAnswer: (
     questionID: number,
@@ -17,6 +25,7 @@ export interface IAnswersStore {
     questionType: QuestionType
   ) => void; // for update correct answer
   addAnswer: (answer: IAnswers) => void;
+  setUserDoexamData: (userData: IInforUserDoExam) => void;
 }
 
 export const answerStore = create<IAnswersStore>()(
@@ -24,11 +33,20 @@ export const answerStore = create<IAnswersStore>()(
     persist(
       (set) => ({
         answers: [],
+        userDoExam: {} as IInforUserDoExam,
+        isSubmitExam: false,
 
         setAnswers: (answers: IAnswers[]) =>
           set(() => {
             return {
               answers: answers,
+            };
+          }),
+
+        setUserDoexamData: (userData: IInforUserDoExam) =>
+          set(() => {
+            return {
+              userDoExam: userData,
             };
           }),
 

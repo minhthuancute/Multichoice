@@ -1,5 +1,7 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useQuery } from '../../hooks/useQuery';
+import { topicServices } from '../../services/TopicServices';
 import { topicStore } from '../../store/rootReducer';
 import Breadcrumb from '../Commons/Breadcrumb/Breadcrumb';
 
@@ -9,17 +11,37 @@ interface IHeaderCreateTest {
 
 const HeaderCreateQuestion: React.FC<IHeaderCreateTest> = ({ submitForm }) => {
   const navigate = useNavigate();
-  const { topic } = topicStore();
+  const query = useQuery();
+  const { setTopicDetailData, topicDetail } = topicStore();
+
+  const getTopicDetail = async () => {
+    try {
+      const { data } = await topicServices.getTopicById(
+        Number(query.get('topic_id'))
+      );
+      setTopicDetailData(data);
+    } catch (error) {
+      //
+    }
+  };
+
+  useEffect(() => {
+    getTopicDetail();
+  }, []);
 
   return (
     <div className="header-create-test">
       <div className="container flex justify-between py-4">
         <Breadcrumb>
           <Breadcrumb.Item>
-            <Link to={'/tests/edit/' + topic.id}>{topic.title}</Link>
+            <Link to={'/tests/edit/' + topicDetail.id}>
+              {topicDetail.title}
+            </Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
-            <Link to={'/questions/create?topic_id=' + topic.id}>Câu hỏi</Link>
+            <Link to={'/questions/create?topic_id=' + topicDetail.id}>
+              Câu hỏi
+            </Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
             <div>Tạo mới câu hỏi</div>

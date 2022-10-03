@@ -7,15 +7,15 @@ import {
 } from 'typeorm';
 import { Timestamp } from '../../orm/timestamp.entity';
 import { Topic } from '../../question/entities/topic.entity';
-import { UserAnswer } from './userAnswer';
+import { UserAnswer } from './userAnswer.entity';
 
 @Entity()
 export class UserExam extends Timestamp {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  username: string;
+  @Column({default: null})
+  userName: string;
 
   @Column({ type: 'bigint', default: 0 })
   startTime: number;
@@ -33,5 +33,5 @@ export class UserExam extends Timestamp {
   topic: Topic;
 
   @OneToMany(() => UserAnswer, (qs) => qs.userExam)
-  UserAnswer: UserAnswer[];
+  userAnswer: UserAnswer[];
 }

@@ -1,9 +1,7 @@
-import { IUserDoExam, IUserDoExamdetail } from '@monorepo/multichoice/dto';
+import { IUserDoExamdetail } from '@monorepo/multichoice/dto';
 import React, { useEffect, useState } from 'react';
-import { IoMdClose } from 'react-icons/io';
 import { Link, useParams } from 'react-router-dom';
 import Breadcrumb from '../../../components/Commons/Breadcrumb/Breadcrumb';
-import ToolTip from '../../../components/Commons/ToolTip/ToolTip';
 import QuestionsUserExam from '../../../components/QuestionsUserExam/QuestionsUserExam';
 import { getTopicTitle } from '../../../helper/getTopicTitle';
 import { withBackTop } from '../../../HOCs/withBackTop';
@@ -86,16 +84,16 @@ const StatisticUserExam: React.FC = () => {
               </li>
               <li>
                 <span className="font-semibold mr-2">Ngày:</span>
-                {getDate(userExamDetail.start_time)}
+                {getDate(userExamDetail.startTime)}
               </li>
               <li>
                 <span className="font-semibold mr-2">Thời gian bắt đầu:</span>
-                {getTime(userExamDetail.start_time)}
+                {getTime(userExamDetail.startTime)}
               </li>
               <li>
                 <span className="font-semibold mr-2">Thời gian kết thúc:</span>
-                {userExamDetail.end_time ? (
-                  getTime(userExamDetail.end_time)
+                {userExamDetail.endTime ? (
+                  getTime(userExamDetail.endTime)
                 ) : (
                   <span className="text-red-500 font-semibold">
                     Chưa nộp bài
