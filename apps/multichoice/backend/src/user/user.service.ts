@@ -168,17 +168,15 @@ export class UserService {
   }
 
   async endExam(resultUserDto: ResultUserDto) {
-    const userExam: UserExam = await this.redisService.get(
-      resultUserDto.userID.toString()
-    );
-    if (!userExam) throw new BadRequestException('Hết thời gian làm bài');
     const endTime = new Date().getTime();
-    const userExamDB = await this.userExamRepository.findOne({
-      where: { startTime: userExam.startTime },
-    });
+    const userID: string = resultUserDto.userID.toString();
 
-    //check user thi chua
-    if (userExamDB) throw new BadRequestException('Bạn đã nộp bài');
+    // get data redis
+    const userExam: UserExam = await this.redisService.get(userID);
+    if (!userExam) throw new BadRequestException('Hết thời gian làm bài');
+
+    //xóa key trong redis
+    this.redisService.delete(userID);
 
     const topic: Topic = await this.topicService.getIsCorrectByTopicID(
       userExam.topic.id
