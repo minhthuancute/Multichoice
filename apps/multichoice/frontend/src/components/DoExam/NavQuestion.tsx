@@ -1,8 +1,11 @@
 import React from 'react';
 import { BiCheckDouble } from 'react-icons/bi';
+import { START_TIME } from '../../constants/contstants';
 import { classNames } from '../../helper/classNames';
+import { localServices } from '../../services/LocalServices';
 import { answerStore, examStore } from '../../store/rootReducer';
 import { IQuestion } from '../../types';
+import CountDown from '../Commons/CountDown/CountDown';
 import PolaCode from '../PolaCode/PolaCode';
 
 interface INavQuestion {
@@ -14,19 +17,30 @@ const NavQuestion: React.FC<INavQuestion> = ({
   indexQuestion = 0,
   setIndexQuestion,
 }) => {
+  const { answers } = answerStore();
+
   const {
+    exam,
+    isSubmitExam,
     exam: { questions },
   } = examStore();
-  const { answers } = answerStore();
+
+  const startTime: number = localServices.getData(START_TIME) || 0;
+  const endTime: number = +exam.expirationTime;
 
   const navigateQuestion = (index: number) => {
     setIndexQuestion(index);
   };
 
   return (
-    <div className="shadow-xl w-full min-h-[420px] px-8 py-6 bg-slate-50 ">
-      <h2 className="text-center text-xl text-slate-800">Danh sách câu hỏi</h2>
-      <ul className="mt-2 overflow-auto max-h-96">
+    <div className="shadow-xl w-full min-h-[430px] px-8 pt-12 pb-6 bg-slate-50 relative">
+      <div className="mb-2">
+        <h2 className="text-center text-lg font-semibold text-slate-800 capitalize">
+          Danh sách câu hỏi
+        </h2>
+      </div>
+
+      <ul className="overflow-auto max-h-96">
         {questions &&
           questions.map((question: IQuestion, index: number) => {
             return (
@@ -36,9 +50,9 @@ const NavQuestion: React.FC<INavQuestion> = ({
                 key={question.id}
               >
                 <BiCheckDouble
-                  className={classNames('mr-2 min-w-max', {
+                  className={classNames('mr-2 mt-1 min-w-max', {
                     'opacity-50': answers[index].answerID.length === 0,
-                    'opacity-100 text-green-500':
+                    'opacity-100 text-primary-800':
                       answers[index].answerID.length !== 0,
                   })}
                 />
@@ -61,6 +75,21 @@ const NavQuestion: React.FC<INavQuestion> = ({
             );
           })}
       </ul>
+
+      <div
+        className="border-b border-slate-200 absolute top-0 left-1/2 transform -translate-x-1/2
+        w-full flex justify-center items-center h-10"
+      >
+        {exam.expirationTime && (
+          <CountDown
+            isHidden={isSubmitExam}
+            startTime={startTime}
+            endTime={endTime}
+            className="text-primary-900 text-lg"
+            key={'count-down' + startTime}
+          />
+        )}
+      </div>
     </div>
   );
 };

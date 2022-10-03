@@ -7,19 +7,16 @@ import { answerStore, examStore, IAnswers } from '../../store/rootReducer';
 import { IAnswer } from '../../types';
 import ExamResult from './ExamResult';
 import ConfirmSubmit from './ConfirmSubmit';
-import { useNavigate, useParams } from 'react-router-dom';
 import CountDown from '../Commons/CountDown/CountDown';
 import { localServices } from '../../services/LocalServices';
 import { START_TIME } from '../../constants/contstants';
-
 import { classNames } from '../../helper/classNames';
-
 import ToolTip from '../Commons/ToolTip/ToolTip';
 import PolaCode from '../PolaCode/PolaCode';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
+import { QuestionType } from '../../types/ICommons';
 
 import './doExam.scss';
-import { QuestionType } from '../../types/ICommons';
 
 interface IShowQuestion {
   indexQuestion: number;
@@ -35,14 +32,11 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
   indexQuestion = 0,
   setIndexQuestion,
 }) => {
-  const navigate = useNavigate();
-  const { exam_id } = useParams();
-
   const {
     exam: { questions },
     setDataExamResult,
   } = examStore();
-  const { userDoExam } = examStore();
+  const { userDoExam } = answerStore();
   const { exam, setIsSubmitExam, isSubmitExam, isExpriedExam } = examStore();
   const { answers, updateAnswer } = answerStore();
 
@@ -92,7 +86,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
     try {
       const payload: IPayloadEndExam = {
         userID: userDoExam.user_id,
-        AnswersUsers: answers,
+        answerUsers: answers,
       } as IPayloadEndExam;
       const { data } = await examServices.submitExam(payload);
 
@@ -148,12 +142,6 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
     setConfirmSubmit(false);
   };
 
-  useEffect(() => {
-    if (confirmSubmit) {
-      onSumitAnswers();
-    }
-  }, [confirmSubmit]);
-
   const isCheckAnswer = (answerID: number): boolean => {
     const shouldChecked = answers[indexQuestion].answerID.includes(answerID);
 
@@ -162,23 +150,30 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
 
   // if User not provide infor -> redirect User to page Collect Infor
   const checkLogged = () => {
-    const preventDoExam = Object.keys(exam).length === 0;
-    if (preventDoExam) {
-      const urlNavigate = '/exam/' + exam_id;
-      navigate(urlNavigate);
-    }
+    // console.log(exam);
+    // const preventDoExam = Object.keys(exam).length === 0;
+    // if (preventDoExam) {
+    //   const urlNavigate = '/e/' + exam_id;
+    //   navigate(urlNavigate);
+    // }
   };
 
   useEffect(() => {
     checkLogged();
   }, []);
 
+  useEffect(() => {
+    if (confirmSubmit) {
+      onSumitAnswers();
+    }
+  }, [confirmSubmit]);
+
   if (!questions) {
     return null;
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full h-full">
       <div className="modals">
         <ExamResult
           setOpenModalResult={setOpenModalResult}
@@ -196,38 +191,65 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
         />
       </div>
 
-      <header className="flex items-start justify-between">
+      <header className="flex items-start xs:justify-between lg:justify-center">
         <ToolTip title={errorMsgSubmit}>
           <button
             className={classNames(
-              `px-6 py-2.5 bg-violet-600 rounded-md text-sm
+              `px-6 py-2.5 bg-primary-800 rounded-md text-sm
             text-white flex items-center mb-4 font-semibold
-            focus:ring-violet-300 focus:ring`,
+            focus:ring-blue-100 focus:ring`,
               {
-                'cursor-not-allowed opacity-60': isSubmitExam,
+                hidden: isSubmitExam,
               }
             )}
             onClick={() => requestSubmit()}
           >
-            Nộp bài
+            Nộp Bài
           </button>
         </ToolTip>
 
-        <CountDown
-          isHidden={isSubmitExam}
-          startTime={startTime}
-          endTime={endTime}
-          key="count-down"
-          className="text-green-600"
-        />
+        <div className="lg:hidden">
+          <CountDown
+            isHidden={isSubmitExam}
+            startTime={startTime}
+            endTime={endTime}
+            key="count-down"
+            className="text-primary-800"
+          />
+        </div>
       </header>
 
-      <div className="p-4 lg:p-10 bg-slate-50 shadow-xl min-h-[268px]">
-        <h4 className="text-slate-800 text-lg flex items-start">
-          <span className="min-w-max">Câu hỏi {indexQuestion + 1}: </span>
+      <div className="ctas mb-2 flex items-center justify-between">
+        <button
+          className="px-4 py-1 bg-slate-800 rounded-sm text-sm
+          text-white flex items-center focus:ring-blue-100 focus:ring"
+          onClick={() => preQuestion()}
+        >
+          <BiSkipPrevious className="mr-1 text-xl" />
+          Câu hỏi trước
+        </button>
+        <span className="text-slate-800 font-semibold">
+          {indexQuestion + 1}/{exam.questions.length}
+        </span>
+
+        <button
+          className="px-4 py-1 bg-slate-800 rounded-sm text-sm
+          text-white flex items-center focus:ring-blue-100 focus:ring"
+          onClick={() => nextQuestion()}
+        >
+          Câu hỏi sau
+          <BiSkipNext className="ml-1 text-xl" />
+        </button>
+      </div>
+
+      <div className="p-4 lg:p-10 bg-slate-50 shadow-xl lg:min-h-[335px] xs:min-h-[435px]">
+        <h4 className="text-slate-800 xs:text-tiny lg:text-lg lg:flex items-start">
+          <span className="min-w-max flex font-semibold">
+            Câu hỏi {indexQuestion + 1}:{' '}
+          </span>
           <PolaCode
             content={questions[indexQuestion].content}
-            className="ml-2"
+            className="lg:ml-2 flex-1"
           />
         </h4>
 
@@ -241,7 +263,6 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
                     flex items-center cursor-pointer group"
                     htmlFor={'correct-answer-' + index}
                     key={answers.id}
-                    // onClick={() => onChooseAnswer(answers.id)}
                   >
                     <div className="checkbox mr-4">
                       <input
@@ -256,7 +277,6 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
                         id={'correct-answer-' + index}
                         className="peer select-answer"
                         defaultChecked={isCheckAnswer(answers.id)}
-                        // checked={isCheckAnswer(answers.id)}
                         onChange={() =>
                           onChooseAnswer(
                             answers.id,
@@ -267,40 +287,26 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
                       <div
                         className="radio mt-0.5 w-4 h-4 border border-solid rounded-full
                     border-primary-900 before:bg-primary-900 before:w-2.5 before:h-2.5 before:block
-                    before:rounded-full flex items-center justify-center before:opacity-0
-                    peer-checked:before:opacity-100"
+                      before:rounded-full flex items-center justify-center before:opacity-0
+                      peer-checked:before:opacity-100"
                       ></div>
                     </div>
                     <span className="font-semibold mr-2">
                       {String.fromCharCode(65 + index)}:
                     </span>
-                    <span>{answers.content}</span>
+                    {answers.content}
                   </label>
                 );
               }
             )}
+          {questions[indexQuestion].type === QuestionTypeEnum.MULTIPLE ? (
+            <div className="mt-3">
+              <p className="text-sm text-primary-800 italic text-center">
+                (Có thể có nhiều đáp án đúng)
+              </p>
+            </div>
+          ) : null}
         </div>
-      </div>
-      <div className="ctas mt-10 flex items-center justify-between">
-        <button
-          className="px-4 py-1 bg-primary-900 rounded-sm text-sm
-          text-white flex items-center focus:ring-primary-200 focus:ring"
-          onClick={() => preQuestion()}
-        >
-          <BiSkipPrevious className="mr-1 text-xl" />
-          Câu hỏi trước
-        </button>
-        <span className="text-slate-800 font-semibold">
-          {indexQuestion + 1}/{exam.questions.length}
-        </span>
-        <button
-          className="px-4 py-1 bg-primary-900 rounded-sm text-sm
-          text-white flex items-center focus:ring-primary-200 focus:ring"
-          onClick={() => nextQuestion()}
-        >
-          Câu hỏi sau
-          <BiSkipNext className="ml-1 text-xl" />
-        </button>
       </div>
     </div>
   );

@@ -17,6 +17,8 @@ import UpdateAnswer from '../CreateQuestion/UpdateAnswers';
 import QuillEditor from '../QuillEditor/QuillEditor';
 import { hasContentEditor } from '../../utils/emptyContentEditor';
 import { IResetAnswersRef } from '../CreateQuestion/CreateAnswer';
+import { topicServices } from '../../services/TopicServices';
+import { useParams } from 'react-router-dom';
 
 const schemaFormUpdateQuestion = yup.object().shape({
   topicID: yup.number(),
@@ -37,7 +39,7 @@ const schemaFormUpdateQuestion = yup.object().shape({
 interface IFormEditQuestion {
   questionData: IQuestion;
   setOpenModalEditQuestion: React.Dispatch<React.SetStateAction<boolean>>;
-  cbOnUpdateQuestion: () => void;
+  // cbOnUpdateQuestion: () => void;
 }
 
 export interface IUpdateAnswer {
@@ -56,9 +58,10 @@ export interface IUpdateQuestion {
 const FormEditQuestion: React.FC<IFormEditQuestion> = ({
   questionData,
   setOpenModalEditQuestion,
-  cbOnUpdateQuestion,
 }) => {
-  const { topic } = topicStore();
+  const { id } = useParams();
+
+  const { topic, setTopicDetailData } = topicStore();
 
   const updateAnswerRef = useRef<IResetAnswersRef>();
 
@@ -70,7 +73,6 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
     getValues,
     clearErrors,
     setError,
-    reset,
     formState: { errors },
   } = useForm<IUpdateQuestion>({
     resolver: yupResolver(schemaFormUpdateQuestion),
@@ -96,6 +98,9 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
   const initForm = () => {
     const { type, content, time, isActive, answers } = questionData;
 
+    const isMutilAnswer: boolean = type === QuestionTypeEnum.MULTIPLE;
+    setIsMutilAnswer(isMutilAnswer);
+
     setValue('type', type);
     setValue('content', content);
     setValue('time', time);
@@ -103,9 +108,14 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
     setValue('answers', answers);
   };
 
-  useEffect(() => {
-    initForm();
-  }, []);
+  const getTopicDetail = async () => {
+    try {
+      const { data } = await topicServices.getTopicById(Number(id) || -1);
+      setTopicDetailData(data);
+    } catch (error) {
+      //
+    }
+  };
 
   // create Question
   const onSubmit: SubmitHandler<IUpdateQuestion> = async (
@@ -131,7 +141,7 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
 
       if (data.success) {
         setOpenModalEditQuestion(false);
-        cbOnUpdateQuestion();
+        getTopicDetail();
       }
     } catch (error) {
       //
@@ -175,9 +185,10 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
           isCorrect: false,
         };
       });
-      reset({
-        answers: resetAnswers,
-      });
+      setValue('answers', resetAnswers);
+      // reset({
+      //   answers: resetAnswers,
+      // });
       if (updateAnswerRef.current) {
         updateAnswerRef.current.resetAnswers(resetAnswers);
       }
@@ -197,8 +208,12 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
     setValue('content', value);
   };
 
+  useEffect(() => {
+    initForm();
+  }, []);
+
   return (
-    <div className="max-w-xl w-full h-max py-4 px-5 mx-auto rounded-md bg-white">
+    <div className="py-4 px-5 mx-auto rounded-md bg-white">
       <form className="form" onSubmit={handleSubmit(onSubmit)}>
         <div className="form-header flex items-center justify-between mb-8">
           <h4 className="text-slate-800 text-xl font-semibold">
@@ -229,7 +244,7 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
           ) : null}
           <Select
             onChange={onSelectQuestionType}
-            defaultValue={questionTypes[0].label}
+            defaultValue={getValues('type')}
             options={questionTypes}
             textLabel="Loại câu hỏi"
           />

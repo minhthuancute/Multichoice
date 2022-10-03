@@ -171,6 +171,7 @@ export class UserService {
     const userExam: UserExam = await this.redisService.get(
       resultUserDto.userID.toString()
     );
+    console.log('-------', userExam);
     if (!userExam) throw new BadRequestException('Hết thời gian làm bài');
     const endTime = new Date().getTime();
     const userExamDB = await this.userExamRepository.findOne({

@@ -1,6 +1,9 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
+import { TOPIC_LIST } from '../../constants/contstants';
 import { useQuery } from '../../hooks/useQuery';
+import { localServices } from '../../services/LocalServices';
 import { topicServices } from '../../services/TopicServices';
+import { ITopicLocal } from '../../types/ICommons';
 import { ITopicResponse } from '../../types/TopicResponse';
 import { removeVietnameseTones } from '../../utils/removeVietnameseTones';
 import TestItem, { ITestItem } from '../TestItem/TestItem';
@@ -34,13 +37,22 @@ const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
           id: test.id,
           title: test.title,
           date: test.createdAt,
-          questionCount: test.questions.length,
+          questionCount: test.questionsCount,
           expirationTime: test.expirationTime,
           typeCategoryName: test.typeCategoryName,
         };
         return testData;
       });
       setTestList(topicsData);
+
+      const testsTitle: ITopicLocal[] = topicResponse.map(
+        (test: ITopicResponse) =>
+          ({
+            id: test.id,
+            title: test.title,
+          } as ITopicLocal)
+      );
+      localServices.setData(TOPIC_LIST, testsTitle);
 
       if (paramSearch) {
         const filterResult = topicsData.filter((test: ITestItem) => {
@@ -109,7 +121,7 @@ const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
           })
         ) : (
           <p className="font-semibold text-red-500 text-center mt-10 text-tiny">
-            Hiện tại bạn chưa có đề thi nào!
+            {/* Hiện tại bạn chưa có đề thi nào! */}
           </p>
         )}
       </div>

@@ -16,9 +16,11 @@ const QuestionsUserExam: React.FC<IQuestionsUserExamProps> = ({
 }) => {
   const isCorrectMultiAnswer = (
     answers: IAnswer[],
-    answersUser: number[],
+    answersUser: number[] | string,
     questionType: QuestionType
   ): boolean => {
+    if (typeof answersUser === 'string') return true; // for question type TEXT
+
     if (questionType.toUpperCase() === 'SINGLE') return true;
 
     const correctAnswersObj = answers
@@ -43,33 +45,37 @@ const QuestionsUserExam: React.FC<IQuestionsUserExamProps> = ({
         questions.map((question: Questiondetail, indexQuestion: number) => {
           return (
             <ul
-              className="relative border-b border-slate-200 last:border-none py-5 px-6 bg-slate-50 shadow-md mb-2.5 last:mb-0"
+              className="relative border-b border-slate-200 last:border-none py-5 px-6
+              bg-white shadow-sm mb-4 last:mb-0 rounded-sm"
               key={question.id}
             >
-              <div className="header-left flex text-tiny mb-2">
-                <span className="w-21 font-semibold mr-1">
+              <div className="header-left flex text-tiny mb-2 text-slate-800 underline">
+                <span className="font-semibold mr-2 min-w-max">
                   Câu hỏi {indexQuestion + 1}:
                 </span>
                 <PolaCode content={question.content} />
               </div>
               {question &&
                 question.answers.map((answer: IAnswer, indexAnswer: number) => {
+                  const { isCorrect, id: answerId } = answer;
+                  const { answers, answerUser, type: questionType } = question;
+
                   const isCorrectMulti = isCorrectMultiAnswer(
-                    question.answers,
-                    question.answerUser,
+                    answers,
+                    answerUser,
                     `${question.type}` as QuestionType
                   );
                   return (
                     <li
-                      key={answer.id}
+                      key={answerId}
                       className="flex items-start text-slate-800 text-sm mb-1 last:mb-0"
                     >
                       <BiCheckDouble
                         className={classNames(
                           'absolute left-1 mt-1 min-w-max',
                           {
-                            'text-green-500': answer.isCorrect,
-                            hidden: !answer.isCorrect,
+                            'text-green-500': isCorrect,
+                            hidden: !isCorrect,
                           }
                         )}
                       />
@@ -79,17 +85,20 @@ const QuestionsUserExam: React.FC<IQuestionsUserExamProps> = ({
                           {
                             // for correct
                             'text-green-600 underline':
-                              question.type === QuestionTypeEnum.SINGLE
-                                ? question.answerUser.includes(answer.id) &&
+                              questionType === QuestionTypeEnum.SINGLE &&
+                              typeof answerUser !== 'string'
+                                ? answerUser.includes(answerId) &&
                                   answer.isCorrect
-                                : question.answerUser.includes(answer.id) &&
+                                : typeof answerUser !== 'string' &&
+                                  answerUser.includes(answerId) &&
                                   isCorrectMulti,
                             // for incorrect
                             'text-red-500 underline':
-                              question.type === QuestionTypeEnum.SINGLE
-                                ? question.answerUser.includes(answer.id) &&
-                                  !answer.isCorrect
-                                : question.answerUser.includes(answer.id) &&
+                              questionType === QuestionTypeEnum.SINGLE &&
+                              typeof answerUser !== 'string'
+                                ? answerUser.includes(answerId) && !isCorrect
+                                : typeof answerUser !== 'string' &&
+                                  answerUser.includes(answerId) &&
                                   !isCorrectMulti,
                           }
                         )}
@@ -100,6 +109,14 @@ const QuestionsUserExam: React.FC<IQuestionsUserExamProps> = ({
                     </li>
                   );
                 })}
+
+              {question.type === QuestionTypeEnum.MULTIPLE ? (
+                <div className="mt-1">
+                  <p className="text-sm text-primary-800 italic">
+                    (Có thể có nhiều đáp án đúng)
+                  </p>
+                </div>
+              ) : null}
             </ul>
           );
         })}

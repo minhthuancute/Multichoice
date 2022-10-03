@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { classNames } from '../../helper/classNames';
+import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 
 type PlacementContent =
   | 'CENTER'
@@ -10,17 +11,42 @@ type PlacementContent =
   | 'BOTTOM_LEFT'
   | 'BOTTOM_RIGHT';
 
+type SizeModal = 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | '3xl';
+
 interface ILayout {
+  setOpenModal: React.Dispatch<React.SetStateAction<any>>;
   children?: React.ReactNode;
   openModal?: boolean;
   placement?: PlacementContent;
+  size?: SizeModal;
 }
 
 const Modal: React.FC<ILayout> = ({
+  setOpenModal,
   openModal = false,
   placement = 'TOP_CENTER',
+  size = 'md',
   children,
 }) => {
+  const refModal = useRef<HTMLDivElement>(null);
+
+  const onClickOutSide = () => {
+    setOpenModal(false);
+  };
+  useOnClickOutside(refModal, onClickOutSide);
+
+  const getSizeModal = (): string => {
+    const sizeObj = {
+      sm: 'max-w-lg',
+      md: 'max-w-xl',
+      lg: 'max-w-2xl',
+      xl: 'max-w-3xl',
+      xxl: 'max-w-4xl',
+      '3xl': 'max-w-6xl',
+    };
+    return sizeObj[size];
+  };
+
   useEffect(() => {
     const body = document.querySelector('body');
     if (!body) return;
@@ -36,8 +62,8 @@ const Modal: React.FC<ILayout> = ({
     openModal ? (
       <div
         className={classNames(
-          `modal fixed z-40 top-0 transition-all duration-300 w-full px-4
-         h-full bg-slate-900 bg-opacity-40 overflow-auto py-10 flex`,
+          `modal fixed z-40 top-0 transition-all duration-400 w-full px-4
+         h-full bg-slate-900 bg-opacity-40 overflow-auto py-10`,
           {
             'visible opacity-100': openModal,
             'invisible opacity-0': !openModal,
@@ -45,9 +71,10 @@ const Modal: React.FC<ILayout> = ({
         )}
       >
         <div
-          className={classNames('modal-body w-full', {
-            // 'absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2':
-            //   isCenter,
+          ref={refModal}
+          className={classNames(['mx-auto w-full px-4', getSizeModal()], {
+            'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2':
+              placement === 'CENTER',
           })}
         >
           {children}

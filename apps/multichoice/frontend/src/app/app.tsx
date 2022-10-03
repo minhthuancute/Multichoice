@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import React, { Suspense, useEffect } from 'react';
+import React, { Suspense } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import './app.scss';
@@ -22,7 +22,6 @@ import PageNotFound from '../pages/Notfound/Notfound';
 
 import { ReactNotifications } from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
-import Intro from '../pages/Exam/Intro/Intro';
 import CollectInfor from '../pages/Exam/CollectInfor/CollectInfor';
 import DoExam from '../pages/Exam/DoExam/DoExam';
 import Home from '../pages/Home/Home';
@@ -30,6 +29,8 @@ import Statistical from '../pages/Statistical/Statistical';
 import { firePush, fireSet } from '../utils/firebase_utils';
 import StatisticExam from '../pages/Exam/StatisticExam/StatisticExam';
 import { withLoading } from '../HOCs/withLoading';
+import StatisticUserExam from '../pages/Exam/StatisticExam/StatisticUserExam';
+import ExamLayout from '../layouts/ExamLayout';
 
 export const App: React.FC = () => {
   return (
@@ -62,14 +63,17 @@ export const App: React.FC = () => {
               }
             />
             <Route path=":id/statistic" element={<StatisticExam />} />
+            <Route
+              path=":id/statistic/detail"
+              element={<StatisticUserExam />}
+            />
           </Route>
 
           <Route path="questions/create" element={<CreateQuestion />} />
         </Route>
 
-        <Route path="exam">
-          <Route path=":exam_id" element={<Intro />} />
-          <Route path=":exam_id/login" element={<CollectInfor />} />
+        <Route path="e" element={<ExamLayout />}>
+          <Route path=":exam_id" element={<CollectInfor />} />
           <Route path=":exam_id/do-exam" element={<DoExam />} />
         </Route>
 

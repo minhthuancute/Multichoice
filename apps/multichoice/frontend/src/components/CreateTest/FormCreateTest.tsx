@@ -30,6 +30,10 @@ const schemaFormCreateTest = yup.object().shape({
   expirationTime: yup.number(),
 });
 
+export interface IFormCreateTestRef {
+  submitForm: () => void;
+}
+
 interface IFormCreateTest {
   ref: any;
 }
@@ -112,7 +116,9 @@ const FormCreateTest: React.FC<IFormCreateTest> = forwardRef((props, ref) => {
         setTopicData(data.data);
         navigate(urlNavigate);
       }
-    } catch (error) {}
+    } catch (error) {
+      //
+    }
   };
 
   useImperativeHandle(

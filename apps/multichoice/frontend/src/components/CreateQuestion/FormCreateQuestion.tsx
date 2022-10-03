@@ -21,22 +21,24 @@ import { notify } from '../../helper/notify';
 import { iNotification } from 'react-notifications-component';
 import QuillEditor from '../QuillEditor/QuillEditor';
 import { hasContentEditor } from '../../utils/emptyContentEditor';
+import { classNames } from '../../helper/classNames';
 
 const schemaFormCreateQuestion = yup.object().shape({
   topicID: yup.number(),
   content: yup.string().required('Question content is a required field'),
   time: yup.number(),
   isActive: yup.boolean(),
-  answers: yup
-    .array()
-    .of(
-      yup.object().shape({
-        content: yup.string().required(),
-        isCorrect: yup.boolean(),
-      })
-    )
-    .required(),
+  answers: yup.array().of(
+    yup.object().shape({
+      content: yup.string().required(),
+      isCorrect: yup.boolean(),
+    })
+  ),
 });
+
+export interface IFormCreateQuestionRef {
+  submitFormCreateAnswer: () => void;
+}
 
 interface ICreateQuestion {
   ref: any;
@@ -50,6 +52,9 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
     const submitBtnRef: any = useRef<HTMLButtonElement>(null);
 
     const createAnswerRef = useRef<IResetAnswersRef>();
+
+    const [shouldRemoveAnswers, setShouldRemoveAnswers] =
+      useState<boolean>(false);
 
     const {
       resetField,
@@ -91,37 +96,44 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
       setValue('topicID', +topicId);
     };
 
-    useLayoutEffect(() => {
-      initForm();
-    }, []);
-
     const onSelectQuestionType = (item: IOption) => {
       const optionVal: QuestionTypeEnum = item.value as QuestionTypeEnum;
       setValue('type', optionVal);
       setValue('isActive', true);
 
-      const isMutilAnswer: boolean = item.value === QuestionTypeEnum.MULTIPLE;
-
-      if (isMutilAnswer) {
-        setIsMutilAnswer(true);
-      } else {
-        setIsMutilAnswer(false);
-        const answers = getValues('answers');
-        const resetAnswers: CreatAnswer[] = answers.map(
-          (answer: CreatAnswer) => {
-            return {
-              ...answer,
-              isCorrect: false,
-            };
-          }
-        );
-        reset({
-          answers: resetAnswers,
-        });
-
-        if (createAnswerRef.current) {
-          createAnswerRef.current.resetAnswers(resetAnswers);
+      switch (item.value) {
+        case QuestionTypeEnum.MULTIPLE: {
+          setIsMutilAnswer(true);
+          setShouldRemoveAnswers(false);
+          break;
         }
+
+        case QuestionTypeEnum.SINGLE: {
+          setIsMutilAnswer(false);
+          setShouldRemoveAnswers(false);
+          const answers = getValues('answers');
+          const resetAnswers: CreatAnswer[] = answers.map(
+            (answer: CreatAnswer) => {
+              return {
+                ...answer,
+                isCorrect: false,
+              };
+            }
+          );
+          setValue('answers', resetAnswers);
+          if (createAnswerRef.current) {
+            createAnswerRef.current.resetAnswers(resetAnswers);
+          }
+          break;
+        }
+
+        case QuestionTypeEnum.TEXT: {
+          setShouldRemoveAnswers(true);
+          break;
+        }
+
+        default:
+          break;
       }
     };
 
@@ -129,6 +141,8 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
     const onSubmit: SubmitHandler<CreateQuestionDto> = async (
       formData: CreateQuestionDto
     ) => {
+      console.log('scjskj');
+
       try {
         const answers = getValues('answers');
 
@@ -153,16 +167,6 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
         //
       }
     };
-
-    useImperativeHandle(
-      ref,
-      () => ({
-        submitForm: () => {
-          submitBtnRef.current.click();
-        },
-      }),
-      []
-    );
 
     const onAddAnswer = (answers: CreatAnswer[]) => {
       clearErrors('answers');
@@ -192,6 +196,20 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
       }
       setValue('content', value);
     };
+
+    useImperativeHandle(
+      ref,
+      () => ({
+        submitFormCreateAnswer: () => {
+          submitBtnRef.current.click();
+        },
+      }),
+      []
+    );
+
+    useLayoutEffect(() => {
+      initForm();
+    }, []);
 
     return (
       <div className="container">
@@ -228,7 +246,11 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
                 errMessage={errors.content?.message}
               />
             </div>
-            <div className="create-answer">
+            <div
+              className={classNames('create-answer', {
+                hidden: shouldRemoveAnswers,
+              })}
+            >
               <CreateAnswer
                 onAddAnswer={onAddAnswer}
                 onRemoveAnswer={onRemoveAnswer}

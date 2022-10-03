@@ -1,33 +1,31 @@
-import { IUserDoExam, IUserDoExamdetail } from '@monorepo/multichoice/dto';
+import { IUserDoExamdetail } from '@monorepo/multichoice/dto';
 import React, { useEffect, useState } from 'react';
-import { IoMdClose } from 'react-icons/io';
-import { useParams } from 'react-router-dom';
-import ToolTip from '../../../components/Commons/ToolTip/ToolTip';
+import { Link, useParams } from 'react-router-dom';
+import Breadcrumb from '../../../components/Commons/Breadcrumb/Breadcrumb';
 import QuestionsUserExam from '../../../components/QuestionsUserExam/QuestionsUserExam';
+import { getTopicTitle } from '../../../helper/getTopicTitle';
+import { withBackTop } from '../../../HOCs/withBackTop';
+import { useQuery } from '../../../hooks/useQuery';
 import {
   examServices,
   IPayloadGetUserExamDetail,
 } from '../../../services/ExamServices';
 import { getDate, getTime } from '../../../utils/formatDate';
 
-interface IStatisticUserExamProps {
-  setShowModalUserExamDetail: React.Dispatch<React.SetStateAction<boolean>>;
-  userData: IUserDoExam;
-}
-
-const StatisticUserExam: React.FC<IStatisticUserExamProps> = ({
-  setShowModalUserExamDetail,
-  userData,
-}) => {
+const StatisticUserExam: React.FC = () => {
   const { id: topic_id } = useParams();
+  const topicId = Number(topic_id) || -1;
+
+  const query = useQuery();
 
   const [userExamDetail, setUserExamDetail] = useState<IUserDoExamdetail>();
+  const [topicTitle, setTopicTitle] = useState<string>('');
 
   const getStatisticUserDetail = async () => {
     try {
       const payload: IPayloadGetUserExamDetail = {
-        topicId: Number(topic_id) || -1,
-        userId: userData.userId,
+        topicId: topicId,
+        userId: Number(query.get('user_id')) || -1,
       };
       const response = await examServices.getUserExamDetail(payload);
       if (response) {
@@ -40,72 +38,80 @@ const StatisticUserExam: React.FC<IStatisticUserExamProps> = ({
   };
 
   useEffect(() => {
+    setTopicTitle(getTopicTitle(topicId));
     getStatisticUserDetail();
-  }, [userData]);
+  }, []);
 
-  if (!Object.keys(userData).length) return null;
+  if (!userExamDetail) return null;
 
   return (
-    <div className="max-w-4xl w-full h-max py-8 px-5 mx-auto rounded-md bg-white">
-      <div className="modal-header flex items-center justify-between mb-5">
-        <h4 className="text-slate-800 text-xl font-semibold">
-          Kết quả thi của:{' '}
-          <span className="font-semibold">{userData.userName}</span>
-        </h4>
-        <ToolTip title="Đóng">
-          <button
-            type="button"
-            className="text-lg"
-            onClick={() => setShowModalUserExamDetail(false)}
-          >
-            <IoMdClose />
-          </button>
-        </ToolTip>
-      </div>
-      <div className="modal-body">
-        <table className="shadow-xl w-full hidden">
-          <thead className="bg-slate-800 text-white text-tiny">
-            <tr>
-              <th className="py-2 pl-4 text-left capitalize">Tên người thi</th>
-              <th className="py-2 pl-4 text-left capitalize">Điểm</th>
-              <th className="py-2 pl-4 text-left capitalize">Ngày</th>
-              <th className="py-2 pl-4 text-left capitalize">
-                Thời gian bắt đầu
-              </th>
-              <th className="py-2 pl-4 text-left capitalize">
-                Thời gian kết thúc
-              </th>
-            </tr>
-          </thead>
-          <tbody className="py-4">
-            <tr
-              className="mb-4 border-b border-slate-200 last:border-none
-              text-slate-800 text-sm cursor-pointer"
+    <div>
+      <header className="container py-4">
+        <Breadcrumb>
+          <Breadcrumb.Item>
+            <Link to="/tests">Đề thi</Link>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>
+            <Link to={`/tests/${topicId}/statistic`}>{topicTitle}</Link>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>
+            <div>Thống kê</div>
+          </Breadcrumb.Item>
+        </Breadcrumb>
+      </header>
+      <main
+        className="bg-slate-50 pt-5"
+        style={{
+          minHeight: 'calc(100vh - 106px)',
+        }}
+      >
+        <div className="container h-max pt-4 rounded-md pb-10">
+          <div className="mb-10">
+            <h4 className="text-primary-900 mb-2 font-semibold underline">
+              Chi tiết:
+            </h4>
+            <ul
+              className="relative border-b border-slate-200 last:border-none py-5 px-6 bg-white
+              shadow-md last:mb-0 text-tiny text-slate-800"
             >
-              <td className="pl-4 py-10 font-semibold">{userData.userName}</td>
-              <td className="pl-4 font-semibold">{userData.point}</td>
-              <td className="pl-4">{getDate(userData.start_time)}</td>
-              <td className="pl-4">{getTime(userData.start_time)}</td>
-              <td className="pl-4">{getTime(userData.end_time)}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div>
-        <QuestionsUserExam questions={userExamDetail?.questions || []} />
-      </div>
-      <div className="modal-footer mt-8 flex justify-end">
-        <button
-          type="submit"
-          className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
-          text-white font-bold bg-slate-800 transition-all duration-200"
-          onClick={() => setShowModalUserExamDetail(false)}
-        >
-          Đóng
-        </button>
-      </div>
+              <li className="capitalize">
+                <span className="font-semibold mr-2">Tên:</span>
+                {userExamDetail.userName}
+              </li>
+              <li>
+                <span className="font-semibold mr-2">Điểm:</span>
+                {userExamDetail.point}
+              </li>
+              <li>
+                <span className="font-semibold mr-2">Ngày:</span>
+                {getDate(userExamDetail.startTime)}
+              </li>
+              <li>
+                <span className="font-semibold mr-2">Thời gian bắt đầu:</span>
+                {getTime(userExamDetail.startTime)}
+              </li>
+              <li>
+                <span className="font-semibold mr-2">Thời gian kết thúc:</span>
+                {userExamDetail.endTime ? (
+                  getTime(userExamDetail.endTime)
+                ) : (
+                  <span className="text-red-500 font-semibold">
+                    Chưa nộp bài
+                  </span>
+                )}
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="text-primary-900 mb-2 font-semibold underline">
+              Danh sách câu hỏi:
+            </h4>
+            <QuestionsUserExam questions={userExamDetail?.questions || []} />
+          </div>
+        </div>
+      </main>
     </div>
   );
 };
 
-export default StatisticUserExam;
+export default withBackTop(StatisticUserExam);

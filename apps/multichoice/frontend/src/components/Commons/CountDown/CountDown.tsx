@@ -1,6 +1,6 @@
 import React from 'react';
 import Countdown from 'react-countdown';
-import { AiOutlineClockCircle } from 'react-icons/ai';
+import { BsFillClockFill } from 'react-icons/bs';
 import { classNames } from '../../../helper/classNames';
 import { examStore } from '../../../store/rootReducer';
 
@@ -13,6 +13,7 @@ interface ICountDownProps {
   endTime?: number;
   className: string;
   isHidden?: boolean;
+  restartKey?: string;
 }
 
 const CountDown: React.FC<ICountDownProps> = ({
@@ -20,6 +21,7 @@ const CountDown: React.FC<ICountDownProps> = ({
   endTime = 1,
   className = '',
   isHidden = false,
+  restartKey = '',
 }) => {
   const { setIsExpriedExam } = examStore();
   const formatCountdown = (
@@ -46,13 +48,10 @@ const CountDown: React.FC<ICountDownProps> = ({
     } else {
       return (
         <span
-          className={classNames([
-            'font-semibold flex items-center text-lg',
-            className,
-          ])}
+          className={classNames(['font-semibold flex items-center', className])}
         >
-          <AiOutlineClockCircle className="mr-1" />
           {formatCountdown(hours, minutes, seconds)}
+          <BsFillClockFill className="ml-1" />
         </span>
       );
     }
@@ -61,11 +60,10 @@ const CountDown: React.FC<ICountDownProps> = ({
   return isHidden ? null : (
     <Countdown
       date={startTime + endTime}
-      zeroPadTime={2}
-      zeroPadDays={0}
       renderer={rendererCountdown}
       onStart={() => setIsExpriedExam(false)}
       onComplete={() => setIsExpriedExam(true)}
+      key={restartKey}
     />
   );
 };

@@ -24,6 +24,7 @@ async function bootstrap() {
     'https://detracnghiem.vn',
     'http://localhost:4200',
   ];
+  console.log(`==> current env: ${process.env.NODE_ENV}`);
   const options = {
     origin: (origin, cb) => {
       if (allowedDomains.includes(origin)) {
@@ -35,7 +36,7 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   };
-  app.enableCors({
+  app.enableCors(process.env.NODE_ENV === "production" ? options :  {
     origin: '*',
   });
   // swagger

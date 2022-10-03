@@ -35,7 +35,7 @@ const FilterTests: React.FC<IFilterTests> = ({ onFilter }) => {
   };
 
   return (
-    <div>
+    <div className="filter-test">
       <form
         className="form-search-test flex items-center"
         onSubmit={handleSubmit(onSubmit)}
@@ -47,7 +47,7 @@ const FilterTests: React.FC<IFilterTests> = ({ onFilter }) => {
           inputSize="md"
           defaultValue={searchParams.get('search')}
         />
-        <button className="btn-primary bg-violet-600 text-white py-3.5 px-4 rounded-md ml-1">
+        <button className="btn-primary bg-slate-500 text-white py-3.5 px-4 rounded-md ml-1">
           <BiSearchAlt />
         </button>
       </form>

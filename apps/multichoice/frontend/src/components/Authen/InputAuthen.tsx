@@ -37,7 +37,7 @@ const InputAuthen: React.FC<IInputAuthen> = ({
   };
 
   return (
-    <div className={classNames('form-group relative', className)}>
+    <div className={classNames('form-group relative w-full', className)}>
       {/* input content */}
       <div
         className={classNames('relative wrapper-input', {

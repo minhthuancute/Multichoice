@@ -1,6 +1,7 @@
 .container {
   max-width: 1200px;
-
+  padding-left: 15px;
+  padding-right: 15px;
   @media (min-width: 1400px) {
     max-width: 1440px;
   }
@@ -31,5 +32,5 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: theme('colors.primary.800');
+  background: theme('colors.slate.800');
 }
