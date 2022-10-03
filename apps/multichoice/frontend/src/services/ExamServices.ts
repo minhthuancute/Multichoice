@@ -2,13 +2,13 @@ import { IAnswers } from '../store/rootReducer';
 import { Api } from './Api';
 
 export interface IPayloadStartExam {
-  username: string;
+  userName: string;
   topicID: number;
 }
 
 export interface IPayloadEndExam {
   userID: number;
-  AnswersUsers: IAnswers[];
+  answerUsers: IAnswers[];
 }
 
 export interface IPayloadgetListExamByTopicId {
@@ -31,6 +31,7 @@ class ExamServices extends Api {
   }
 
   startExam(payload: IPayloadStartExam) {
+    console.log(payload);
     const data = this.post('/exam/start', payload);
     return data;
   }

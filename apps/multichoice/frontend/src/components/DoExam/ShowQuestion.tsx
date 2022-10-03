@@ -86,7 +86,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
     try {
       const payload: IPayloadEndExam = {
         userID: userDoExam.user_id,
-        AnswersUsers: answers,
+        answerUsers: answers,
       } as IPayloadEndExam;
       const { data } = await examServices.submitExam(payload);
 

@@ -53,10 +53,9 @@ const DoExam: React.FC = () => {
       try {
         const payload: IPayloadStartExam = {
           topicID: exam.id,
-          username: userDoExam.user_name,
+          userName: userDoExam.user_name,
         };
         const { data } = await examServices.startExam(payload);
-
         if (data.success) {
           setUserDoexamData({
             user_name: userDoExam.user_name,
