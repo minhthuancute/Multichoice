@@ -153,7 +153,7 @@ export class UserService {
         id: userID,
         topic: { id: topicID },
       },
-      relations: ['UserAnswer'],
+      relations: ['userAnswer'],
     });
     if (!result) throw new BadRequestException('User is not found');
     return new SucessResponse(200, this.convertUserDoExamdetail(result, topic));
