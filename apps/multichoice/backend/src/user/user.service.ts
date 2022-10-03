@@ -10,9 +10,7 @@ import {
   IUserDoExamdetail,
   Questiondetail,
   ResultUserDto,
-  UpdateUserDto,
   UserExamDto,
-  Answer,
 } from '@monorepo/multichoice/dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
@@ -20,11 +18,11 @@ import { Repository } from 'typeorm';
 import { TopicService } from '../topic/topic.service';
 import { Topic } from '../question/entities/topic.entity';
 import { Question } from '../question/entities/question.entity';
-import { UserExam } from './entities/userExam';
-import { plainToClass } from 'class-transformer';
-import { UserAnswer } from './entities/userAnswer';
+import { UserExam } from './entities/userExam.entity';
+import { UserAnswer } from './entities/userAnswer.entity';
 import { SucessResponse } from '../model/SucessResponse';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
+import { redisService } from '../redis/redis.service';
 
 @Injectable()
 export class UserService {
@@ -34,7 +32,8 @@ export class UserService {
     @InjectRepository(UserAnswer)
     private readonly userAnswerRepository: Repository<UserAnswer>,
     @Inject(forwardRef(() => TopicService))
-    private readonly topicService: TopicService
+    private readonly topicService: TopicService,
+    private readonly redisService: redisService
   ) {}
 
   convertListUserDoExam(userExams: UserExam[]): IUserDoExam[] {
@@ -46,29 +45,32 @@ export class UserService {
   }
   convertUserDoExam(userExams: UserExam): IUserDoExam {
     const userDoExam: IUserDoExam = {
-      userName: userExams.username,
-      start_time: Number(userExams.startTime),
-      end_time: Number(userExams.endTime),
+      userName: userExams.userName,
+      startTime: Number(userExams.startTime),
+      endTime: Number(userExams.endTime),
       duration: Number(userExams.endTime) - Number(userExams.startTime),
       point: userExams.point,
-      userId: userExams.id,
+      userID: userExams.id,
     };
 
     return userDoExam;
   }
 
-  convertUserDoExamdetal(userExams: UserExam, topic: Topic): IUserDoExamdetail {
+  convertUserDoExamdetail(
+    userExams: UserExam,
+    topic: Topic
+  ): IUserDoExamdetail {
     const result: IUserDoExamdetail = {
-      userName: userExams.username,
-      start_time: Number(userExams.startTime),
-      end_time: Number(userExams.endTime),
+      userName: userExams.userName,
+      startTime: Number(userExams.startTime),
+      endTime: Number(userExams.endTime),
       duration: Number(userExams.endTime) - Number(userExams.startTime),
       point: userExams.point,
       questions: this.genarateAnswersUser(
-        userExams.UserAnswer,
+        userExams.userAnswer,
         topic.questions
       ),
-      userId: userExams.id,
+      userID: userExams.id,
     };
     return result;
   }
@@ -154,7 +156,7 @@ export class UserService {
       relations: ['UserAnswer'],
     });
     if (!result) throw new BadRequestException('User is not found');
-    return new SucessResponse(200, this.convertUserDoExamdetal(result, topic));
+    return new SucessResponse(200, this.convertUserDoExamdetail(result, topic));
   }
 
   async getUserExamByTopic(id: number, user: User) {
@@ -166,78 +168,80 @@ export class UserService {
   }
 
   async endExam(resultUserDto: ResultUserDto) {
-    const endDate = new Date().getTime();
-    const over: number = 5 * 1000; // thơi gian trễ
-    const userExam = await this.userExamRepository.findOne({
-      where: { id: resultUserDto.userID },
-      relations: ['topic'],
+    const userExam: UserExam = await this.redisService.get(
+      resultUserDto.userID.toString()
+    );
+    if (!userExam) throw new BadRequestException('Hết thời gian làm bài');
+    const endTime = new Date().getTime();
+    const userExamDB = await this.userExamRepository.findOne({
+      where: { startTime: userExam.startTime },
     });
 
     //check user thi chua
-    if (!userExam) throw new BadRequestException('user nay chua thi');
-
-    //check user da thi hay chua
-    if (userExam.startTime != 0 && userExam.endTime != 0)
-      throw new BadRequestException('Bạn đã nộp bài');
+    if (userExamDB) throw new BadRequestException('Bạn đã nộp bài');
 
     const topic: Topic = await this.topicService.getIsCorrectByTopicID(
       userExam.topic.id
     );
     if (!topic) throw new BadRequestException('topicid is not found');
 
-    const exam: UserExam = new UserExam();
-    exam.point = this.pointCount(topic.questions, resultUserDto);
-    exam.topic = topic;
-    exam.endTime = endDate;
-    // thoi gian làm bài của user
-    const time = Number(endDate) - Number(userExam.startTime);
-    if (time <= Number(topic.expirationTime) + Number(over)) {
-      exam.status = true;
-    }
-    // update exam
-    await this.userExamRepository.update({ id: userExam.id }, exam);
+    userExam.endTime = endTime;
+    userExam.point = this.pointCount(topic.questions, resultUserDto);
+    userExam.topic = topic;
+    const saveUserExam = await this.userExamRepository.save(userExam);
 
     // save list userAnswer
-    if (resultUserDto.AnswersUsers !== undefined) {
+    if (resultUserDto.answerUsers !== undefined) {
       const lst: UserAnswer[] = [];
-      resultUserDto.AnswersUsers.forEach((element) => {
+      resultUserDto.answerUsers.forEach((element) => {
         if (typeof element.answerID === 'object') {
           element.answerID.forEach((item) => {
             const userAnswer: UserAnswer = new UserAnswer();
             userAnswer.answerID = item;
             userAnswer.questionID = element.questionID;
-            userAnswer.userExam = userExam;
+            userAnswer.userExam = saveUserExam;
             lst.push(userAnswer);
           });
         } else {
           const userAnswer: UserAnswer = new UserAnswer();
           userAnswer.answerID = element.answerID;
           userAnswer.questionID = element.questionID;
-          userAnswer.userExam = userExam;
+          userAnswer.userExam = saveUserExam;
           lst.push(userAnswer);
         }
       });
       await this.userAnswerRepository.save(lst);
     }
-    if (exam.status !== true) {
-      throw new BadRequestException('Hết thời gian làm bài');
-    }
 
     return new SucessResponse(200, {
-      username: userExam.username,
-      point: exam.point,
-      time,
+      userName: saveUserExam.userName,
+      point: saveUserExam.point,
+      time: Number(endTime) - Number(saveUserExam.startTime),
     });
+  }
+
+  uniqueID(): number {
+    return Math.floor(Math.random() * Date.now());
   }
 
   async startExam(userExamDto: UserExamDto) {
     const topic = await this.topicService.fineOneByID(userExamDto.topicID);
     if (!topic) throw new BadRequestException('topic is not found');
-    const exam: UserExam = plainToClass(UserExam, userExamDto);
-    exam.topic = topic;
+    const exam: UserExam = new UserExam();
+    exam.userName = userExamDto.userName;
+    exam.topic = new Topic(topic.id);
     exam.startTime = new Date().getTime();
-    const result = await this.userExamRepository.save(exam);
-    return new SucessResponse(200, { userid: result.id });
+
+    const userid = this.uniqueID();
+    const over: number = 5 * 1000; // thời gian trễ
+
+    this.redisService.set(
+      userid.toString(),
+      exam,
+      (Number(topic.expirationTime) + Number(over)) / 1000 // chuyển về đơn vị giây
+    );
+
+    return new SucessResponse(200, { userid });
   }
 
   public pointCount(
@@ -247,8 +251,8 @@ export class UserService {
     let poit = 0;
     if (
       questions.length > 0 &&
-      resultUserDto.AnswersUsers !== undefined &&
-      resultUserDto.AnswersUsers.length > 0
+      resultUserDto.answerUsers !== undefined &&
+      resultUserDto.answerUsers.length > 0
     ) {
       const questionsDBB = questions.reduce((result, item) => {
         return {
@@ -262,21 +266,18 @@ export class UserService {
         };
       }, {});
 
-      const aswersUserDto = resultUserDto.AnswersUsers.reduce(
-        (result, item) => {
-          if (typeof item.answerID === 'object') {
-            return {
-              ...result,
-              [item.questionID]: item.answerID.reduce((a, b) => {
-                return { ...a, [b]: true };
-              }, {}),
-            };
-          } else {
-            return { ...result };
-          }
-        },
-        {}
-      );
+      const aswersUserDto = resultUserDto.answerUsers.reduce((result, item) => {
+        if (typeof item.answerID === 'object') {
+          return {
+            ...result,
+            [item.questionID]: item.answerID.reduce((a, b) => {
+              return { ...a, [b]: true };
+            }, {}),
+          };
+        } else {
+          return { ...result };
+        }
+      }, {});
 
       for (const key in aswersUserDto) {
         if (
@@ -300,10 +301,6 @@ export class UserService {
       .createQueryBuilder('userExam')
       .where('userExam.topicId = :topicId', { topicId })
       .getMany();
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
   }
 
   async getUserExambyID(userID: number): Promise<UserExam> {

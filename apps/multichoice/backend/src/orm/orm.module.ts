@@ -5,8 +5,8 @@ import { User } from '../user/entities/user.entity';
 import { Question } from '../question/entities/question.entity';
 import { Answer } from '../answer/entities/answer.entity';
 import { Topic } from '../question/entities/topic.entity';
-import { UserAnswer } from '../user/entities/userAnswer';
-import { UserExam } from '../user/entities/userExam';
+import { UserAnswer } from '../user/entities/userAnswer.entity';
+import { UserExam } from '../user/entities/userExam.entity';
 
 @Module({
   imports: [

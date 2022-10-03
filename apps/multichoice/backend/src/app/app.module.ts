@@ -6,6 +6,7 @@ import { OrmModule } from '../orm/orm.module';
 import { AuthModule } from '../auth/auth.module';
 import { QuestionModule } from '../question/question.module';
 import { TopicModule } from '../topic/topic.module';
+import { RedisModule } from '../redis/redis.module';
 
 @Module({
   imports: [
@@ -14,9 +15,10 @@ import { TopicModule } from '../topic/topic.module';
     UserModule,
     AuthModule,
     QuestionModule,
-    TopicModule
+    TopicModule,
+    RedisModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule { }
+export class AppModule {}
