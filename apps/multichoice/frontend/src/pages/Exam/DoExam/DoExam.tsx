@@ -41,6 +41,7 @@ const DoExam: React.FC = () => {
     }
   };
 
+
   const startExam = async () => {
     const canStartExam: boolean = localServices.getData(START_EXAM) === false;
     console.log(canStartExam);
@@ -87,8 +88,8 @@ const DoExam: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const emptyUsername = userDoExam.user_name === '';
-    if (emptyUsername || answers.length === 0) {
+    const emptyUsername = userDoExam.user_name;
+    if (!emptyUsername) {
       navigate('/e/' + exam_id);
     }
   }, []);
