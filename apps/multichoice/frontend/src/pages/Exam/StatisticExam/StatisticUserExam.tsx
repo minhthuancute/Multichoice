@@ -84,16 +84,16 @@ const StatisticUserExam: React.FC = () => {
               </li>
               <li>
                 <span className="font-semibold mr-2">Ngày:</span>
-                {getDate(userExamDetail.start_time)}
+                {getDate(userExamDetail.startTime)}
               </li>
               <li>
                 <span className="font-semibold mr-2">Thời gian bắt đầu:</span>
-                {getTime(userExamDetail.start_time)}
+                {getTime(userExamDetail.startTime)}
               </li>
               <li>
                 <span className="font-semibold mr-2">Thời gian kết thúc:</span>
-                {userExamDetail.end_time ? (
-                  getTime(userExamDetail.end_time)
+                {userExamDetail.endTime ? (
+                  getTime(userExamDetail.endTime)
                 ) : (
                   <span className="text-red-500 font-semibold">
                     Chưa nộp bài

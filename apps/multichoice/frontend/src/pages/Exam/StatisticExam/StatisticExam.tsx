@@ -44,7 +44,7 @@ const StatisticExam: React.FC = () => {
   const handleDeleteUserExam = async () => {
     try {
       const payload: IPayloadDeleteUserExam = {
-        userId: userExamDetail?.userId || -1,
+        userId: userExamDetail?.userID || -1,
       };
       const response = await examServices.deleteUserExam(payload);
       if (response) {
@@ -129,18 +129,18 @@ const StatisticExam: React.FC = () => {
                   {usersDoExam.length &&
                     usersDoExam.map((user: IUserDoExam, index: number) => (
                       <tr
-                        key={user.start_time + user.userName}
+                        key={user.startTime + user.userName}
                         className="mb-4 border-b border-slate-200 last:border-none
                       text-slate-800 text-sm cursor-pointer even:bg-slate-100"
                       >
                         <td className="pl-4 py-4">{index + 1}</td>
                         <td className="pl-4 font-semibold">{user.userName}</td>
                         <td className="pl-4 font-semibold">{user.point}</td>
-                        <td className="pl-4">{getDate(user.start_time)}</td>
-                        <td className="pl-4">{getTime(user.start_time)}</td>
+                        <td className="pl-4">{getDate(user.startTime)}</td>
+                        <td className="pl-4">{getTime(user.startTime)}</td>
                         <td className="pl-4">
-                          {user.end_time ? (
-                            getTime(user.end_time)
+                          {user.endTime ? (
+                            getTime(user.endTime)
                           ) : (
                             <span className="text-red-500 font-semibold">
                               Chưa nộp bài
@@ -148,13 +148,13 @@ const StatisticExam: React.FC = () => {
                           )}
                         </td>
                         <td className="pl-4">
-                          {user.end_time
-                            ? getDistance(user.start_time, user.end_time)
+                          {user.endTime
+                            ? getDistance(user.startTime, user.endTime)
                             : null}
                         </td>
                         <td className="pl-4 font-semibold text-primary-800">
                           <Link
-                            to={`/tests/${topic_id}/statistic/detail?user_id=${user.userId}`}
+                            to={`/tests/${topic_id}/statistic/detail?user_id=${user.userID}`}
                           >
                             Xem chi tiết
                           </Link>
