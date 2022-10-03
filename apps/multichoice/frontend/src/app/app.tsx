@@ -83,4 +83,4 @@ export const App: React.FC = () => {
   );
 };
 
-export default withLoading(App);
+export default App;

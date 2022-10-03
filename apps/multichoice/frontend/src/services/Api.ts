@@ -22,9 +22,9 @@ export class Api {
 
     this.axiosInstance.interceptors.request.use(
       (config: AxiosRequestConfig): AxiosRequestConfig => {
-        pendingRequest += 1;
-        const state = loadingStore.getState();
-        state.setLoading(true);
+        // pendingRequest += 1;
+        // const state = loadingStore.getState();
+        // state.setLoading(true);
         const token = localServices.getData(TOKEN);
         config!.headers!['Authorization'] = `Bearer ${token}`;
         return config;
@@ -33,12 +33,12 @@ export class Api {
 
     this.axiosInstance.interceptors.response.use(
       (response: AxiosResponse): AxiosResponse => {
-        this.clearLoading();
+        // this.clearLoading();
         return response;
       },
       async (err: AxiosError): Promise<AxiosError> => {
-        this.clearLoading();
-        await this.sleep(500);
+        // this.clearLoading();
+        // await this.sleep(500);
         return Promise.reject(err);
       }
     );
