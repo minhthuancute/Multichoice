@@ -10,7 +10,7 @@ import {
   examServices,
   IPayloadGetUserExamDetail,
 } from '../../../services/ExamServices';
-import { getDate, getTime } from '../../../utils/formatDate';
+import { getDate, getDistance, getTime } from '../../../utils/formatDate';
 
 const StatisticUserExam: React.FC = () => {
   const { id: topic_id } = useParams();
@@ -99,6 +99,10 @@ const StatisticUserExam: React.FC = () => {
                     Chưa nộp bài
                   </span>
                 )}
+              </li>
+              <li>
+                <span className="font-semibold mr-2">Thời gian làm bài:</span>
+                {getDistance(userExamDetail.startTime, userExamDetail.endTime)}
               </li>
             </ul>
           </div>
