@@ -49,7 +49,7 @@ const QuestionsUserExam: React.FC<IQuestionsUserExamProps> = ({
               bg-white shadow-sm mb-4 last:mb-0 rounded-sm"
               key={question.id}
             >
-              <div className="header-left flex text-tiny mb-2 text-slate-800 underline">
+              <div className="header-left flex text-tiny mb-2 text-slate-800">
                 <span className="font-semibold mr-2 min-w-max">
                   Câu hỏi {indexQuestion + 1}:
                 </span>
