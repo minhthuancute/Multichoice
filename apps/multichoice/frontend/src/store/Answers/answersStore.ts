@@ -11,7 +11,7 @@ export interface IInforUserDoExam {
 
 export interface IAnswers {
   questionID: number;
-  answerID: number[];
+  answerID: number[] | string;
 }
 
 export interface IAnswersStore {
@@ -21,7 +21,7 @@ export interface IAnswersStore {
   setAnswers: (answers: IAnswers[]) => void;
   updateAnswer: (
     questionID: number,
-    answerID: number,
+    answerSelect: number | string,
     questionType: QuestionType
   ) => void; // for update correct answer
   addAnswer: (answer: IAnswers) => void;
@@ -53,7 +53,7 @@ export const answerStore = create<IAnswersStore>()(
         // for update correct answer
         updateAnswer: (
           questionID: number,
-          answerID: number,
+          answerSelect: number | string,
           questionType: QuestionType
         ) =>
           set((state) => {
@@ -63,23 +63,35 @@ export const answerStore = create<IAnswersStore>()(
             });
 
             if (answerIndex !== -1) {
-              if (questionType.toUpperCase() === 'SINGLE') {
-                tempAnswers[answerIndex].answerID = [answerID];
-              } else {
-                const shouldRemoveAnswerID =
-                  tempAnswers[answerIndex].answerID.includes(answerID);
-                if (shouldRemoveAnswerID) {
-                  const indexRemove =
-                    tempAnswers[answerIndex].answerID.indexOf(answerID);
-                  tempAnswers[answerIndex].answerID.splice(indexRemove, 1);
+              if (questionType === 'TEXT' && typeof answerSelect === 'string') {
+                const regex = /s+/gi;
+                const removeSpaceAnswer = answerSelect
+                  .replace(regex, ' ')
+                  .trim();
+
+                tempAnswers[answerIndex].answerID = removeSpaceAnswer;
+              } else if (typeof answerSelect === 'number') {
+                if (questionType.toUpperCase() === 'SINGLE') {
+                  tempAnswers[answerIndex].answerID = [answerSelect];
                 } else {
-                  tempAnswers[answerIndex].answerID.push(answerID);
+                  const shouldRemoveAnswerID: boolean = (
+                    tempAnswers[answerIndex].answerID as number[]
+                  ).includes(answerSelect);
+                  if (shouldRemoveAnswerID) {
+                    const indexRemove = (
+                      tempAnswers[answerIndex].answerID as number[]
+                    ).indexOf(answerSelect);
+                    (tempAnswers[answerIndex].answerID as number[]).splice(
+                      indexRemove,
+                      1
+                    );
+                  } else {
+                    (tempAnswers[answerIndex].answerID as number[]).push(
+                      answerSelect
+                    );
+                  }
                 }
               }
-
-              // if (answerIdIndex === -1) {
-              //   tempAnswers[answerIndex].answerID.push(answerID);
-              // }
             }
             return {
               answers: [...tempAnswers],
