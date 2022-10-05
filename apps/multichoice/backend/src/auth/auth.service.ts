@@ -11,6 +11,7 @@ import * as bcrypt from 'bcrypt';
 import { User } from '../user/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { AuthPayload } from './interfaces/auth-payload.interface';
+import { GConfig } from '../config/gconfig';
 
 @Injectable()
 export class authService {
@@ -25,7 +26,7 @@ export class authService {
     });
     if (user) {
       throw new HttpException(
-        { message: 'email already exists' },
+        { message: GConfig.EMAIL_ALREADY_EXISTS },
         HttpStatus.BAD_REQUEST
       );
     }
@@ -38,11 +39,11 @@ export class authService {
   async validateUser(login: LoginUserDto): Promise<any> {
     const user = await this.userRepository.findOneBy({ email: login.email });
     if (!user) {
-      throw new BadRequestException('Email is not found');
+      throw new BadRequestException(GConfig.EMAIL_NOT_FOUND);
     }
     const isMatchPassword = await bcrypt.compare(login.password, user.password);
     if (!isMatchPassword) {
-      throw new BadRequestException('Password is incorrect');
+      throw new BadRequestException(GConfig.PASSWORD_IS_INCORRECT);
     }
     return user;
   }

@@ -12,6 +12,7 @@ import { Answer } from '../answer/entities/answer.entity';
 import { TopicService } from '../topic/topic.service';
 import { User } from '../user/entities/user.entity';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
+import { GConfig } from '../config/gconfig';
 
 @Injectable()
 export class QuestionService {
@@ -35,7 +36,6 @@ export class QuestionService {
     const checkTopic = await this.topicService.fineOneByID(
       createQuestionDto.topicID
     );
-    if (!checkTopic) throw new BadRequestException('topicid is not found');
 
     const questionEntity: Question = plainToClass(Question, createQuestionDto);
     if (
@@ -43,7 +43,7 @@ export class QuestionService {
       (createQuestionDto.answers == undefined ||
         createQuestionDto.answers.length == 0)
     ) {
-      throw new BadRequestException('answers is not  empty');
+      throw new BadRequestException(GConfig.ANSWERS_NOT_EMPTY);
     }
     if (files !== undefined) {
       //save image}||audio
@@ -75,7 +75,7 @@ export class QuestionService {
       await this.answerRepository.save(answers);
     }
 
-    return new SucessResponse(201, 'Sucess');
+    return new SucessResponse(201, GConfig.SUCESS);
   }
 
   //lay day du thong tin question
@@ -142,10 +142,10 @@ export class QuestionService {
     user: User
   ): Promise<SucessResponse> {
     const question = await this.getFullQuestionByID(id);
-    if (!question) throw new BadRequestException('Question is not found');
+    if (!question) throw new BadRequestException(GConfig.QUESTION_NOT_FOUND);
 
     if (!this.checkOwnerQuestion(user.id, question.topic.owner.id))
-      throw new BadRequestException('You do not have permission to edit');
+      throw new BadRequestException(GConfig.NOT_PERMISSION_EDIT);
 
     const QuestionEntity = this.convertQuestionEntity(files, updateQuestionDto);
     // update question
@@ -174,6 +174,6 @@ export class QuestionService {
       });
     }
 
-    return new SucessResponse(200, 'Sucess');
+    return new SucessResponse(200, GConfig.SUCESS);
   }
 }
