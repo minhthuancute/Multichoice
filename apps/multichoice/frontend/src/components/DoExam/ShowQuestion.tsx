@@ -151,7 +151,9 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
   };
 
   const isCheckAnswer = (answerID: number): boolean => {
-    const shouldChecked = answers[indexQuestion]?.answerID?.includes(answerID);
+    const shouldChecked = (
+      answers[indexQuestion]?.answerID as number[]
+    )?.includes(answerID);
 
     return shouldChecked;
   };
