@@ -12,6 +12,10 @@ import AnswerItem from './AnswerItem';
 import { HiInformationCircle } from 'react-icons/hi';
 import { iNotification } from 'react-notifications-component';
 import { notify } from '../../helper/notify';
+import {
+  errMaxlengthAnswer,
+  errMinlengthAnswer,
+} from '../../constants/msgNotify';
 
 const answerSchema = yup.object().shape({
   answers: yup.array().of(
@@ -38,7 +42,7 @@ interface ICreateAnswerProps {
 }
 
 const CreateAnswer: React.FC<ICreateAnswerProps> = forwardRef(
-  (props: ICreateAnswerProps, ref: any) => {
+  (props: ICreateAnswerProps, ref) => {
     const {
       onAddAnswer,
       onRemoveAnswer,
@@ -63,17 +67,6 @@ const CreateAnswer: React.FC<ICreateAnswerProps> = forwardRef(
       name: 'answers',
     });
 
-    useEffect(() => {
-      const answers = Array.from({ length: 4 }).map((item) => {
-        const answer: CreatAnswer = {
-          content: '',
-          isCorrect: false,
-        };
-        return answer;
-      });
-      setValue('answers', answers);
-    }, []);
-
     const [correctAnswer, setCorrectAnswer] = useState<string>('');
 
     const addNewAnswer = () => {
@@ -86,7 +79,7 @@ const CreateAnswer: React.FC<ICreateAnswerProps> = forwardRef(
         append(newAnswer);
       } else {
         notify({
-          message: 'Số câu trả lời tối đa là 4 !',
+          message: errMaxlengthAnswer,
           type: 'danger',
         } as iNotification);
         return;
@@ -104,7 +97,7 @@ const CreateAnswer: React.FC<ICreateAnswerProps> = forwardRef(
         }
 
         const answers: CreatAnswer[] = getValues('answers');
-        const filterAnswer = answers.filter((_: any, index: number) => {
+        const filterAnswer = answers.filter((_: CreatAnswer, index: number) => {
           return indexAnswer !== index;
         });
 
@@ -112,7 +105,7 @@ const CreateAnswer: React.FC<ICreateAnswerProps> = forwardRef(
         remove(indexAnswer);
       } else {
         notify({
-          message: 'Câu hỏi phải có ít nhất hai câu trả lời !',
+          message: errMinlengthAnswer,
           type: 'danger',
         } as iNotification);
 
@@ -130,22 +123,10 @@ const CreateAnswer: React.FC<ICreateAnswerProps> = forwardRef(
       setCorrectAnswer(valueCorrect || '');
     };
 
-    // const hasDuplicateAnswer = (asnswers: CreatAnswer[]): boolean => {
-    //   const isDuplicate = asnswers.some((answer: CreatAnswer) => {
-    //     return
-    //   });
-
-    //   return isDuplicate
-    // };
-
     useEffect(() => {
       const subscription = watch((value: any) => {
         onAddAnswer(value.answers as CreatAnswer[]);
         handleIndexCorrectAnswer(value.answers);
-
-        // if (hasDuplicateAnswer(value.answers)) {
-        //   setError('answers', { message: 'Answer content must be unique' });
-        // }
       });
       return () => {
         subscription.unsubscribe();
@@ -158,19 +139,21 @@ const CreateAnswer: React.FC<ICreateAnswerProps> = forwardRef(
       }
     }, [isMultilCorrectAnswer]);
 
+    useEffect(() => {
+      const answers = Array.from({ length: 4 }).map((item) => {
+        const answer: CreatAnswer = {
+          content: '',
+          isCorrect: false,
+        };
+        return answer;
+      });
+      setValue('answers', answers);
+    }, []);
+
     useImperativeHandle(
       ref,
       () => ({
         resetAnswers: (newAnswers: CreatAnswer[]) => {
-          // const answers = getValues('answers');
-          // const resetAnswers: CreatAnswer[] = answers.map(
-          //   (answer: CreatAnswer) => {
-          //     return {
-          //       ...answer,
-          //       isCorrect: false,
-          //     };
-          //   }
-          // );
           reset({
             answers: newAnswers,
           });

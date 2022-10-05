@@ -12,6 +12,10 @@ import AnswerItem from './AnswerItem';
 import { HiInformationCircle } from 'react-icons/hi';
 import { iNotification } from 'react-notifications-component';
 import { notify } from '../../helper/notify';
+import {
+  errMaxlengthAnswer,
+  errMinlengthAnswer,
+} from '../../constants/msgNotify';
 
 export const answerSchema = yup.object().shape({
   answers: yup.array().of(
@@ -36,7 +40,7 @@ interface IUpdateAnswerProps {
 }
 
 const UpdateAnswer: React.FC<IUpdateAnswerProps> = forwardRef(
-  (props: IUpdateAnswerProps, ref: any) => {
+  (props: IUpdateAnswerProps, ref) => {
     const {
       answers,
       onAddAnswer,
@@ -56,10 +60,6 @@ const UpdateAnswer: React.FC<IUpdateAnswerProps> = forwardRef(
       name: 'answers',
     });
 
-    useEffect(() => {
-      setValue('answers', answers);
-    }, []);
-
     const [correctAnswer, setCorrectAnswer] = useState<string>('');
 
     const addNewAnswer = () => {
@@ -72,7 +72,7 @@ const UpdateAnswer: React.FC<IUpdateAnswerProps> = forwardRef(
         append(newAnswer);
       } else {
         notify({
-          message: 'Số câu trả lời tối đa là 4 !',
+          message: errMaxlengthAnswer,
           type: 'danger',
         } as iNotification);
         return;
@@ -90,15 +90,17 @@ const UpdateAnswer: React.FC<IUpdateAnswerProps> = forwardRef(
         }
 
         const answers: CreatAnswer[] = getValues('answers');
-        const filterAnswer = answers.filter((_: any, indexAnswer: number) => {
-          return indexAnswer !== indexAnswer;
-        });
+        const filterAnswer = answers.filter(
+          (_: CreatAnswer, indexAnswerFilter: number) => {
+            return indexAnswer !== indexAnswerFilter;
+          }
+        );
 
         onRemoveAnswer(filterAnswer);
         remove(indexAnswer);
       } else {
         notify({
-          message: 'Câu hỏi phải có ít nhất hai câu trả lời !',
+          message: errMinlengthAnswer,
           type: 'danger',
         } as iNotification);
 
@@ -122,6 +124,10 @@ const UpdateAnswer: React.FC<IUpdateAnswerProps> = forwardRef(
         subscription.unsubscribe();
       };
     }, [watch]);
+
+    useEffect(() => {
+      setValue('answers', answers);
+    }, []);
 
     useImperativeHandle(
       ref,

@@ -16,6 +16,7 @@ import ConfirmDeleteUserExam from '../../../components/Exam/ConfirmDeleteUserExa
 import { getTopicTitle } from '../../../helper/getTopicTitle';
 import FilterStatisticExam from '../../../components/Exam/FilterStatisticExam';
 import { withBackTop } from '../../../HOCs/withBackTop';
+import { deleteResultUserExamSuccess } from '../../../constants/msgNotify';
 
 const StatisticExam: React.FC = () => {
   const { id: topic_id } = useParams();
@@ -52,7 +53,7 @@ const StatisticExam: React.FC = () => {
         if (status) {
           setShowModalConfirmDelete(false);
           notify({
-            message: 'Xoá kết quả thi thành công !',
+            message: deleteResultUserExamSuccess,
           } as iNotification);
           getListExamByTopicId();
         }
