@@ -11,7 +11,7 @@ type PlacementContent =
   | 'BOTTOM_LEFT'
   | 'BOTTOM_RIGHT';
 
-type SizeModal = 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | '3xl';
+type SizeModal = 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | '3xl' | 'full';
 
 interface ILayout {
   setOpenModal: React.Dispatch<React.SetStateAction<any>>;
@@ -43,6 +43,7 @@ const Modal: React.FC<ILayout> = ({
       xl: 'max-w-3xl',
       xxl: 'max-w-4xl',
       '3xl': 'max-w-6xl',
+      full: 'max-w-full',
     };
     return sizeObj[size];
   };

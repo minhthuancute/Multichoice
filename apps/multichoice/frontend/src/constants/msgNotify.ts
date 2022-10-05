@@ -1,4 +1,4 @@
-export const loginError = 'Sai tên Email hoặc mật khẩu';
+export const loginError = 'Sai Email hoặc mật khẩu';
 export const emailExisted = 'Email đã tồn tại';
 export const acceptTerm = 'Bạn phải chấp nhận Điều khoản và Chính sách Bảo mật';
 export const errMaxlengthAnswer = 'Số câu trả lời tối đa là 4';
