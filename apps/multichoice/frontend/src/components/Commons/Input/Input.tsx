@@ -38,12 +38,6 @@ const Input: React.FC<IInput> = ({
   isDisable = false,
   inputSize = 'sm',
 }) => {
-  const onChangeInput = (value: string) => {
-    if (onChange) {
-      onChange(value);
-    }
-  };
-
   return (
     <div className={classNames(['form-group relative', className])}>
       {/* input content */}

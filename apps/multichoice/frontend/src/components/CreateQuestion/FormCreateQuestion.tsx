@@ -31,7 +31,7 @@ const schemaFormCreateQuestion = yup.object().shape({
   isActive: yup.boolean(),
   answers: yup.array().of(
     yup.object().shape({
-      content: yup.string().required(),
+      content: yup.string(),
       isCorrect: yup.boolean(),
     })
   ),
@@ -128,7 +128,10 @@ const FormCreateQuestion: React.FC<ICreateQuestionProps> = forwardRef(
         }
 
         case QuestionTypeEnum.TEXT: {
+          console.log('scjsklcjk');
+
           setShouldRemoveAnswers(true);
+          clearErrors('answers');
           break;
         }
 
@@ -143,11 +146,12 @@ const FormCreateQuestion: React.FC<ICreateQuestionProps> = forwardRef(
     ) => {
       try {
         const answers = getValues('answers');
+        const questionTypeText = getValues('type') === QuestionTypeEnum.TEXT;
 
         const validAnswers = answers.some((answers: CreatAnswer) => {
           return answers.isCorrect;
         });
-        if (!validAnswers) {
+        if (!validAnswers && !questionTypeText) {
           notify({
             message: errNotSelectCorrectAnswer,
             type: 'danger',
@@ -199,6 +203,9 @@ const FormCreateQuestion: React.FC<ICreateQuestionProps> = forwardRef(
       ref,
       () => ({
         submitFormCreateAnswer: () => {
+          if (getValues('type') === QuestionTypeEnum.TEXT) {
+            clearErrors('answers');
+          }
           if (submitBtnRef.current !== null) {
             submitBtnRef.current.click();
           }

@@ -23,6 +23,8 @@ const QuestionItem: React.FC<IQuestionItem> = ({
   const [openModalEditQuestion, setOpenModalEditQuestion] =
     useState<boolean>(false);
 
+  const isTypeTextQuestion = question.type === QuestionTypeEnum.TEXT;
+
   return (
     <>
       <Modal
@@ -36,7 +38,14 @@ const QuestionItem: React.FC<IQuestionItem> = ({
       </Modal>
       <div className="container mb-4 last:mb-0">
         <div className="question-content py-4 px-6 bg-white rounded-lg">
-          <div className="header pb-2 text-slate-800 text-tiny flex justify-between">
+          <div
+            className={classNames(
+              'header text-slate-800 text-tiny flex justify-between',
+              {
+                'pb-2': !isTypeTextQuestion,
+              }
+            )}
+          >
             <div className="header-left flex text-tiny">
               <span className="font-semibold mr-2 min-w-max">
                 Câu hỏi {index}:
@@ -62,7 +71,11 @@ const QuestionItem: React.FC<IQuestionItem> = ({
               </ul>
             </div>
           </div>
-          <div className="body pt-2 border-t border-slate-200">
+          <div
+            className={classNames('body ', {
+              'pt-2 border-t border-slate-200': !isTypeTextQuestion,
+            })}
+          >
             <ul>
               {question &&
                 question.answers.map((answer: IAnswer, index: number) => (

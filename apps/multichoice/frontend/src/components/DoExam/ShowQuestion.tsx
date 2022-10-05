@@ -16,13 +16,15 @@ import PolaCode from '../PolaCode/PolaCode';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 import { QuestionType } from '../../types/ICommons';
 
-import './doExam.scss';
 import {
   errCanNotSubmit,
   expriedTime,
   submited,
   submitSuccess,
 } from '../../constants/msgNotify';
+
+import './doExam.scss';
+import TextArea from '../Commons/TextArea/TextArea';
 
 interface IShowQuestion {
   indexQuestion: number;
@@ -291,12 +293,17 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
                 );
               }
             )}
+
           {questions[indexQuestion].type === QuestionTypeEnum.MULTIPLE ? (
             <div className="mt-3">
               <p className="text-sm text-primary-800 italic text-center">
                 (Có thể có nhiều đáp án đúng)
               </p>
             </div>
+          ) : null}
+
+          {questions[indexQuestion].type === QuestionTypeEnum.TEXT ? (
+            <TextArea placeholder="Nhập câu trả lời..." className="h-auto" />
           ) : null}
         </div>
       </div>
