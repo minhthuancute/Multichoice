@@ -19,6 +19,7 @@ import { hasContentEditor } from '../../utils/emptyContentEditor';
 import { IResetAnswersRef } from '../CreateQuestion/CreateAnswer';
 import { topicServices } from '../../services/TopicServices';
 import { useParams } from 'react-router-dom';
+import { errNotSelectCorrectAnswer } from '../../constants/msgNotify';
 
 const schemaFormUpdateQuestion = yup.object().shape({
   topicID: yup.number(),
@@ -128,7 +129,7 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
       });
       if (!validAnswers) {
         notify({
-          message: 'Bạn chưa chọn đáp án đúng cho câu hỏi !',
+          message: errNotSelectCorrectAnswer,
           type: 'danger',
         } as iNotification);
         return;
@@ -164,10 +165,6 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
   };
 
   const onSelectQuestionType = (item: IOption) => {
-    // const optionVal: QuestionTypeEnum = item.value as QuestionTypeEnum;
-    // setValue('type', optionVal);
-    // setValue('isActive', true);
-
     const optionVal: QuestionTypeEnum = item.value as QuestionTypeEnum;
     setValue('type', optionVal);
     setValue('isActive', true);
@@ -186,9 +183,6 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
         };
       });
       setValue('answers', resetAnswers);
-      // reset({
-      //   answers: resetAnswers,
-      // });
       if (updateAnswerRef.current) {
         updateAnswerRef.current.resetAnswers(resetAnswers);
       }

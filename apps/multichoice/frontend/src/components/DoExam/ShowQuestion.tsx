@@ -17,6 +17,12 @@ import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 import { QuestionType } from '../../types/ICommons';
 
 import './doExam.scss';
+import {
+  errCanNotSubmit,
+  expriedTime,
+  submited,
+  submitSuccess,
+} from '../../constants/msgNotify';
 
 interface IShowQuestion {
   indexQuestion: number;
@@ -102,13 +108,13 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
 
         setOpenModalResult(true);
         notify({
-          message: 'Nộp bài thành công !',
+          message: submitSuccess,
         } as iNotification);
       }
     } catch (error: any) {
       if (error.response.data.statusCode === 400) {
         notify({
-          message: 'Không thể nộp bài do bạn đã nộp bài thi này trước đó !',
+          message: errCanNotSubmit,
           type: 'danger',
         } as iNotification);
       }
@@ -119,17 +125,17 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
 
   const requestSubmit = () => {
     if (isExpriedExam) {
-      setErrorMsgSubmit('Hết thời gian nộp bài');
+      setErrorMsgSubmit(expriedTime);
       notify({
-        message: 'Hết thời gian nộp bài !',
+        message: expriedTime,
         type: 'danger',
       } as iNotification);
       return;
     }
     if (isSubmitExam) {
-      setErrorMsgSubmit('Bạn đã nộp bài');
+      setErrorMsgSubmit(submited);
       notify({
-        message: 'Bạn đã nộp bài !',
+        message: submited,
         type: 'danger',
       } as iNotification);
       return;

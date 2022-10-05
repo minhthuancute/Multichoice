@@ -22,6 +22,7 @@ import { iNotification } from 'react-notifications-component';
 import QuillEditor from '../QuillEditor/QuillEditor';
 import { hasContentEditor } from '../../utils/emptyContentEditor';
 import { classNames } from '../../helper/classNames';
+import { errNotSelectCorrectAnswer } from '../../constants/msgNotify';
 
 const schemaFormCreateQuestion = yup.object().shape({
   topicID: yup.number(),
@@ -40,16 +41,16 @@ export interface IFormCreateQuestionRef {
   submitFormCreateAnswer: () => void;
 }
 
-interface ICreateQuestion {
+interface ICreateQuestionProps {
   ref: any;
 }
 
-const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
+const FormCreateQuestion: React.FC<ICreateQuestionProps> = forwardRef(
   (props, ref) => {
     const navigate = useNavigate();
     const query = useQuery();
     const { topic } = topicStore();
-    const submitBtnRef: any = useRef<HTMLButtonElement>(null);
+    const submitBtnRef = useRef<HTMLButtonElement>(null);
 
     const createAnswerRef = useRef<IResetAnswersRef>();
 
@@ -64,7 +65,6 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
       getValues,
       clearErrors,
       setError,
-      reset,
       formState: { errors },
     } = useForm<CreateQuestionDto>({
       resolver: yupResolver(schemaFormCreateQuestion),
@@ -149,7 +149,7 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
         });
         if (!validAnswers) {
           notify({
-            message: 'Bạn chưa chọn đáp án đúng cho câu hỏi !',
+            message: errNotSelectCorrectAnswer,
             type: 'danger',
           } as iNotification);
           return;
@@ -199,7 +199,9 @@ const FormCreateQuestion: React.FC<ICreateQuestion> = forwardRef(
       ref,
       () => ({
         submitFormCreateAnswer: () => {
-          submitBtnRef.current.click();
+          if (submitBtnRef.current !== null) {
+            submitBtnRef.current.click();
+          }
         },
       }),
       []

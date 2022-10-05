@@ -18,6 +18,7 @@ import { ILoginResponse } from '../../../types/LoginResponse';
 import { localServices } from '../../../services/LocalServices';
 import { iNotification } from 'react-notifications-component';
 import { notify } from '../../../helper/notify';
+import { loginError } from '../../../constants/msgNotify';
 
 const { email, password } = validation();
 const schemaFormLogin = yup
@@ -64,7 +65,7 @@ const FormLogin: React.FC = () => {
       }
     } catch (error) {
       notify({
-        message: 'Wrong user name or password !',
+        message: loginError,
         type: 'danger',
       } as iNotification);
     }

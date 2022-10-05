@@ -6,8 +6,12 @@ export const getDate = (date: string | number): string => {
 
 export const getTime = (date: string | number): string => {
   const d = new Date(date);
-  const result = d.toLocaleTimeString('vn');
-  return result;
+  const timeString = d.toLocaleTimeString('vn');
+  const splitTime = timeString.slice(0, -3).split(':');
+  const result = splitTime.map((val: string) => {
+    return val.length === 1 ? '0' + val : val;
+  });
+  return result.join(':') + ' ' + timeString.slice(-2);
 };
 
 export const getDistance = (
