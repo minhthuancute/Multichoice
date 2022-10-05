@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   Res,
-  BadRequestException,
   UseGuards,
   UseInterceptors,
   UploadedFiles,
@@ -20,7 +19,6 @@ import {
 } from '@monorepo/multichoice/dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { SucessResponse } from '../model/SucessResponse';
-import { TopicService } from '../topic/topic.service';
 import { AuthenticationGuard } from '../auth/guards/auth.guard';
 import { multerOptions } from '../uploads/upload';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';

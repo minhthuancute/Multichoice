@@ -23,6 +23,7 @@ import { UserAnswer } from './entities/userAnswer.entity';
 import { SucessResponse } from '../model/SucessResponse';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 import { redisService } from '../redis/redis.service';
+import { GConfig } from '../config/gconfig';
 
 @Injectable()
 export class UserService {
@@ -155,7 +156,7 @@ export class UserService {
       },
       relations: ['userAnswer'],
     });
-    if (!result) throw new BadRequestException('User is not found');
+    if (!result) throw new BadRequestException(GConfig.USER_NOT_FOUND);
     return new SucessResponse(200, this.convertUserDoExamdetail(result, topic));
   }
 
@@ -164,7 +165,7 @@ export class UserService {
       const result = await this.findOneByTopicID(id);
       return new SucessResponse(200, this.convertListUserDoExam(result));
     }
-    throw new BadRequestException('You do not have permission');
+    throw new BadRequestException(GConfig.NOT_PERMISSION_VIEW);
   }
 
   async endExam(resultUserDto: ResultUserDto) {
@@ -173,7 +174,7 @@ export class UserService {
 
     // get data redis
     const userExam: UserExam = await this.redisService.get(userID);
-    if (!userExam) throw new BadRequestException('Hết thời gian làm bài');
+    if (!userExam) throw new BadRequestException(GConfig.EXPRIED_TIME);
 
     //xóa key trong redis
     this.redisService.delete(userID);
@@ -181,7 +182,7 @@ export class UserService {
     const topic: Topic = await this.topicService.getIsCorrectByTopicID(
       userExam.topic.id
     );
-    if (!topic) throw new BadRequestException('topicid is not found');
+    if (!topic) throw new BadRequestException(GConfig.TOPIC_NOT_FOUND);
 
     userExam.endTime = endTime;
     userExam.point = this.pointCount(topic.questions, resultUserDto);
@@ -224,7 +225,7 @@ export class UserService {
 
   async startExam(userExamDto: UserExamDto) {
     const topic = await this.topicService.fineOneByID(userExamDto.topicID);
-    if (!topic) throw new BadRequestException('topic is not found');
+    if (!topic) throw new BadRequestException(GConfig.TOPIC_NOT_FOUND);
     const exam: UserExam = new UserExam();
     exam.username = userExamDto.username;
     exam.topic = new Topic(topic.id);
@@ -313,12 +314,12 @@ export class UserService {
     user: User
   ): Promise<SucessResponse> {
     const userExam = await this.getUserExambyID(userID);
-    if (!userExam) throw new BadRequestException('user is not found');
+    if (!userExam) throw new BadRequestException(GConfig.USER_NOT_FOUND);
 
     if (!(await this.topicService.checkAuth(userExam.topic.id, user)))
-      throw new BadRequestException('You do not have permission');
+      throw new BadRequestException(GConfig.NOT_PERMISSION_DELETE);
 
     await this.userExamRepository.delete({ id: userID });
-    return new SucessResponse(200, 'Sucess');
+    return new SucessResponse(200, GConfig.SUCESS);
   }
 }
