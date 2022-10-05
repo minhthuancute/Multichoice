@@ -51,18 +51,18 @@ const ConfirmSubmit: React.FC<IConfirmSubmitProps> = ({
         </div>
         <div className="body ctas flex items-center justify-center gap-x-2 mt-5">
           <button
+            className="create-test rounded-md flex justify-center items-center w-32 h-10 text-sm
+          text-slate-800 font-bold border border-solid border-slate-800 focus:ring focus:ring-slate-100"
+            onClick={() => onCancleModalConfirm()}
+          >
+            Huỷ
+          </button>
+          <button
             className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
           text-white font-bold bg-primary-900 transition-all duration-200 hover:bg-primary-800"
             onClick={() => setConfirmSubmit(true)}
           >
             Nộp bài
-          </button>
-          <button
-            className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
-          text-slate-800 font-bold border border-solid border-slate-800"
-            onClick={() => onCancleModalConfirm()}
-          >
-            Huỷ
           </button>
         </div>
       </div>

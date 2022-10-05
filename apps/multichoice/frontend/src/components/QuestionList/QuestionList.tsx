@@ -2,6 +2,7 @@ import React, { useLayoutEffect, useState } from 'react';
 import { RiErrorWarningLine } from 'react-icons/ri';
 import { iNotification } from 'react-notifications-component';
 import { useParams } from 'react-router-dom';
+import { deleteQuestionSuccess } from '../../constants/msgNotify';
 import { notify } from '../../helper/notify';
 import { questionServices } from '../../services/QuestionServices';
 import { topicServices } from '../../services/TopicServices';
@@ -42,7 +43,7 @@ const QuestionList: React.FC = () => {
       const data = await questionServices.deleteQuestion(questionId);
       if (data.status === 200) {
         notify({
-          message: 'Xóa câu hỏi thành công !',
+          message: deleteQuestionSuccess,
           type: 'success',
         } as iNotification);
 

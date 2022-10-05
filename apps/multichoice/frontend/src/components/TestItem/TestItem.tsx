@@ -14,6 +14,10 @@ import { notify } from '../../helper/notify';
 import { iNotification } from 'react-notifications-component';
 import { secondsToMinutes } from '../../utils/minutesToSeconds';
 import { TopicCategoryType } from '../../types/ICommons';
+import {
+  canNotCopyLinkExam,
+  copyLinkExamSuccess,
+} from '../../constants/msgNotify';
 
 export interface ITestItem {
   topicUrl: string;
@@ -40,7 +44,7 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
     const canExam = test.questionCount !== 0;
     if (!canExam) {
       notify({
-        message: 'Bạn không thể tạo đợt thi do bộ đề chưa có câu hỏi!',
+        message: canNotCopyLinkExam,
         type: 'danger',
       } as iNotification);
       return;
@@ -48,7 +52,7 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
 
     copyClipboard(examUrl());
     notify({
-      message: 'Liên kết đã được lưu trữ vào bộ nhớ tạm.',
+      message: copyLinkExamSuccess,
       type: 'success',
     } as iNotification);
   };

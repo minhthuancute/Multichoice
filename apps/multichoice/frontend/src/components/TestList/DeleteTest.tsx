@@ -1,6 +1,7 @@
 import React from 'react';
 import { RiErrorWarningLine } from 'react-icons/ri';
 import { iNotification } from 'react-notifications-component';
+import { deleteTopicSuccess } from '../../constants/msgNotify';
 import { notify } from '../../helper/notify';
 import { topicServices } from '../../services/TopicServices';
 import Modal from '../Modal/Modal';
@@ -22,10 +23,10 @@ const DeleteTest: React.FC<IDeleteTest> = ({
 }) => {
   const deleteTopic = async () => {
     try {
-      const { data, status } = await topicServices.deleteTopicById(testID);
+      const { status } = await topicServices.deleteTopicById(testID);
       if (status === 200) {
         notify({
-          message: 'Xóa đề thi thành công !',
+          message: deleteTopicSuccess,
         } as iNotification);
         cbConfirmDel();
       }
@@ -50,19 +51,18 @@ const DeleteTest: React.FC<IDeleteTest> = ({
         </div>
         <div className="body ctas flex items-center justify-center gap-x-2 mt-12">
           <button
+            className="create-test rounded-md flex justify-center items-center w-32 h-10 text-sm
+          text-slate-800 font-bold border border-solid border-slate-800 focus:ring focus:ring-slate-100"
+            onClick={() => setOpenModalDelete(false)}
+          >
+            Huỷ
+          </button>
+          <button
             className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
           text-white font-bold bg-primary-900 transition-all duration-200 hover:bg-primary-800"
             onClick={() => deleteTopic()}
           >
             Xác nhận
-          </button>
-
-          <button
-            className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
-          text-slate-800 font-bold border border-solid border-slate-800"
-            onClick={() => setOpenModalDelete(false)}
-          >
-            Huỷ
           </button>
         </div>
       </div>

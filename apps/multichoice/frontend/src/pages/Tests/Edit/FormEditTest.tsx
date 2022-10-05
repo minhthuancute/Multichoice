@@ -203,8 +203,8 @@ const FormEditTest: React.FC<IFormEditTestProps> = ({
         <div className="ctas flex items-center justify-end gap-x-2 mt-8">
           <button
             type="button"
-            className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
-          text-slate-800 font-bold border border-solid border-slate-800"
+            className="create-test rounded-md flex justify-center items-center w-32 h-10 text-sm
+          text-slate-800 font-bold border border-solid border-slate-800 focus:ring focus:ring-slate-100"
             onClick={() => setOpenModalEditTest(false)}
           >
             Huỷ

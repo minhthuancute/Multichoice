@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import { CreateUserDto } from '@monorepo/multichoice/dto';
 import { iNotification, Store } from 'react-notifications-component';
 import { notify } from '../../../helper/notify';
+import { acceptTerm, emailExisted } from '../../../constants/msgNotify';
 
 const { username, email, password } = validation();
 const schemaFormRegister = yup
@@ -56,13 +57,13 @@ const FormRegister: React.FC = () => {
         navigate('/login');
       } catch (error) {
         notify({
-          message: 'Email already exists',
+          message: emailExisted,
           type: 'danger',
         } as iNotification);
       }
     } else {
       notify({
-        message: 'U must accept the Term of Conditions and Privacy Policy',
+        message: acceptTerm,
         type: 'danger',
       } as iNotification);
     }
