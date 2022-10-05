@@ -15,6 +15,7 @@ import { User } from '../user/entities/user.entity';
 
 import { Question } from '../question/entities/question.entity';
 import { UserService } from '../user/user.service';
+import { GConfig } from '../config/gconfig';
 
 @Injectable()
 export class TopicService {
@@ -53,7 +54,7 @@ export class TopicService {
       relations: ['questions', 'questions.answers'],
     });
     if (!result) {
-      throw new NotFoundException('Topic not found');
+      throw new NotFoundException(GConfig.TOPIC_NOT_FOUND);
     }
     this.deleteCorrect(result.questions);
     return result;
@@ -67,10 +68,10 @@ export class TopicService {
       relations: ['questions', 'questions.answers'],
     });
     if (!result) {
-      throw new NotFoundException('Topic not found');
+      throw new NotFoundException(GConfig.TOPIC_NOT_FOUND);
     }
     if (!(await this.checkAuth(id, user)))
-      throw new BadRequestException('You do not have permission');
+      throw new BadRequestException(GConfig.NOT_PERMISSION_VIEW);
     return result;
   }
 
@@ -82,7 +83,7 @@ export class TopicService {
       relations: ['questions', 'questions.answers'],
     });
 
-    if (!result) throw new BadRequestException('topic is not found');
+    if (!result) throw new BadRequestException(GConfig.TOPIC_NOT_FOUND);
     this.deleteCorrect(result.questions);
     return result;
   }
@@ -101,7 +102,7 @@ export class TopicService {
 
   async deleteById(id: number, user: User): Promise<boolean> {
     if (!(await this.checkAuth(id, user)))
-      throw new BadRequestException('You do not have permission to delete');
+      throw new BadRequestException(GConfig.NOT_PERMISSION_DELETE);
     await this.topicRepository.delete(id);
     return true;
   }
