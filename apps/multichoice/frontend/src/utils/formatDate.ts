@@ -26,5 +26,9 @@ export const getDistance = (
   const minutes = Math.floor(distance / 60000);
   distance -= minutes * 60000;
   const seconds = Math.floor(distance / 1000);
-  return `${hours}:${('0' + minutes).slice(-2)}:${('0' + seconds).slice(-2)}`;
+
+  const result = `${hours.toString().length === 1 ? '0' + hours : hours}:${(
+    '0' + minutes
+  ).slice(-2)}:${('0' + seconds).slice(-2)}`;
+  return result;
 };
