@@ -1,14 +1,15 @@
 import React, { HTMLInputTypeAttribute } from 'react';
 import { classNames } from '../../../helper/classNames';
 
-export interface ITextArea {
+export interface ITextAreaProps {
+  onChange?: (value: string) => void;
   textLabel?: React.ReactNode;
   defaultValue?: any;
   className?: string;
   classNameTextarea?: string;
   id?: string;
   placeholder?: string;
-  Icon?: any;
+  Icon?: React.ReactNode;
   typeInput?: HTMLInputTypeAttribute;
   isError?: boolean;
   errMessage?: string;
@@ -17,7 +18,8 @@ export interface ITextArea {
   isRequired?: boolean;
 }
 
-const TextArea: React.FC<ITextArea> = ({
+const TextArea: React.FC<ITextAreaProps> = ({
+  onChange,
   textLabel = '',
   defaultValue = '',
   className,
@@ -48,6 +50,11 @@ const TextArea: React.FC<ITextArea> = ({
         </label>
 
         <textarea
+          onChange={(e) => {
+            if (onChange) {
+              onChange(e.target.value);
+            }
+          }}
           {...registerField}
           defaultValue={defaultValue}
           id={id}
