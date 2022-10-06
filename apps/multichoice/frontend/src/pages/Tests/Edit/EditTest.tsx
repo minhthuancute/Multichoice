@@ -4,7 +4,8 @@ import HeaderEditTest from '../../../components/EditTest/HeaderEditTest';
 import QuestionList from '../../../components/QuestionList/QuestionList';
 import { withBackTop } from '../../../HOCs/withBackTop';
 import { topicServices } from '../../../services/TopicServices';
-import { topicStore } from '../../../store/rootReducer';
+import {IInforUserDoExam, topicStore } from '../../../store/rootReducer';
+import {ITopicDetailResponse} from "../../../types";
 
 const EditTest: React.FC = () => {
   const query = useParams();
@@ -22,6 +23,9 @@ const EditTest: React.FC = () => {
 
   useEffect(() => {
     getTopicDetail();
+    return () => {
+      setTopicDetailData({} as ITopicDetailResponse);
+    }
   }, []);
 
   return (
