@@ -1,14 +1,15 @@
 import React, { HTMLInputTypeAttribute } from 'react';
 import { classNames } from '../../../helper/classNames';
 
-export interface ITextArea {
+export interface ITextAreaProps {
+  onChange?: (value: string) => void;
   textLabel?: React.ReactNode;
   defaultValue?: any;
   className?: string;
   classNameTextarea?: string;
   id?: string;
   placeholder?: string;
-  Icon?: any;
+  Icon?: React.ReactNode;
   typeInput?: HTMLInputTypeAttribute;
   isError?: boolean;
   errMessage?: string;
@@ -17,7 +18,8 @@ export interface ITextArea {
   isRequired?: boolean;
 }
 
-const TextArea: React.FC<ITextArea> = ({
+const TextArea: React.FC<ITextAreaProps> = ({
+  onChange,
   textLabel = '',
   defaultValue = '',
   className,
@@ -48,6 +50,11 @@ const TextArea: React.FC<ITextArea> = ({
         </label>
 
         <textarea
+          onChange={(e) => {
+            if (onChange) {
+              onChange(e.target.value);
+            }
+          }}
           {...registerField}
           defaultValue={defaultValue}
           id={id}
@@ -56,7 +63,7 @@ const TextArea: React.FC<ITextArea> = ({
           className={classNames(
             [
               `text-sm w-full text-stone-600 outline-none
-            border px-2.5 py-2 border-solid border-stone-200 focus:border-primary-900
+            border py-2 border-solid border-stone-200 focus:border-primary-900
             rounded-md placeholder:text-sm`,
               classNameTextarea,
             ],
@@ -64,7 +71,7 @@ const TextArea: React.FC<ITextArea> = ({
               'border-stone-200 focus:border-primary-900': !isError,
               'border-red-500 focus:border-red-500': isError,
               'pl-9': Icon,
-              'pl-2.5': !Icon,
+              'px-4': !Icon,
             }
           )}
         />

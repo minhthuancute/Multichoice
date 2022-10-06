@@ -1,10 +1,11 @@
-import React, { useEffect, useLayoutEffect } from 'react';
+import React, { useEffect } from 'react';
 import Input from '../../../components/Commons/Input/Input';
 import {
   answerStore,
   examStore,
   IAnswers,
-  IInforUserDoExam, userStore,
+  IInforUserDoExam,
+  userStore,
 } from '../../../store/rootReducer';
 import * as yup from 'yup';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -41,7 +42,7 @@ const CollectInfor: React.FC = () => {
 
   const { exam, setExamData } = examStore();
   const { setUserDoexamData, setAnswers } = answerStore();
-  const {user} = userStore();
+  const { user } = userStore();
 
   const {
     register,

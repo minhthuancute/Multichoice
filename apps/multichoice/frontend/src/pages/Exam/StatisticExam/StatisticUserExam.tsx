@@ -14,9 +14,9 @@ import { getDate, getDistance, getTime } from '../../../utils/formatDate';
 
 const StatisticUserExam: React.FC = () => {
   const { id: topic_id } = useParams();
-  const topicId = Number(topic_id) || -1;
-
   const query = useQuery();
+
+  const topicId = Number(topic_id) || -1;
 
   const [userExamDetail, setUserExamDetail] = useState<IUserDoExamdetail>();
   const [topicTitle, setTopicTitle] = useState<string>('');
