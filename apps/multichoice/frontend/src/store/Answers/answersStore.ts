@@ -63,8 +63,11 @@ export const answerStore = create<IAnswersStore>()(
             });
 
             if (answerIndex !== -1) {
-              if (questionType === 'TEXT' && typeof answerSelect === 'string') {
-                const regex = /s+/gi;
+              if (
+                questionType.toUpperCase() === 'TEXT' &&
+                typeof answerSelect === 'string'
+              ) {
+                const regex = /\s+/gi;
                 const removeSpaceAnswer = answerSelect
                   .replace(regex, ' ')
                   .trim();
