@@ -148,17 +148,14 @@ export class QuestionService {
       throw new BadRequestException(GConfig.NOT_PERMISSION_EDIT);
 
     const QuestionEntity = this.convertQuestionEntity(files, updateQuestionDto);
-    // update question
     await this.questionRepository.update({ id }, QuestionEntity);
 
-    // update list answer
+    // lay ds questionOption dc phep
+    const check = this.getAnswers(question.answers);
     if (
       updateQuestionDto.answers != undefined &&
       updateQuestionDto.answers.length > 0
     ) {
-      // lay ds questionOption dc phep
-      const check = this.getAnswers(question.answers);
-
       updateQuestionDto.answers.forEach((opt) => {
         const questionOption = new Answer();
         questionOption.content = opt.content;
@@ -169,9 +166,14 @@ export class QuestionService {
         } else {
           if (check.includes(opt.id)) {
             this.answerRepository.update({ id: opt.id }, questionOption);
+            check.splice(check.indexOf(opt.id), 1);
           }
         }
       });
+    }
+
+    if (check.length !== 0) {
+      this.answerRepository.delete(check);
     }
 
     return new SucessResponse(200, GConfig.SUCESS);
