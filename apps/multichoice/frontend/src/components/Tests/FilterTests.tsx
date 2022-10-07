@@ -47,7 +47,10 @@ const FilterTests: React.FC<IFilterTests> = ({ onFilter }) => {
           inputSize="md"
           defaultValue={searchParams.get('search')}
         />
-        <button className="btn-primary bg-slate-500 text-white py-3.5 px-4 rounded-md ml-1">
+        <button
+          className="bg-slate-500 text-white py-3.5 px-4 rounded-md ml-1
+        transition-all duration-200 focus:ring focus:ring-slate-100"
+        >
           <BiSearchAlt />
         </button>
       </form>
