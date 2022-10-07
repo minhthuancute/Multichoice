@@ -1,4 +1,5 @@
 import React, { HTMLInputTypeAttribute } from 'react';
+import { UseFormRegisterReturn } from 'react-hook-form';
 import { classNames } from '../../../helper/classNames';
 
 export type InputSize = 'xs' | 'sm' | 'md' | 'lg';
@@ -11,11 +12,11 @@ export interface IInput {
   classInput?: string;
   id?: string;
   placeholder?: string;
-  Icon?: any;
+  Icon?: React.ReactNode;
   typeInput?: HTMLInputTypeAttribute;
   isError?: boolean;
   errMessage?: string;
-  registerField?: any;
+  registerField?: UseFormRegisterReturn;
   isRequired?: boolean;
   isDisable?: boolean;
   inputSize?: InputSize;

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import * as yup from 'yup';
 import Input from '../Commons/Input/Input';
 import { CreatAnswer } from '@monorepo/multichoice/dto';
@@ -20,27 +20,24 @@ import { IResetAnswersRef } from '../CreateQuestion/CreateAnswer';
 import { topicServices } from '../../services/TopicServices';
 import { useParams } from 'react-router-dom';
 import { errNotSelectCorrectAnswer } from '../../constants/msgNotify';
+import { classNames } from '../../helper/classNames';
 
 const schemaFormUpdateQuestion = yup.object().shape({
   topicID: yup.number(),
   content: yup.string().required('Question content is a required field'),
   time: yup.number(),
   isActive: yup.boolean(),
-  answers: yup
-    .array()
-    .of(
-      yup.object().shape({
-        content: yup.string().required(),
-        isCorrect: yup.boolean(),
-      })
-    )
-    .required(),
+  answers: yup.array().of(
+    yup.object().shape({
+      content: yup.string(),
+      isCorrect: yup.boolean(),
+    })
+  ),
 });
 
 interface IFormEditQuestion {
   questionData: IQuestion;
   setOpenModalEditQuestion: React.Dispatch<React.SetStateAction<boolean>>;
-  // cbOnUpdateQuestion: () => void;
 }
 
 export interface IUpdateAnswer {
@@ -80,6 +77,8 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
   });
 
   const [isMutilAnswer, setIsMutilAnswer] = useState<boolean>(false);
+  const [shouldRemoveAnswers, setShouldRemoveAnswers] =
+    useState<boolean>(false);
 
   const [questionTypes] = useState<IOption[]>(() => {
     const types: QuestionTypeEnum[] = [];
@@ -98,6 +97,9 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
 
   const initForm = () => {
     const { type, content, time, isActive, answers } = questionData;
+    if (type === QuestionTypeEnum.TEXT) {
+      setShouldRemoveAnswers(true);
+    }
 
     const isMutilAnswer: boolean = type === QuestionTypeEnum.MULTIPLE;
     setIsMutilAnswer(isMutilAnswer);
@@ -113,26 +115,56 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
     try {
       const { data } = await topicServices.getTopicById(Number(id) || -1);
       setTopicDetailData(data);
-    } catch (error) {
+    } catch {
       //
     }
+  };
+
+  const validAnswer = (): boolean => {
+    const answers = getValues('answers');
+    const isQuestionTypeText =
+      getValues('type').toUpperCase() === QuestionTypeEnum.TEXT;
+    // answers must have correct answer
+    const haveCorrectAnswer =
+      answers.some((answers: CreatAnswer) => {
+        return answers.isCorrect;
+      }) && !isQuestionTypeText;
+
+    const haveEmptyContent =
+      answers.some((answers: CreatAnswer) => {
+        return answers.content === '';
+      }) && !isQuestionTypeText;
+
+    if (haveEmptyContent) {
+      setError('answers', {
+        message: 'Answers content is required',
+      });
+    }
+
+    if (!haveCorrectAnswer) {
+      notify({
+        message: errNotSelectCorrectAnswer,
+        type: 'danger',
+      } as iNotification);
+      return false;
+    }
+    return true;
   };
 
   // create Question
   const onSubmit: SubmitHandler<IUpdateQuestion> = async (
     formData: IUpdateQuestion
   ) => {
+    const isValidAnswer = validAnswer();
+    if (isValidAnswer === false) {
+      return;
+    }
+
     try {
-      const answers = getValues('answers');
-      const validAnswers = answers.some((answers: CreatAnswer) => {
-        return answers.isCorrect;
-      });
-      if (!validAnswers) {
-        notify({
-          message: errNotSelectCorrectAnswer,
-          type: 'danger',
-        } as iNotification);
-        return;
+      // should remove answer if question type is TEXT
+      const isQuestionTypeText = getValues('type') === QuestionTypeEnum.TEXT;
+      if (isQuestionTypeText) {
+        formData.answers = [];
       }
 
       const { data } = await questionServices.updateQuestion(
@@ -169,23 +201,40 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
     setValue('type', optionVal);
     setValue('isActive', true);
 
-    const isMutilAnswer: boolean = item.value === QuestionTypeEnum.MULTIPLE;
-
-    if (isMutilAnswer) {
-      setIsMutilAnswer(true);
-    } else {
-      setIsMutilAnswer(false);
-      const answers = getValues('answers');
-      const resetAnswers: CreatAnswer[] = answers.map((answer: CreatAnswer) => {
-        return {
-          ...answer,
-          isCorrect: false,
-        };
-      });
-      setValue('answers', resetAnswers);
-      if (updateAnswerRef.current) {
-        updateAnswerRef.current.resetAnswers(resetAnswers);
+    switch (item.value) {
+      case QuestionTypeEnum.MULTIPLE: {
+        setIsMutilAnswer(true);
+        setShouldRemoveAnswers(false);
+        break;
       }
+
+      case QuestionTypeEnum.SINGLE: {
+        setIsMutilAnswer(false);
+        setShouldRemoveAnswers(false);
+        const answers = getValues('answers');
+        const resetAnswers: CreatAnswer[] = answers.map(
+          (answer: CreatAnswer) => {
+            return {
+              ...answer,
+              isCorrect: false,
+            };
+          }
+        );
+        setValue('answers', resetAnswers);
+        if (updateAnswerRef.current) {
+          updateAnswerRef.current.resetAnswers(resetAnswers);
+        }
+        break;
+      }
+
+      case QuestionTypeEnum.TEXT: {
+        setShouldRemoveAnswers(true);
+        clearErrors('answers');
+        break;
+      }
+
+      default:
+        break;
     }
   };
 
@@ -202,7 +251,7 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
     setValue('content', value);
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     initForm();
   }, []);
 
@@ -238,7 +287,7 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
           ) : null}
           <Select
             onChange={onSelectQuestionType}
-            defaultValue={getValues('type')}
+            defaultValue={questionData.type}
             options={questionTypes}
             textLabel="Loại câu hỏi"
           />
@@ -252,10 +301,27 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
             errMessage={errors.content?.message}
             defaultValue={questionData.content}
           />
-          <div className="create-answer">
+          <div
+            className={classNames('create-answer', {
+              hidden: shouldRemoveAnswers,
+            })}
+          >
             <UpdateAnswer
               isMultilCorrectAnswer={isMutilAnswer}
-              answers={questionData.answers}
+              answers={
+                questionData.answers.length
+                  ? questionData.answers
+                  : ([
+                      {
+                        content: '',
+                        isCorrect: false,
+                      },
+                      {
+                        content: '',
+                        isCorrect: false,
+                      },
+                    ] as CreatAnswer[])
+              }
               onAddAnswer={onAddAnswer}
               onRemoveAnswer={onRemoveAnswer}
               invalidAnswers={Boolean(errors.answers)}
