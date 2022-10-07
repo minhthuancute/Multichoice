@@ -9,17 +9,11 @@ import {
 } from 'firebase/database';
 import { db } from '../firebase';
 
-export const fireGet = async (path: string) => {
-  const result: unknown[] = [];
+export const fireGet =  (path: string, cb: (data: unknown) => void) => {
   onValue(ref(db, path), (snapshot) => {
     const data = snapshot.val();
-    if (data) {
-      Object.values(data).map((val) => {
-        result.push(val);
-      });
-    }
+    cb(data)
   });
-  return result;
 };
 
 export const fireSet = async (path: string, data: unknown) => {
