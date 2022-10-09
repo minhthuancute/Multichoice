@@ -113,7 +113,7 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
 
   const getTopicDetail = async () => {
     try {
-      const { data } = await topicServices.getTopicById(Number(id) || -1);
+      const { data } = await topicServices.getTopicById(Number(id));
       setTopicDetailData(data);
     } catch {
       //
@@ -122,26 +122,27 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
 
   const validAnswer = (): boolean => {
     const answers = getValues('answers');
-    const isQuestionTypeText =
-      getValues('type').toUpperCase() === QuestionTypeEnum.TEXT;
+    const isQuestionTypeText = questionData.type === QuestionTypeEnum.TEXT;
+    if (isQuestionTypeText) {
+      return true;
+    }
     // answers must have correct answer
-    const haveCorrectAnswer =
-      answers.some((answers: CreatAnswer) => {
-        return answers.isCorrect;
-      }) && !isQuestionTypeText;
+    const haveCorrectAnswer = answers.some((answers: CreatAnswer) => {
+      return answers.isCorrect === true;
+    });
 
-    const haveEmptyContent =
-      answers.some((answers: CreatAnswer) => {
-        return answers.content === '';
-      }) && !isQuestionTypeText;
+    const haveEmptyContent = answers.some((answers: CreatAnswer) => {
+      return answers.content === '';
+    });
 
     if (haveEmptyContent) {
       setError('answers', {
         message: 'Answers content is required',
       });
+      return false;
     }
 
-    if (!haveCorrectAnswer) {
+    if (haveCorrectAnswer === false) {
       notify({
         message: errNotSelectCorrectAnswer,
         type: 'danger',
@@ -164,7 +165,7 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
       // should remove answer if question type is TEXT
       const isQuestionTypeText = getValues('type') === QuestionTypeEnum.TEXT;
       if (isQuestionTypeText) {
-        formData.answers = [];
+        formData.answers.length = 0;
       }
 
       const { data } = await questionServices.updateQuestion(
@@ -173,8 +174,8 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
       );
 
       if (data.success) {
-        setOpenModalEditQuestion(false);
         getTopicDetail();
+        setOpenModalEditQuestion(false);
       }
     } catch (error) {
       //
