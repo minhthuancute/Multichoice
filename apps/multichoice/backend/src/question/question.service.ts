@@ -148,7 +148,7 @@ export class QuestionService {
       throw new BadRequestException(GConfig.NOT_PERMISSION_EDIT);
 
     const QuestionEntity = this.convertQuestionEntity(files, updateQuestionDto);
-    await this.questionRepository.update({ id }, QuestionEntity);
+    this.questionRepository.update({ id }, QuestionEntity);
 
     // lay ds questionOption dc phep
     const check = this.getAnswers(question.answers);
