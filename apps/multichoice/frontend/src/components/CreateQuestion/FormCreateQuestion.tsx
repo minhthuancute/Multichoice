@@ -141,24 +141,26 @@ const FormCreateQuestion: React.FC<ICreateQuestionProps> = forwardRef(
     const validAnswer = (): boolean => {
       const answers = getValues('answers');
       const isQuestionTypeText = getValues('type') === QuestionTypeEnum.TEXT;
+      if (isQuestionTypeText) {
+        return true;
+      }
       // answers must have correct answer
-      const haveCorrectAnswer =
-        answers.some((answers: CreatAnswer) => {
-          return answers.isCorrect;
-        }) && !isQuestionTypeText;
+      const haveCorrectAnswer = answers.some((answers: CreatAnswer) => {
+        return answers.isCorrect;
+      });
 
-      const haveEmptyContent =
-        answers.some((answers: CreatAnswer) => {
-          return answers.content === '';
-        }) && !isQuestionTypeText;
+      const haveEmptyContent = answers.some((answers: CreatAnswer) => {
+        return answers.content === '';
+      });
 
       if (haveEmptyContent) {
         setError('answers', {
           message: 'Answers content is required',
         });
+        return false;
       }
 
-      if (!haveCorrectAnswer) {
+      if (haveCorrectAnswer === false) {
         notify({
           message: errNotSelectCorrectAnswer,
           type: 'danger',
