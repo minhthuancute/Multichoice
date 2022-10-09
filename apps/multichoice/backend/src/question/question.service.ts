@@ -173,7 +173,7 @@ export class QuestionService {
     }
 
     if (check.length !== 0) {
-      this.answerRepository.delete(check);
+      await this.answerRepository.delete(check);
     }
 
     return new SucessResponse(200, GConfig.SUCESS);
