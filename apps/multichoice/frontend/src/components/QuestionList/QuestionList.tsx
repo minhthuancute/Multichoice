@@ -104,7 +104,7 @@ const QuestionList: React.FC = () => {
               handleDeleteQuestion={handleDeleteQuestion}
               question={question}
               index={index + 1}
-              key={question.id + index}
+              key={question.id}
             />
           );
         })}

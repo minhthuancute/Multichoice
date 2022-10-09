@@ -80,7 +80,7 @@ const QuestionItem: React.FC<IQuestionItem> = ({
               {question &&
                 question.answers.map((answer: IAnswer, index: number) => (
                   <li
-                    key={answer.id + index}
+                    key={answer.id}
                     className="flex items-start text-slate-800 text-tiny mb-2 last:mb-0"
                   >
                     <span
