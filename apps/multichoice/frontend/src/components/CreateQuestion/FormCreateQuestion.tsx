@@ -140,7 +140,8 @@ const FormCreateQuestion: React.FC<ICreateQuestionProps> = forwardRef(
 
     const validAnswer = (): boolean => {
       const answers = getValues('answers');
-      const isQuestionTypeText = getValues('type') === QuestionTypeEnum.TEXT;
+      const questionType = getValues('type');
+      const isQuestionTypeText = questionType === QuestionTypeEnum.TEXT;
       if (isQuestionTypeText) {
         return true;
       }
