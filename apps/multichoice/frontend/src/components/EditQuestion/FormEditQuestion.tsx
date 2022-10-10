@@ -122,7 +122,9 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
 
   const validAnswer = (): boolean => {
     const answers = getValues('answers');
-    const isQuestionTypeText = questionData.type === QuestionTypeEnum.TEXT;
+    const questionType = getValues('type');
+    const isQuestionTypeText = questionType === QuestionTypeEnum.TEXT;
+
     if (isQuestionTypeText) {
       return true;
     }
