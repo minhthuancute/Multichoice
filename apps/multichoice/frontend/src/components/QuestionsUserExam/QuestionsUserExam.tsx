@@ -6,6 +6,7 @@ import PolaCode from '../PolaCode/PolaCode';
 import { BiCheckDouble } from 'react-icons/bi';
 import { QuestionType } from '../../types/ICommons';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
+import { BsArrowRight, BsFillArrowRightCircleFill } from 'react-icons/bs';
 
 interface IQuestionsUserExamProps {
   questions: Questiondetail[];
@@ -67,7 +68,8 @@ const QuestionsUserExam: React.FC<IQuestionsUserExamProps> = ({
 
               <div>
                 {questionType === QuestionTypeEnum.TEXT ? (
-                  <p className="text-sm text-violet-800 bg-violet-100 py-2 px-4 font-semibold">
+                  <p className="text-sm text-slate-800 flex items-center">
+                    <BsArrowRight className="mr-2 mt-1 text-primary-800" />{' '}
                     {answerUser}
                   </p>
                 ) : (
@@ -147,14 +149,6 @@ const QuestionsUserExam: React.FC<IQuestionsUserExamProps> = ({
                     : null}
                 </p>
               </div>
-
-              {/* {question.type === QuestionTypeEnum.MULTIPLE ? (
-                <div className="mt-1">
-                  <p className="text-sm text-primary-800 italic">
-                    (Có thể có nhiều đáp án đúng)
-                  </p>
-                </div>
-              ) : null} */}
             </ul>
           );
         })}

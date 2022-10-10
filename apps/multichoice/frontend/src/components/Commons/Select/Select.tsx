@@ -99,7 +99,7 @@ const Select: React.FC<ISelect> = ({
                   `,
                   {
                     'bg-slate-100 text-primary-900':
-                      option.label.toLowerCase() ===
+                      option.value.toLowerCase() ===
                       selectedOption.toLowerCase(),
                   }
                 )}
