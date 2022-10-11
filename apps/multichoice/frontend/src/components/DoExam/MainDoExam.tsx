@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
+import DoExamSkelenton from '../../pages/Exam/DoExam/DoExamSkelenton';
 import NavQuestion from './NavQuestion';
 import ShowQuestion from './ShowQuestion';
 
 const MainDoExam: React.FC = () => {
   const [indexQuestion, setIndexQuestion] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  return (
+  return isLoading ? (
+    <DoExamSkelenton />
+  ) : (
     <div
       className="main-doexam"
       style={{

@@ -53,6 +53,7 @@ const Header: React.FC = () => {
                 Hello, {user.username}
               </h3>
             </div>
+
             <div
               className={classNames(
                 `dropdown-user p-4 bg-white shadow-md absolute right-0 top-full w-[296px] z-40
@@ -69,7 +70,7 @@ const Header: React.FC = () => {
                 </li>
                 <li className="cursor-pointer">{user.email}</li>
               </ul>
-              <ul className="pt-5 border-t border-slate-200 text-sm text-slate-800">
+              <ul className="py-5 border-t border-slate-200 text-sm text-slate-800">
                 <Link
                   to="/"
                   className="block duration-200 transition-all
@@ -80,18 +81,20 @@ const Header: React.FC = () => {
                 <Link
                   to="/"
                   className="block duration-200 transition-all
-                hover:font-semibold rounded-md mb-3"
+                hover:font-semibold rounded-md"
                 >
                   Đổi mật khẩu
                 </Link>
-                <li
+              </ul>
+              <div className="logout pt-6 border-t border-slate-200">
+                <button
                   className="btn-primary bg-red-500 text-white text-sm w-full py-1
-                  rounded-sm font-semibold text-center pt-10 cursor-pointer border-t"
+                  rounded-sm font-semibold text-center cursor-pointer"
                   onClick={handleLogout}
                 >
                   Đăng Xuất
-                </li>
-              </ul>
+                </button>
+              </div>
             </div>
           </div>
         </div>
