@@ -3,20 +3,15 @@ import { classNames } from '../../../helper/classNames';
 
 interface ISkelentonProps {
   className: string;
-  height: number;
+  children: React.ReactNode;
 }
 
 const Skelenton: React.FC<Partial<ISkelentonProps>> = ({
   className = '',
-  height = 40,
+  children,
 }) => {
   return (
-    <div
-      className={classNames(['animate-pulse bg-gray-100 ', className])}
-      style={{
-        height: height + 'px',
-      }}
-    ></div>
+    <div className={classNames(['animate-pulse ', className])}>{children}</div>
   );
 };
 

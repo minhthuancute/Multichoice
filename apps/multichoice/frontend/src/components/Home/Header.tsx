@@ -64,17 +64,17 @@ const Header: React.FC = () => {
               )}
               ref={refDropdownUser}
             >
-              <ul className="text-sm text-slate-800 mb-5">
-                <li className="mb-1.5 font-semibold text-base cursor-pointer">
+              <ul className="text-sm text-slate-800 mb-4">
+                <li className="mb-1 font-semibold text-base cursor-pointer">
                   {user.username}
                 </li>
                 <li className="cursor-pointer">{user.email}</li>
               </ul>
-              <ul className="py-5 border-t border-slate-200 text-sm text-slate-800">
+              <ul className="py-4 border-t border-slate-200 text-sm text-slate-800">
                 <Link
                   to="/"
                   className="block duration-200 transition-all
-                hover:font-semibold rounded-md mb-3"
+                hover:font-semibold rounded-md mb-2"
                 >
                   Quản lý tài khoản
                 </Link>
@@ -86,7 +86,7 @@ const Header: React.FC = () => {
                   Đổi mật khẩu
                 </Link>
               </ul>
-              <div className="logout pt-6 border-t border-slate-200">
+              <div className="logout pt-5 border-t border-slate-200">
                 <button
                   className="btn-primary bg-red-500 text-white text-sm w-full py-1
                   rounded-sm font-semibold text-center cursor-pointer"
