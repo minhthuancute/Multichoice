@@ -1,13 +1,17 @@
+import { TopicTimeTypeEnum } from '@monorepo/multichoice/constant';
 import React, { useState } from 'react';
 import DoExamSkelenton from '../../pages/Exam/DoExam/DoExamSkelenton';
+import { examStore } from '../../store/rootReducer';
 import NavQuestion from './NavQuestion';
 import ShowQuestion from './ShowQuestion';
 
 const MainDoExam: React.FC = () => {
+  const { exam } = examStore();
+
   const [indexQuestion, setIndexQuestion] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  return isLoading ? (
+  return isLoading && exam.timeType === TopicTimeTypeEnum.REALTIME ? (
     <DoExamSkelenton />
   ) : (
     <div
