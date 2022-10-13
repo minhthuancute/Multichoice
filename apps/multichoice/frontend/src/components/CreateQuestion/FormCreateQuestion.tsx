@@ -31,7 +31,7 @@ const schemaFormCreateQuestion = yup.object().shape({
   isActive: yup.boolean(),
   answers: yup.array().of(
     yup.object().shape({
-      content: yup.string().required(),
+      content: yup.string(),
       isCorrect: yup.boolean(),
     })
   ),
@@ -129,6 +129,7 @@ const FormCreateQuestion: React.FC<ICreateQuestionProps> = forwardRef(
 
         case QuestionTypeEnum.TEXT: {
           setShouldRemoveAnswers(true);
+          clearErrors('answers');
           break;
         }
 
@@ -137,22 +138,52 @@ const FormCreateQuestion: React.FC<ICreateQuestionProps> = forwardRef(
       }
     };
 
+    const validAnswer = (): boolean => {
+      const answers = getValues('answers');
+      const isQuestionTypeText = getValues('type') === QuestionTypeEnum.TEXT;
+      if (isQuestionTypeText) {
+        return true;
+      }
+      // answers must have correct answer
+      const haveCorrectAnswer = answers.some((answers: CreatAnswer) => {
+        return answers.isCorrect;
+      });
+
+      const haveEmptyContent = answers.some((answers: CreatAnswer) => {
+        return answers.content === '';
+      });
+
+      if (haveEmptyContent) {
+        setError('answers', {
+          message: 'Answers content is required',
+        });
+        return false;
+      }
+
+      if (haveCorrectAnswer === false) {
+        notify({
+          message: errNotSelectCorrectAnswer,
+          type: 'danger',
+        } as iNotification);
+        return false;
+      }
+      return true;
+    };
+
     // create Question
     const onSubmit: SubmitHandler<CreateQuestionDto> = async (
       formData: CreateQuestionDto
     ) => {
-      try {
-        const answers = getValues('answers');
+      const isValidAnswer = validAnswer();
+      if (isValidAnswer === false) {
+        return;
+      }
 
-        const validAnswers = answers.some((answers: CreatAnswer) => {
-          return answers.isCorrect;
-        });
-        if (!validAnswers) {
-          notify({
-            message: errNotSelectCorrectAnswer,
-            type: 'danger',
-          } as iNotification);
-          return;
+      try {
+        const isQuestionTypeText = getValues('type') === QuestionTypeEnum.TEXT;
+        // should remove answer if question type is TEXT
+        if (isQuestionTypeText) {
+          formData.answers.length = 0;
         }
 
         const { data } = await questionServices.createQuestion(formData);
@@ -167,7 +198,6 @@ const FormCreateQuestion: React.FC<ICreateQuestionProps> = forwardRef(
     };
 
     const onAddAnswer = (answers: CreatAnswer[]) => {
-      clearErrors('answers');
       setValue('answers', answers);
       clearErrors('answers');
     };
@@ -199,6 +229,9 @@ const FormCreateQuestion: React.FC<ICreateQuestionProps> = forwardRef(
       ref,
       () => ({
         submitFormCreateAnswer: () => {
+          if (getValues('type') === QuestionTypeEnum.TEXT) {
+            clearErrors('answers');
+          }
           if (submitBtnRef.current !== null) {
             submitBtnRef.current.click();
           }
