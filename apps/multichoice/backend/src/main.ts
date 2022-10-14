@@ -23,6 +23,7 @@ async function bootstrap() {
     'https://dev.detracnghiem.vn',
     'https://detracnghiem.vn',
     'http://localhost:4200',
+    'http://localhost:3000',
   ];
   console.log(`==> current env: ${process.env.NODE_ENV}`);
   const options = {
