@@ -20,7 +20,22 @@ export class authService {
     private jwtService: JwtService
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async convertUserEntity(
+    createUserDto: CreateUserDto,
+    file: any
+  ): Promise<User> {
+    const user: User = new User();
+    user.username = createUserDto.username;
+    user.email = createUserDto.email;
+    user.password = await bcrypt.hash(createUserDto.password, 12);
+
+    if (file && file.avatar !== undefined) {
+      user.avatar = file.avatar[0].filename;
+    }
+    return user;
+  }
+
+  async create(createUserDto: CreateUserDto, file: any): Promise<User> {
     const user = await this.userRepository.findOneBy({
       email: createUserDto.email,
     });
@@ -31,9 +46,9 @@ export class authService {
       );
     }
 
-    createUserDto.password = await bcrypt.hash(createUserDto.password, 12);
-
-    return this.userRepository.save(createUserDto);
+    return this.userRepository.save(
+      await this.convertUserEntity(createUserDto, file)
+    );
   }
 
   async validateUser(login: LoginUserDto): Promise<any> {

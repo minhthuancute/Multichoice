@@ -12,10 +12,18 @@ import { UserService } from '../user/user.service';
 import { UserExam } from '../user/entities/userExam.entity';
 import { UserAnswer } from '../user/entities/userAnswer.entity';
 import { RedisModule } from '../redis/redis.module';
+import { User } from '../user/entities/user.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Question, Topic, Answer, UserExam, UserAnswer]),
+    TypeOrmModule.forFeature([
+      Question,
+      Topic,
+      Answer,
+      UserExam,
+      UserAnswer,
+      User,
+    ]),
     RedisModule,
   ],
   controllers: [QuestionController],

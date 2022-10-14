@@ -8,10 +8,11 @@ import { Topic } from '../question/entities/topic.entity';
 import { UserExam } from './entities/userExam.entity';
 import { UserAnswer } from './entities/userAnswer.entity';
 import { RedisModule } from '../redis/redis.module';
+import { User } from './entities/user.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Topic, UserExam, UserAnswer]),
+    TypeOrmModule.forFeature([Topic, UserExam, UserAnswer, User]),
     RedisModule,
   ],
   controllers: [UserController],
