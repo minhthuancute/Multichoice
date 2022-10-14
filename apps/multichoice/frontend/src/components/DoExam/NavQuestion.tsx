@@ -11,11 +11,15 @@ import PolaCode from '../PolaCode/PolaCode';
 interface INavQuestion {
   indexQuestion: number;
   setIndexQuestion: React.Dispatch<React.SetStateAction<number>>;
+  expriedCountdownRealtime?: boolean;
+  startTimeCountdown?: number;
 }
 
 const NavQuestion: React.FC<INavQuestion> = ({
   indexQuestion = 0,
   setIndexQuestion,
+  expriedCountdownRealtime = false,
+  startTimeCountdown = 0,
 }) => {
   const { answers } = answerStore();
 
@@ -80,10 +84,10 @@ const NavQuestion: React.FC<INavQuestion> = ({
         className="border-b border-slate-200 absolute top-0 left-1/2 transform -translate-x-1/2
         w-full flex justify-center items-center h-10"
       >
-        {exam.expirationTime && (
+        {exam.expirationTime && expriedCountdownRealtime === false && (
           <CountDown
             isHidden={isSubmitExam}
-            startTime={startTime}
+            startTime={startTimeCountdown || startTime}
             endTime={endTime}
             className="text-primary-900 text-lg"
             key={'count-down' + startTime}

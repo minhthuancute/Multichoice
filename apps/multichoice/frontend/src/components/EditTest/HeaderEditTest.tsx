@@ -71,7 +71,12 @@ const HeaderEditTest: React.FC = () => {
           </li>
           <li className="flex items-center text-sm">
             <AiOutlineFieldTime className="text-slate-800 mr-1 text-base" />
-            <span>{secondsToMinutes(topicDetail.expirationTime)} phút</span>
+            <span>
+              {secondsToMinutes(topicDetail.expirationTime)} phút{' '}
+              {topicDetail.timeType.toUpperCase() === 'REALTIME'
+                ? ' (Realtime)'
+                : null}
+            </span>
           </li>
         </ul>
         <div className="right">

@@ -17,3 +17,7 @@ export const canNotCopyLinkExam =
 export const copyLinkExamSuccess = 'Liên kết đã được lưu trữ vào bộ nhớ tạm';
 export const deleteTopicSuccess = 'Xóa đề thi thành công';
 export const deleteResultUserExamSuccess = 'Xoá kết quả thi thành công';
+
+// Fire base
+
+export const errorStartedTestRealtime = 'Bạn đã bắt dầu bài thi này';
