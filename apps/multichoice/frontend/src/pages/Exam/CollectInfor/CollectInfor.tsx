@@ -16,14 +16,10 @@ import { iNotification } from 'react-notifications-component';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { examServices } from '../../../services/ExamServices';
-import { IExamResponse, IQuestion } from '../../../types';
+import { IExamDetail, IExamResponse, IQuestion } from '../../../types';
 import { localServices } from '../../../services/LocalServices';
-import {
-  IS_LOGGOUT_CURRENT_USER,
-  START_EXAM,
-  START_TIME,
-  TOKEN,
-} from '../../../constants/contstants';
+import { START_EXAM, START_TIME } from '../../../constants/contstants';
+import { examDetailStore } from '../../../store/Exam/examDetailStore';
 
 const schemaInfor = yup
   .object()
@@ -41,6 +37,7 @@ const CollectInfor: React.FC = () => {
   const { exam_id } = useParams();
 
   const { exam, setExamData } = examStore();
+  const { examDetail, setExamDetailData } = examDetailStore();
   const { setUserDoexamData, setAnswers } = answerStore();
   const { user } = userStore();
 
@@ -65,8 +62,34 @@ const CollectInfor: React.FC = () => {
           return tempArr;
         }
       );
+
+      const {
+        createdAt,
+        description,
+        expirationTime,
+        id,
+        isDraft,
+        timeType,
+        title,
+        typeCategoryName,
+        updatedAt,
+        url,
+      } = examInfor;
+      const examDetail: IExamDetail = {
+        createdAt,
+        description,
+        expirationTime,
+        id,
+        isDraft,
+        timeType,
+        title,
+        typeCategoryName,
+        updatedAt,
+        url,
+      };
       setAnswers(initAnswers);
       setExamData(data);
+      setExamDetailData(examDetail);
     } catch {
       //
     }

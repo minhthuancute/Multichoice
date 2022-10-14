@@ -13,13 +13,18 @@ import { copyClipboard } from '../../helper/copyClipboard';
 import { notify } from '../../helper/notify';
 import { iNotification } from 'react-notifications-component';
 import { secondsToMinutes } from '../../utils/minutesToSeconds';
-import { TimeType, TopicCategoryType } from '../../types/ICommons';
+import {
+  ITestRealtimeRecord,
+  TimeType,
+  TopicCategoryType,
+} from '../../types/ICommons';
 import {
   canNotCopyLinkExam,
   copyLinkExamSuccess,
+  errorStartedTestRealtime,
 } from '../../constants/msgNotify';
-import { HiOutlinePlay } from 'react-icons/hi';
 import Modal from '../Modal/Modal';
+import { fireGet, firePush } from '../../utils/firebase_utils';
 
 export interface ITestItem {
   topicUrl: string;
@@ -62,8 +67,26 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
     } as iNotification);
   };
 
-  const handleStartRealtimeTest = (testId: number) => {
-    //
+  const handleStartRealtimeTest = () => {
+    //  path in FIrebase DB
+    const testPath: string = 'test-' + test.id;
+
+    fireGet(testPath, (data) => {
+      if (data) {
+        notify({
+          message: errorStartedTestRealtime,
+          type: 'danger',
+        } as iNotification);
+        return;
+      }
+    });
+
+    const recordData: ITestRealtimeRecord = {
+      start: true,
+      time: Date.now(),
+    };
+    firePush(testPath, recordData);
+    setOpenModalStartExam(false);
   };
 
   return (
@@ -98,7 +121,7 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
             <button
               className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
           text-white font-bold bg-primary-900 transition-all duration-200 hover:bg-primary-800"
-              // onClick={() => setConfirmSubmit(true)}
+              onClick={() => handleStartRealtimeTest()}
             >
               Bắt đầu
             </button>
@@ -127,7 +150,10 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
             </li>
             <li className="flex items-center text-tiny mr-3">
               <AiOutlineFieldTime className="text-slate-800 mr-1 text-base" />
-              <span>{secondsToMinutes(test.expirationTime)} phút</span>
+              <span>
+                {secondsToMinutes(test.expirationTime)} phút
+                {test.timeType === 'REALTIME' ? ' (Realtime)' : null}
+              </span>
             </li>
             <li>
               <Badge

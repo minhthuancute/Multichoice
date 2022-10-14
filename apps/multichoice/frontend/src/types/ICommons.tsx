@@ -12,3 +12,8 @@ export interface ITopicLocal {
   id: number;
   title: string;
 }
+
+export interface ITestRealtimeRecord {
+  start: boolean;
+  time: Date | number;
+}

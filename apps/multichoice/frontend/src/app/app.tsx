@@ -26,9 +26,7 @@ import CollectInfor from '../pages/Exam/CollectInfor/CollectInfor';
 import DoExam from '../pages/Exam/DoExam/DoExam';
 import Home from '../pages/Home/Home';
 import Statistical from '../pages/Statistical/Statistical';
-import { firePush, fireSet } from '../utils/firebase_utils';
 import StatisticExam from '../pages/Exam/StatisticExam/StatisticExam';
-import { withLoading } from '../HOCs/withLoading';
 import StatisticUserExam from '../pages/Exam/StatisticExam/StatisticUserExam';
 import ExamLayout from '../layouts/ExamLayout';
 

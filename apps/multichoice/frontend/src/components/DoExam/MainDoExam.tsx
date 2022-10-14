@@ -1,17 +1,33 @@
 import { TopicTimeTypeEnum } from '@monorepo/multichoice/constant';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DoExamSkelenton from '../../pages/Exam/DoExam/DoExamSkelenton';
-import { examStore } from '../../store/rootReducer';
+import { examDetailStore } from '../../store/Exam/examDetailStore';
+import { fireGet } from '../../utils/firebase_utils';
 import NavQuestion from './NavQuestion';
 import ShowQuestion from './ShowQuestion';
 
 const MainDoExam: React.FC = () => {
-  const { exam } = examStore();
+  const { examDetail } = examDetailStore();
 
   const [indexQuestion, setIndexQuestion] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  return isLoading && exam.timeType === TopicTimeTypeEnum.REALTIME ? (
+  const testPath: string = 'test-' + examDetail.id;
+  useEffect(() => {
+    const onValueFirebase = () => {
+      fireGet(testPath, (data) => {
+        if (data) {
+          setIsLoading(false);
+          console.log(data);
+        }
+      });
+    };
+    onValueFirebase();
+  }, []);
+
+  console.log(examDetail.timeType);
+
+  return isLoading && examDetail.timeType === TopicTimeTypeEnum.REALTIME ? (
     <DoExamSkelenton />
   ) : (
     <div
