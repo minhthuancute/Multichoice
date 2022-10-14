@@ -37,9 +37,12 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   };
-  app.enableCors(process.env.NODE_ENV === "production" ? options :  {
+  app.enableCors({
     origin: '*',
   });
+  // app.enableCors(process.env.NODE_ENV === "production" ? options :  {
+  //   origin: '*',
+  // });
   // swagger
   const config = new DocumentBuilder()
     .setTitle('Multichoice')
