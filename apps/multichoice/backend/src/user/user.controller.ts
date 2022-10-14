@@ -9,14 +9,23 @@ import {
   Res,
   Req,
   Query,
+  Patch,
+  UseInterceptors,
+  UploadedFiles,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { ResultUserDto, UserExamDto } from '@monorepo/multichoice/dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  ResultUserDto,
+  UpdateUserDto,
+  UserExamDto,
+} from '@monorepo/multichoice/dto';
+import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { AuthenticationGuard } from '../auth/guards/auth.guard';
 import { SucessResponse } from '../model/SucessResponse';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { multerOptions } from '../uploads/upload';
 
-@ApiTags('Exam')
+@ApiTags('User')
 @Controller()
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -74,5 +83,21 @@ export class UserController {
     return res
       .status(200)
       .json(await this.userService.deleteUserExamByID(id, req.user));
+  }
+
+  @UseGuards(AuthenticationGuard)
+  @ApiBearerAuth()
+  @Patch('/user/updatebyid')
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'avatar' }], multerOptions))
+  updateUserByID(
+    @Body() updateUserDto: UpdateUserDto,
+    @Res() res,
+    @Req() req,
+    @UploadedFiles() file
+  ) {
+    return res
+      .status(200)
+      .json(this.userService.updateUserByID(updateUserDto, file, req.user));
   }
 }

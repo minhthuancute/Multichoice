@@ -1,17 +1,6 @@
-import {
-  BaseEntity,
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { Timestamp } from '../../orm/timestamp.entity';
-import qs = require('qs');
-import { Question } from '../../question/entities/question.entity';
 import { Topic } from '../../question/entities/topic.entity';
 
 @Entity()
@@ -28,6 +17,9 @@ export class User extends Timestamp {
   @Column()
   @Exclude({ toPlainOnly: false })
   password: string;
+
+  @Column({ nullable: true })
+  avatar: string;
 
   @OneToMany(() => Topic, (topic) => topic.owner)
   topics: Topic[];

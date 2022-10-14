@@ -3,17 +3,18 @@ import {
   Post,
   Body,
   Res,
-  Get,
-  UnauthorizedException,
   Req,
   UseGuards,
+  UseInterceptors,
+  UploadedFiles,
 } from '@nestjs/common';
 import { CreateUserDto, LoginUserDto } from '@monorepo/multichoice/dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { authService } from './auth.service';
-import { Response, Request } from 'express';
 import { LocalAuthGuard } from './guards/local-auth-guard';
 import { SucessResponse } from '../model/SucessResponse';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { multerOptions } from '../uploads/upload';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -21,8 +22,13 @@ export class authController {
   constructor(private readonly authService: authService) {}
 
   @Post('register')
-  async create(@Body() createUserDto: CreateUserDto): Promise<any> {
-    return this.authService.create(createUserDto);
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'avatar' }], multerOptions))
+  async create(
+    @Body() createUserDto: CreateUserDto,
+    @UploadedFiles() file
+  ): Promise<any> {
+    return this.authService.create(createUserDto, file);
   }
 
   @UseGuards(LocalAuthGuard)

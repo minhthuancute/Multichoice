@@ -6,10 +6,12 @@ import {
 } from '@nestjs/common';
 import {
   AnswersUserDto,
+  CreateUserDto,
   IUserDoExam,
   IUserDoExamdetail,
   Questiondetail,
   ResultUserDto,
+  UpdateUserDto,
   UserExamDto,
 } from '@monorepo/multichoice/dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -24,12 +26,15 @@ import { SucessResponse } from '../model/SucessResponse';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 import { redisService } from '../redis/redis.service';
 import { GConfig } from '../config/gconfig';
+import { authService } from '../auth/auth.service';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(UserExam)
     private readonly userExamRepository: Repository<UserExam>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     @InjectRepository(UserAnswer)
     private readonly userAnswerRepository: Repository<UserAnswer>,
     @Inject(forwardRef(() => TopicService))
@@ -320,6 +325,24 @@ export class UserService {
       throw new BadRequestException(GConfig.NOT_PERMISSION_DELETE);
 
     await this.userExamRepository.delete({ id: userID });
+    return new SucessResponse(200, GConfig.SUCESS);
+  }
+
+  convertUserEntity(updateUserDto: UpdateUserDto, file: any): User {
+    const user: User = new User();
+    if (updateUserDto.username && updateUserDto.username.length > 0)
+      user.username = updateUserDto.username;
+    if (file && file.avatar !== undefined)
+      user.avatar = file.avatar[0].filename;
+
+    return user;
+  }
+
+  updateUserByID(updateUserDto: UpdateUserDto, file: any, user: User) {
+    this.userRepository.update(
+      { id: user.id },
+      this.convertUserEntity(updateUserDto, file)
+    );
     return new SucessResponse(200, GConfig.SUCESS);
   }
 }
