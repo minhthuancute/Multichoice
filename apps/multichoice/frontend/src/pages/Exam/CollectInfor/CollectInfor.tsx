@@ -37,7 +37,7 @@ const CollectInfor: React.FC = () => {
   const { exam_id } = useParams();
 
   const { exam, setExamData } = examStore();
-  const { examDetail, setExamDetailData } = examDetailStore();
+  const { setExamDetailData } = examDetailStore();
   const { setUserDoexamData, setAnswers } = answerStore();
   const { user } = userStore();
 
@@ -114,9 +114,10 @@ const CollectInfor: React.FC = () => {
   };
 
   useEffect(() => {
+    getExamInfor();
+
     localServices.setData(START_EXAM, false);
     localServices.clearItem(START_TIME);
-    getExamInfor();
   }, []);
 
   useEffect(() => {

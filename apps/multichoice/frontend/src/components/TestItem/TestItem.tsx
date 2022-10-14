@@ -24,7 +24,7 @@ import {
   errorStartedTestRealtime,
 } from '../../constants/msgNotify';
 import Modal from '../Modal/Modal';
-import { fireGet, firePush } from '../../utils/firebase_utils';
+import { fireGet, fireSet } from '../../utils/firebase_utils';
 
 export interface ITestItem {
   topicUrl: string;
@@ -69,23 +69,23 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
 
   const handleStartRealtimeTest = () => {
     //  path in FIrebase DB
-    const testPath: string = 'test-' + test.id;
+    const testPath: string = 'test-' + test.topicUrl;
 
-    fireGet(testPath, (data) => {
-      if (data) {
-        notify({
-          message: errorStartedTestRealtime,
-          type: 'danger',
-        } as iNotification);
-        return;
-      }
-    });
+    // fireGet(testPath, (data) => {
+    //   if (data) {
+    //     notify({
+    //       message: errorStartedTestRealtime,
+    //       type: 'danger',
+    //     } as iNotification);
+    //     return;
+    //   }
+    // });
 
     const recordData: ITestRealtimeRecord = {
       start: true,
-      time: Date.now(),
+      time: new Date().getTime(),
     };
-    firePush(testPath, recordData);
+    fireSet(testPath, recordData);
     setOpenModalStartExam(false);
   };
 
@@ -107,7 +107,8 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
             </h4>
 
             <p className="mt-4 text-slate-800">
-              Bạn có chắc chắn muốn bắt đầu bài thi?
+              Bạn có chắc chắn muốn bắt đầu bài thi:{' '}
+              <span className="font-semibold">{test.title}</span>?
             </p>
           </div>
           <div className="body ctas flex items-center justify-center gap-x-2 mt-5">

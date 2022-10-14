@@ -34,11 +34,15 @@ interface IExamResult {
 interface IShowQuestionProps {
   indexQuestion: number;
   setIndexQuestion: React.Dispatch<React.SetStateAction<number>>;
+  startTimeCountdown?: number;
+  expriedCountdownRealtime?: boolean;
 }
 
 const ShowQuestion: React.FC<IShowQuestionProps> = ({
   indexQuestion = 0,
   setIndexQuestion,
+  startTimeCountdown = 0,
+  expriedCountdownRealtime = false,
 }) => {
   const {
     exam: { questions },
@@ -199,26 +203,28 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
       </div>
 
       <header className="flex items-start xs:justify-between lg:justify-center">
-        <ToolTip title={errorMsgSubmit}>
-          <button
-            className={classNames(
-              `px-6 py-2.5 bg-primary-800 rounded-md text-sm
+        {expriedCountdownRealtime === false ? (
+          <ToolTip title={errorMsgSubmit}>
+            <button
+              className={classNames(
+                `px-6 py-2.5 bg-primary-800 rounded-md text-sm
             text-white flex items-center mb-4 font-semibold
             focus:ring-blue-100 focus:ring`,
-              {
-                hidden: isSubmitExam || localServices.getData(IS_SUBMIT_EXAM),
-              }
-            )}
-            onClick={() => requestSubmit()}
-          >
-            Nộp Bài
-          </button>
-        </ToolTip>
+                {
+                  hidden: isSubmitExam || localServices.getData(IS_SUBMIT_EXAM),
+                }
+              )}
+              onClick={() => requestSubmit()}
+            >
+              Nộp Bài
+            </button>
+          </ToolTip>
+        ) : null}
 
         <div className="lg:hidden">
           <CountDown
             isHidden={isSubmitExam}
-            startTime={startTime}
+            startTime={startTimeCountdown || startTime}
             endTime={endTime}
             key="count-down"
             className="text-primary-800"

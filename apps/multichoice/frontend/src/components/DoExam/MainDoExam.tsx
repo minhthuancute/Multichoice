@@ -1,5 +1,6 @@
 import { TopicTimeTypeEnum } from '@monorepo/multichoice/constant';
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import DoExamSkelenton from '../../pages/Exam/DoExam/DoExamSkelenton';
 import { examDetailStore } from '../../store/Exam/examDetailStore';
 import { fireGet } from '../../utils/firebase_utils';
@@ -7,25 +8,33 @@ import NavQuestion from './NavQuestion';
 import ShowQuestion from './ShowQuestion';
 
 const MainDoExam: React.FC = () => {
+  const { exam_id } = useParams();
   const { examDetail } = examDetailStore();
 
   const [indexQuestion, setIndexQuestion] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [expriedCountdownRealtime, setExpriedCountdownRealtime] =
+    useState<boolean>(false);
+  const [startTimeCountdown, setStartTimeCountdown] = useState<number>(0);
 
-  const testPath: string = 'test-' + examDetail.id;
   useEffect(() => {
+    const testPath: string = 'test-' + exam_id;
+
     const onValueFirebase = () => {
-      fireGet(testPath, (data) => {
+      fireGet(testPath, (data: any) => {
         if (data) {
           setIsLoading(false);
-          console.log(data);
+          const shouldExpriedTest =
+            new Date().getTime() > data.time + +examDetail.expirationTime;
+          // console.log(new Date(data.time).getTime());
+
+          setExpriedCountdownRealtime(shouldExpriedTest);
+          setStartTimeCountdown(data.time);
         }
       });
     };
     onValueFirebase();
   }, []);
-
-  console.log(examDetail.timeType);
 
   return isLoading && examDetail.timeType === TopicTimeTypeEnum.REALTIME ? (
     <DoExamSkelenton />
@@ -36,17 +45,26 @@ const MainDoExam: React.FC = () => {
         minHeight: 'calc(100vh - 57px)',
       }}
     >
+      {expriedCountdownRealtime ? (
+        <p className="text-center text-red-500 font-semibold text-tiny mt-5">
+          Hết thời gian làm bài
+        </p>
+      ) : null}
       <div className="container mx-auto pt-5 lg:px-10 flex gap-x-8">
         <div className="w-full lg:w-2/3 h-full">
           <ShowQuestion
             indexQuestion={indexQuestion}
             setIndexQuestion={setIndexQuestion}
+            startTimeCountdown={startTimeCountdown}
+            expriedCountdownRealtime={expriedCountdownRealtime}
           />
         </div>
         <div className="w-1/3 xs:hidden lg:block h-full">
           <NavQuestion
             indexQuestion={indexQuestion}
             setIndexQuestion={setIndexQuestion}
+            expriedCountdownRealtime={expriedCountdownRealtime}
+            startTimeCountdown={startTimeCountdown}
           />
         </div>
       </div>
