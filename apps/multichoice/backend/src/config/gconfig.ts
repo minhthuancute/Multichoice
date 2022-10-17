@@ -24,6 +24,7 @@ export class GConfig {
   public static QUESTION_NOT_FOUND = this.MES_NOT_FOUND('Question');
 
   public static PASSWORD_IS_INCORRECT = 'Password is incorrect';
+  public static PASSWORD_OLD_IS_INCORRECT = 'Password cũ không đúng';
   public static SUCESS = 'Sucess';
   public static EXPRIED_TIME = 'Hết thời gian làm bài';
 }
