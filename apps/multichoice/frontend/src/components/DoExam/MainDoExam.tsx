@@ -22,14 +22,15 @@ const MainDoExam: React.FC = () => {
 
     const onValueFirebase = () => {
       fireGet(testPath, (data: any) => {
-        if (data) {
+        if (data.start) {
           setIsLoading(false);
           const shouldExpriedTest =
             new Date().getTime() > data.time + +examDetail.expirationTime;
-          // console.log(new Date(data.time).getTime());
 
           setExpriedCountdownRealtime(shouldExpriedTest);
           setStartTimeCountdown(data.time);
+        } else {
+          setIsLoading(true);
         }
       });
     };

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { BsCalendarDate, BsPlay } from 'react-icons/bs';
+import React, { useEffect, useState } from 'react';
+import { BsCalendarDate, BsPause, BsPlay } from 'react-icons/bs';
 import { AiOutlineQuestionCircle, AiOutlineFieldTime } from 'react-icons/ai';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 
@@ -13,18 +13,13 @@ import { copyClipboard } from '../../helper/copyClipboard';
 import { notify } from '../../helper/notify';
 import { iNotification } from 'react-notifications-component';
 import { secondsToMinutes } from '../../utils/minutesToSeconds';
-import {
-  ITestRealtimeRecord,
-  TimeType,
-  TopicCategoryType,
-} from '../../types/ICommons';
+import { TimeType, TopicCategoryType } from '../../types/ICommons';
 import {
   canNotCopyLinkExam,
   copyLinkExamSuccess,
-  errorStartedTestRealtime,
 } from '../../constants/msgNotify';
-import Modal from '../Modal/Modal';
-import { fireGet, fireSet } from '../../utils/firebase_utils';
+import { fireGet } from '../../utils/firebase_utils';
+import HandlelayTest from './HandlePlayTest';
 
 export interface ITestItem {
   topicUrl: string;
@@ -43,7 +38,11 @@ interface ITestItemProp {
 }
 
 const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
-  const [openModalStartExam, setOpenModalStartExam] = useState<boolean>(false);
+  const [modalHandlePlayTest, setModalHandlePlayTest] =
+    useState<boolean>(false);
+  const [startedTestRealtime, setStartedTestRealtime] =
+    useState<boolean>(false);
+  const [isPlaytest, setIsPlaytest] = useState<boolean>(false);
 
   const examUrl = (): string => {
     const host = window.location.origin + '/e/';
@@ -67,68 +66,24 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
     } as iNotification);
   };
 
-  const handleStartRealtimeTest = () => {
-    //  path in FIrebase DB
+  useEffect(() => {
     const testPath: string = 'test-' + test.topicUrl;
 
-    // fireGet(testPath, (data) => {
-    //   if (data) {
-    //     notify({
-    //       message: errorStartedTestRealtime,
-    //       type: 'danger',
-    //     } as iNotification);
-    //     return;
-    //   }
-    // });
-
-    const recordData: ITestRealtimeRecord = {
-      start: true,
-      time: new Date().getTime(),
-    };
-    fireSet(testPath, recordData);
-    setOpenModalStartExam(false);
-  };
+    fireGet(testPath, (data: any) => {
+      setStartedTestRealtime(data?.start || false);
+      setIsPlaytest(data?.start || false);
+    });
+  }, [test.topicUrl]);
 
   return (
     <>
-      <Modal
-        openModal={openModalStartExam}
-        setOpenModal={setOpenModalStartExam}
-        size="sm"
-        placement="CENTER"
-      >
-        <div
-          className="modal-content px-5 flex flex-col justify-center
-       bg-white rounded-md py-8"
-        >
-          <div className="header text-center">
-            <h4 className="mt-4 text-slate-800 font-semibold text-2xl">
-              Bắt đầu bài thi
-            </h4>
-
-            <p className="mt-4 text-slate-800">
-              Bạn có chắc chắn muốn bắt đầu bài thi:{' '}
-              <span className="font-semibold">{test.title}</span>?
-            </p>
-          </div>
-          <div className="body ctas flex items-center justify-center gap-x-2 mt-5">
-            <button
-              className="create-test rounded-md flex justify-center items-center w-32 h-10 text-sm
-          text-slate-800 font-bold border border-solid border-slate-800 focus:ring focus:ring-slate-100"
-              onClick={() => setOpenModalStartExam(false)}
-            >
-              Huỷ
-            </button>
-            <button
-              className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
-          text-white font-bold bg-primary-900 transition-all duration-200 hover:bg-primary-800"
-              onClick={() => handleStartRealtimeTest()}
-            >
-              Bắt đầu
-            </button>
-          </div>
-        </div>
-      </Modal>
+      <HandlelayTest
+        openModal={modalHandlePlayTest}
+        setOpenModal={setModalHandlePlayTest}
+        topicTitle={test.title}
+        topicUrl={test.topicUrl}
+        isPlaytest={isPlaytest}
+      />
 
       <div className="test-item cursor-pointer p-4 rounded-md bg-white mb-3 last:mb-0">
         <div className="test-item__header title">
@@ -167,10 +122,30 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
             <ul className="ctas flex items-center">
               {test.timeType === 'REALTIME' ? (
                 <li className="relative group mr-4 mt-1">
-                  <ToolTip title="Bắt đầu làm bài">
-                    <button onClick={() => setOpenModalStartExam(true)}>
-                      <BsPlay className="text-slate-800 text-2xl" />
-                    </button>
+                  <ToolTip
+                    title={
+                      startedTestRealtime ? 'Dừng làm bài' : 'Bắt đầu làm bài'
+                    }
+                  >
+                    {startedTestRealtime ? (
+                      <button
+                        onClick={() => {
+                          setIsPlaytest(false);
+                          setModalHandlePlayTest(true);
+                        }}
+                      >
+                        <BsPause className="text-slate-800 text-2xl" />
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          setIsPlaytest(true);
+                          setModalHandlePlayTest(true);
+                        }}
+                      >
+                        <BsPlay className="text-slate-800 text-2xl" />
+                      </button>
+                    )}
                   </ToolTip>
                 </li>
               ) : null}
