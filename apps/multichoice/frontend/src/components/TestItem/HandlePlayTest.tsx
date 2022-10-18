@@ -1,6 +1,6 @@
 import React from 'react';
 import { ITestRealtimeRecord } from '../../types/ICommons';
-import { fireSet } from '../../utils/firebase_utils';
+import { fireGet, fireUpdate } from '../../utils/firebase_utils';
 import Modal from '../Modal/Modal';
 
 interface IHandlelayTestProps {
@@ -22,11 +22,23 @@ const HandlelayTest: React.FC<IHandlelayTestProps> = ({
   const handlePlayRealtimeTest = () => {
     //  path in FIrebase DB
     const testPath: string = 'test-' + topicUrl;
+    const now = new Date().getTime();
+    let record: ITestRealtimeRecord = {} as ITestRealtimeRecord,
+      duration = 0;
+    fireGet(testPath, (data: any) => {
+      record = data;
+    });
+    if (record) {
+      duration = now - +record.startTime;
+    }
+
     const recordData: ITestRealtimeRecord = {
-      start: isPlaytest,
-      time: new Date().getTime(),
+      started: isPlaytest,
+      startTime: new Date().getTime(),
+      duration: duration,
     };
-    fireSet(testPath, recordData);
+
+    fireUpdate(testPath, recordData);
     setOpenModal(false);
   };
 

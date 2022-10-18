@@ -13,7 +13,11 @@ import { copyClipboard } from '../../helper/copyClipboard';
 import { notify } from '../../helper/notify';
 import { iNotification } from 'react-notifications-component';
 import { secondsToMinutes } from '../../utils/minutesToSeconds';
-import { TimeType, TopicCategoryType } from '../../types/ICommons';
+import {
+  ITestRealtimeRecord,
+  TimeType,
+  TopicCategoryType,
+} from '../../types/ICommons';
 import {
   canNotCopyLinkExam,
   copyLinkExamSuccess,
@@ -70,8 +74,10 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
     const testPath: string = 'test-' + test.topicUrl;
 
     fireGet(testPath, (data: any) => {
-      setStartedTestRealtime(data?.start || false);
-      setIsPlaytest(data?.start || false);
+      const recordValue: ITestRealtimeRecord = data;
+
+      setStartedTestRealtime(recordValue?.started || false);
+      setIsPlaytest(recordValue?.started || false);
     });
   }, [test.topicUrl]);
 

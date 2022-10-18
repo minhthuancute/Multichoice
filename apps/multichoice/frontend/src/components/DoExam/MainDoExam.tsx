@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import DoExamSkelenton from '../../pages/Exam/DoExam/DoExamSkelenton';
 import { examDetailStore } from '../../store/Exam/examDetailStore';
+import { ITestRealtimeRecord } from '../../types/ICommons';
 import { fireGet } from '../../utils/firebase_utils';
 import NavQuestion from './NavQuestion';
 import ShowQuestion from './ShowQuestion';
@@ -21,14 +22,17 @@ const MainDoExam: React.FC = () => {
     const testPath: string = 'test-' + exam_id;
 
     const onValueFirebase = () => {
+      // modifed
       fireGet(testPath, (data: any) => {
-        if (data.start) {
+        const recordValue: ITestRealtimeRecord = data;
+        if (recordValue?.started) {
           setIsLoading(false);
           const shouldExpriedTest =
-            new Date().getTime() > data.time + +examDetail.expirationTime;
+            new Date().getTime() >
+            +recordValue.startTime + +examDetail.expirationTime;
 
           setExpriedCountdownRealtime(shouldExpriedTest);
-          setStartTimeCountdown(data.time);
+          setStartTimeCountdown(+recordValue.startTime - +recordValue.duration);
         } else {
           setIsLoading(true);
         }
