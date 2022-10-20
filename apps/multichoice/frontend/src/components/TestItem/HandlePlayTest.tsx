@@ -29,7 +29,7 @@ const HandlelayTest: React.FC<IHandlelayTestProps> = ({
       record = data;
     });
     if (record) {
-      duration = now - +record.startTime;
+      duration = record.duration + now - +record.startTime;
     }
 
     const recordData: ITestRealtimeRecord = {

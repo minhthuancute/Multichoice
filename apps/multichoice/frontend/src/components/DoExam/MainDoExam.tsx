@@ -51,28 +51,36 @@ const MainDoExam: React.FC = () => {
       }}
     >
       {expriedCountdownRealtime ? (
-        <p className="text-center text-red-500 font-semibold text-tiny mt-5">
-          Hết thời gian làm bài
-        </p>
-      ) : null}
-      <div className="container mx-auto pt-5 lg:px-10 flex gap-x-8">
-        <div className="w-full lg:w-2/3 h-full">
-          <ShowQuestion
-            indexQuestion={indexQuestion}
-            setIndexQuestion={setIndexQuestion}
-            startTimeCountdown={startTimeCountdown}
-            expriedCountdownRealtime={expriedCountdownRealtime}
-          />
+        <div
+          className="flex items-center justify-center"
+          style={{
+            height: 'calc(100vh - 57px)',
+          }}
+        >
+          <p className="text-center text-red-500 font-semibold text-tiny">
+            Bài thi đã kết thúc!
+          </p>
         </div>
-        <div className="w-1/3 xs:hidden lg:block h-full">
-          <NavQuestion
-            indexQuestion={indexQuestion}
-            setIndexQuestion={setIndexQuestion}
-            expriedCountdownRealtime={expriedCountdownRealtime}
-            startTimeCountdown={startTimeCountdown}
-          />
+      ) : (
+        <div className="container mx-auto pt-5 lg:px-10 flex gap-x-8">
+          <div className="w-full lg:w-2/3 h-full">
+            <ShowQuestion
+              indexQuestion={indexQuestion}
+              setIndexQuestion={setIndexQuestion}
+              startTimeCountdown={startTimeCountdown}
+              expriedCountdownRealtime={expriedCountdownRealtime}
+            />
+          </div>
+          <div className="w-1/3 xs:hidden lg:block h-full">
+            <NavQuestion
+              indexQuestion={indexQuestion}
+              setIndexQuestion={setIndexQuestion}
+              expriedCountdownRealtime={expriedCountdownRealtime}
+              startTimeCountdown={startTimeCountdown}
+            />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

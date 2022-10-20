@@ -22,7 +22,7 @@ import {
   canNotCopyLinkExam,
   copyLinkExamSuccess,
 } from '../../constants/msgNotify';
-import { fireGet } from '../../utils/firebase_utils';
+import { fireGet, fireSet, fireUpdate } from '../../utils/firebase_utils';
 import HandlelayTest from './HandlePlayTest';
 
 export interface ITestItem {
@@ -69,6 +69,23 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
       type: 'success',
     } as iNotification);
   };
+
+  useEffect(() => {
+    const testPath: string = 'test-' + test.topicUrl;
+    fireGet(testPath, (data: any) => {
+      const recordValue: ITestRealtimeRecord = data;
+      const shouldExpriedTest =
+        new Date().getTime() > +recordValue?.startTime + +test?.expirationTime;
+      if (shouldExpriedTest) {
+        fireUpdate(testPath, {
+          started: false,
+          duration: 0,
+          startTime: 0,
+        } as ITestRealtimeRecord);
+        setStartedTestRealtime(false);
+      }
+    });
+  }, []);
 
   useEffect(() => {
     const testPath: string = 'test-' + test.topicUrl;
