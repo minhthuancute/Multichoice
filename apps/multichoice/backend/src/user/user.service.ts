@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import {
   AnswersUserDto,
-  CreateUserDto,
   IUserDoExam,
   IUserDoExamdetail,
   Questiondetail,
@@ -24,9 +23,8 @@ import { UserExam } from './entities/userExam.entity';
 import { UserAnswer } from './entities/userAnswer.entity';
 import { SucessResponse } from '../model/SucessResponse';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
-import { redisService } from '../redis/redis.service';
 import { GConfig } from '../config/gconfig';
-import { authService } from '../auth/auth.service';
+import { RedisService } from '../redis/redis.service';
 
 @Injectable()
 export class UserService {
@@ -39,7 +37,7 @@ export class UserService {
     private readonly userAnswerRepository: Repository<UserAnswer>,
     @Inject(forwardRef(() => TopicService))
     private readonly topicService: TopicService,
-    private readonly redisService: redisService
+    private readonly redisService: RedisService
   ) {}
 
   convertListUserDoExam(userExams: UserExam[]): IUserDoExam[] {

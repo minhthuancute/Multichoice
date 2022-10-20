@@ -1,10 +1,10 @@
 import { Controller, Get } from '@nestjs/common';
 
-import { redisService } from './redis.service';
+import { RedisService } from './redis.service';
 
 @Controller()
 export class redisController {
-  constructor(private readonly redisService: redisService) {}
+  constructor(private readonly redisService: RedisService) {}
   @Get('test/test')
   async getNumber(): Promise<any> {
     const randomNumDbs = Math.floor(Math.random() * Date.now());

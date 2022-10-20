@@ -15,4 +15,9 @@ export default () => ({
     host: process.env.REDIS_HOST,
     port: parseInt(process.env.REDIS_PORT, 10) || 6379,
   },
+  mail: {
+    user: process.env.MAIL_USER,
+    password: process.env.MAIL_PASS,
+  },
+  FE_APP_URL: process.env.FE_APP_URL,
 });

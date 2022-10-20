@@ -8,10 +8,13 @@ import {
   UseInterceptors,
   UploadedFiles,
   Patch,
+  Query,
 } from '@nestjs/common';
 import {
   CreateUserDto,
+  ForgotPasswordDto,
   LoginUserDto,
+  ResetPasswordDto,
   UpdateUserPasswordDto,
 } from '@monorepo/multichoice/dto';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
@@ -60,5 +63,35 @@ export class authController {
       changePasswordDto
     );
     return res.status(200).json(new SucessResponse(200, result));
+  }
+
+  @Post('/forgotPassword')
+  async forgotPassword(
+    @Query() forgotPasswordDto: ForgotPasswordDto,
+    @Res() res
+  ): Promise<void> {
+    return res
+      .status(200)
+      .json(
+        new SucessResponse(
+          200,
+          await this.authService.forgotPassword(forgotPasswordDto)
+        )
+      );
+  }
+
+  @Post('/resetpassword')
+  async resetPassword(
+    @Body() resetPasswordDto: ResetPasswordDto,
+    @Res() res
+  ): Promise<void> {
+    return res
+      .status(200)
+      .json(
+        new SucessResponse(
+          200,
+          await this.authService.resetPassword(resetPasswordDto)
+        )
+      );
   }
 }
