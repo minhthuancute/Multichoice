@@ -2,7 +2,7 @@ import { CacheModule, Module } from '@nestjs/common';
 import * as redisStore from 'cache-manager-redis-store';
 import configuration from '../config/configuration';
 import { redisController } from './redis.controller';
-import { redisService } from './redis.service';
+import { RedisService } from './redis.service';
 
 @Module({
   imports: [
@@ -12,8 +12,8 @@ import { redisService } from './redis.service';
       port: configuration().redis.port,
     }),
   ],
-  providers: [redisService],
-  exports: [redisService, RedisModule],
+  providers: [RedisService],
+  exports: [RedisService],
   controllers: [redisController],
 })
 export class RedisModule {}

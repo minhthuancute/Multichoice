@@ -6,7 +6,9 @@ import {
 } from '@nestjs/common';
 import {
   CreateUserDto,
+  ForgotPasswordDto,
   LoginUserDto,
+  ResetPasswordDto,
   UpdateUserPasswordDto,
 } from '@monorepo/multichoice/dto';
 import { Repository } from 'typeorm';
@@ -16,13 +18,19 @@ import { User } from '../user/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { AuthPayload } from './interfaces/auth-payload.interface';
 import { GConfig } from '../config/gconfig';
+import { MailService } from '../mail/mail.service';
+import { RedisService } from '../redis/redis.service';
+import * as crypto from 'crypto';
+import configuration from '../config/configuration';
 
 @Injectable()
 export class authService {
   private readonly saltRounds = 12;
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private mailService: MailService,
+    private redisService: RedisService
   ) {}
 
   async convertUserEntity(
@@ -40,10 +48,14 @@ export class authService {
     return user;
   }
 
-  async create(createUserDto: CreateUserDto, file: any): Promise<User> {
-    const user = await this.userRepository.findOneBy({
-      email: createUserDto.email,
+  async getUserByEmail(email: string): Promise<User> {
+    return await this.userRepository.findOneBy({
+      email,
     });
+  }
+
+  async create(createUserDto: CreateUserDto, file: any): Promise<User> {
+    const user = await this.getUserByEmail(createUserDto.email);
     if (user) {
       throw new HttpException(
         { message: GConfig.EMAIL_ALREADY_EXISTS },
@@ -106,5 +118,64 @@ export class authService {
     await this.userRepository.update(userId, { password });
 
     return true;
+  }
+
+  private generateToken(): string {
+    const token = crypto.randomBytes(30).toString('hex');
+    //hash token roi luu vao db
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+    return hashedToken;
+  }
+
+  async signUser(user: User): Promise<string> {
+    const token = await this.generateToken();
+
+    // luu token len redis ( luu 5 phut)
+    this.redisService.set(token, user.email, 300);
+
+    return token;
+  }
+
+  async forgotPassword(forgotPasswordDto: ForgotPasswordDto): Promise<void> {
+    const user = await this.getUserByEmail(forgotPasswordDto.email);
+    if (!user) {
+      throw new BadRequestException(GConfig.USER_NOT_FOUND);
+    }
+    const token = await this.signUser(user);
+
+    const forgotLink = `${
+      configuration().FE_APP_URL
+    }/auth/forgotPassword?token=${token}`;
+
+    this.mailService.send({
+      to: 'hungdiep147@gmail.com',
+      subject: 'Forgot Password',
+      html: `
+                <h3>Hello ${user.username}!</h3>
+               <p>Vui lòng sử dụng liên kết này <a href="${forgotLink}">link</a> để đặt lại mật khẩu của bạn.
+               Có hiệu lực trong 5 phút</p>
+               `,
+    });
+  }
+
+  async resetPassword(resetPasswordDto: ResetPasswordDto): Promise<void> {
+    if (
+      resetPasswordDto.token === undefined ||
+      resetPasswordDto.password === undefined
+    )
+      return;
+    const email: string = await this.redisService.get(resetPasswordDto.token);
+    if (!email) throw new BadRequestException(GConfig.EXPRIED_EMAIL_LINK);
+
+    this.redisService.delete(resetPasswordDto.token);
+
+    const user = await this.getUserByEmail(email);
+    if (!user) throw new BadRequestException(GConfig.USER_NOT_FOUND);
+
+    const password = await bcrypt.hash(
+      resetPasswordDto.password,
+      this.saltRounds
+    );
+    await this.userRepository.update(user.id, { password });
   }
 }

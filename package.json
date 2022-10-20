@@ -13,6 +13,7 @@
   "private": true,
   "dependencies": {
     "@hookform/resolvers": "^2.9.7",
+    "@nestjs-modules/mailer": "^1.8.1",
     "@nestjs/common": "^8.0.0",
     "@nestjs/config": "^2.2.0",
     "@nestjs/core": "^8.0.0",
@@ -30,8 +31,10 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "core-js": "^3.6.5",
+    "crypto": "^1.0.1",
     "firebase": "^9.9.4",
     "mysql2": "^2.3.3",
+    "nodemailer": "^6.8.0",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",

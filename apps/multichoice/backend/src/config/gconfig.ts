@@ -27,4 +27,5 @@ export class GConfig {
   public static PASSWORD_OLD_IS_INCORRECT = 'Password cũ không đúng';
   public static SUCESS = 'Sucess';
   public static EXPRIED_TIME = 'Hết thời gian làm bài';
+  public static EXPRIED_EMAIL_LINK = 'link hết thời gian hoặc không tồn tại';
 }
