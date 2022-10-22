@@ -19,5 +19,16 @@ export default () => ({
     user: process.env.MAIL_USER,
     password: process.env.MAIL_PASS,
   },
-  FE_APP_URL: process.env.FE_APP_URL,
+  fe_app_url: process.env.FE_APP_URL,
+  firebase: {
+    apiKey: process.env.APIKEY,
+    authDomain: process.env.AUTHDOMAIN,
+    databaseURL: process.env.DATABASEURL,
+    projectId: process.env.PROJECTID,
+    storageBucket: process.env.STORAGEBUCKET,
+    messagingSenderId: process.env.MESSAGINGSENDERID,
+    appId: process.env.APPID,
+    measurementId: process.env.MEASUREMENTID,
+  },
+  path_realtime_exam: process.env.PATH_FIREBASE_EXAM,
 });

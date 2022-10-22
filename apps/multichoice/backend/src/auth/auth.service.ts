@@ -144,7 +144,7 @@ export class authService {
     const token = await this.signUser(user);
 
     const forgotLink = `${
-      configuration().FE_APP_URL
+      configuration().fe_app_url
     }/auth/forgotPassword?token=${token}`;
 
     this.mailService.send({
