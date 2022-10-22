@@ -30,6 +30,7 @@ import { GConfig } from '../config/gconfig';
 import { RedisService } from '../redis/redis.service';
 import { FirebaseService } from '../firebase/firebase.service';
 import { realtimeExam } from '../firebase/dto/realtimeExam.dto';
+import configuration from '../config/configuration';
 
 @Injectable()
 export class UserService {
@@ -301,12 +302,15 @@ export class UserService {
 
   checkTopicRealTime(topic: Topic) {
     if (topic.timeType === TopicTimeTypeEnum.REALTIME) {
-      this.firebaseService.fireGet(`test-${topic.url}`, (data) => {
-        const checkRealTimeExam: realtimeExam = data as realtimeExam;
-        if (checkRealTimeExam && !checkRealTimeExam.started) {
-          delete topic.questions;
+      this.firebaseService.fireGet(
+        `${configuration().path_realtime_exam}-${topic.url}`,
+        (data) => {
+          const checkRealTimeExam: realtimeExam = data as realtimeExam;
+          if (checkRealTimeExam && !checkRealTimeExam.started) {
+            delete topic.questions;
+          }
         }
-      });
+      );
     }
   }
 
