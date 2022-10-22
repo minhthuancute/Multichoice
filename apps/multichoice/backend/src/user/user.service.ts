@@ -22,9 +22,14 @@ import { Question } from '../question/entities/question.entity';
 import { UserExam } from './entities/userExam.entity';
 import { UserAnswer } from './entities/userAnswer.entity';
 import { SucessResponse } from '../model/SucessResponse';
-import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
+import {
+  QuestionTypeEnum,
+  TopicTimeTypeEnum,
+} from '@monorepo/multichoice/constant';
 import { GConfig } from '../config/gconfig';
 import { RedisService } from '../redis/redis.service';
+import { FirebaseService } from '../firebase/firebase.service';
+import { realtimeExam } from '../firebase/dto/realtimeExam.dto';
 
 @Injectable()
 export class UserService {
@@ -37,7 +42,8 @@ export class UserService {
     private readonly userAnswerRepository: Repository<UserAnswer>,
     @Inject(forwardRef(() => TopicService))
     private readonly topicService: TopicService,
-    private readonly redisService: RedisService
+    private readonly redisService: RedisService,
+    private readonly firebaseService: FirebaseService
   ) {}
 
   convertListUserDoExam(userExams: UserExam[]): IUserDoExam[] {
@@ -293,8 +299,20 @@ export class UserService {
     return poit;
   }
 
+  checkTopicRealTime(topic: Topic) {
+    if (topic.timeType === TopicTimeTypeEnum.REALTIME) {
+      this.firebaseService.fireGet(`test-${topic.url}`, (data) => {
+        const checkRealTimeExam: realtimeExam = data as realtimeExam;
+        if (checkRealTimeExam && !checkRealTimeExam.started) {
+          delete topic.questions;
+        }
+      });
+    }
+  }
+
   async findTopicByUrl(url: string): Promise<Topic> {
     const result = await this.topicService.findOneByUrl(url);
+    this.checkTopicRealTime(result);
     return result;
   }
 

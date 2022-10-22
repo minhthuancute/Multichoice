@@ -13,6 +13,7 @@ import { UserExam } from '../user/entities/userExam.entity';
 import { UserAnswer } from '../user/entities/userAnswer.entity';
 import { RedisModule } from '../redis/redis.module';
 import { User } from '../user/entities/user.entity';
+import { firebaseModule } from '../firebase/firebase.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { User } from '../user/entities/user.entity';
       User,
     ]),
     RedisModule,
+    firebaseModule,
   ],
   controllers: [QuestionController],
   providers: [QuestionService, TopicService, JsonWebTokenStrategy, UserService],
