@@ -306,7 +306,8 @@ export class UserService {
         `${configuration().path_realtime_exam}-${topic.url}`,
         (data) => {
           const checkRealTimeExam: realtimeExam = data as realtimeExam;
-          if (checkRealTimeExam && !checkRealTimeExam.started) {
+
+          if (!checkRealTimeExam || !checkRealTimeExam.started) {
             delete topic.questions;
           }
         }
