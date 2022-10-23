@@ -85,13 +85,6 @@ export class UserExamDto {
   topicID: number;
 }
 
-export class UserExamDto {
-  @ApiProperty()
-  username: string;
-
-  @ApiProperty()
-  topicID: number;
-}
 export class ResultUserDto {
   @ApiProperty()
   userID: number;

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import DoExamSkelenton from '../../pages/Exam/DoExam/DoExamSkelenton';
 import { examDetailStore } from '../../store/Exam/examDetailStore';
+import { loadingRealtimeStore } from '../../store/Loading/Loadingrealtime';
 import { ITestRealtimeRecord } from '../../types/ICommons';
 import { fireGet } from '../../utils/firebase_utils';
 import NavQuestion from './NavQuestion';
@@ -11,6 +12,7 @@ import ShowQuestion from './ShowQuestion';
 const MainDoExam: React.FC = () => {
   const { exam_id } = useParams();
   const { examDetail } = examDetailStore();
+  const { setLoadingRealtime } = loadingRealtimeStore();
 
   const [indexQuestion, setIndexQuestion] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -22,19 +24,25 @@ const MainDoExam: React.FC = () => {
     const testPath: string = 'test-' + exam_id;
 
     const onValueFirebase = () => {
-      // modifed
       fireGet(testPath, (data: any) => {
         const recordValue: ITestRealtimeRecord = data;
         if (recordValue?.started) {
-          setIsLoading(false);
           const shouldExpriedTest =
             new Date().getTime() >
             +recordValue.startTime + +examDetail.expirationTime;
 
+          recordValue?.duration
+            ? setStartTimeCountdown(
+                new Date().getTime() - +recordValue?.duration
+              )
+            : setStartTimeCountdown(+recordValue.startTime);
+
           setExpriedCountdownRealtime(shouldExpriedTest);
-          setStartTimeCountdown(+recordValue.startTime - +recordValue.duration);
+          setIsLoading(false);
+          setLoadingRealtime(false);
         } else {
           setIsLoading(true);
+          setLoadingRealtime(true);
         }
       });
     };

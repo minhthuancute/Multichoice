@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect } from 'react';
 import { MdOutlineMail } from 'react-icons/md';
 import { VscUnlock } from 'react-icons/vsc';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -19,6 +19,7 @@ import { localServices } from '../../../services/LocalServices';
 import { iNotification } from 'react-notifications-component';
 import { notify } from '../../../helper/notify';
 import { loginError } from '../../../constants/msgNotify';
+import { useQuery } from '../../../hooks/useQuery';
 
 const { email, password } = validation();
 const schemaFormLogin = yup
@@ -35,9 +36,9 @@ const schemaFormLogin = yup
 
 const FormLogin: React.FC = () => {
   const navigate = useNavigate();
+  const query = useQuery();
+
   const { setInforUser } = userStore();
-  const [userLocal, setUserLocal] = useState<LoginUserDto>();
-  const [isRememberUser, setIsRememberUser] = useState<boolean>(false);
 
   const {
     register,
@@ -61,7 +62,13 @@ const FormLogin: React.FC = () => {
         const { payload, token } = loginResponse.data;
         localServices.setData(TOKEN, token);
         setInforUser(payload, token);
-        navigate('/');
+
+        const redirectUrl = query.get('redirect');
+        if (redirectUrl) {
+          navigate(`/e/${redirectUrl}/do-exam`);
+        } else {
+          navigate('/');
+        }
       }
     } catch (error) {
       notify({
@@ -87,7 +94,6 @@ const FormLogin: React.FC = () => {
         </div>
 
         <InputAuthen
-          defaultValue={userLocal?.email}
           registerField={register('email')}
           isError={Boolean(errors.email)}
           errMessage={errors.email?.message}
@@ -98,7 +104,6 @@ const FormLogin: React.FC = () => {
         />
 
         <InputAuthen
-          defaultValue={userLocal?.password}
           className="mt-5"
           registerField={register('password')}
           isError={Boolean(errors.password)}
@@ -111,11 +116,7 @@ const FormLogin: React.FC = () => {
 
         <div className="remember-me flex items-center justify-between mt-5 text-slate-800">
           <div className="check-box cursor-pointer flex items-center">
-            <Checkbox
-              onChange={setIsRememberUser}
-              textLabel="Remember me"
-              id="remember-me"
-            />
+            <Checkbox textLabel="Remember me" id="remember-me" />
           </div>
           <Link
             to="/"

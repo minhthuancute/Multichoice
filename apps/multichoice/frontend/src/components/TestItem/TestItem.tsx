@@ -22,7 +22,7 @@ import {
   canNotCopyLinkExam,
   copyLinkExamSuccess,
 } from '../../constants/msgNotify';
-import { fireGet, fireSet, fireUpdate } from '../../utils/firebase_utils';
+import { fireGet, fireUpdate } from '../../utils/firebase_utils';
 import HandlelayTest from './HandlePlayTest';
 
 export interface ITestItem {
@@ -152,10 +152,10 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
                   >
                     {startedTestRealtime ? (
                       <button
-                        onClick={() => {
-                          setIsPlaytest(false);
-                          setModalHandlePlayTest(true);
-                        }}
+                      // onClick={() => {
+                      //   setIsPlaytest(false);
+                      //   setModalHandlePlayTest(true);
+                      // }}
                       >
                         <BsPause className="text-slate-800 text-2xl" />
                       </button>

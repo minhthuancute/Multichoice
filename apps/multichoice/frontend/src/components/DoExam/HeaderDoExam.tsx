@@ -10,7 +10,9 @@ import { localServices } from '../../services/LocalServices';
 import {
   answerStore,
   examStore,
-  IInforUserDoExam, userStore,
+  IInforUserDoExam,
+  loadingStore,
+  userStore,
 } from '../../store/rootReducer';
 import ExamResult from './ExamResult';
 import ModalConfirm from '../Commons/ModalConfirm/ModalConfirm';
@@ -18,19 +20,17 @@ import { classNames } from '../../helper/classNames';
 import { IoMdClose } from 'react-icons/io';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import Modal from '../Modal/Modal';
+import Skelenton from '../Commons/Skelenton/Skelenton';
+import { loadingRealtimeStore } from '../../store/Loading/Loadingrealtime';
 
 const HeaderDoExam: React.FC = () => {
   const sideBarRef = useRef<HTMLDivElement>(null);
 
   const { exam_id } = useParams();
   const navigate = useNavigate();
-  const {
-    exam,
-    setIsSubmitExam,
-    dataExamResult,
-    isSubmitExam,
-  } = examStore();
+  const { exam, setIsSubmitExam, dataExamResult, isSubmitExam } = examStore();
   const { user } = userStore();
+  const { isLoadingRealtime } = loadingRealtimeStore();
   const { userDoExam, setUserDoexamData } = answerStore();
 
   const [openModalIntro, setOpenModalIntro] = useState<boolean>(false);
@@ -47,13 +47,12 @@ const HeaderDoExam: React.FC = () => {
 
     setIsSubmitExam(false);
     setUserDoexamData({} as IInforUserDoExam);
-    if (Object.keys(user).length)  {
-      navigate("/");
+    if (Object.keys(user).length) {
+      navigate('/');
     } else {
       const urlNavigate = '/e/' + exam_id;
       navigate(urlNavigate);
     }
-
   };
 
   const clickOutSideSidebar = () => {
@@ -135,12 +134,16 @@ const HeaderDoExam: React.FC = () => {
           </button>
         </div>
         <div className="ctas mt-4 text-sm font-semibold">
-          <h3
-            className="topic-title text-white text-lg pb-4
-            border-b border-slate-50 border-opacity-40"
-          >
-            {exam.title}
-          </h3>
+          {isLoadingRealtime ? (
+            <Skelenton className="w-32 h-4 bg-slate-300" />
+          ) : (
+            <h3
+              className="topic-title text-white text-lg pb-4
+              border-b border-slate-50 border-opacity-40"
+            >
+              {exam.title}
+            </h3>
+          )}
 
           <p className=" text-white text-tiny mt-4">
             Hello, {userDoExam.user_name}
@@ -191,7 +194,12 @@ const HeaderDoExam: React.FC = () => {
             <li className="w-4 h-0.5 bg-slate-600 rounded-md mb-1"></li>
             <li className="w-3 h-0.5 bg-slate-600 rounded-md"></li>
           </ul>
-          <p className="topic-title xs:hidden lg:block">{exam.title}</p>
+
+          {isLoadingRealtime ? (
+            <Skelenton className="w-32 h-4 bg-slate-300" />
+          ) : (
+            <h3 className="topic-title xs:hidden lg:block">{exam.title}</h3>
+          )}
         </div>
         <div className="header-right flex items-center text-slate-800 text-sm font-semibold">
           <div className="ctas items-center xs:hidden lg:flex">

@@ -18,28 +18,33 @@ const HandlelayTest: React.FC<IHandlelayTestProps> = ({
   topicTitle,
   isPlaytest,
 }) => {
-  // play or pause Test
-  const handlePlayRealtimeTest = () => {
-    //  path in FIrebase DB
-    const testPath: string = 'test-' + topicUrl;
-    const now = new Date().getTime();
+  const testPath: string = 'test-' + topicUrl;
+
+  const handleStartTest = () => {
+    const recordData: ITestRealtimeRecord = {
+      started: true,
+      startTime: new Date().getTime(),
+    };
+    fireUpdate(testPath, recordData);
+  };
+
+  const handlePauseTest = () => {
     let record: ITestRealtimeRecord = {} as ITestRealtimeRecord,
       duration = 0;
     fireGet(testPath, (data: any) => {
       record = data;
     });
-    if (record) {
-      duration = record.duration + now - +record.startTime;
-    }
 
     const recordData: ITestRealtimeRecord = {
-      started: isPlaytest,
-      startTime: new Date().getTime(),
-      duration: duration,
+      started: false,
+      startTime: record.startTime,
     };
 
+    duration =
+      (Number(record?.duration) || 0) +
+      +(new Date().getTime() - +record?.startTime);
+    recordData.duration = duration;
     fireUpdate(testPath, recordData);
-    setOpenModal(false);
   };
 
   return (
@@ -75,7 +80,14 @@ const HandlelayTest: React.FC<IHandlelayTestProps> = ({
             <button
               className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
     text-white font-bold bg-primary-900 transition-all duration-200 hover:bg-primary-800"
-              onClick={() => handlePlayRealtimeTest()}
+              onClick={() => {
+                if (isPlaytest) {
+                  handleStartTest();
+                } else {
+                  handlePauseTest();
+                }
+                setOpenModal(false);
+              }}
             >
               {isPlaytest ? 'Bắt đầu' : 'Tạm dừng'}
             </button>

@@ -16,5 +16,5 @@ export interface ITopicLocal {
 export interface ITestRealtimeRecord {
   started: boolean;
   startTime: Date | number;
-  duration: number;
+  duration?: number;
 }

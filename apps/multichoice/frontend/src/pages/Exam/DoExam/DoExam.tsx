@@ -1,3 +1,4 @@
+import { TopicTimeTypeEnum } from '@monorepo/multichoice/constant';
 import React, { useEffect, useLayoutEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import HeaderDoExam from '../../../components/DoExam/HeaderDoExam';
@@ -6,25 +7,33 @@ import {
   IS_SUBMIT_EXAM,
   START_EXAM,
   START_TIME,
+  TOKEN,
 } from '../../../constants/contstants';
 import {
   examServices,
   IPayloadStartExam,
 } from '../../../services/ExamServices';
 import { localServices } from '../../../services/LocalServices';
+import { loadingRealtimeStore } from '../../../store/Loading/Loadingrealtime';
 import {
   answerStore,
   examStore,
   IInforUserDoExam,
 } from '../../../store/rootReducer';
+import { ITestRealtimeRecord } from '../../../types/ICommons';
+import { fireGet } from '../../../utils/firebase_utils';
 
 const DoExam: React.FC = () => {
   const navigate = useNavigate();
   const { exam_id } = useParams();
-  const { setExamData, setIsSubmitExam, setIsExpriedExam } = examStore();
+  const { exam, setExamData, setIsSubmitExam, setIsExpriedExam } = examStore();
   const { userDoExam, setUserDoexamData } = answerStore();
+  const { isLoadingRealtime } = loadingRealtimeStore();
 
   const getExamInfor = async () => {
+    if (Object.keys(exam).length && exam.questions) {
+      return;
+    }
     try {
       const { data, status } = await examServices.getExamInfor(exam_id || '');
       if (status === 200) {
@@ -37,7 +46,8 @@ const DoExam: React.FC = () => {
   };
 
   const startExam = async (id: number) => {
-    const canStartExam: boolean = localServices.getData(START_EXAM) === false;
+    const canStartExam: boolean =
+      localServices.getData(START_EXAM) === false && !isLoadingRealtime;
 
     if (canStartExam) {
       localServices.setData(IS_SUBMIT_EXAM, false);
@@ -71,22 +81,51 @@ const DoExam: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    (async () => {
-      await getExamInfor();
-    })();
+    const emptyusername = userDoExam.user_name;
+    const shouldNavPageLogin =
+      exam.timeType === TopicTimeTypeEnum.REALTIME &&
+      !localServices.getData(TOKEN);
 
+    if (shouldNavPageLogin) {
+      navigate(`/login?redirect=${exam_id}`);
+    }
+    // else if (!emptyusername) {
+    //   navigate('/e/' + exam_id);
+    // }
     return () => {
       localServices.setData(START_EXAM, false);
       localServices.clearItem(START_TIME);
       setIsSubmitExam(false);
     };
+  }, [exam.timeType]);
+
+  useEffect(() => {
+    const testPath: string = 'test-' + exam_id;
+
+    const onValueFirebase = () => {
+      fireGet(testPath, async (data: any) => {
+        const recordValue: ITestRealtimeRecord = data;
+        if (recordValue?.started && !exam.questions) {
+          try {
+            const { data, status } = await examServices.getExamInfor(
+              exam_id || ''
+            );
+            if (status === 200) {
+              setExamData(data);
+            }
+          } catch {
+            //
+          }
+        }
+      });
+    };
+    onValueFirebase();
   }, []);
 
   useEffect(() => {
-    const emptyusername = userDoExam.user_name;
-    if (!emptyusername) {
-      navigate('/e/' + exam_id);
-    }
+    (async () => {
+      await getExamInfor();
+    })();
   }, []);
 
   return (
