@@ -10,6 +10,7 @@ import {
   IUserDoExamdetail,
   Questiondetail,
   ResultUserDto,
+  UpdateUserDto,
   UserExamDto,
 } from '@monorepo/multichoice/dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -21,20 +22,29 @@ import { Question } from '../question/entities/question.entity';
 import { UserExam } from './entities/userExam.entity';
 import { UserAnswer } from './entities/userAnswer.entity';
 import { SucessResponse } from '../model/SucessResponse';
-import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
-import { redisService } from '../redis/redis.service';
+import {
+  QuestionTypeEnum,
+  TopicTimeTypeEnum,
+} from '@monorepo/multichoice/constant';
 import { GConfig } from '../config/gconfig';
+import { RedisService } from '../redis/redis.service';
+import { FirebaseService } from '../firebase/firebase.service';
+import { realtimeExam } from '../firebase/dto/realtimeExam.dto';
+import configuration from '../config/configuration';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(UserExam)
     private readonly userExamRepository: Repository<UserExam>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     @InjectRepository(UserAnswer)
     private readonly userAnswerRepository: Repository<UserAnswer>,
     @Inject(forwardRef(() => TopicService))
     private readonly topicService: TopicService,
-    private readonly redisService: redisService
+    private readonly redisService: RedisService,
+    private readonly firebaseService: FirebaseService
   ) {}
 
   convertListUserDoExam(userExams: UserExam[]): IUserDoExam[] {
@@ -290,8 +300,23 @@ export class UserService {
     return poit;
   }
 
+  checkTopicRealTime(topic: Topic) {
+    if (topic.timeType === TopicTimeTypeEnum.REALTIME) {
+      this.firebaseService.fireGet(
+        `${configuration().path_realtime_exam}-${topic.url}`,
+        (data) => {
+          const checkRealTimeExam: realtimeExam = data as realtimeExam;
+          if (checkRealTimeExam && !checkRealTimeExam.started) {
+            delete topic.questions;
+          }
+        }
+      );
+    }
+  }
+
   async findTopicByUrl(url: string): Promise<Topic> {
     const result = await this.topicService.findOneByUrl(url);
+    this.checkTopicRealTime(result);
     return result;
   }
 
@@ -320,6 +345,24 @@ export class UserService {
       throw new BadRequestException(GConfig.NOT_PERMISSION_DELETE);
 
     await this.userExamRepository.delete({ id: userID });
+    return new SucessResponse(200, GConfig.SUCESS);
+  }
+
+  convertUserEntity(updateUserDto: UpdateUserDto, file: any): User {
+    const user: User = new User();
+    if (updateUserDto.username && updateUserDto.username.length > 0)
+      user.username = updateUserDto.username;
+    if (file && file.avatar !== undefined)
+      user.avatar = file.avatar[0].filename;
+
+    return user;
+  }
+
+  updateUserByID(updateUserDto: UpdateUserDto, file: any, user: User) {
+    this.userRepository.update(
+      { id: user.id },
+      this.convertUserEntity(updateUserDto, file)
+    );
     return new SucessResponse(200, GConfig.SUCESS);
   }
 }
