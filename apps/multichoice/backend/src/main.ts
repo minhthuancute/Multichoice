@@ -23,7 +23,6 @@ async function bootstrap() {
     'https://dev.detracnghiem.vn',
     'https://detracnghiem.vn',
     'http://localhost:4200',
-    'http://localhost:3000',
   ];
   console.log(`==> current env: ${process.env.NODE_ENV}`);
   const options = {
@@ -37,12 +36,9 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   };
-  app.enableCors({
+  app.enableCors(process.env.NODE_ENV === "production" ? options :  {
     origin: '*',
   });
-  // app.enableCors(process.env.NODE_ENV === "production" ? options :  {
-  //   origin: '*',
-  // });
   // swagger
   const config = new DocumentBuilder()
     .setTitle('Multichoice')
