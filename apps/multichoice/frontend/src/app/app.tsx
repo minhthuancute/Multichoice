@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import React, { Suspense } from 'react';
+import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import './app.scss';
@@ -8,7 +8,6 @@ import DefaultLayout from '../layouts/DefaultLayout';
 
 import PrivateRoute from '../components/Routes/PrivateRoute';
 import PublicRoute from '../components/Routes/PublicRoute';
-import Loading from '../components/Loading/Loading';
 
 // Pages
 
@@ -52,14 +51,7 @@ export const App: React.FC = () => {
           <Route path="tests">
             <Route index element={<Tests />} />
             <Route path="create" element={<CreateTest />} />
-            <Route
-              path="edit/:id"
-              element={
-                <Suspense fallback={<Loading />}>
-                  <EditTest />
-                </Suspense>
-              }
-            />
+            <Route path="edit/:id" element={<EditTest />} />
             <Route path=":id/statistic" element={<StatisticExam />} />
             <Route
               path=":id/statistic/detail"
