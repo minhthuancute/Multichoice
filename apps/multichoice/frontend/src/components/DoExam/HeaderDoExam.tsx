@@ -22,6 +22,7 @@ import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import Modal from '../Modal/Modal';
 import Skelenton from '../Commons/Skelenton/Skelenton';
 import { loadingRealtimeStore } from '../../store/Loading/Loadingrealtime';
+import { TopicTimeTypeEnum } from '@monorepo/multichoice/constant';
 
 const HeaderDoExam: React.FC = () => {
   const sideBarRef = useRef<HTMLDivElement>(null);
@@ -134,7 +135,7 @@ const HeaderDoExam: React.FC = () => {
           </button>
         </div>
         <div className="ctas mt-4 text-sm font-semibold">
-          {isLoadingRealtime ? (
+          {isLoadingRealtime && exam.timeType === TopicTimeTypeEnum.REALTIME ? (
             <Skelenton className="w-32 h-4 bg-slate-300" />
           ) : (
             <h3
@@ -195,7 +196,7 @@ const HeaderDoExam: React.FC = () => {
             <li className="w-3 h-0.5 bg-slate-600 rounded-md"></li>
           </ul>
 
-          {isLoadingRealtime ? (
+          {isLoadingRealtime && exam.timeType === TopicTimeTypeEnum.REALTIME ? (
             <Skelenton className="w-32 h-4 bg-slate-300" />
           ) : (
             <h3 className="topic-title xs:hidden lg:block">{exam.title}</h3>
