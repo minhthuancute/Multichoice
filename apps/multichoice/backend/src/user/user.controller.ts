@@ -16,6 +16,7 @@ import {
 import { UserService } from './user.service';
 import {
   ResultUserDto,
+  ResultUserExamRealtimeDto,
   UpdateUserDto,
   UserExamDto,
 } from '@monorepo/multichoice/dto';
@@ -99,5 +100,20 @@ export class UserController {
     return res
       .status(200)
       .json(this.userService.updateUserByID(updateUserDto, file, req.user));
+  }
+
+  @UseGuards(AuthenticationGuard)
+  @ApiBearerAuth()
+  @Post('/examrealtime/end')
+  async endExamRealTime(
+    @Body() resultUserRealTimeDto: ResultUserDto,
+    @Res() res,
+    @Req() req
+  ) {
+    const result = await this.userService.endExamRealTime(
+      resultUserRealTimeDto,
+      req.user.id
+    );
+    return res.status(200).json(result);
   }
 }

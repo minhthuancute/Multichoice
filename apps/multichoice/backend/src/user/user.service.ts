@@ -10,6 +10,7 @@ import {
   IUserDoExamdetail,
   Questiondetail,
   ResultUserDto,
+  ResultUserExamRealtimeDto,
   UpdateUserDto,
   UserExamDto,
 } from '@monorepo/multichoice/dto';
@@ -178,6 +179,75 @@ export class UserService {
     throw new BadRequestException(GConfig.NOT_PERMISSION_VIEW);
   }
 
+  async endExamRealTime(
+    resultUserRealTimeDto: ResultUserExamRealtimeDto,
+    userID: number
+  ) {
+    const endTime = new Date().getTime();
+    if (resultUserRealTimeDto.url == undefined)
+      throw new BadRequestException(GConfig.URL_NOT_EMPTY);
+    const topic = await this.topicService.getIsCorrectByUrl(
+      resultUserRealTimeDto.url
+    );
+    if (!topic) throw new BadRequestException(GConfig.TOPIC_NOT_FOUND);
+
+    const user = await this.getUserById(userID);
+    if (!user) throw new BadRequestException(GConfig.USER_NOT_FOUND);
+
+    const exam: UserExam = new UserExam();
+
+    const dataFirebase: realtimeExam = (await this.firebaseService.get(
+      `${configuration().path_realtime_exam}-${topic.url}`
+    )) as realtimeExam;
+
+    if (dataFirebase && dataFirebase.started) {
+      exam.startTime = dataFirebase.startTime;
+      exam.username = user.username;
+      exam.topic = topic;
+      exam.endTime = endTime;
+      if (
+        Number(endTime) >=
+        Number(topic.expirationTime) + Number(exam.startTime)
+      )
+        exam.status = true;
+
+      exam.point = this.pointCount(
+        topic.questions,
+        resultUserRealTimeDto.answerUsers
+      );
+      const saveUserExam = await this.userExamRepository.save(exam);
+      this.saveListUserAnswer(resultUserRealTimeDto.answerUsers, saveUserExam);
+      return new SucessResponse(200, {
+        username: saveUserExam.username,
+        point: saveUserExam.point,
+        time: Number(endTime) - Number(saveUserExam.startTime),
+      });
+    }
+  }
+
+  saveListUserAnswer(answersUserDto: AnswersUserDto[], userExam: UserExam) {
+    if (answersUserDto !== undefined) {
+      const lst: UserAnswer[] = [];
+      answersUserDto.forEach((element) => {
+        if (typeof element.answerID === 'object') {
+          element.answerID.forEach((item) => {
+            const userAnswer: UserAnswer = new UserAnswer();
+            userAnswer.answerID = item;
+            userAnswer.questionID = element.questionID;
+            userAnswer.userExam = userExam;
+            lst.push(userAnswer);
+          });
+        } else {
+          const userAnswer: UserAnswer = new UserAnswer();
+          userAnswer.answerID = element.answerID;
+          userAnswer.questionID = element.questionID;
+          userAnswer.userExam = userExam;
+          lst.push(userAnswer);
+        }
+      });
+      this.userAnswerRepository.save(lst);
+    }
+  }
   async endExam(resultUserDto: ResultUserDto) {
     const endTime = new Date().getTime();
     const userID: string = resultUserDto.userID.toString();
@@ -195,32 +265,13 @@ export class UserService {
     if (!topic) throw new BadRequestException(GConfig.TOPIC_NOT_FOUND);
 
     userExam.endTime = endTime;
-    userExam.point = this.pointCount(topic.questions, resultUserDto);
+    userExam.point = this.pointCount(
+      topic.questions,
+      resultUserDto.answerUsers
+    );
     userExam.topic = topic;
     const saveUserExam = await this.userExamRepository.save(userExam);
-
-    // save list userAnswer
-    if (resultUserDto.answerUsers !== undefined) {
-      const lst: UserAnswer[] = [];
-      resultUserDto.answerUsers.forEach((element) => {
-        if (typeof element.answerID === 'object') {
-          element.answerID.forEach((item) => {
-            const userAnswer: UserAnswer = new UserAnswer();
-            userAnswer.answerID = item;
-            userAnswer.questionID = element.questionID;
-            userAnswer.userExam = saveUserExam;
-            lst.push(userAnswer);
-          });
-        } else {
-          const userAnswer: UserAnswer = new UserAnswer();
-          userAnswer.answerID = element.answerID;
-          userAnswer.questionID = element.questionID;
-          userAnswer.userExam = saveUserExam;
-          lst.push(userAnswer);
-        }
-      });
-      await this.userAnswerRepository.save(lst);
-    }
+    this.saveListUserAnswer(resultUserDto.answerUsers, saveUserExam);
 
     return new SucessResponse(200, {
       username: saveUserExam.username,
@@ -235,7 +286,6 @@ export class UserService {
 
   async startExam(userExamDto: UserExamDto) {
     const topic = await this.topicService.fineOneByID(userExamDto.topicID);
-    if (!topic) throw new BadRequestException(GConfig.TOPIC_NOT_FOUND);
     const exam: UserExam = new UserExam();
     exam.username = userExamDto.username;
     exam.topic = new Topic(topic.id);
@@ -253,15 +303,19 @@ export class UserService {
     return new SucessResponse(200, { userid });
   }
 
+  async getUserById(id: number): Promise<User> {
+    return await this.userRepository.findOne({ where: { id } });
+  }
+
   public pointCount(
     questions: Question[],
-    resultUserDto: ResultUserDto
+    answersUserDto: AnswersUserDto[]
   ): number {
     let poit = 0;
     if (
       questions.length > 0 &&
-      resultUserDto.answerUsers !== undefined &&
-      resultUserDto.answerUsers.length > 0
+      answersUserDto !== undefined &&
+      answersUserDto.length > 0
     ) {
       const questionsDBB = questions.reduce((result, item) => {
         return {
@@ -275,7 +329,7 @@ export class UserService {
         };
       }, {});
 
-      const aswersUserDto = resultUserDto.answerUsers.reduce((result, item) => {
+      const aswersUserDto = answersUserDto.reduce((result, item) => {
         if (typeof item.answerID === 'object') {
           return {
             ...result,
@@ -300,24 +354,21 @@ export class UserService {
     return poit;
   }
 
-  checkTopicRealTime(topic: Topic) {
+  async checkTopicRealTime(topic: Topic) {
     if (topic.timeType === TopicTimeTypeEnum.REALTIME) {
-      this.firebaseService.fireGet(
-        `${configuration().path_realtime_exam}-${topic.url}`,
-        (data) => {
-          const checkRealTimeExam: realtimeExam = data as realtimeExam;
+      const checkRealTimeExam: realtimeExam = (await this.firebaseService.get(
+        `${configuration().path_realtime_exam}-${topic.url}`
+      )) as realtimeExam;
 
-          if (!checkRealTimeExam || !checkRealTimeExam.started) {
-            delete topic.questions;
-          }
-        }
-      );
+      if (!checkRealTimeExam || !checkRealTimeExam.started) {
+        delete topic.questions;
+      }
     }
   }
 
   async findTopicByUrl(url: string): Promise<Topic> {
     const result = await this.topicService.findOneByUrl(url);
-    this.checkTopicRealTime(result);
+    await this.checkTopicRealTime(result);
     return result;
   }
 
