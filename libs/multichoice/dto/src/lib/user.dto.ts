@@ -89,6 +89,9 @@ export class ResultUserDto {
   @ApiProperty()
   userID: number;
 
+  @ApiProperty()
+  url: string;
+
   @ApiProperty({ type: [AnswersUserDto] })
   answerUsers: AnswersUserDto[];
 }
