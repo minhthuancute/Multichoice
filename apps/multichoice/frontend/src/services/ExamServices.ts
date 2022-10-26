@@ -11,6 +11,12 @@ export interface IPayloadEndExam {
   answerUsers: IAnswers[];
 }
 
+export interface IPayloadEndExamRealtime {
+  userID: number;
+  url: string;
+  answerUsers: IAnswers[];
+}
+
 export interface IPayloadgetListExamByTopicId {
   topicID: number;
 }
@@ -38,6 +44,12 @@ class ExamServices extends Api {
   // end Exam
   submitExam(payload: IPayloadEndExam) {
     const data = this.post('/exam/end', payload);
+    return data;
+  }
+
+  // end Exam realtime
+  submitExamRealtime(payload: IPayloadEndExamRealtime) {
+    const data = this.post('/examrealtime/end', payload);
     return data;
   }
 

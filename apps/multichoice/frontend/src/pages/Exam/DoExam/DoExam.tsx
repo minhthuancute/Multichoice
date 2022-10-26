@@ -31,6 +31,8 @@ const DoExam: React.FC = () => {
   const { isLoadingRealtime } = loadingRealtimeStore();
 
   const getExamInfor = async () => {
+    console.log(exam);
+
     if (Object.keys(exam).length && exam.questions) {
       return;
     }
@@ -123,9 +125,7 @@ const DoExam: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    (async () => {
-      await getExamInfor();
-    })();
+    getExamInfor();
   }, []);
 
   return (

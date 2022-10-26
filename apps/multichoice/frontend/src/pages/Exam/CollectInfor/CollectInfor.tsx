@@ -50,11 +50,32 @@ const CollectInfor: React.FC = () => {
     resolver: yupResolver(schemaInfor),
   });
 
+  const navigateDoExam = () => {
+    const canNavigate = exam.timeType !== TopicTimeTypeEnum.REALTIME;
+    if (Object.keys(user).length && canNavigate) {
+      setUserDoexamData({
+        user_name: user.username,
+      } as IInforUserDoExam);
+      const urlNavigate = '/e/' + exam_id + '/do-exam';
+      navigate(urlNavigate);
+    }
+  };
+
   const getExamInfor = async () => {
     try {
       const { data } = await examServices.getExamInfor(exam_id || '');
+
+      const shouldNavPageLogin =
+        data.timeType === TopicTimeTypeEnum.REALTIME &&
+        !localServices.getData(TOKEN);
+
+      if (shouldNavPageLogin) {
+        navigate(`/login?redirect=${exam_id}`);
+        return;
+      }
+
       const examInfor: IExamResponse = data;
-      console.log(examInfor.timeType, 'ascjksajckj');
+      const examDetail = examInfor;
 
       // const exam
       const initAnswers: IAnswers[] = examInfor.questions.map(
@@ -66,22 +87,15 @@ const CollectInfor: React.FC = () => {
           return tempArr;
         }
       );
-      // const examDetail: IExamDetail = examInfor
-      const examDetail: IExamDetail = (({ questions, ...rest }) => rest)(
-        examInfor
-      );
+      // const examDetail: IExamDetail = (({ questions, ...rest }) => rest)(
+      //   examInfor
+      // );
+
       setAnswers(initAnswers);
       setExamData(data);
       setExamDetailData(examDetail);
 
-      const shouldNavPageLogin =
-        examInfor.timeType === TopicTimeTypeEnum.REALTIME &&
-        !localServices.getData(TOKEN);
-
-      if (shouldNavPageLogin) {
-        navigate(`/login?redirect=${exam_id}`);
-        return;
-      }
+      navigateDoExam();
     } catch {
       //
     }
