@@ -106,7 +106,7 @@ export class UserController {
   @ApiBearerAuth()
   @Post('/examrealtime/end')
   async endExamRealTime(
-    @Body() resultUserRealTimeDto: ResultUserExamRealtimeDto,
+    @Body() resultUserRealTimeDto: ResultUserDto,
     @Res() res,
     @Req() req
   ) {

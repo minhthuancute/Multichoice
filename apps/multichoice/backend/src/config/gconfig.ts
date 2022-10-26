@@ -23,6 +23,8 @@ export class GConfig {
 
   public static QUESTION_NOT_FOUND = this.MES_NOT_FOUND('Question');
 
+  public static URL_NOT_EMPTY = this.MES_NOT_EMPTY('URL');
+
   public static PASSWORD_IS_INCORRECT = 'Password is incorrect';
   public static PASSWORD_OLD_IS_INCORRECT = 'Password cũ không đúng';
   public static SUCESS = 'Sucess';

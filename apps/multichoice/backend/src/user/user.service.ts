@@ -184,9 +184,13 @@ export class UserService {
     userID: number
   ) {
     const endTime = new Date().getTime();
+    if (resultUserRealTimeDto.url == undefined)
+      throw new BadRequestException(GConfig.URL_NOT_EMPTY);
     const topic = await this.topicService.getIsCorrectByUrl(
       resultUserRealTimeDto.url
     );
+    if (!topic) throw new BadRequestException(GConfig.TOPIC_NOT_FOUND);
+
     const user = await this.getUserById(userID);
     if (!user) throw new BadRequestException(GConfig.USER_NOT_FOUND);
 

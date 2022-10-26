@@ -157,6 +157,7 @@ export class TopicService {
       },
       relations: ['questions', 'questions.answers'],
     });
+
     return result;
   }
 }
