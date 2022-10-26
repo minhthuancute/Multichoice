@@ -3,7 +3,7 @@ import { TOPIC_LIST } from '../../constants/contstants';
 import { useQuery } from '../../hooks/useQuery';
 import { localServices } from '../../services/LocalServices';
 import { topicServices } from '../../services/TopicServices';
-import { ITopicLocal } from '../../types/ICommons';
+import { ITopicLocal, TimeType } from '../../types/ICommons';
 import { ITopicResponse } from '../../types/TopicResponse';
 import { removeVietnameseTones } from '../../utils/removeVietnameseTones';
 import TestItem, { ITestItem } from '../TestItem/TestItem';
@@ -39,6 +39,7 @@ const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
           date: test.createdAt,
           questionCount: test.questionsCount,
           expirationTime: test.expirationTime,
+          timeType: test.timeType.toUpperCase() as TimeType,
           typeCategoryName: test.typeCategoryName,
         };
         return testData;
@@ -69,10 +70,6 @@ const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
     }
   };
 
-  useLayoutEffect(() => {
-    getListTest();
-  }, []);
-
   const filterTest = (keyword = '') => {
     const filterResult = testList.filter((test: ITestItem) => {
       const title = removeVietnameseTones(test.title).toLowerCase();
@@ -82,10 +79,6 @@ const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
     });
     setTestsFilter(filterResult);
   };
-
-  useEffect(() => {
-    filterTest(searchKeyword);
-  }, [searchKeyword]);
 
   const handleDeleteTest = (testID: number, title: string) => {
     setOpenModalDelete(true);
@@ -97,6 +90,14 @@ const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
     getListTest();
     setOpenModalDelete(false);
   };
+
+  useLayoutEffect(() => {
+    getListTest();
+  }, []);
+
+  useEffect(() => {
+    filterTest(searchKeyword);
+  }, [searchKeyword]);
 
   return (
     <div>

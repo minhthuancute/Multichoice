@@ -9,13 +9,13 @@ import React, {
 import { useFieldArray, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import AnswerItem from './AnswerItem';
-import { HiInformationCircle } from 'react-icons/hi';
 import { iNotification } from 'react-notifications-component';
 import { notify } from '../../helper/notify';
 import {
   errMaxlengthAnswer,
   errMinlengthAnswer,
 } from '../../constants/msgNotify';
+import { BsInfoCircle } from 'react-icons/bs';
 
 const answerSchema = yup.object().shape({
   answers: yup.array().of(
@@ -220,7 +220,7 @@ const CreateAnswer: React.FC<ICreateAnswerProps> = forwardRef(
               Thêm đáp án
             </button>
             <div className="bg-green-50 rounded-md p-4 mt-3 flex items-center">
-              <HiInformationCircle className="fill-green-800 mr-2 text-xl" />
+              <BsInfoCircle className="fill-green-800 mr-2 text-xl" />
               <p className="text-sm text-green-800">
                 Tick vào ô vuông cạnh đáp án để chọn
                 <span className="text-green-600 font-semibold">

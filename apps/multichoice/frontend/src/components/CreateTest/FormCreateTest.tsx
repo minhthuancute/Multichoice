@@ -89,10 +89,6 @@ const FormCreateTest: React.FC<IFormCreateTest> = forwardRef((props, ref) => {
     setValue('typeCategoryName', optionVal);
   };
 
-  useLayoutEffect(() => {
-    initForm();
-  }, []);
-
   const onSelectCategory = (item: IOption) => {
     const optionVal: TopicCategoryEnum = item.value as TopicCategoryEnum;
     setValue('typeCategoryName', optionVal);
@@ -131,6 +127,10 @@ const FormCreateTest: React.FC<IFormCreateTest> = forwardRef((props, ref) => {
     []
   );
 
+  useLayoutEffect(() => {
+    initForm();
+  }, []);
+
   return (
     <div className="container">
       <form className="form flex items-start" onSubmit={handleSubmit(onSubmit)}>
@@ -155,7 +155,7 @@ const FormCreateTest: React.FC<IFormCreateTest> = forwardRef((props, ref) => {
 
           <Select
             onChange={onSelectTimeType}
-            defaultValue={topicTimeTypes[1].label}
+            defaultValue={topicTimeTypes[0].label}
             options={topicTimeTypes}
             textLabel="Loại thời gian"
             className="mt-5"

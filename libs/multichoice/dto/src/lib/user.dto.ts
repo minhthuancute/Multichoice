@@ -85,13 +85,6 @@ export class UserExamDto {
   topicID: number;
 }
 
-export class UserExamDto {
-  @ApiProperty()
-  username: string;
-
-  @ApiProperty()
-  topicID: number;
-}
 export class ResultUserDto {
   @ApiProperty()
   userID: number;
@@ -134,4 +127,11 @@ export interface Answer {
   id: number;
   content: string;
   isCorrect: boolean;
+}
+export class ResultUserExamRealtimeDto {
+  @ApiProperty()
+  url: string;
+
+  @ApiProperty({ type: [AnswersUserDto] })
+  answerUsers: AnswersUserDto[];
 }
