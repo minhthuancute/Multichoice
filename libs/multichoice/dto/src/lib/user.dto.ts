@@ -128,3 +128,10 @@ export interface Answer {
   content: string;
   isCorrect: boolean;
 }
+export class ResultUserExamRealtimeDto {
+  @ApiProperty()
+  url: string;
+
+  @ApiProperty({ type: [AnswersUserDto] })
+  answerUsers: AnswersUserDto[];
+}

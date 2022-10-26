@@ -144,4 +144,19 @@ export class TopicService {
     });
     return result;
   }
+
+  async getIsCorrectByUrl(url: string): Promise<Topic> {
+    const result = await this.topicRepository.findOne({
+      where: {
+        url,
+        questions: {
+          answers: {
+            isCorrect: true,
+          },
+        },
+      },
+      relations: ['questions', 'questions.answers'],
+    });
+    return result;
+  }
 }
