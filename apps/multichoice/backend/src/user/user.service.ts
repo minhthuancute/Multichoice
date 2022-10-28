@@ -190,8 +190,6 @@ export class UserService {
     const topic = await this.topicService.getIsCorrectByUrl(
       resultUserRealTimeDto.url
     );
-    if (!topic) throw new BadRequestException(GConfig.TOPIC_NOT_FOUND);
-
     const user = await this.getUserById(userID);
     if (!user) throw new BadRequestException(GConfig.USER_NOT_FOUND);
 
@@ -263,7 +261,6 @@ export class UserService {
     const topic: Topic = await this.topicService.getIsCorrectByTopicID(
       userExam.topic.id
     );
-    if (!topic) throw new BadRequestException(GConfig.TOPIC_NOT_FOUND);
 
     userExam.endTime = endTime;
     userExam.point = this.pointCount(
@@ -329,7 +326,6 @@ export class UserService {
           }, {}),
         };
       }, {});
-
       const aswersUserDto = answersUserDto.reduce((result, item) => {
         if (typeof item.answerID === 'object') {
           return {
