@@ -1,4 +1,4 @@
-import { TopicTimeTypeEnum } from '@monorepo/multichoice/constant';
+import { firebasePath, TopicTimeTypeEnum } from '@monorepo/multichoice/constant';
 import React, { useEffect, useLayoutEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import HeaderDoExam from '../../../components/DoExam/HeaderDoExam';
@@ -100,7 +100,7 @@ const DoExam: React.FC = () => {
   }, [exam.timeType]);
 
   useEffect(() => {
-    const testPath: string = 'test-' + exam_id;
+    const testPath: string = `${firebasePath}-` + exam_id;
 
     const onValueFirebase = () => {
       fireGet(testPath, async (data: any) => {

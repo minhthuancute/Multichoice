@@ -65,7 +65,7 @@ export class authController {
     return res.status(200).json(new SucessResponse(200, result));
   }
 
-  @Post('/forgotPassword')
+  @Post('/forgotpassword')
   async forgotPassword(
     @Query() forgotPasswordDto: ForgotPasswordDto,
     @Res() res
