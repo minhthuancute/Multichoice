@@ -23,6 +23,7 @@ import { UserExam } from './entities/userExam.entity';
 import { UserAnswer } from './entities/userAnswer.entity';
 import { SucessResponse } from '../model/SucessResponse';
 import {
+  firebasePath,
   QuestionTypeEnum,
   TopicTimeTypeEnum,
 } from '@monorepo/multichoice/constant';
@@ -303,7 +304,7 @@ export class UserService {
   checkTopicRealTime(topic: Topic) {
     if (topic.timeType === TopicTimeTypeEnum.REALTIME) {
       this.firebaseService.fireGet(
-        `${configuration().path_realtime_exam}-${topic.url}`,
+        `${firebasePath}-${topic.url}`,
         (data) => {
           const checkRealTimeExam: realtimeExam = data as realtimeExam;
 

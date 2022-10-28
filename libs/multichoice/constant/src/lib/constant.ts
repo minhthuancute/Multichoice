@@ -16,3 +16,5 @@ export enum TopicTimeTypeEnum {
   FIXEDTIME = 'fixedtime',
   REALTIME = 'realtime',
 }
+
+export const firebasePath = 'test'
