@@ -4,7 +4,7 @@ import HeaderEditTest from '../../../components/EditTest/HeaderEditTest';
 import QuestionList from '../../../components/QuestionList/QuestionList';
 import { withBackTop } from '../../../HOCs/withBackTop';
 import { topicServices } from '../../../services/TopicServices';
-import {IInforUserDoExam, topicStore } from '../../../store/rootReducer';
+import { topicStore } from '../../../store/rootReducer';
 import {ITopicDetailResponse} from "../../../types";
 
 const EditTest: React.FC = () => {

@@ -1,7 +1,6 @@
 import { IsEmail, MaxLength, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { validation } from '@monorepo/multichoice/validation';
-import { type } from 'os';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 
 export class CreateUserDto {
@@ -18,13 +17,17 @@ export class CreateUserDto {
   @ApiProperty()
   @MinLength(validation().password.minLength)
   password: string;
+
+  @ApiProperty({ type: 'string', format: 'binary', required: false })
+  avatar: string;
 }
 
 export class UpdateUserDto {
-  @ApiProperty()
-  @MinLength(validation().username.minLength)
-  @MaxLength(validation().username.maxLength)
+  @ApiProperty({ required: false })
   username: string;
+
+  @ApiProperty({ type: 'string', format: 'binary', required: false })
+  avatar: string;
 }
 
 export class UpdateUserPasswordDto {
@@ -35,6 +38,21 @@ export class UpdateUserPasswordDto {
   @ApiProperty()
   @MinLength(validation().password.minLength)
   newPassword: string;
+}
+
+export class ForgotPasswordDto {
+  @IsEmail()
+  @ApiProperty()
+  email: string;
+}
+
+export class ResetPasswordDto {
+  @ApiProperty()
+  token: string;
+
+  @ApiProperty()
+  @MinLength(validation().password.minLength)
+  password: string;
 }
 
 export class LoginUserDto {
@@ -66,6 +84,7 @@ export class UserExamDto {
   @ApiProperty()
   topicID: number;
 }
+
 export class ResultUserDto {
   @ApiProperty()
   userID: number;

@@ -9,14 +9,13 @@ import ExamResult from './ExamResult';
 import ConfirmSubmit from './ConfirmSubmit';
 import CountDown from '../Commons/CountDown/CountDown';
 import { localServices } from '../../services/LocalServices';
-import { START_TIME } from '../../constants/contstants';
+import { IS_SUBMIT_EXAM, START_TIME } from '../../constants/contstants';
 import { classNames } from '../../helper/classNames';
 import ToolTip from '../Commons/ToolTip/ToolTip';
 import PolaCode from '../PolaCode/PolaCode';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 import { QuestionType } from '../../types/ICommons';
 
-import './doExam.scss';
 import {
   errCanNotSubmit,
   expriedTime,
@@ -24,27 +23,36 @@ import {
   submitSuccess,
 } from '../../constants/msgNotify';
 
-interface IShowQuestion {
-  indexQuestion: number;
-  setIndexQuestion: React.Dispatch<React.SetStateAction<number>>;
-}
+import TextArea from '../Commons/TextArea/TextArea';
+import './doExam.scss';
 
 interface IExamResult {
   user_name: string;
   point: number;
 }
 
-const ShowQuestion: React.FC<IShowQuestion> = ({
+interface IShowQuestionProps {
+  indexQuestion: number;
+  setIndexQuestion: React.Dispatch<React.SetStateAction<number>>;
+  startTimeCountdown?: number;
+  expriedCountdownRealtime?: boolean;
+}
+
+const ShowQuestion: React.FC<IShowQuestionProps> = ({
   indexQuestion = 0,
   setIndexQuestion,
+  startTimeCountdown = 0,
+  expriedCountdownRealtime = false,
 }) => {
   const {
     exam: { questions },
     setDataExamResult,
+    exam,
+    setIsSubmitExam,
+    isSubmitExam,
+    isExpriedExam,
   } = examStore();
-  const { userDoExam } = answerStore();
-  const { exam, setIsSubmitExam, isSubmitExam, isExpriedExam } = examStore();
-  const { answers, updateAnswer } = answerStore();
+  const { answers, updateAnswer, userDoExam } = answerStore();
 
   const [confirmSubmit, setConfirmSubmit] = useState<boolean>(false);
   const [openModalConfirm, setOpenModalConfirm] = useState<boolean>(false);
@@ -72,10 +80,18 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
     }
   };
 
-  const onChooseAnswer = (answerID: number, questionType: QuestionType) => {
+  const onChooseAnswer = (
+    answerID: number | string,
+    questionType: QuestionType
+  ) => {
     const questionID = questions[indexQuestion].id;
 
     updateAnswer(questionID, answerID, questionType);
+  };
+
+  const onChangeTextarea = (value: string) => {
+    // updateAnswer(questionID, answerID, questionType);
+    console.log(value);
   };
 
   const countUnSelectAnswer = (): number => {
@@ -88,7 +104,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
   const onSumitAnswers = async () => {
     setIsSubmitExam(true);
     setErrorMsgSubmit('Bạn đã nộp bài');
-
+    localServices.setData(IS_SUBMIT_EXAM, true);
     try {
       const payload: IPayloadEndExam = {
         userID: userDoExam.user_id,
@@ -149,7 +165,9 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
   };
 
   const isCheckAnswer = (answerID: number): boolean => {
-    const shouldChecked = answers[indexQuestion]?.answerID?.includes(answerID);
+    const shouldChecked = (
+      answers[indexQuestion]?.answerID as number[]
+    )?.includes(answerID);
 
     return shouldChecked;
   };
@@ -164,6 +182,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
     return null;
   }
 
+  const questionType = questions[indexQuestion].type;
   return (
     <div className="w-full h-full">
       <div className="modals">
@@ -184,26 +203,28 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
       </div>
 
       <header className="flex items-start xs:justify-between lg:justify-center">
-        <ToolTip title={errorMsgSubmit}>
-          <button
-            className={classNames(
-              `px-6 py-2.5 bg-primary-800 rounded-md text-sm
+        {expriedCountdownRealtime === false ? (
+          <ToolTip title={errorMsgSubmit}>
+            <button
+              className={classNames(
+                `px-6 py-2.5 bg-primary-800 rounded-md text-sm
             text-white flex items-center mb-4 font-semibold
             focus:ring-blue-100 focus:ring`,
-              {
-                hidden: isSubmitExam,
-              }
-            )}
-            onClick={() => requestSubmit()}
-          >
-            Nộp Bài
-          </button>
-        </ToolTip>
+                {
+                  hidden: isSubmitExam || localServices.getData(IS_SUBMIT_EXAM),
+                }
+              )}
+              onClick={() => requestSubmit()}
+            >
+              Nộp Bài
+            </button>
+          </ToolTip>
+        ) : null}
 
         <div className="lg:hidden">
           <CountDown
             isHidden={isSubmitExam}
-            startTime={startTime}
+            startTime={startTimeCountdown || startTime}
             endTime={endTime}
             key="count-down"
             className="text-primary-800"
@@ -260,8 +281,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
                       <input
                         hidden
                         type={
-                          questions[indexQuestion].type ===
-                          QuestionTypeEnum.MULTIPLE
+                          questionType === QuestionTypeEnum.MULTIPLE
                             ? 'checkbox'
                             : 'radio'
                         }
@@ -272,7 +292,7 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
                         onChange={() =>
                           onChooseAnswer(
                             answers.id,
-                            `${questions[indexQuestion].type}` as QuestionType
+                            `${questionType}` as QuestionType
                           )
                         }
                       />
@@ -291,12 +311,25 @@ const ShowQuestion: React.FC<IShowQuestion> = ({
                 );
               }
             )}
-          {questions[indexQuestion].type === QuestionTypeEnum.MULTIPLE ? (
+
+          {questionType === QuestionTypeEnum.MULTIPLE ? (
             <div className="mt-3">
               <p className="text-sm text-primary-800 italic text-center">
                 (Có thể có nhiều đáp án đúng)
               </p>
             </div>
+          ) : null}
+
+          {questionType === QuestionTypeEnum.TEXT ? (
+            <TextArea
+              key={'answer-' + indexQuestion}
+              defaultValue={answers[indexQuestion].answerID}
+              onChange={(value: string) => {
+                onChangeTextarea(value);
+                onChooseAnswer(value, `${questionType}` as QuestionType);
+              }}
+              placeholder="Nhập câu trả lời..."
+            />
           ) : null}
         </div>
       </div>

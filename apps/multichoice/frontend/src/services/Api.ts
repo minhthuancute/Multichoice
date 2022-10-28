@@ -55,7 +55,7 @@ export class Api {
     if (pendingRequest === 0) {
       const state = loadingStore.getState();
       setTimeout(() => {
-        state.setLoading(false);
+        // state.setLoading(false);
       }, 500);
     }
   }

@@ -1,5 +1,6 @@
 import React from 'react';
 import { BiCheckDouble } from 'react-icons/bi';
+import { answerStore } from '../../store/rootReducer';
 import Modal from '../Modal/Modal';
 
 interface IExamResult {
@@ -15,6 +16,7 @@ const ExamResult: React.FC<IExamResult> = ({
   user_name = '',
   point,
 }) => {
+  const { userDoExam } = answerStore();
   return (
     <Modal
       openModal={openModalResult}
@@ -26,8 +28,11 @@ const ExamResult: React.FC<IExamResult> = ({
         <div className="header text-center">
           <BiCheckDouble className="text-green-600 text-5xl mx-auto" />
           <h4 className="mt-4 text-slate-800">
-            Cảm ơn <span className="font-semibold">{user_name}</span> đã tham
-            gia bài kiểm tra!
+            Cảm ơn{' '}
+            <span className="font-semibold">
+              {user_name || userDoExam.user_name}
+            </span>{' '}
+            đã tham gia bài kiểm tra!
           </h4>
           <p className="mt-4">
             Số điểm bài thi bạn đạt được là:{' '}

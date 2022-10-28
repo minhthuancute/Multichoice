@@ -93,10 +93,6 @@ const FormEditTest: React.FC<IFormEditTestProps> = ({
     setValue('expirationTime', +secondsToMinutes(+expirationTime));
   };
 
-  useLayoutEffect(() => {
-    initForm();
-  }, []);
-
   const onSelectCategory = (item: IOption) => {
     const optionVal: TopicCategoryEnum = item.value as TopicCategoryEnum;
     setValue('typeCategoryName', optionVal);
@@ -133,6 +129,10 @@ const FormEditTest: React.FC<IFormEditTestProps> = ({
       //
     }
   };
+
+  useLayoutEffect(() => {
+    initForm();
+  }, []);
 
   return (
     <div className="py-4 px-5 rounded-md bg-white">

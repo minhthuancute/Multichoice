@@ -6,7 +6,6 @@ import { OrmModule } from '../orm/orm.module';
 import { AuthModule } from '../auth/auth.module';
 import { QuestionModule } from '../question/question.module';
 import { TopicModule } from '../topic/topic.module';
-import { RedisModule } from '../redis/redis.module';
 
 @Module({
   imports: [
@@ -16,7 +15,6 @@ import { RedisModule } from '../redis/redis.module';
     AuthModule,
     QuestionModule,
     TopicModule,
-    RedisModule,
   ],
   controllers: [],
   providers: [],

@@ -33,7 +33,7 @@ const Tests: React.FC = () => {
         </div>
       </div>
 
-      <div className="content-page test-body py-5 bg-slate-100">
+      <div className="content-page test-body pt-5 pb-10 bg-slate-100">
         <div className="container">
           <FilterTests onFilter={onFilter} />
           <TestList searchKeyword={searchKeyword} />

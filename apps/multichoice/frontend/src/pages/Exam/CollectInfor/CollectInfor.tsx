@@ -1,10 +1,11 @@
-import React, { useEffect, useLayoutEffect } from 'react';
+import React, { useEffect } from 'react';
 import Input from '../../../components/Commons/Input/Input';
 import {
   answerStore,
   examStore,
   IAnswers,
-  IInforUserDoExam, userStore,
+  IInforUserDoExam,
+  userStore,
 } from '../../../store/rootReducer';
 import * as yup from 'yup';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -15,14 +16,11 @@ import { iNotification } from 'react-notifications-component';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { examServices } from '../../../services/ExamServices';
-import { IExamResponse, IQuestion } from '../../../types';
+import { IExamDetail, IExamResponse, IQuestion } from '../../../types';
 import { localServices } from '../../../services/LocalServices';
-import {
-  IS_LOGGOUT_CURRENT_USER,
-  START_EXAM,
-  START_TIME,
-  TOKEN,
-} from '../../../constants/contstants';
+import { START_EXAM, START_TIME, TOKEN } from '../../../constants/contstants';
+import { examDetailStore } from '../../../store/Exam/examDetailStore';
+import { TopicTimeTypeEnum } from '@monorepo/multichoice/constant';
 
 const schemaInfor = yup
   .object()
@@ -40,8 +38,9 @@ const CollectInfor: React.FC = () => {
   const { exam_id } = useParams();
 
   const { exam, setExamData } = examStore();
+  const { setExamDetailData } = examDetailStore();
   const { setUserDoexamData, setAnswers } = answerStore();
-  const {user} = userStore();
+  const { user } = userStore();
 
   const {
     register,
@@ -55,6 +54,9 @@ const CollectInfor: React.FC = () => {
     try {
       const { data } = await examServices.getExamInfor(exam_id || '');
       const examInfor: IExamResponse = data;
+      console.log(examInfor.timeType, 'ascjksajckj');
+
+      // const exam
       const initAnswers: IAnswers[] = examInfor.questions.map(
         (questions: IQuestion) => {
           const tempArr: IAnswers = {
@@ -64,8 +66,22 @@ const CollectInfor: React.FC = () => {
           return tempArr;
         }
       );
+      // const examDetail: IExamDetail = examInfor
+      const examDetail: IExamDetail = (({ questions, ...rest }) => rest)(
+        examInfor
+      );
       setAnswers(initAnswers);
       setExamData(data);
+      setExamDetailData(examDetail);
+
+      const shouldNavPageLogin =
+        examInfor.timeType === TopicTimeTypeEnum.REALTIME &&
+        !localServices.getData(TOKEN);
+
+      if (shouldNavPageLogin) {
+        navigate(`/login?redirect=${exam_id}`);
+        return;
+      }
     } catch {
       //
     }
@@ -90,19 +106,21 @@ const CollectInfor: React.FC = () => {
   };
 
   useEffect(() => {
-    localServices.setData(START_EXAM, false);
-    localServices.clearItem(START_TIME);
-    getExamInfor();
-  }, []);
-
-  useEffect(() => {
-    if (Object.keys(user).length) {
+    const canNavigate = exam.timeType !== TopicTimeTypeEnum.REALTIME;
+    if (Object.keys(user).length && canNavigate) {
       setUserDoexamData({
         user_name: user.username,
       } as IInforUserDoExam);
       const urlNavigate = '/e/' + exam_id + '/do-exam';
       navigate(urlNavigate);
     }
+  }, []);
+
+  useEffect(() => {
+    getExamInfor();
+
+    localServices.setData(START_EXAM, false);
+    localServices.clearItem(START_TIME);
   }, []);
 
   return (
