@@ -89,6 +89,9 @@ export class ResultUserDto {
   @ApiProperty()
   userID: number;
 
+  @ApiProperty()
+  url: string;
+
   @ApiProperty({ type: [AnswersUserDto] })
   answerUsers: AnswersUserDto[];
 }
@@ -127,4 +130,11 @@ export interface Answer {
   id: number;
   content: string;
   isCorrect: boolean;
+}
+export class ResultUserExamRealtimeDto {
+  @ApiProperty()
+  url: string;
+
+  @ApiProperty({ type: [AnswersUserDto] })
+  answerUsers: AnswersUserDto[];
 }

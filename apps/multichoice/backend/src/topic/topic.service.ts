@@ -16,6 +16,7 @@ import { User } from '../user/entities/user.entity';
 import { Question } from '../question/entities/question.entity';
 import { UserService } from '../user/user.service';
 import { GConfig } from '../config/gconfig';
+import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 
 @Injectable()
 export class TopicService {
@@ -134,14 +135,38 @@ export class TopicService {
     const result = await this.topicRepository.findOne({
       where: {
         id,
-        questions: {
-          answers: {
-            isCorrect: true,
-          },
-        },
       },
       relations: ['questions', 'questions.answers'],
     });
-    return result;
+
+    if (!result) throw new BadRequestException(GConfig.TOPIC_NOT_FOUND);
+
+    return this.filterAnswerIsCorrect(result);
+  }
+
+  private filterAnswerIsCorrect(topic: Topic): Topic {
+    for (let i = 0; i < topic.questions.length; i++) {
+      if (topic.questions[i].type.endsWith(QuestionTypeEnum.TEXT)) {
+        delete topic.questions[i];
+      } else {
+        for (let j = 0; j < topic.questions[i].answers.length; j++) {
+          if (!topic.questions[i].answers[j].isCorrect) {
+            delete topic.questions[i].answers[j];
+          }
+        }
+      }
+    }
+    return topic;
+  }
+
+  async getIsCorrectByUrl(url: string): Promise<Topic> {
+    const result = await this.topicRepository.findOne({
+      where: {
+        url,
+      },
+      relations: ['questions', 'questions.answers'],
+    });
+    if (!result) throw new BadRequestException(GConfig.TOPIC_NOT_FOUND);
+    return this.filterAnswerIsCorrect(result);
   }
 }

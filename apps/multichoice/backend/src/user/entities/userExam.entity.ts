@@ -14,7 +14,7 @@ export class UserExam extends Timestamp {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({default: null})
+  @Column({ default: null })
   username: string;
 
   @Column({ type: 'bigint', default: 0 })

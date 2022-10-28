@@ -9,10 +9,10 @@ import {
 } from 'firebase/database';
 import { db } from '../firebase';
 
-export const fireGet =  (path: string, cb: (data: unknown) => void) => {
+export const fireGet = (path: string, cb: (data: unknown) => void) => {
   onValue(ref(db, path), (snapshot) => {
     const data = snapshot.val();
-    cb(data)
+    cb(data);
   });
 };
 

@@ -17,8 +17,15 @@ export class FirebaseService {
   public fireGet(path: string, cb: (data: unknown) => void) {
     onValue(ref(this.db, path), (snapshot) => {
       const data = snapshot.val();
-
       cb(data);
+    });
+  }
+
+  get(path: string) {
+    return new Promise((resolve, reject) => {
+      this.fireGet(path, (data) => {
+        resolve(data);
+      });
     });
   }
 }
