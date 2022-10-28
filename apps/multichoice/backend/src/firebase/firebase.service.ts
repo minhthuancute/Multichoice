@@ -24,7 +24,6 @@ export class FirebaseService {
   get(path: string) {
     return new Promise((resolve, reject) => {
       this.fireGet(path, (data) => {
-        // console.log(data);
         resolve(data);
       });
     });

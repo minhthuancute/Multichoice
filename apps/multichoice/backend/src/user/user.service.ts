@@ -24,6 +24,7 @@ import { UserExam } from './entities/userExam.entity';
 import { UserAnswer } from './entities/userAnswer.entity';
 import { SucessResponse } from '../model/SucessResponse';
 import {
+  firebasePath,
   QuestionTypeEnum,
   TopicTimeTypeEnum,
 } from '@monorepo/multichoice/constant';
@@ -195,7 +196,7 @@ export class UserService {
     const exam: UserExam = new UserExam();
 
     const dataFirebase: realtimeExam = (await this.firebaseService.get(
-      `${configuration().path_realtime_exam}-${resultUserRealTimeDto.url}`
+      `${firebasePath}-${resultUserRealTimeDto.url}`
     )) as realtimeExam;
 
     if (dataFirebase && dataFirebase.started) {
@@ -353,7 +354,7 @@ export class UserService {
   async checkTopicRealTime(topic: Topic) {
     if (topic.timeType === TopicTimeTypeEnum.REALTIME) {
       const checkRealTimeExam: realtimeExam = (await this.firebaseService.get(
-        `${configuration().path_realtime_exam}-${topic.url}`
+        `${firebasePath}-${topic.url}`
       )) as realtimeExam;
 
       if (!checkRealTimeExam || !checkRealTimeExam.started) {
