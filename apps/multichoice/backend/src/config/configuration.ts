@@ -30,5 +30,4 @@ export default () => ({
     appId: process.env.APPID,
     measurementId: process.env.MEASUREMENTID,
   },
-  path_realtime_exam: process.env.PATH_FIREBASE_EXAM,
 });

@@ -24,6 +24,7 @@ import {
 } from '../../constants/msgNotify';
 import { fireGet, fireUpdate } from '../../utils/firebase_utils';
 import HandlelayTest from './HandlePlayTest';
+import { firebasePath } from '@monorepo/multichoice/constant';
 
 export interface ITestItem {
   topicUrl: string;
@@ -71,7 +72,7 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
   };
 
   useEffect(() => {
-    const testPath: string = 'test-' + test.topicUrl;
+    const testPath: string = `${firebasePath}-` + test.topicUrl;
     fireGet(testPath, (data: any) => {
       const recordValue: ITestRealtimeRecord = data;
       const shouldExpriedTest =
@@ -85,6 +86,17 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
         setStartedTestRealtime(false);
       }
     });
+    // const dev = setInterval(() => {
+    //   const shouldExpriedTest =
+    //     new Date().getTime() > +time + +test?.expirationTime;
+    //   if (shouldExpriedTest) {
+    //     fireDelete(testPath);
+    //     setStartedTestRealtime(false);
+    //   }
+    // }, 1000);
+    // return () => {
+    //   clearInterval(dev);
+    // };
   }, []);
 
   useEffect(() => {

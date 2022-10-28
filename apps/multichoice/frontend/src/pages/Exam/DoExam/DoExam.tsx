@@ -1,4 +1,7 @@
-import { TopicTimeTypeEnum } from '@monorepo/multichoice/constant';
+import {
+  firebasePath,
+  TopicTimeTypeEnum,
+} from '@monorepo/multichoice/constant';
 import React, { useEffect, useLayoutEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import HeaderDoExam from '../../../components/DoExam/HeaderDoExam';
@@ -14,6 +17,7 @@ import {
   IPayloadStartExam,
 } from '../../../services/ExamServices';
 import { localServices } from '../../../services/LocalServices';
+import { examDetailStore } from '../../../store/Exam/examDetailStore';
 import { loadingRealtimeStore } from '../../../store/Loading/Loadingrealtime';
 import {
   answerStore,
@@ -27,13 +31,15 @@ const DoExam: React.FC = () => {
   const navigate = useNavigate();
   const { exam_id } = useParams();
   const { exam, setExamData, setIsSubmitExam, setIsExpriedExam } = examStore();
+  const { setExamDetailData } = examDetailStore();
   const { userDoExam, setUserDoexamData } = answerStore();
   const { isLoadingRealtime } = loadingRealtimeStore();
 
   const getExamInfor = async () => {
-    console.log(exam);
-
-    if (Object.keys(exam).length && exam.questions) {
+    if (
+      (Object.keys(exam).length && exam.questions) ||
+      exam.timeType === TopicTimeTypeEnum.REALTIME
+    ) {
       return;
     }
     try {
@@ -41,6 +47,7 @@ const DoExam: React.FC = () => {
       if (status === 200) {
         setExamData(data);
         startExam(data.id);
+        setExamDetailData(data);
       }
     } catch {
       //
@@ -83,7 +90,6 @@ const DoExam: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const emptyusername = userDoExam.user_name;
     const shouldNavPageLogin =
       exam.timeType === TopicTimeTypeEnum.REALTIME &&
       !localServices.getData(TOKEN);
@@ -91,9 +97,6 @@ const DoExam: React.FC = () => {
     if (shouldNavPageLogin) {
       navigate(`/login?redirect=${exam_id}`);
     }
-    // else if (!emptyusername) {
-    //   navigate('/e/' + exam_id);
-    // }
     return () => {
       localServices.setData(START_EXAM, false);
       localServices.clearItem(START_TIME);
@@ -102,7 +105,7 @@ const DoExam: React.FC = () => {
   }, [exam.timeType]);
 
   useEffect(() => {
-    const testPath: string = 'test-' + exam_id;
+    const testPath: string = `${firebasePath}-` + exam_id;
 
     const onValueFirebase = () => {
       fireGet(testPath, async (data: any) => {

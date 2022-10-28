@@ -16,9 +16,14 @@ import { iNotification } from 'react-notifications-component';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { examServices } from '../../../services/ExamServices';
-import { IExamDetail, IExamResponse, IQuestion } from '../../../types';
+import { IExamResponse, IQuestion } from '../../../types';
 import { localServices } from '../../../services/LocalServices';
-import { START_EXAM, START_TIME, TOKEN } from '../../../constants/contstants';
+import {
+  IS_SUBMIT_EXAM,
+  START_EXAM,
+  START_TIME,
+  TOKEN,
+} from '../../../constants/contstants';
 import { examDetailStore } from '../../../store/Exam/examDetailStore';
 import { TopicTimeTypeEnum } from '@monorepo/multichoice/constant';
 
@@ -133,6 +138,7 @@ const CollectInfor: React.FC = () => {
   useEffect(() => {
     getExamInfor();
 
+    localServices.setData(IS_SUBMIT_EXAM, false);
     localServices.setData(START_EXAM, false);
     localServices.clearItem(START_TIME);
   }, []);
