@@ -1,4 +1,4 @@
-import { CreateTopicDto } from '@monorepo/multichoice/dto';
+import { CreateTopicDto, PageDto } from '@monorepo/multichoice/dto';
 import {
   Body,
   Controller,
@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   Res,
   UseGuards,
@@ -36,8 +37,12 @@ export class TopicController {
   @UseGuards(AuthenticationGuard)
   @Get('/all')
   @ApiBearerAuth()
-  async getTopicAll(@Req() req, @Res() res): Promise<Topic[]> {
-    const result = await this.topicService.findAllTopics(req.user);
+  async getTopicAll(
+    @Query() pageDto: PageDto,
+    @Req() req,
+    @Res() res
+  ): Promise<Topic[]> {
+    const result = await this.topicService.findAllTopics(pageDto, req.user);
     return res.status(200).json(new SucessResponse(200, result));
   }
 
