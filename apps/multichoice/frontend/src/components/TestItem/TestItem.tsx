@@ -43,6 +43,7 @@ interface ITestItemProp {
 }
 
 const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
+  const isrealtime = test.timeType.toUpperCase() === 'REALTIME';
   const [modalHandlePlayTest, setModalHandlePlayTest] =
     useState<boolean>(false);
   const [startedTestRealtime, setStartedTestRealtime] =
@@ -51,7 +52,7 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
 
   const examUrl = (): string => {
     const host = window.location.origin + '/e/';
-    return host + test.topicUrl;
+    return host + test.topicUrl + (isrealtime ? '/do-exam-realtime' : '');
   };
 
   const onCopyClipboard = () => {
@@ -210,7 +211,14 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
             {test.questionCount === 0 ? (
               <p>Bộ đề chưa có câu hỏi nào. Hãy thêm câu hỏi cho bộ đề</p>
             ) : (
-              <Link to={'/e/' + test.topicUrl} target="_blank">
+              <Link
+                to={
+                  '/e/' +
+                  test.topicUrl +
+                  (isrealtime ? '/do-exam-realtime' : '')
+                }
+                target="_blank"
+              >
                 {examUrl()}
               </Link>
             )}

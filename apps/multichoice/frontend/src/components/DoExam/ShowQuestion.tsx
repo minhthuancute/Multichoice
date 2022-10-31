@@ -2,11 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { BiSkipNext, BiSkipPrevious } from 'react-icons/bi';
 import { iNotification } from 'react-notifications-component';
 import { notify } from '../../helper/notify';
-import {
-  examServices,
-  IPayloadEndExam,
-  IPayloadEndExamRealtime,
-} from '../../services/ExamServices';
+import { examServices, IPayloadEndExam } from '../../services/ExamServices';
 import { answerStore, examStore, IAnswers } from '../../store/rootReducer';
 import { IAnswer } from '../../types';
 import ExamResult from './ExamResult';
@@ -17,10 +13,7 @@ import { IS_SUBMIT_EXAM, START_TIME } from '../../constants/contstants';
 import { classNames } from '../../helper/classNames';
 import ToolTip from '../Commons/ToolTip/ToolTip';
 import PolaCode from '../PolaCode/PolaCode';
-import {
-  QuestionTypeEnum,
-  TopicTimeTypeEnum,
-} from '@monorepo/multichoice/constant';
+import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 import { QuestionType } from '../../types/ICommons';
 
 import {
@@ -32,7 +25,6 @@ import {
 
 import TextArea from '../Commons/TextArea/TextArea';
 import './doExam.scss';
-import { useParams } from 'react-router-dom';
 
 interface IExamResult {
   user_name: string;
@@ -52,8 +44,6 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
   startTimeCountdown = 0,
   expriedCountdownRealtime = false,
 }) => {
-  const { exam_id } = useParams();
-
   const {
     exam: { questions },
     setDataExamResult,
@@ -120,15 +110,8 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
         userID: userDoExam.user_id,
         answerUsers: answers,
       };
-      const payloadRealtime: IPayloadEndExamRealtime = {
-        userID: userDoExam.user_id,
-        answerUsers: answers,
-        url: exam_id || '',
-      };
-      const isRealtimeTest = exam.timeType === TopicTimeTypeEnum.FIXEDTIME;
-      const { data } = isRealtimeTest
-        ? await examServices.submitExam(payload)
-        : await examServices.submitExamRealtime(payloadRealtime);
+
+      const { data } = await examServices.submitExam(payload);
 
       if (data.success) {
         setExamResult({

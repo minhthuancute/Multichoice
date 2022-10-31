@@ -22,10 +22,8 @@ import {
   IS_SUBMIT_EXAM,
   START_EXAM,
   START_TIME,
-  TOKEN,
 } from '../../../constants/contstants';
 import { examDetailStore } from '../../../store/Exam/examDetailStore';
-import { TopicTimeTypeEnum } from '@monorepo/multichoice/constant';
 
 const schemaInfor = yup
   .object()
@@ -56,8 +54,7 @@ const CollectInfor: React.FC = () => {
   });
 
   const navigateDoExam = () => {
-    const canNavigate = exam.timeType !== TopicTimeTypeEnum.REALTIME;
-    if (Object.keys(user).length && canNavigate) {
+    if (Object.keys(user).length) {
       setUserDoexamData({
         user_name: user.username,
       } as IInforUserDoExam);
@@ -69,16 +66,6 @@ const CollectInfor: React.FC = () => {
   const getExamInfor = async () => {
     try {
       const { data } = await examServices.getExamInfor(exam_id || '');
-
-      const shouldNavPageLogin =
-        data.timeType === TopicTimeTypeEnum.REALTIME &&
-        !localServices.getData(TOKEN);
-
-      if (shouldNavPageLogin) {
-        navigate(`/login?redirect=${exam_id}`);
-        return;
-      }
-
       const examInfor: IExamResponse = data;
       const examDetail = examInfor;
 
@@ -125,8 +112,7 @@ const CollectInfor: React.FC = () => {
   };
 
   useEffect(() => {
-    const canNavigate = exam.timeType !== TopicTimeTypeEnum.REALTIME;
-    if (Object.keys(user).length && canNavigate) {
+    if (Object.keys(user).length) {
       setUserDoexamData({
         user_name: user.username,
       } as IInforUserDoExam);
