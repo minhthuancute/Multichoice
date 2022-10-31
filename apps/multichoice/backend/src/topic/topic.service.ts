@@ -1,4 +1,4 @@
-import { CreateTopicDto } from '@monorepo/multichoice/dto';
+import { CreateTopicDto, PageDto } from '@monorepo/multichoice/dto';
 import {
   BadRequestException,
   forwardRef,
@@ -108,12 +108,14 @@ export class TopicService {
     return true;
   }
 
-  async findAllTopics(user: User): Promise<Topic[]> {
+  async findAllTopics(pageDto: PageDto, user: User): Promise<Topic[]> {
     const result = await this.topicRepository
       .createQueryBuilder('topic')
       .where('topic.ownerId = :owner', { owner: user.id })
       .leftJoin('topic.questions', 'questions')
       .loadRelationCountAndMap('topic.questionsCount', 'topic.questions')
+      .skip(pageDto.page)
+      .take(pageDto.limit)
       .getMany();
     return result;
   }
