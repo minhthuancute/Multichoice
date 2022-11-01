@@ -52,7 +52,9 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
 
   const examUrl = (): string => {
     const host = window.location.origin + '/e/';
-    return host + test.topicUrl + (isrealtime ? '/do-exam-realtime' : '');
+    return (
+      host + test.topicUrl + (isrealtime ? '/do-exam-realtime' : '/do-exam')
+    );
   };
 
   const onCopyClipboard = () => {
@@ -215,7 +217,7 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
                 to={
                   '/e/' +
                   test.topicUrl +
-                  (isrealtime ? '/do-exam-realtime' : '')
+                  (isrealtime ? '/do-exam-realtime' : '/do-exam')
                 }
                 target="_blank"
               >

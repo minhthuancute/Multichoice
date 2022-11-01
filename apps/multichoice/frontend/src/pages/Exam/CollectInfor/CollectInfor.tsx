@@ -69,7 +69,6 @@ const CollectInfor: React.FC = () => {
       const examInfor: IExamResponse = data;
       const examDetail = examInfor;
 
-      // const exam
       const initAnswers: IAnswers[] = examInfor.questions.map(
         (questions: IQuestion) => {
           const tempArr: IAnswers = {
@@ -112,13 +111,13 @@ const CollectInfor: React.FC = () => {
   };
 
   useEffect(() => {
-    if (Object.keys(user).length) {
-      setUserDoexamData({
-        user_name: user.username,
-      } as IInforUserDoExam);
-      const urlNavigate = '/e/' + exam_id + '/do-exam';
-      navigate(urlNavigate);
-    }
+    // if (Object.keys(user).length) {
+    //   setUserDoexamData({
+    //     user_name: user.username,
+    //   } as IInforUserDoExam);
+    //   const urlNavigate = '/e/' + exam_id + '/do-exam';
+    //   navigate(urlNavigate);
+    // }
   }, []);
 
   useEffect(() => {

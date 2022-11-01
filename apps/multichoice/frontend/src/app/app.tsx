@@ -68,7 +68,7 @@ export const App: React.FC = () => {
             path=":exam_id/do-exam-realtime"
             element={<DoExamRealtime />}
           />
-          <Route path=":exam_id" element={<CollectInfor />} />
+          {/* <Route path=":exam_id" element={<CollectInfor />} /> */}
           <Route path=":exam_id/do-exam" element={<DoExam />} />
         </Route>
 

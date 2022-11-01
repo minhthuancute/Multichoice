@@ -1,24 +1,24 @@
-import {
-  firebasePath,
-  TopicTimeTypeEnum,
-} from '@monorepo/multichoice/constant';
+import { firebasePath } from '@monorepo/multichoice/constant';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import DoExamSkelenton from '../../pages/Exam/DoExam/DoExamSkelenton';
 import { examDetailStore } from '../../store/Exam/examDetailStore';
 import { loadingRealtimeStore } from '../../store/Loading/Loadingrealtime';
+import { IExamResponse } from '../../types';
 import { ITestRealtimeRecord } from '../../types/ICommons';
 import { fireGet } from '../../utils/firebase_utils';
 import NavQuestion from './NavQuestion';
 import ShowQuestion from './ShowQuestion';
 
-const MainDoExam: React.FC = () => {
+interface IMainDoExamProps {
+  examData?: IExamResponse;
+}
+
+const MainDoExam: React.FC<IMainDoExamProps> = ({ examData }) => {
   const { exam_id } = useParams();
   const { examDetail } = examDetailStore();
   const { setLoadingRealtime } = loadingRealtimeStore();
 
   const [indexQuestion, setIndexQuestion] = useState<number>(0);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [expriedCountdownRealtime, setExpriedCountdownRealtime] =
     useState<boolean>(false);
   const [startTimeCountdown, setStartTimeCountdown] = useState<number>(0);
@@ -41,10 +41,8 @@ const MainDoExam: React.FC = () => {
             : setStartTimeCountdown(+recordValue.startTime);
 
           setExpriedCountdownRealtime(shouldExpriedTest);
-          setIsLoading(false);
           setLoadingRealtime(false);
         } else {
-          setIsLoading(true);
           setLoadingRealtime(true);
         }
       });
@@ -52,9 +50,7 @@ const MainDoExam: React.FC = () => {
     onValueFirebase();
   }, []);
 
-  return isLoading && examDetail.timeType === TopicTimeTypeEnum.REALTIME ? (
-    <DoExamSkelenton />
-  ) : (
+  return (
     <div
       className="main-doexam"
       style={{

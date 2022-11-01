@@ -11,7 +11,6 @@ import {
   answerStore,
   examStore,
   IInforUserDoExam,
-  loadingStore,
   userStore,
 } from '../../store/rootReducer';
 import ExamResult from './ExamResult';
@@ -77,6 +76,7 @@ const HeaderDoExam: React.FC = () => {
       />
       <ModalConfirm
         isOpen={openModalConfirmExit}
+        label="Thoát khỏi bài thi"
         title="Bạn có chắc chắn muốn thoát khỏi bài thi?
         Khi thoát khỏi bài thi, kết quả thi của bạn sẽ không được lưu lại."
         onClose={() => setOpenModalConfirmExit(false)}

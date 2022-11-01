@@ -1,16 +1,11 @@
-import {
-  firebasePath,
-  TopicTimeTypeEnum,
-} from '@monorepo/multichoice/constant';
 import React, { useEffect, useLayoutEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import HeaderDoExam from '../../../components/DoExam/HeaderDoExam';
 import MainDoExam from '../../../components/DoExam/MainDoExam';
 import {
   IS_SUBMIT_EXAM,
   START_EXAM,
   START_TIME,
-  TOKEN,
 } from '../../../constants/contstants';
 import {
   examServices,
@@ -18,30 +13,19 @@ import {
 } from '../../../services/ExamServices';
 import { localServices } from '../../../services/LocalServices';
 import { examDetailStore } from '../../../store/Exam/examDetailStore';
-import { loadingRealtimeStore } from '../../../store/Loading/Loadingrealtime';
 import {
   answerStore,
   examStore,
   IInforUserDoExam,
 } from '../../../store/rootReducer';
-import { ITestRealtimeRecord } from '../../../types/ICommons';
-import { fireGet } from '../../../utils/firebase_utils';
 
 const DoExam: React.FC = () => {
-  const navigate = useNavigate();
   const { exam_id } = useParams();
-  const { exam, setExamData, setIsSubmitExam, setIsExpriedExam } = examStore();
+  const { setExamData } = examStore();
   const { setExamDetailData } = examDetailStore();
   const { userDoExam, setUserDoexamData } = answerStore();
-  const { isLoadingRealtime } = loadingRealtimeStore();
 
   const getExamInfor = async () => {
-    if (
-      (Object.keys(exam).length && exam.questions) ||
-      exam.timeType === TopicTimeTypeEnum.REALTIME
-    ) {
-      return;
-    }
     try {
       const { data, status } = await examServices.getExamInfor(exam_id || '');
       if (status === 200) {
@@ -55,15 +39,10 @@ const DoExam: React.FC = () => {
   };
 
   const startExam = async (id: number) => {
-    const canStartExam: boolean =
-      localServices.getData(START_EXAM) === false && !isLoadingRealtime;
+    const canStartExam: boolean = localServices.getData(START_EXAM) === false;
 
     if (canStartExam) {
       localServices.setData(IS_SUBMIT_EXAM, false);
-
-      setIsExpriedExam(false);
-      setIsSubmitExam(false);
-
       localServices.setData(START_EXAM, true);
       try {
         const payload: IPayloadStartExam = {
@@ -90,45 +69,12 @@ const DoExam: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const shouldNavPageLogin =
-      exam.timeType === TopicTimeTypeEnum.REALTIME &&
-      !localServices.getData(TOKEN);
+    getExamInfor();
 
-    if (shouldNavPageLogin) {
-      navigate(`/login?redirect=${exam_id}`);
-    }
     return () => {
       localServices.setData(START_EXAM, false);
       localServices.clearItem(START_TIME);
-      setIsSubmitExam(false);
     };
-  }, [exam.timeType]);
-
-  useEffect(() => {
-    const testPath: string = `${firebasePath}-` + exam_id;
-
-    const onValueFirebase = () => {
-      fireGet(testPath, async (data: any) => {
-        const recordValue: ITestRealtimeRecord = data;
-        if (recordValue?.started && !exam.questions) {
-          try {
-            const { data, status } = await examServices.getExamInfor(
-              exam_id || ''
-            );
-            if (status === 200) {
-              setExamData(data);
-            }
-          } catch {
-            //
-          }
-        }
-      });
-    };
-    onValueFirebase();
-  }, []);
-
-  useEffect(() => {
-    getExamInfor();
   }, []);
 
   return (

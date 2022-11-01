@@ -1,5 +1,5 @@
 import { firebasePath } from '@monorepo/multichoice/constant';
-import React, { useEffect, useLayoutEffect } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import HeaderDoExam from '../../../components/DoExam/HeaderDoExam';
 import MainDoExam from '../../../components/DoExam/MainDoExam';
@@ -14,7 +14,6 @@ import {
   IPayloadStartExam,
 } from '../../../services/ExamServices';
 import { localServices } from '../../../services/LocalServices';
-import { loadingRealtimeStore } from '../../../store/Loading/Loadingrealtime';
 import {
   answerStore,
   examStore,
@@ -22,17 +21,19 @@ import {
 } from '../../../store/rootReducer';
 import { ITestRealtimeRecord } from '../../../types/ICommons';
 import { fireGet } from '../../../utils/firebase_utils';
+import DoExamSkelenton from './DoExamSkelenton';
 
 const DoExamRealtime: React.FC = () => {
   const navigate = useNavigate();
   const { exam_id } = useParams();
   const { exam, setExamData, setIsSubmitExam, setIsExpriedExam } = examStore();
   const { userDoExam, setUserDoexamData } = answerStore();
-  const { isLoadingRealtime } = loadingRealtimeStore();
+
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const startExam = async (id: number) => {
     const canStartExam: boolean =
-      localServices.getData(START_EXAM) === false && !isLoadingRealtime;
+      localServices.getData(START_EXAM) === false && !isLoading;
 
     if (canStartExam) {
       localServices.setData(IS_SUBMIT_EXAM, false);
@@ -85,6 +86,7 @@ const DoExamRealtime: React.FC = () => {
     const onValueFirebase = () => {
       fireGet(testPath, async (data: any) => {
         const recordValue: ITestRealtimeRecord = data;
+        setIsLoading(!recordValue.started);
         if (recordValue?.started && !exam.questions) {
           try {
             const { data, status } = await examServices.getExamInfor(
@@ -106,7 +108,7 @@ const DoExamRealtime: React.FC = () => {
   return (
     <div className="h-max relative">
       <HeaderDoExam />
-      <MainDoExam />
+      {isLoading ? <DoExamSkelenton /> : <MainDoExam />}
     </div>
   );
 };

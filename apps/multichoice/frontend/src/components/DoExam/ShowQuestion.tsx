@@ -210,10 +210,10 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
               className={classNames(
                 `px-6 py-2.5 bg-primary-800 rounded-md text-sm
             text-white flex items-center mb-4 font-semibold
-            focus:ring-blue-100 focus:ring`,
-                {
-                  hidden: isSubmitExam || localServices.getData(IS_SUBMIT_EXAM),
-                }
+            focus:ring-blue-100 focus:ring`
+                // {
+                //   hidden: isSubmitExam || localServices.getData(IS_SUBMIT_EXAM),
+                // }
               )}
               onClick={() => requestSubmit()}
             >
