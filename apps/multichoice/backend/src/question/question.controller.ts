@@ -22,6 +22,7 @@ import { SucessResponse } from '../model/SucessResponse';
 import { AuthenticationGuard } from '../auth/guards/auth.guard';
 import { multerOptions } from '../uploads/upload';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { GConfig } from '../config/gconfig';
 
 @Controller('question')
 @ApiTags('question')
@@ -39,8 +40,8 @@ export class QuestionController {
     @UploadedFiles() files,
     @Res() res
   ): Promise<SucessResponse> {
-    const result = await this.questionService.create(createQuestionDto, files);
-    return res.status(201).json(result);
+    await this.questionService.create(createQuestionDto, files);
+    return res.status(201).json(new SucessResponse(201, GConfig.SUCESS));
   }
 
   @UseGuards(AuthenticationGuard)
@@ -72,12 +73,7 @@ export class QuestionController {
     @Res() res,
     @Req() req
   ): Promise<SucessResponse> {
-    const result = await this.questionService.update(
-      id,
-      updateQuestionDto,
-      files,
-      req.user
-    );
-    return res.status(200).json(result);
+    await this.questionService.update(id, updateQuestionDto, files, req.user);
+    return res.status(200).json(new SucessResponse(200, GConfig.SUCESS));
   }
 }

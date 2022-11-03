@@ -131,10 +131,19 @@ export interface Answer {
   content: string;
   isCorrect: boolean;
 }
-export class ResultUserExamRealtimeDto {
-  @ApiProperty()
-  url: string;
 
-  @ApiProperty({ type: [AnswersUserDto] })
-  answerUsers: AnswersUserDto[];
+export class IUserExam {
+  public username: string;
+  public point: number;
+  public time: number;
+  constructor(
+    username: string,
+    point: number,
+    startTime: number,
+    endTime: number
+  ) {
+    this.username = username;
+    this.point = point;
+    this.time = endTime - startTime;
+  }
 }

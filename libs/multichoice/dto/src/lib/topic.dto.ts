@@ -26,11 +26,3 @@ export class CreateTopicDto {
   @ApiProperty()
   expirationTime: number;
 }
-
-export class PageDto {
-  @ApiProperty({ default: 0, required: false })
-  page: number;
-
-  @ApiProperty({ default: 10, required: false })
-  limit: number;
-}
