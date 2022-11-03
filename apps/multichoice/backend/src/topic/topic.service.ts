@@ -1,4 +1,9 @@
-import { CreateTopicDto, PageDto } from '@monorepo/multichoice/dto';
+import {
+  CreateTopicDto,
+  PageDto,
+  PageMetaDto,
+  PageOptionsDto,
+} from '@monorepo/multichoice/dto';
 import {
   BadRequestException,
   forwardRef,
@@ -8,8 +13,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
-import { Repository } from 'typeorm';
-import { SucessResponse } from '../model/SucessResponse';
+import { Repository, UpdateResult } from 'typeorm';
 import { Topic } from '../question/entities/topic.entity';
 import { User } from '../user/entities/user.entity';
 
@@ -39,12 +43,12 @@ export class TopicService {
     }
   }
 
-  async create(topic: CreateTopicDto, user: User): Promise<SucessResponse> {
+  async create(topic: CreateTopicDto, user: User): Promise<Topic> {
     const topicEntity: Topic = plainToClass(Topic, topic);
     topicEntity.owner = user;
 
     const result = await this.topicRepository.save(topicEntity);
-    return new SucessResponse(201, result);
+    return result;
   }
 
   async fineOneByID(id: number): Promise<Topic> {
@@ -108,29 +112,36 @@ export class TopicService {
     return true;
   }
 
-  async findAllTopics(pageDto: PageDto, user: User): Promise<Topic[]> {
+  async findAllTopics(
+    pageOptionsDto: PageOptionsDto,
+    user: User
+  ): Promise<PageDto<Topic>> {
     const result = await this.topicRepository
       .createQueryBuilder('topic')
       .where('topic.ownerId = :owner', { owner: user.id })
       .leftJoin('topic.questions', 'questions')
       .loadRelationCountAndMap('topic.questionsCount', 'topic.questions')
-      .skip(pageDto.page)
-      .take(pageDto.limit)
+      .skip((pageOptionsDto.page - 1) * pageOptionsDto.take)
+      .take(pageOptionsDto.take)
       .getMany();
-    return result;
+    const itemCount = await this.topicRepository
+      .createQueryBuilder('topic')
+      .getCount();
+    const pageMetaDto = new PageMetaDto({ pageOptionsDto, itemCount });
+    return new PageDto(result, pageMetaDto);
   }
 
   async update(
     id: number,
     topic: CreateTopicDto,
     user: User
-  ): Promise<SucessResponse> {
+  ): Promise<UpdateResult> {
     const topicEntity: Topic = plainToClass(Topic, topic);
     const result = await this.topicRepository.update(
       { id, owner: user },
       topicEntity
     );
-    return new SucessResponse(200, result);
+    return result;
   }
 
   async getIsCorrectByTopicID(id: number): Promise<Topic> {
