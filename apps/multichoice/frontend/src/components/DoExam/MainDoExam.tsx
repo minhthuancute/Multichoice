@@ -3,20 +3,18 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { examDetailStore } from '../../store/Exam/examDetailStore';
 import { loadingRealtimeStore } from '../../store/Loading/Loadingrealtime';
-import { IExamResponse } from '../../types';
+import { examStore } from '../../store/rootReducer';
 import { ITestRealtimeRecord } from '../../types/ICommons';
 import { fireGet } from '../../utils/firebase_utils';
 import NavQuestion from './NavQuestion';
 import ShowQuestion from './ShowQuestion';
 
-interface IMainDoExamProps {
-  examData?: IExamResponse;
-}
-
-const MainDoExam: React.FC<IMainDoExamProps> = ({ examData }) => {
+const MainDoExam: React.FC = () => {
   const { exam_id } = useParams();
   const { examDetail } = examDetailStore();
-  const { setLoadingRealtime } = loadingRealtimeStore();
+  const { exam } = examStore();
+
+  const [loadingRealtime, setLoadingRealtime] = useState<boolean>(false);
 
   const [indexQuestion, setIndexQuestion] = useState<number>(0);
   const [expriedCountdownRealtime, setExpriedCountdownRealtime] =
@@ -28,17 +26,20 @@ const MainDoExam: React.FC<IMainDoExamProps> = ({ examData }) => {
 
     const onValueFirebase = () => {
       fireGet(testPath, (data: any) => {
+        console.log(data);
+
         const recordValue: ITestRealtimeRecord = data;
         if (recordValue?.started) {
           const shouldExpriedTest =
             new Date().getTime() >
-            +recordValue.startTime + +examDetail.expirationTime;
+            +recordValue.startTime + +exam.expirationTime;
 
-          recordValue?.duration
-            ? setStartTimeCountdown(
-                new Date().getTime() - +recordValue?.duration
-              )
-            : setStartTimeCountdown(+recordValue.startTime);
+          setStartTimeCountdown(+recordValue.startTime);
+          // recordValue?.duration
+          //   ? setStartTimeCountdown(
+          //       new Date().getTime() - +recordValue?.duration
+          //     )
+          //   : setStartTimeCountdown(+recordValue.startTime);
 
           setExpriedCountdownRealtime(shouldExpriedTest);
           setLoadingRealtime(false);

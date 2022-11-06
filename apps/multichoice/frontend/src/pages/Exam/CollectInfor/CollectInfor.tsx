@@ -10,11 +10,12 @@ import {
 import * as yup from 'yup';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-
-import { notify } from '../../../helper/notify';
-import { iNotification } from 'react-notifications-component';
-import { useNavigate, useParams } from 'react-router-dom';
-
+import {
+  Navigate,
+  useLocation,
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
 import { examServices } from '../../../services/ExamServices';
 import { IExamResponse, IQuestion } from '../../../types';
 import { localServices } from '../../../services/LocalServices';
@@ -22,8 +23,10 @@ import {
   IS_SUBMIT_EXAM,
   START_EXAM,
   START_TIME,
+  TOKEN,
 } from '../../../constants/contstants';
 import { examDetailStore } from '../../../store/Exam/examDetailStore';
+import { TopicTimeTypeEnum } from '@monorepo/multichoice/constant';
 
 const schemaInfor = yup
   .object()
@@ -33,10 +36,11 @@ const schemaInfor = yup
   .required();
 
 interface IColectInforForm {
-  user_name: string;
+  userName: string;
 }
 
 const CollectInfor: React.FC = () => {
+  const location = useLocation();
   const navigate = useNavigate();
   const { exam_id } = useParams();
 
@@ -53,20 +57,14 @@ const CollectInfor: React.FC = () => {
     resolver: yupResolver(schemaInfor),
   });
 
-  const navigateDoExam = () => {
-    if (Object.keys(user).length) {
-      setUserDoexamData({
-        user_name: user.username,
-      } as IInforUserDoExam);
-      const urlNavigate = '/e/' + exam_id + '/do-exam';
-      navigate(urlNavigate);
-    }
-  };
-
   const getExamInfor = async () => {
     try {
       const { data } = await examServices.getExamInfor(exam_id || '');
       const examInfor: IExamResponse = data;
+      if (examInfor.timeType === TopicTimeTypeEnum.REALTIME) {
+        const urlNavigate = '/e/' + exam_id + '/do-exam-realtime';
+        navigate(urlNavigate);
+      }
       const examDetail = examInfor;
 
       const initAnswers: IAnswers[] = examInfor.questions.map(
@@ -78,47 +76,23 @@ const CollectInfor: React.FC = () => {
           return tempArr;
         }
       );
-      // const examDetail: IExamDetail = (({ questions, ...rest }) => rest)(
-      //   examInfor
-      // );
-
       setAnswers(initAnswers);
       setExamData(data);
       setExamDetailData(examDetail);
-
-      navigateDoExam();
     } catch {
-      //
+      navigate('/');
     }
   };
 
-  const onSubmit: SubmitHandler<IColectInforForm> = async (
+  const onSubmit: SubmitHandler<IColectInforForm> = (
     formData: IColectInforForm
   ) => {
-    try {
-      setUserDoexamData({
-        user_name: formData.user_name,
-      } as IInforUserDoExam);
-
-      const urlNavigate = '/e/' + exam.url + '/do-exam';
-      navigate(urlNavigate);
-    } catch (error) {
-      notify({
-        message: 'Something went wrong !',
-        type: 'danger',
-      } as iNotification);
-    }
+    setUserDoexamData({
+      userName: formData.userName,
+    } as IInforUserDoExam);
+    const urlNavigate = '/e/' + exam.url + '/do-exam';
+    navigate(urlNavigate);
   };
-
-  useEffect(() => {
-    // if (Object.keys(user).length) {
-    //   setUserDoexamData({
-    //     user_name: user.username,
-    //   } as IInforUserDoExam);
-    //   const urlNavigate = '/e/' + exam_id + '/do-exam';
-    //   navigate(urlNavigate);
-    // }
-  }, []);
 
   useEffect(() => {
     getExamInfor();
@@ -128,7 +102,9 @@ const CollectInfor: React.FC = () => {
     localServices.clearItem(START_TIME);
   }, []);
 
-  return (
+  return localServices.getData(TOKEN) ? (
+    <Navigate to={location.pathname + '/do-exam'} />
+  ) : (
     <div className="h-screen flex items-center justify-center bg-doexam py-6">
       <form
         className="max-w-xl lg:max-w-4xl xl:max-w-6xl mx-4 bg-white colect-infor flex items-center
@@ -146,11 +122,11 @@ const CollectInfor: React.FC = () => {
             </div>
             <div className="mt-5 p-4">
               <Input
-                registerField={register('user_name')}
+                registerField={register('userName')}
                 placeholder="Họ và tên"
                 textLabel="Họ và tên người tham gia"
-                isError={Boolean(errors.user_name)}
-                errMessage={errors.user_name?.message}
+                isError={Boolean(errors.userName)}
+                errMessage={errors.userName?.message}
                 isRequired={true}
                 inputSize="md"
                 defaultValue={user.username ?? ''}

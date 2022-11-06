@@ -1,6 +1,5 @@
 import React from 'react';
-import { BiCheckDouble } from 'react-icons/bi';
-import { RiErrorWarningLine } from 'react-icons/ri';
+
 import Modal from '../Modal/Modal';
 
 interface IConfirmSubmitProps {
@@ -29,22 +28,15 @@ const ConfirmSubmit: React.FC<IConfirmSubmitProps> = ({
        bg-white rounded-md py-8"
       >
         <div className="header text-center">
+          <h4 className="text-slate-800 font-semibold text-xl">Nộp Bài</h4>
           {unSelectAnswer > 0 ? (
-            <RiErrorWarningLine className="text-yellow-400 text-5xl mx-auto" />
-          ) : (
-            <BiCheckDouble className="text-green-600 text-5xl mx-auto" />
-          )}
-          <h4 className="mt-4 text-slate-800 font-semibold text-2xl">
-            Nộp bài
-          </h4>
-          {unSelectAnswer > 0 ? (
-            <p className="mt-4 text-slate-800">
+            <p className="mt-4 text-slate-800 font-semibold">
               Bạn còn{' '}
               <span className="font-semibold">{unSelectAnswer} (câu hỏi)</span>{' '}
               chưa chọn đáp án. Bạn có chắc chắn muốn nộp bài ?
             </p>
           ) : (
-            <p className="mt-4 text-slate-800">
+            <p className="mt-4 text-slate-800 font-semibold">
               Bạn có chắc chắn muốn nộp bài?
             </p>
           )}

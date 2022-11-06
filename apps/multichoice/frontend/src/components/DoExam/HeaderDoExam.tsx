@@ -2,7 +2,6 @@ import React, { useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   ANSWERS_EXAM,
-  IS_LOGGOUT_CURRENT_USER,
   START_EXAM,
   START_TIME,
 } from '../../constants/contstants';
@@ -18,19 +17,15 @@ import ModalConfirm from '../Commons/ModalConfirm/ModalConfirm';
 import { classNames } from '../../helper/classNames';
 import { IoMdClose } from 'react-icons/io';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
-import Modal from '../Modal/Modal';
-import Skelenton from '../Commons/Skelenton/Skelenton';
-import { loadingRealtimeStore } from '../../store/Loading/Loadingrealtime';
-import { TopicTimeTypeEnum } from '@monorepo/multichoice/constant';
+import IntroExam from './IntroExam';
 
 const HeaderDoExam: React.FC = () => {
   const sideBarRef = useRef<HTMLDivElement>(null);
 
-  const { exam_id } = useParams();
   const navigate = useNavigate();
+  const { exam_id } = useParams();
   const { exam, setIsSubmitExam, dataExamResult, isSubmitExam } = examStore();
   const { user } = userStore();
-  const { isLoadingRealtime } = loadingRealtimeStore();
   const { userDoExam, setUserDoexamData } = answerStore();
 
   const [openModalIntro, setOpenModalIntro] = useState<boolean>(false);
@@ -43,7 +38,6 @@ const HeaderDoExam: React.FC = () => {
     localServices.clearItem(START_TIME);
     localServices.clearItem(ANSWERS_EXAM);
     localServices.setData(START_EXAM, false);
-    localServices.setData(IS_LOGGOUT_CURRENT_USER, true);
 
     setIsSubmitExam(false);
     setUserDoexamData({} as IInforUserDoExam);
@@ -71,7 +65,6 @@ const HeaderDoExam: React.FC = () => {
       <ExamResult
         setOpenModalResult={setOpenModalResult}
         openModalResult={openModalResult}
-        user_name={dataExamResult?.user_name || ''}
         point={dataExamResult?.point || 0}
       />
       <ModalConfirm
@@ -82,38 +75,11 @@ const HeaderDoExam: React.FC = () => {
         onClose={() => setOpenModalConfirmExit(false)}
         onConfirm={handleExitExam}
       />
-      <Modal
-        openModal={openModalIntro}
-        setOpenModal={setOpenModalIntro}
-        placement="CENTER"
-      >
-        <div
-          className="modal-content px-5 flex flex-col justify-center
-        bg-white rounded-md w-full py-8 text-slate-800"
-        >
-          <h4 className="text-center text-xl font-semibold mb-5">
-            Hướng dẫn làm bài
-          </h4>
-          <p>
-            <span className="font-semibold">+</span> Đề thi chỉ nộp bài một lần
-          </p>
-          <p>
-            <span className="font-semibold">+</span> Không thể nộp bài khi đã
-            hết thời gian
-          </p>
-          <p>
-            <span className="font-semibold">+</span> Bấm "Thoát" để làm lại bài
-            thi
-          </p>
-          <button
-            className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
-            text-white font-bold bg-slate-800 mt-5 ml-auto"
-            onClick={() => setOpenModalIntro(false)}
-          >
-            Đóng
-          </button>
-        </div>
-      </Modal>
+
+      <IntroExam
+        openModalIntro={openModalIntro}
+        setOpenModalIntro={setOpenModalIntro}
+      />
 
       <div
         className={classNames(
@@ -135,19 +101,15 @@ const HeaderDoExam: React.FC = () => {
           </button>
         </div>
         <div className="ctas mt-4 text-sm font-semibold">
-          {isLoadingRealtime && exam.timeType === TopicTimeTypeEnum.REALTIME ? (
-            <Skelenton className="w-32 h-4 bg-slate-300" />
-          ) : (
-            <h3
-              className="topic-title text-white text-lg pb-4
+          <h3
+            className="topic-title text-white text-lg pb-4
               border-b border-slate-50 border-opacity-40"
-            >
-              {exam.title}
-            </h3>
-          )}
+          >
+            {exam.title}
+          </h3>
 
           <p className=" text-white text-tiny mt-4">
-            Hello, {userDoExam.user_name}
+            Hello, {userDoExam.userName}
           </p>
           <button
             className={classNames(
@@ -195,12 +157,7 @@ const HeaderDoExam: React.FC = () => {
             <li className="w-4 h-0.5 bg-slate-600 rounded-md mb-1"></li>
             <li className="w-3 h-0.5 bg-slate-600 rounded-md"></li>
           </ul>
-
-          {isLoadingRealtime && exam.timeType === TopicTimeTypeEnum.REALTIME ? (
-            <Skelenton className="w-32 h-4 bg-slate-300" />
-          ) : (
-            <h3 className="topic-title xs:hidden lg:block">{exam.title}</h3>
-          )}
+          <h3 className="topic-title xs:hidden lg:block">{exam.title}</h3>
         </div>
         <div className="header-right flex items-center text-slate-800 text-sm font-semibold">
           <div className="ctas items-center xs:hidden lg:flex">
@@ -237,7 +194,7 @@ const HeaderDoExam: React.FC = () => {
               Thoát
             </button>
           </div>
-          <p className="ml-4">Hello, {userDoExam.user_name}</p>
+          <p className="ml-4">Hello, {userDoExam.userName}</p>
         </div>
       </div>
     </header>

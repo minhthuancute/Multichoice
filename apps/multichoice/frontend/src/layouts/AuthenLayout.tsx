@@ -26,7 +26,7 @@ const AuthenLayout: React.FC<ILayout> = ({ children }) => {
   return (
     <div className="layout-authen min-h-screen bg-authen bg-no-repeat bg-center">
       <HeaderAuthen />
-      <main className="max-w-lg xs:pt-12 md:pt-8 pb-24 px-4 mx-auto">
+      <main className="max-w-lg py-8 px-4 mx-auto">
         {children}
         <div className="text-center xs:block md:hidden mt-10">
           {isLoginPage ? (

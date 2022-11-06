@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import HeaderDoExam from '../../../components/DoExam/HeaderDoExam';
 import MainDoExam from '../../../components/DoExam/MainDoExam';
 import {
@@ -20,6 +20,7 @@ import {
 } from '../../../store/rootReducer';
 
 const DoExam: React.FC = () => {
+  const navigate = useNavigate();
   const { exam_id } = useParams();
   const { setExamData } = examStore();
   const { setExamDetailData } = examDetailStore();
@@ -34,7 +35,7 @@ const DoExam: React.FC = () => {
         setExamDetailData(data);
       }
     } catch {
-      //
+      navigate('/');
     }
   };
 
@@ -47,13 +48,13 @@ const DoExam: React.FC = () => {
       try {
         const payload: IPayloadStartExam = {
           topicID: id,
-          username: userDoExam.user_name,
+          userName: userDoExam.userName,
         };
         const { data } = await examServices.startExam(payload);
         if (data.success) {
           setUserDoexamData({
-            user_name: userDoExam.user_name,
-            user_id: data.data.userid,
+            userName: userDoExam.userName,
+            userId: data.data.userid,
           } as IInforUserDoExam);
         }
       } catch {
@@ -69,6 +70,14 @@ const DoExam: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    // window.addEventListener('beforeunload', function (e) {
+    //   const confirmationMessage =
+    //     'It looks like you have been editing something. ' +
+    //     'If you leave before saving, your changes will be lost.';
+
+    //   (e || window.event).returnValue = confirmationMessage;
+    //   return confirmationMessage;
+    // });
     getExamInfor();
 
     return () => {

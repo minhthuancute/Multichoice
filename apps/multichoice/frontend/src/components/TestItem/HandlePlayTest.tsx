@@ -60,7 +60,7 @@ const HandlelayTest: React.FC<IHandlelayTestProps> = ({
  bg-white rounded-md py-8"
         >
           <div className="header text-center">
-            <h4 className="mt-4 text-slate-800 font-semibold text-2xl">
+            <h4 className="text-slate-800 font-semibold text-xl capitalize">
               {isPlaytest ? 'Bắt đầu bài thi' : 'Tạm dừng bài thi'}
             </h4>
 

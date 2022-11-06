@@ -2,15 +2,11 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
-import './app.scss';
-
 import DefaultLayout from '../layouts/DefaultLayout';
-
 import PrivateRoute from '../components/Routes/PrivateRoute';
 import PublicRoute from '../components/Routes/PublicRoute';
 
 // Pages
-
 import CreateTest from '../pages/Tests/Create/CreateTest';
 import Login from '../pages/Login/Login';
 import Register from '../pages/Register/Register';
@@ -29,6 +25,7 @@ import StatisticExam from '../pages/Exam/StatisticExam/StatisticExam';
 import StatisticUserExam from '../pages/Exam/StatisticExam/StatisticUserExam';
 import ExamLayout from '../layouts/ExamLayout';
 import DoExamRealtime from '../pages/Exam/DoExam/DoexamRealtime';
+import './app.scss';
 
 export const App: React.FC = () => {
   return (
@@ -68,7 +65,7 @@ export const App: React.FC = () => {
             path=":exam_id/do-exam-realtime"
             element={<DoExamRealtime />}
           />
-          {/* <Route path=":exam_id" element={<CollectInfor />} /> */}
+          <Route path=":exam_id" element={<CollectInfor />} />
           <Route path=":exam_id/do-exam" element={<DoExam />} />
         </Route>
 
