@@ -14,9 +14,10 @@ import { validation } from '@monorepo/multichoice/validation';
 import { authenServices } from '../../../services/AuthenServices';
 import { useNavigate } from 'react-router-dom';
 import { CreateUserDto } from '@monorepo/multichoice/dto';
-import { iNotification, Store } from 'react-notifications-component';
+import { iNotification } from 'react-notifications-component';
 import { notify } from '../../../helper/notify';
 import { acceptTerm, emailExisted } from '../../../constants/msgNotify';
+import { useQuery } from '../../../hooks/useQuery';
 
 const { username, email, password } = validation();
 const schemaFormRegister = yup
@@ -34,6 +35,8 @@ const schemaFormRegister = yup
 
 const FormRegister: React.FC = () => {
   const navigate = useNavigate();
+  const query = useQuery();
+  const redirectUrl = query.get('redirect') || '';
   const [isUserAccept, setIsUserAccept] = useState<boolean>(false);
 
   const {
@@ -44,17 +47,16 @@ const FormRegister: React.FC = () => {
     resolver: yupResolver(schemaFormRegister),
   });
 
-  useLayoutEffect(() => {
-    titleServices.addSub('Login');
-  }, []);
-
   const onSubmit: SubmitHandler<CreateUserDto> = async (
     formData: CreateUserDto
   ) => {
     if (isUserAccept) {
       try {
         await authenServices.register(formData);
-        navigate('/login');
+        const urlNavigate = redirectUrl
+          ? `/login?redirect=${redirectUrl}`
+          : '/login';
+        navigate(urlNavigate);
       } catch (error) {
         notify({
           message: emailExisted,
@@ -68,6 +70,10 @@ const FormRegister: React.FC = () => {
       } as iNotification);
     }
   };
+
+  useLayoutEffect(() => {
+    titleServices.addSub('Login');
+  }, []);
 
   return (
     <div className="wrapper-form">

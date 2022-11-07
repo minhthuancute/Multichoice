@@ -26,7 +26,6 @@ const StatisticExam: React.FC = () => {
   const [showModalConfirmDelete, setShowModalConfirmDelete] =
     useState<boolean>(false);
   const [userExamDetail, setUserExamDetail] = useState<IUserDoExam>();
-  const [topicTitle, setTopicTitle] = useState<string>('');
 
   const getListExamByTopicId = async () => {
     try {
@@ -69,7 +68,6 @@ const StatisticExam: React.FC = () => {
   };
 
   useEffect(() => {
-    setTopicTitle(getTopicTitle(topicId));
     getListExamByTopicId();
   }, []);
 
@@ -81,7 +79,7 @@ const StatisticExam: React.FC = () => {
             <Link to="/tests">Đề thi</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
-            <div>Thống kê đề {topicTitle}</div>
+            <div>Thống kê đề {getTopicTitle(topicId)}</div>
           </Breadcrumb.Item>
         </Breadcrumb>
       </header>

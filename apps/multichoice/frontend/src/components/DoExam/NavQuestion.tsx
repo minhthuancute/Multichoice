@@ -90,7 +90,7 @@ const NavQuestion: React.FC<INavQuestion> = ({
             startTime={startTimeCountdown || startTime}
             endTime={endTime}
             className="text-primary-900 text-lg"
-            key={'count-down' + startTime}
+            key="count-down-desktop"
           />
         )}
       </div>

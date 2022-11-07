@@ -2,7 +2,7 @@ import { IAnswers } from '../store/rootReducer';
 import { Api } from './Api';
 
 export interface IPayloadStartExam {
-  username: string;
+  userName: string;
   topicID: number;
 }
 
