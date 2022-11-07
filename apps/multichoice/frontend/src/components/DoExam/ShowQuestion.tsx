@@ -8,22 +8,15 @@ import { IAnswer } from '../../types';
 import ExamResult from './ExamResult';
 import ConfirmSubmit from './ConfirmSubmit';
 import CountDown from '../Commons/CountDown/CountDown';
-import { localServices } from '../../services/LocalServices';
-import { IS_SUBMIT_EXAM, START_TIME, TOKEN } from '../../constants/contstants';
+import { IS_SUBMIT_EXAM, START_TIME } from '../../constants/contstants';
 import { classNames } from '../../helper/classNames';
 import ToolTip from '../Commons/ToolTip/ToolTip';
 import PolaCode from '../PolaCode/PolaCode';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 import { QuestionType } from '../../types/ICommons';
-
-import {
-  errCanNotSubmit,
-  expriedTime,
-  submited,
-  submitSuccess,
-} from '../../constants/msgNotify';
-
+import { expriedTime, submited } from '../../constants/msgNotify';
 import TextArea from '../Commons/TextArea/TextArea';
+import { sessionServices } from '../../services/SessionServices';
 import './doExam.scss';
 
 interface IExamResult {
@@ -60,7 +53,7 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
   const [examResult, setExamResult] = useState<IExamResult>();
   const [errorMsgSubmit, setErrorMsgSubmit] = useState<string>('');
 
-  const startTime: number = localServices.getData(START_TIME) || 0;
+  const startTime: number = sessionServices.getData(START_TIME) || 0;
   const endTime: number = +exam.expirationTime;
 
   const nextQuestion = () => {
@@ -99,7 +92,7 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
   const onSumitAnswers = async () => {
     setIsSubmitExam(true);
     setErrorMsgSubmit('Bạn đã nộp bài');
-    localServices.setData(IS_SUBMIT_EXAM, true);
+    sessionServices.setData(IS_SUBMIT_EXAM, true);
     try {
       const payload: IPayloadEndExam = {
         userID: userDoExam.userId,

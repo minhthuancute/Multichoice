@@ -27,6 +27,7 @@ import {
 } from '../../../constants/contstants';
 import { examDetailStore } from '../../../store/Exam/examDetailStore';
 import { TopicTimeTypeEnum } from '@monorepo/multichoice/constant';
+import { sessionServices } from '../../../services/SessionServices';
 
 const schemaInfor = yup
   .object()
@@ -96,10 +97,14 @@ const CollectInfor: React.FC = () => {
 
   useEffect(() => {
     getExamInfor();
-
-    localServices.setData(IS_SUBMIT_EXAM, false);
-    localServices.setData(START_EXAM, false);
-    localServices.clearItem(START_TIME);
+    if (user.username) {
+      setUserDoexamData({
+        userName: user.username,
+      } as IInforUserDoExam);
+    }
+    sessionServices.setData(IS_SUBMIT_EXAM, false);
+    sessionServices.setData(START_EXAM, false);
+    sessionServices.clearItem(START_TIME);
   }, []);
 
   return localServices.getData(TOKEN) ? (

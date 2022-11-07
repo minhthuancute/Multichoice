@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import HeaderDoExam from '../../../components/DoExam/HeaderDoExam';
 import MainDoExam from '../../../components/DoExam/MainDoExam';
-import { START_EXAM, START_TIME, TOKEN } from '../../../constants/contstants';
+import { TOKEN } from '../../../constants/contstants';
 import {
   examServices,
   IPayloadStartExam,
@@ -55,8 +55,6 @@ const DoExamRealtime: React.FC = () => {
       return;
     }
     return () => {
-      localServices.setData(START_EXAM, false);
-      localServices.clearItem(START_TIME);
       setIsSubmitExam(false);
     };
   }, [exam.timeType]);
