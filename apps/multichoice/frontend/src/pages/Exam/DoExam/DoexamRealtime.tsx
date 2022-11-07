@@ -84,9 +84,9 @@ const DoExamRealtime: React.FC = () => {
               );
               setAnswers(initAnswers);
 
-              const shouldExpriedTest =
-                new Date().getTime() >
-                +recordValue.startTime + +data.expirationTime;
+              // const shouldExpriedTest =
+              //   new Date().getTime() >
+              //   +recordValue.startTime + +data.expirationTime;
               setExamData(data);
               startExam(data.id);
               setIsLoading(false);
