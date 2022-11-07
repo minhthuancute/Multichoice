@@ -13,7 +13,7 @@ interface ICountDownProps {
   endTime?: number;
   className: string;
   isHidden?: boolean;
-  restartKey?: string;
+  restartKey?: string | number;
 }
 
 const CountDown: React.FC<ICountDownProps> = ({
@@ -63,7 +63,7 @@ const CountDown: React.FC<ICountDownProps> = ({
       renderer={rendererCountdown}
       onStart={() => setIsExpriedExam(false)}
       onComplete={() => setIsExpriedExam(true)}
-      key={restartKey}
+      key={startTime}
     />
   );
 };

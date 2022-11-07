@@ -2,7 +2,7 @@ import React from 'react';
 import { BiCheckDouble } from 'react-icons/bi';
 import { START_TIME } from '../../constants/contstants';
 import { classNames } from '../../helper/classNames';
-import { localServices } from '../../services/LocalServices';
+import { sessionServices } from '../../services/SessionServices';
 import { answerStore, examStore } from '../../store/rootReducer';
 import { IQuestion } from '../../types';
 import CountDown from '../Commons/CountDown/CountDown';
@@ -29,7 +29,7 @@ const NavQuestion: React.FC<INavQuestion> = ({
     exam: { questions },
   } = examStore();
 
-  const startTime: number = localServices.getData(START_TIME) || 0;
+  const startTime: number = sessionServices.getData(START_TIME) || 0;
   const endTime: number = +exam.expirationTime;
 
   const navigateQuestion = (index: number) => {
@@ -90,7 +90,7 @@ const NavQuestion: React.FC<INavQuestion> = ({
             startTime={startTimeCountdown || startTime}
             endTime={endTime}
             className="text-primary-900 text-lg"
-            key={'count-down' + startTime}
+            key="count-down-desktop"
           />
         )}
       </div>

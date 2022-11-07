@@ -4,9 +4,9 @@ import { ANSWERS_EXAM } from '../../constants/contstants';
 import { QuestionType } from '../../types/ICommons';
 
 export interface IInforUserDoExam {
-  is_guest: boolean;
-  user_name: string;
-  user_id: number;
+  topicUrl: string;
+  userName: string;
+  userId: number;
 }
 
 export interface IAnswers {
@@ -108,6 +108,7 @@ export const answerStore = create<IAnswersStore>()(
       }),
       {
         name: ANSWERS_EXAM,
+        getStorage: () => sessionStorage,
       }
     )
   )

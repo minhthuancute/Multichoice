@@ -4,7 +4,7 @@ import Skelenton from '../../../components/Commons/Skelenton/Skelenton';
 
 const DoExamSkelenton: React.FC = () => {
   return (
-    <div className="main-doexam mt-8 container mx-auto lg:px-10">
+    <div className="doexam-skelenton mt-8 container mx-auto lg:px-10">
       <p className="flex justify-center items-center font-semibold text-green-600">
         <BsInfoCircle className="mr-2 mt-0.5" /> Bạn cần chờ tín hiệu làm bài từ
         người ra đề ...{' '}

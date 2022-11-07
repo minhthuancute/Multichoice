@@ -8,22 +8,15 @@ import { IAnswer } from '../../types';
 import ExamResult from './ExamResult';
 import ConfirmSubmit from './ConfirmSubmit';
 import CountDown from '../Commons/CountDown/CountDown';
-import { localServices } from '../../services/LocalServices';
 import { IS_SUBMIT_EXAM, START_TIME } from '../../constants/contstants';
 import { classNames } from '../../helper/classNames';
 import ToolTip from '../Commons/ToolTip/ToolTip';
 import PolaCode from '../PolaCode/PolaCode';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 import { QuestionType } from '../../types/ICommons';
-
-import {
-  errCanNotSubmit,
-  expriedTime,
-  submited,
-  submitSuccess,
-} from '../../constants/msgNotify';
-
+import { expriedTime, submited } from '../../constants/msgNotify';
 import TextArea from '../Commons/TextArea/TextArea';
+import { sessionServices } from '../../services/SessionServices';
 import './doExam.scss';
 
 interface IExamResult {
@@ -60,7 +53,7 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
   const [examResult, setExamResult] = useState<IExamResult>();
   const [errorMsgSubmit, setErrorMsgSubmit] = useState<string>('');
 
-  const startTime: number = localServices.getData(START_TIME) || 0;
+  const startTime: number = sessionServices.getData(START_TIME) || 0;
   const endTime: number = +exam.expirationTime;
 
   const nextQuestion = () => {
@@ -89,11 +82,6 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
     updateAnswer(questionID, answerID, questionType);
   };
 
-  const onChangeTextarea = (value: string) => {
-    // updateAnswer(questionID, answerID, questionType);
-    console.log(value);
-  };
-
   const countUnSelectAnswer = (): number => {
     const count = answers.filter((answer: IAnswers) => {
       return answer?.answerID.length === 0;
@@ -104,12 +92,13 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
   const onSumitAnswers = async () => {
     setIsSubmitExam(true);
     setErrorMsgSubmit('Bạn đã nộp bài');
-    localServices.setData(IS_SUBMIT_EXAM, true);
+    sessionServices.setData(IS_SUBMIT_EXAM, true);
     try {
       const payload: IPayloadEndExam = {
-        userID: userDoExam.user_id,
+        userID: userDoExam.userId,
         answerUsers: answers,
-      } as IPayloadEndExam;
+      };
+
       const { data } = await examServices.submitExam(payload);
 
       if (data.success) {
@@ -123,17 +112,14 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
         });
 
         setOpenModalResult(true);
-        notify({
-          message: submitSuccess,
-        } as iNotification);
       }
     } catch (error: any) {
-      if (error.response.data.statusCode === 400) {
-        notify({
-          message: errCanNotSubmit,
-          type: 'danger',
-        } as iNotification);
-      }
+      // if (error.response.data.statusCode === 400) {
+      //   notify({
+      //     message: errCanNotSubmit,
+      //     type: 'danger',
+      //   } as iNotification);
+      // }
     }
     setOpenModalConfirm(false);
     setConfirmSubmit(false);
@@ -189,7 +175,6 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
         <ExamResult
           setOpenModalResult={setOpenModalResult}
           openModalResult={openModalResult}
-          user_name={examResult?.user_name || ''}
           point={examResult?.point || 0}
         />
 
@@ -207,12 +192,8 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
           <ToolTip title={errorMsgSubmit}>
             <button
               className={classNames(
-                `px-6 py-2.5 bg-primary-800 rounded-md text-sm
-            text-white flex items-center mb-4 font-semibold
-            focus:ring-blue-100 focus:ring`,
-                {
-                  hidden: isSubmitExam || localServices.getData(IS_SUBMIT_EXAM),
-                }
+                `px-8 py-2 bg-primary-800 rounded-3xl text-sm text-white
+                mb-4 font-semibold focus:ring-blue-100 focus:ring`
               )}
               onClick={() => requestSubmit()}
             >
@@ -226,7 +207,7 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
             isHidden={isSubmitExam}
             startTime={startTimeCountdown || startTime}
             endTime={endTime}
-            key="count-down"
+            key="count-down-mobile"
             className="text-primary-800"
           />
         </div>
@@ -325,7 +306,6 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
               key={'answer-' + indexQuestion}
               defaultValue={answers[indexQuestion].answerID}
               onChange={(value: string) => {
-                onChangeTextarea(value);
                 onChooseAnswer(value, `${questionType}` as QuestionType);
               }}
               placeholder="Nhập câu trả lời..."

@@ -1,9 +1,8 @@
-import { firebasePath, TopicTimeTypeEnum } from '@monorepo/multichoice/constant';
+import { firebasePath } from '@monorepo/multichoice/constant';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import DoExamSkelenton from '../../pages/Exam/DoExam/DoExamSkelenton';
-import { examDetailStore } from '../../store/Exam/examDetailStore';
-import { loadingRealtimeStore } from '../../store/Loading/Loadingrealtime';
+
+import { examStore } from '../../store/rootReducer';
 import { ITestRealtimeRecord } from '../../types/ICommons';
 import { fireGet } from '../../utils/firebase_utils';
 import NavQuestion from './NavQuestion';
@@ -11,11 +10,9 @@ import ShowQuestion from './ShowQuestion';
 
 const MainDoExam: React.FC = () => {
   const { exam_id } = useParams();
-  const { examDetail } = examDetailStore();
-  const { setLoadingRealtime } = loadingRealtimeStore();
+  const { exam } = examStore();
 
   const [indexQuestion, setIndexQuestion] = useState<number>(0);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [expriedCountdownRealtime, setExpriedCountdownRealtime] =
     useState<boolean>(false);
   const [startTimeCountdown, setStartTimeCountdown] = useState<number>(0);
@@ -25,33 +22,29 @@ const MainDoExam: React.FC = () => {
 
     const onValueFirebase = () => {
       fireGet(testPath, (data: any) => {
+        console.log(data);
+
         const recordValue: ITestRealtimeRecord = data;
         if (recordValue?.started) {
           const shouldExpriedTest =
             new Date().getTime() >
-            +recordValue.startTime + +examDetail.expirationTime;
+            +recordValue.startTime + +exam.expirationTime;
 
-          recordValue?.duration
-            ? setStartTimeCountdown(
-                new Date().getTime() - +recordValue?.duration
-              )
-            : setStartTimeCountdown(+recordValue.startTime);
+          setStartTimeCountdown(+recordValue.startTime);
+          // recordValue?.duration
+          //   ? setStartTimeCountdown(
+          //       new Date().getTime() - +recordValue?.duration
+          //     )
+          //   : setStartTimeCountdown(+recordValue.startTime);
 
           setExpriedCountdownRealtime(shouldExpriedTest);
-          setIsLoading(false);
-          setLoadingRealtime(false);
-        } else {
-          setIsLoading(true);
-          setLoadingRealtime(true);
         }
       });
     };
     onValueFirebase();
   }, []);
 
-  return isLoading && examDetail.timeType === TopicTimeTypeEnum.REALTIME ? (
-    <DoExamSkelenton />
-  ) : (
+  return (
     <div
       className="main-doexam"
       style={{

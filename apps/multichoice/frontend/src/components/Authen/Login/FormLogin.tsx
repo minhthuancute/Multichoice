@@ -65,7 +65,7 @@ const FormLogin: React.FC = () => {
 
         const redirectUrl = query.get('redirect');
         if (redirectUrl) {
-          navigate(`/e/${redirectUrl}/do-exam`);
+          navigate(`/e/${redirectUrl}/do-exam-realtime`);
         } else {
           navigate('/');
         }

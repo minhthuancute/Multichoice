@@ -10,17 +10,24 @@ import {
 import * as yup from 'yup';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-
-import { notify } from '../../../helper/notify';
-import { iNotification } from 'react-notifications-component';
-import { useNavigate, useParams } from 'react-router-dom';
-
+import {
+  Navigate,
+  useLocation,
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
 import { examServices } from '../../../services/ExamServices';
-import { IExamDetail, IExamResponse, IQuestion } from '../../../types';
+import { IExamResponse, IQuestion } from '../../../types';
 import { localServices } from '../../../services/LocalServices';
-import { START_EXAM, START_TIME, TOKEN } from '../../../constants/contstants';
+import {
+  IS_SUBMIT_EXAM,
+  START_EXAM,
+  START_TIME,
+  TOKEN,
+} from '../../../constants/contstants';
 import { examDetailStore } from '../../../store/Exam/examDetailStore';
 import { TopicTimeTypeEnum } from '@monorepo/multichoice/constant';
+import { sessionServices } from '../../../services/SessionServices';
 
 const schemaInfor = yup
   .object()
@@ -30,10 +37,11 @@ const schemaInfor = yup
   .required();
 
 interface IColectInforForm {
-  user_name: string;
+  userName: string;
 }
 
 const CollectInfor: React.FC = () => {
+  const location = useLocation();
   const navigate = useNavigate();
   const { exam_id } = useParams();
 
@@ -54,9 +62,12 @@ const CollectInfor: React.FC = () => {
     try {
       const { data } = await examServices.getExamInfor(exam_id || '');
       const examInfor: IExamResponse = data;
-      console.log(examInfor.timeType, 'ascjksajckj');
+      if (examInfor.timeType === TopicTimeTypeEnum.REALTIME) {
+        const urlNavigate = '/e/' + exam_id + '/do-exam-realtime';
+        navigate(urlNavigate);
+      }
+      const examDetail = examInfor;
 
-      // const exam
       const initAnswers: IAnswers[] = examInfor.questions.map(
         (questions: IQuestion) => {
           const tempArr: IAnswers = {
@@ -66,64 +77,39 @@ const CollectInfor: React.FC = () => {
           return tempArr;
         }
       );
-      // const examDetail: IExamDetail = examInfor
-      const examDetail: IExamDetail = (({ questions, ...rest }) => rest)(
-        examInfor
-      );
       setAnswers(initAnswers);
       setExamData(data);
       setExamDetailData(examDetail);
-
-      const shouldNavPageLogin =
-        examInfor.timeType === TopicTimeTypeEnum.REALTIME &&
-        !localServices.getData(TOKEN);
-
-      if (shouldNavPageLogin) {
-        navigate(`/login?redirect=${exam_id}`);
-        return;
-      }
     } catch {
-      //
+      navigate('/');
     }
   };
 
-  const onSubmit: SubmitHandler<IColectInforForm> = async (
+  const onSubmit: SubmitHandler<IColectInforForm> = (
     formData: IColectInforForm
   ) => {
-    try {
-      setUserDoexamData({
-        user_name: formData.user_name,
-      } as IInforUserDoExam);
-
-      const urlNavigate = '/e/' + exam.url + '/do-exam';
-      navigate(urlNavigate);
-    } catch (error) {
-      notify({
-        message: 'Something went wrong !',
-        type: 'danger',
-      } as iNotification);
-    }
+    setUserDoexamData({
+      userName: formData.userName,
+    } as IInforUserDoExam);
+    const urlNavigate = '/e/' + exam.url + '/do-exam';
+    navigate(urlNavigate);
   };
-
-  useEffect(() => {
-    const canNavigate = exam.timeType !== TopicTimeTypeEnum.REALTIME;
-    if (Object.keys(user).length && canNavigate) {
-      setUserDoexamData({
-        user_name: user.username,
-      } as IInforUserDoExam);
-      const urlNavigate = '/e/' + exam_id + '/do-exam';
-      navigate(urlNavigate);
-    }
-  }, []);
 
   useEffect(() => {
     getExamInfor();
-
-    localServices.setData(START_EXAM, false);
-    localServices.clearItem(START_TIME);
+    if (user.username) {
+      setUserDoexamData({
+        userName: user.username,
+      } as IInforUserDoExam);
+    }
+    sessionServices.setData(IS_SUBMIT_EXAM, false);
+    sessionServices.setData(START_EXAM, false);
+    sessionServices.clearItem(START_TIME);
   }, []);
 
-  return (
+  return localServices.getData(TOKEN) ? (
+    <Navigate to={location.pathname + '/do-exam'} />
+  ) : (
     <div className="h-screen flex items-center justify-center bg-doexam py-6">
       <form
         className="max-w-xl lg:max-w-4xl xl:max-w-6xl mx-4 bg-white colect-infor flex items-center
@@ -141,11 +127,11 @@ const CollectInfor: React.FC = () => {
             </div>
             <div className="mt-5 p-4">
               <Input
-                registerField={register('user_name')}
+                registerField={register('userName')}
                 placeholder="Họ và tên"
                 textLabel="Họ và tên người tham gia"
-                isError={Boolean(errors.user_name)}
-                errMessage={errors.user_name?.message}
+                isError={Boolean(errors.userName)}
+                errMessage={errors.userName?.message}
                 isRequired={true}
                 inputSize="md"
                 defaultValue={user.username ?? ''}

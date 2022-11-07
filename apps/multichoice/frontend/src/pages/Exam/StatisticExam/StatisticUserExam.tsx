@@ -15,11 +15,9 @@ import { getDate, getDistance, getTime } from '../../../utils/formatDate';
 const StatisticUserExam: React.FC = () => {
   const { id: topic_id } = useParams();
   const query = useQuery();
-
   const topicId = Number(topic_id) || -1;
 
   const [userExamDetail, setUserExamDetail] = useState<IUserDoExamdetail>();
-  const [topicTitle, setTopicTitle] = useState<string>('');
 
   const getStatisticUserDetail = async () => {
     try {
@@ -38,7 +36,6 @@ const StatisticUserExam: React.FC = () => {
   };
 
   useEffect(() => {
-    setTopicTitle(getTopicTitle(topicId));
     getStatisticUserDetail();
   }, []);
 
@@ -52,7 +49,9 @@ const StatisticUserExam: React.FC = () => {
             <Link to="/tests">Đề thi</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
-            <Link to={`/tests/${topicId}/statistic`}>{topicTitle}</Link>
+            <Link to={`/tests/${topicId}/statistic`}>
+              {getTopicTitle(topicId)}
+            </Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
             <div>Thống kê</div>
