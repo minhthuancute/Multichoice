@@ -109,8 +109,8 @@ const HeaderDoExam: React.FC = () => {
             {exam.title}
           </h3>
 
-          <p className=" text-white text-tiny mt-4">
-            Hello, {userDoExam.userName}
+          <p className="text-white text-tiny mt-4">
+            Hello, {userDoExam.userName || user.username}
           </p>
           <button
             className={classNames(
@@ -195,7 +195,7 @@ const HeaderDoExam: React.FC = () => {
               Thoát
             </button>
           </div>
-          <p className="ml-4">Hello, {userDoExam.userName}</p>
+          <p className="ml-4">Hello, {userDoExam.userName || user.username}</p>
         </div>
       </div>
     </header>
