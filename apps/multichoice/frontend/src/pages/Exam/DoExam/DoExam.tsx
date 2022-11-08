@@ -1,16 +1,18 @@
 import React, { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import HeaderDoExam from '../../../components/DoExam/HeaderDoExam';
 import MainDoExam from '../../../components/DoExam/MainDoExam';
 import {
   IS_SUBMIT_EXAM,
   START_EXAM,
   START_TIME,
+  TOKEN,
 } from '../../../constants/contstants';
 import {
   examServices,
   IPayloadStartExam,
 } from '../../../services/ExamServices';
+import { localServices } from '../../../services/LocalServices';
 import { sessionServices } from '../../../services/SessionServices';
 import { examDetailStore } from '../../../store/Exam/examDetailStore';
 import {
@@ -82,12 +84,23 @@ const DoExam: React.FC = () => {
     };
   }, []);
 
-  return (
+  return localServices.getData(TOKEN) || userDoExam.userName ? (
     <div className="h-max relative">
       <HeaderDoExam />
       <MainDoExam />
     </div>
+  ) : (
+    <Navigate to={`/e/${exam_id}`} />
   );
+
+  // userDoExam.userName && userDoExam.userId ? (
+  //   <div className="h-max relative">
+  //     <HeaderDoExam />
+  //     <MainDoExam />
+  //   </div>
+  // ) : (
+  //   <Navigate to={`/e/${exam_id}`} />
+  // );
 };
 
 export default DoExam;
