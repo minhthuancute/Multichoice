@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import HeaderDoExam from '../../../components/DoExam/HeaderDoExam';
 import MainDoExam from '../../../components/DoExam/MainDoExam';
@@ -11,7 +11,7 @@ import {
   examServices,
   IPayloadStartExam,
 } from '../../../services/ExamServices';
-import { localServices } from '../../../services/LocalServices';
+import { sessionServices } from '../../../services/SessionServices';
 import { examDetailStore } from '../../../store/Exam/examDetailStore';
 import {
   answerStore,
@@ -40,11 +40,11 @@ const DoExam: React.FC = () => {
   };
 
   const startExam = async (id: number) => {
-    const canStartExam: boolean = localServices.getData(START_EXAM) === false;
+    const canStartExam: boolean = sessionServices.getData(START_EXAM) === false;
 
     if (canStartExam) {
-      localServices.setData(IS_SUBMIT_EXAM, false);
-      localServices.setData(START_EXAM, true);
+      sessionServices.setData(IS_SUBMIT_EXAM, false);
+      sessionServices.setData(START_EXAM, true);
       try {
         const payload: IPayloadStartExam = {
           topicID: id,
@@ -63,13 +63,8 @@ const DoExam: React.FC = () => {
     }
   };
 
-  useLayoutEffect(() => {
-    if (!localServices.getData(START_TIME)) {
-      localServices.setData(START_TIME, Date.now());
-    }
-  }, []);
-
   useEffect(() => {
+    getExamInfor();
     // window.addEventListener('beforeunload', function (e) {
     //   const confirmationMessage =
     //     'It looks like you have been editing something. ' +
@@ -78,11 +73,12 @@ const DoExam: React.FC = () => {
     //   (e || window.event).returnValue = confirmationMessage;
     //   return confirmationMessage;
     // });
-    getExamInfor();
-
+    if (!sessionServices.getData(START_TIME)) {
+      sessionServices.setData(START_TIME, Date.now());
+    }
     return () => {
-      localServices.setData(START_EXAM, false);
-      localServices.clearItem(START_TIME);
+      sessionServices.setData(START_EXAM, false);
+      sessionServices.clearItem(START_TIME);
     };
   }, []);
 

@@ -108,6 +108,7 @@ export const answerStore = create<IAnswersStore>()(
       }),
       {
         name: ANSWERS_EXAM,
+        getStorage: () => sessionStorage,
       }
     )
   )

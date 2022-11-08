@@ -1,8 +1,7 @@
 import { firebasePath } from '@monorepo/multichoice/constant';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { examDetailStore } from '../../store/Exam/examDetailStore';
-import { loadingRealtimeStore } from '../../store/Loading/Loadingrealtime';
+
 import { examStore } from '../../store/rootReducer';
 import { ITestRealtimeRecord } from '../../types/ICommons';
 import { fireGet } from '../../utils/firebase_utils';
@@ -11,10 +10,7 @@ import ShowQuestion from './ShowQuestion';
 
 const MainDoExam: React.FC = () => {
   const { exam_id } = useParams();
-  const { examDetail } = examDetailStore();
   const { exam } = examStore();
-
-  const [loadingRealtime, setLoadingRealtime] = useState<boolean>(false);
 
   const [indexQuestion, setIndexQuestion] = useState<number>(0);
   const [expriedCountdownRealtime, setExpriedCountdownRealtime] =
@@ -42,9 +38,6 @@ const MainDoExam: React.FC = () => {
           //   : setStartTimeCountdown(+recordValue.startTime);
 
           setExpriedCountdownRealtime(shouldExpriedTest);
-          setLoadingRealtime(false);
-        } else {
-          setLoadingRealtime(true);
         }
       });
     };

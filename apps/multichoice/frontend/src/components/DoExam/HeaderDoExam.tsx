@@ -18,6 +18,7 @@ import { classNames } from '../../helper/classNames';
 import { IoMdClose } from 'react-icons/io';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import IntroExam from './IntroExam';
+import { sessionServices } from '../../services/SessionServices';
 
 const HeaderDoExam: React.FC = () => {
   const sideBarRef = useRef<HTMLDivElement>(null);
@@ -37,7 +38,7 @@ const HeaderDoExam: React.FC = () => {
   const handleExitExam = () => {
     localServices.clearItem(START_TIME);
     localServices.clearItem(ANSWERS_EXAM);
-    localServices.setData(START_EXAM, false);
+    sessionServices.setData(START_EXAM, false);
 
     setIsSubmitExam(false);
     setUserDoexamData({} as IInforUserDoExam);
