@@ -47,7 +47,7 @@ const CollectInfor: React.FC = () => {
 
   const { exam, setExamData } = examStore();
   const { setExamDetailData } = examDetailStore();
-  const { setUserDoexamData, setAnswers } = answerStore();
+  const { userDoExam, setUserDoexamData, setAnswers } = answerStore();
   const { user } = userStore();
 
   const {
@@ -107,7 +107,7 @@ const CollectInfor: React.FC = () => {
     sessionServices.clearItem(START_TIME);
   }, []);
 
-  return localServices.getData(TOKEN) ? (
+  return localServices.getData(TOKEN) || userDoExam.userName ? (
     <Navigate to={location.pathname + '/do-exam'} />
   ) : (
     <div className="h-screen flex items-center justify-center bg-doexam py-6">
