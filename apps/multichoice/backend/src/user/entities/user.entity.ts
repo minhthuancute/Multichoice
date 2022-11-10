@@ -1,7 +1,14 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { Timestamp } from '../../orm/timestamp.entity';
 import { Topic } from '../../question/entities/topic.entity';
+import { Group } from '../../group/entities/group.entity';
 
 @Entity()
 export class User extends Timestamp {
@@ -24,7 +31,12 @@ export class User extends Timestamp {
   @OneToMany(() => Topic, (topic) => topic.owner)
   topics: Topic[];
 
+  @OneToMany(() => Group, (group) => group.owner)
+  groups: Group[];
+
+  @ManyToMany(() => Group, (group) => group.users)
+  groupUser: Group[];
+
   @Column({ default: true })
   isActive: boolean;
 }
-//

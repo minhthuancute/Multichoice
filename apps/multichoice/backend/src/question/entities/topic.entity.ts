@@ -2,6 +2,7 @@ import {
   Column,
   Entity,
   Generated,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -14,6 +15,7 @@ import { Question } from './question.entity';
 import { Timestamp } from '../../orm/timestamp.entity';
 import { User } from '../../user/entities/user.entity';
 import { UserExam } from '../../user/entities/userExam.entity';
+import { Group } from '../../group/entities/group.entity';
 
 @Entity()
 export class Topic extends Timestamp {
@@ -54,6 +56,9 @@ export class Topic extends Timestamp {
   @Column({ type: 'bigint' })
   expirationTime: number;
 
+  @Column({ default: false })
+  isPrivate: boolean;
+
   @OneToMany(() => Question, (qs) => qs.topic)
   questions: Question[];
 
@@ -62,4 +67,7 @@ export class Topic extends Timestamp {
 
   @OneToMany(() => UserExam, (qs) => qs.topic)
   userExams: UserExam[];
+
+  @ManyToMany(() => Group, (group) => group.topics)
+  groups: Group[];
 }

@@ -7,6 +7,7 @@ import { Answer } from '../answer/entities/answer.entity';
 import { Topic } from '../question/entities/topic.entity';
 import { UserAnswer } from '../user/entities/userAnswer.entity';
 import { UserExam } from '../user/entities/userExam.entity';
+import { Group } from '../group/entities/group.entity';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { UserExam } from '../user/entities/userExam.entity';
       username: configuration().database.user,
       password: configuration().database.password,
       database: configuration().database.database,
-      entities: [User, Topic, Question, Answer, UserAnswer, UserExam],
+      entities: [User, Topic, Question, Answer, UserAnswer, UserExam, Group],
       synchronize: true,
     }),
   ],
