@@ -6,3 +6,4 @@ export * from './lib/page.dto';
 export * from './lib/pageOptions.dto';
 export * from './lib/pagemeta.dto';
 export * from './lib/pageMetaParameters.dto';
+export * from './lib/group.dto';

@@ -25,6 +25,7 @@ import { SucessResponse } from '../model/SucessResponse';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { multerOptions } from '../uploads/upload';
 import { GConfig } from '../config/gconfig';
+import { JwtAuthGuard } from '../auth/guards/JwtAuthGuard';
 
 @ApiTags('User')
 @Controller()
@@ -40,12 +41,15 @@ export class UserController {
     return res.status(200).json(new SucessResponse(200, result));
   }
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Post('/exam/start')
   async startExam(
     @Res() res,
+    @Req() req,
     @Body() resultUserDto: UserExamDto
   ): Promise<SucessResponse> {
-    const result = await this.userService.startExam(resultUserDto);
+    const result = await this.userService.startExam(resultUserDto, req.user);
     return res.status(200).json(new SucessResponse(200, result));
   }
 
@@ -123,7 +127,7 @@ export class UserController {
   ): Promise<SucessResponse> {
     const result = await this.userService.endExamRealTime(
       resultUserRealTimeDto,
-      req.user.id
+      req.user
     );
     return res.status(200).json(new SucessResponse(200, result));
   }

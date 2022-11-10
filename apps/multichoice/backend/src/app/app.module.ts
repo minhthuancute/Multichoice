@@ -6,6 +6,7 @@ import { OrmModule } from '../orm/orm.module';
 import { AuthModule } from '../auth/auth.module';
 import { QuestionModule } from '../question/question.module';
 import { TopicModule } from '../topic/topic.module';
+import { GroupModule } from '../group/group.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { TopicModule } from '../topic/topic.module';
     AuthModule,
     QuestionModule,
     TopicModule,
+    GroupModule,
   ],
   controllers: [],
   providers: [],

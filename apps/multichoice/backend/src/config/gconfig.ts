@@ -14,11 +14,17 @@ export class GConfig {
   public static USER_NOT_FOUND = this.MES_NOT_FOUND('User');
 
   public static TOPIC_NOT_FOUND = this.MES_NOT_FOUND('Topic');
+  public static NAME_NOT_FOUND = this.MES_NOT_FOUND('Name');
 
   public static NOT_PERMISSION_VIEW = 'You do not have permission to view';
   public static NOT_PERMISSION_DELETE = 'You do not have permission to delete';
   public static NOT_PERMISSION_EDIT = 'You do not have permission to edit';
-
+  public static NOT_PERMISSION_ADD_USER_FOR_GROUP =
+    'bạn không có quyền thêm user vào group này';
+  public static NOT_PERMISSION_ADD_GROUP_FOR_TOPIC =
+    'bạn không có quyền thêm group vào topic này';
+  public static NOT_PERMISSION_EXAM_TOPIC =
+    'bạn không có quyền tham gia bài thi này';
   public static ANSWERS_NOT_EMPTY = this.MES_NOT_EMPTY('Answers');
 
   public static QUESTION_NOT_FOUND = this.MES_NOT_FOUND('Question');
@@ -28,6 +34,7 @@ export class GConfig {
   public static PASSWORD_IS_INCORRECT = 'Password is incorrect';
   public static PASSWORD_OLD_IS_INCORRECT = 'Password cũ không đúng';
   public static SUCESS = 'Sucess';
+  public static ADD_MES_SUCESS = 'thêm mới thành công';
   public static EXPRIED_TIME = 'Hết thời gian làm bài';
   public static EXPRIED_EMAIL_LINK = 'link hết thời gian hoặc không tồn tại';
 }

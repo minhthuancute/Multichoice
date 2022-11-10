@@ -1,4 +1,8 @@
-import { CreateTopicDto, PageOptionsDto } from '@monorepo/multichoice/dto';
+import {
+  AddGroupForTopic,
+  CreateTopicDto,
+  PageOptionsDto,
+} from '@monorepo/multichoice/dto';
 import {
   Body,
   Controller,
@@ -14,6 +18,7 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthenticationGuard } from '../auth/guards/auth.guard';
+import { GConfig } from '../config/gconfig';
 import { SucessResponse } from '../model/SucessResponse';
 import { TopicService } from './topic.service';
 
@@ -77,5 +82,19 @@ export class TopicController {
   ): Promise<SucessResponse> {
     const result = await this.topicService.update(id, topic, req.user);
     return res.status(200).json(new SucessResponse(200, result));
+  }
+
+  @UseGuards(AuthenticationGuard)
+  @Post('addgroupfortopic')
+  @ApiBearerAuth()
+  async addGroupForTopic(
+    @Body() query: AddGroupForTopic,
+    @Req() req,
+    @Res() res
+  ): Promise<SucessResponse> {
+    await this.topicService.addGroupForTopic(query, req.user.id);
+    return res
+      .status(200)
+      .json(new SucessResponse(200, GConfig.ADD_MES_SUCESS));
   }
 }

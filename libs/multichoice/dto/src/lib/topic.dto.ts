@@ -23,6 +23,22 @@ export class CreateTopicDto {
   @ApiProperty({ default: false })
   isDraft: boolean;
 
+  @ApiProperty({ default: false })
+  isPrivate: boolean;
+
   @ApiProperty()
   expirationTime: number;
+}
+
+export class AddGroupForTopic {
+  @ApiProperty()
+  topicID: number;
+
+  @ApiProperty()
+  groupID: number;
+  // @ApiProperty({
+  //   isArray: true,
+  //   type: Number,
+  // })
+  // arrayUser: number[];
 }

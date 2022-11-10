@@ -3,6 +3,7 @@ import {
   forwardRef,
   Inject,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import {
   AnswersUserDto,
@@ -182,15 +183,17 @@ export class UserService {
     throw new BadRequestException(GConfig.NOT_PERMISSION_VIEW);
   }
 
-  async endExamRealTime(resultUserRealTimeDto: ResultUserDto, userID: number) {
+  async endExamRealTime(resultUserRealTimeDto: ResultUserDto, user: User) {
     const endTime = new Date().getTime();
     if (resultUserRealTimeDto.url == undefined)
       throw new BadRequestException(GConfig.URL_NOT_EMPTY);
     const topic = await this.topicService.getIsCorrectByUrl(
       resultUserRealTimeDto.url
     );
-    const user = await this.getUserById(userID);
-    if (!user) throw new BadRequestException(GConfig.USER_NOT_FOUND);
+
+    if (topic.isPrivate) {
+      await this.topicService.checkPermissionUserOfTopic(topic.id, user.id);
+    }
 
     const exam: UserExam = new UserExam();
 
@@ -283,10 +286,16 @@ export class UserService {
     return Math.floor(Math.random() * Date.now());
   }
 
-  async startExam(userExamDto: UserExamDto) {
+  async startExam(userExamDto: UserExamDto, user: User) {
     const topic = await this.topicService.fineOneByID(userExamDto.topicID);
+
+    if (topic.isPrivate) {
+      if (!user) throw new UnauthorizedException();
+      await this.topicService.checkPermissionUserOfTopic(topic.id, user.id);
+    }
+
     const exam: UserExam = new UserExam();
-    exam.username = userExamDto.username;
+    exam.username = topic.isPrivate ? user.username : userExamDto.username;
     exam.topic = new Topic(topic.id);
     exam.startTime = new Date().getTime();
 
