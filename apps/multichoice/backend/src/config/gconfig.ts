@@ -31,6 +31,9 @@ export class GConfig {
 
   public static URL_NOT_EMPTY = this.MES_NOT_EMPTY('URL');
 
+  public static TOPIC_NOT_REALTIME = 'topic này không phải realtime';
+  public static TOPIC_NOT_FIXEDTIME = 'topic này không phải fixedtime';
+
   public static PASSWORD_IS_INCORRECT = 'Password is incorrect';
   public static PASSWORD_OLD_IS_INCORRECT = 'Password cũ không đúng';
   public static SUCESS = 'Sucess';

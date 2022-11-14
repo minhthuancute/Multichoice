@@ -55,6 +55,7 @@ export class UserService {
     });
     return lst;
   }
+
   convertUserDoExam(userExams: UserExam): IUserDoExam {
     const userDoExam: IUserDoExam = {
       username: userExams.username,
@@ -191,9 +192,11 @@ export class UserService {
       resultUserRealTimeDto.url
     );
 
-    if (topic.isPrivate) {
+    if (topic.timeType === TopicTimeTypeEnum.FIXEDTIME)
+      throw new BadRequestException(GConfig.TOPIC_NOT_REALTIME);
+
+    if (topic.isPrivate)
       await this.topicService.checkPermissionUserOfTopic(topic.id, user.id);
-    }
 
     const exam: UserExam = new UserExam();
 
@@ -202,20 +205,20 @@ export class UserService {
     )) as realtimeExam;
 
     if (dataFirebase && dataFirebase.started) {
-      exam.startTime = dataFirebase.startTime;
-      exam.username = user.username;
-      exam.topic = topic;
-      exam.endTime = endTime;
       if (
         Number(endTime) >=
         Number(topic.expirationTime) + Number(exam.startTime)
       )
-        exam.status = true;
-
+        throw new BadRequestException(GConfig.EXPRIED_TIME);
+      exam.startTime = dataFirebase.startTime;
+      exam.username = user.username;
+      exam.topic = topic;
+      exam.endTime = endTime;
       exam.point = this.pointCount(
         topic.questions,
         resultUserRealTimeDto.answerUsers
       );
+
       const saveUserExam = await this.userExamRepository.save(exam);
       this.saveListUserAnswer(resultUserRealTimeDto.answerUsers, saveUserExam);
       return new IUserExam(
@@ -250,6 +253,7 @@ export class UserService {
       this.userAnswerRepository.save(lst);
     }
   }
+
   async endExam(resultUserDto: ResultUserDto) {
     const endTime = new Date().getTime();
     const userID: string = resultUserDto.userID.toString();
@@ -288,6 +292,9 @@ export class UserService {
 
   async startExam(userExamDto: UserExamDto, user: User) {
     const topic = await this.topicService.fineOneByID(userExamDto.topicID);
+
+    if (topic.timeType === TopicTimeTypeEnum.REALTIME)
+      throw new BadRequestException(GConfig.TOPIC_NOT_FIXEDTIME);
 
     if (topic.isPrivate) {
       if (!user) throw new UnauthorizedException();
