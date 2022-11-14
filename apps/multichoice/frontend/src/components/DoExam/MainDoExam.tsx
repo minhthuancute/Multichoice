@@ -8,7 +8,11 @@ import { fireGet } from '../../utils/firebase_utils';
 import NavQuestion from './NavQuestion';
 import ShowQuestion from './ShowQuestion';
 
-const MainDoExam: React.FC = () => {
+interface IMainDoExamProps {
+  isRealtime?: boolean;
+}
+
+const MainDoExam: React.FC<IMainDoExamProps> = ({ isRealtime = false }) => {
   const { exam_id } = useParams();
   const { exam } = examStore();
 

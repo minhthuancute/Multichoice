@@ -27,6 +27,7 @@ const DoExamRealtime: React.FC = () => {
   const { userDoExam, setUserDoexamData, setAnswers } = answerStore();
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isRealtime, setIsRealtime] = useState<boolean>(false);
 
   const startExam = async (topicId: number) => {
     try {
@@ -67,6 +68,7 @@ const DoExamRealtime: React.FC = () => {
         const recordValue: ITestRealtimeRecord = data;
         setIsLoading(!recordValue?.started);
         if (recordValue?.started && !exam.questions) {
+          setIsRealtime(true);
           try {
             setIsLoading(true);
             const { data, status } = await examServices.getExamInfor(
@@ -92,7 +94,7 @@ const DoExamRealtime: React.FC = () => {
               setIsLoading(false);
             }
           } catch {
-            //
+            navigate('/');
             setIsLoading(false);
           }
         }
@@ -104,7 +106,7 @@ const DoExamRealtime: React.FC = () => {
   return localServices.getData(TOKEN) ? (
     <div className="h-max relative">
       <HeaderDoExam />
-      {isLoading ? <DoExamSkelenton /> : <MainDoExam />}
+      {isLoading ? <DoExamSkelenton /> : <MainDoExam isRealtime={isRealtime} />}
     </div>
   ) : (
     <Navigate to={`/login?redirect=${exam_id}`} />

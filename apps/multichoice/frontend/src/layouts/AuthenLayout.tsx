@@ -30,7 +30,7 @@ const AuthenLayout: React.FC<ILayout> = ({ children }) => {
         {children}
         <div className="text-center xs:block md:hidden mt-10">
           {isLoginPage ? (
-            <p className="text-sm">
+            <p className="text-slate-800">
               Don't have account ?
               <Link
                 to="/register"
@@ -40,7 +40,7 @@ const AuthenLayout: React.FC<ILayout> = ({ children }) => {
               </Link>
             </p>
           ) : (
-            <p className="text-sm">
+            <p className="text-slate-800">
               Already have an account ?
               <Link to="/login" className="inline-block ml-1 text-primary-900">
                 Log in !
