@@ -198,6 +198,9 @@ export class UserService {
     if (topic.isPrivate)
       await this.topicService.checkPermissionUserOfTopic(topic.id, user.id);
 
+    if (await this.topicService.checkUserIsExistUserExam(topic.id, user.id))
+      throw new BadRequestException(GConfig.USER_EXISTS_USEREXAM);
+
     const exam: UserExam = new UserExam();
 
     const dataFirebase: realtimeExam = (await this.firebaseService.get(
@@ -210,6 +213,7 @@ export class UserService {
         Number(topic.expirationTime) + Number(exam.startTime)
       )
         throw new BadRequestException(GConfig.EXPRIED_TIME);
+
       exam.startTime = dataFirebase.startTime;
       exam.username = user.username;
       exam.topic = topic;
@@ -218,6 +222,7 @@ export class UserService {
         topic.questions,
         resultUserRealTimeDto.answerUsers
       );
+      exam.owner = user;
 
       const saveUserExam = await this.userExamRepository.save(exam);
       this.saveListUserAnswer(resultUserRealTimeDto.answerUsers, saveUserExam);
@@ -296,13 +301,16 @@ export class UserService {
     if (topic.timeType === TopicTimeTypeEnum.REALTIME)
       throw new BadRequestException(GConfig.TOPIC_NOT_FIXEDTIME);
 
+    const exam: UserExam = new UserExam();
     if (topic.isPrivate) {
       if (!user) throw new UnauthorizedException();
       await this.topicService.checkPermissionUserOfTopic(topic.id, user.id);
+      exam.username = user.username;
+      exam.owner = new User(user.id);
+    } else {
+      exam.username = userExamDto.username;
     }
 
-    const exam: UserExam = new UserExam();
-    exam.username = topic.isPrivate ? user.username : userExamDto.username;
     exam.topic = new Topic(topic.id);
     exam.startTime = new Date().getTime();
 
@@ -314,7 +322,6 @@ export class UserService {
       exam,
       (Number(topic.expirationTime) + Number(over)) / 1000 // chuyển về đơn vị giây
     );
-
     return { userid };
   }
 

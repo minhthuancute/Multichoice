@@ -215,4 +215,20 @@ export class TopicService {
     result.groups.push(group);
     this.topicRepository.save(result);
   }
+
+  async checkUserIsExistUserExam(
+    topicID: number,
+    userID: number
+  ): Promise<boolean> {
+    const result = await this.topicRepository.findOne({
+      where: {
+        id: topicID,
+        userExams: {
+          owner: { id: userID },
+        },
+      },
+    });
+    if (!result) return false;
+    return true;
+  }
 }
