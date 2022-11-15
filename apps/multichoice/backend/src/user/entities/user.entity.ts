@@ -9,9 +9,14 @@ import { Exclude } from 'class-transformer';
 import { Timestamp } from '../../orm/timestamp.entity';
 import { Topic } from '../../question/entities/topic.entity';
 import { Group } from '../../group/entities/group.entity';
+import { UserExam } from './userExam.entity';
 
 @Entity()
 export class User extends Timestamp {
+  constructor(id?: number) {
+    super();
+    this.id = id;
+  }
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -39,4 +44,7 @@ export class User extends Timestamp {
 
   @Column({ default: true })
   isActive: boolean;
+
+  @OneToMany(() => UserExam, (qs) => qs.owner)
+  userExams: UserExam[];
 }

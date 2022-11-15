@@ -20,24 +20,26 @@ export class GConfig {
   public static NOT_PERMISSION_DELETE = 'You do not have permission to delete';
   public static NOT_PERMISSION_EDIT = 'You do not have permission to edit';
   public static NOT_PERMISSION_ADD_USER_FOR_GROUP =
-    'bạn không có quyền thêm user vào group này';
+    'Bạn không có quyền thêm user vào group này';
   public static NOT_PERMISSION_ADD_GROUP_FOR_TOPIC =
-    'bạn không có quyền thêm group vào topic này';
+    'Bạn không có quyền thêm group vào topic này';
   public static NOT_PERMISSION_EXAM_TOPIC =
-    'bạn không có quyền tham gia bài thi này';
+    'Bạn không có quyền tham gia bài thi này';
   public static ANSWERS_NOT_EMPTY = this.MES_NOT_EMPTY('Answers');
 
   public static QUESTION_NOT_FOUND = this.MES_NOT_FOUND('Question');
 
   public static URL_NOT_EMPTY = this.MES_NOT_EMPTY('URL');
 
-  public static TOPIC_NOT_REALTIME = 'topic này không phải realtime';
-  public static TOPIC_NOT_FIXEDTIME = 'topic này không phải fixedtime';
+  public static TOPIC_NOT_REALTIME = 'Topic này không phải realtime';
+  public static TOPIC_NOT_FIXEDTIME = 'Topic này không phải fixedtime';
+
+  public static USER_EXISTS_USEREXAM = 'Bạn đã làm bài thi này ';
 
   public static PASSWORD_IS_INCORRECT = 'Password is incorrect';
   public static PASSWORD_OLD_IS_INCORRECT = 'Password cũ không đúng';
   public static SUCESS = 'Sucess';
   public static ADD_MES_SUCESS = 'thêm mới thành công';
   public static EXPRIED_TIME = 'Hết thời gian làm bài';
-  public static EXPRIED_EMAIL_LINK = 'link hết thời gian hoặc không tồn tại';
+  public static EXPRIED_EMAIL_LINK = 'Link hết thời gian hoặc không tồn tại';
 }
