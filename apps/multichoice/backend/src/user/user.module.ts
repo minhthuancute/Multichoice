@@ -10,12 +10,14 @@ import { UserAnswer } from './entities/userAnswer.entity';
 import { RedisModule } from '../redis/redis.module';
 import { User } from './entities/user.entity';
 import { firebaseModule } from '../firebase/firebase.module';
+import { GroupModule } from '../group/group.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Topic, UserExam, UserAnswer, User]),
     RedisModule,
     firebaseModule,
+    GroupModule,
   ],
   controllers: [UserController],
   providers: [UserService, JsonWebTokenStrategy, TopicService],
