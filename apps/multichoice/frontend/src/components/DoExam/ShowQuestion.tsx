@@ -2,7 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { BiSkipNext, BiSkipPrevious } from 'react-icons/bi';
 import { iNotification } from 'react-notifications-component';
 import { notify } from '../../helper/notify';
-import { examServices, IPayloadEndExam } from '../../services/ExamServices';
+import {
+  examServices,
+  IPayloadEndExam,
+  IPayloadEndExamRealtime,
+} from '../../services/ExamServices';
 import { answerStore, examStore, IAnswers } from '../../store/rootReducer';
 import { IAnswer } from '../../types';
 import ExamResult from './ExamResult';
@@ -18,13 +22,15 @@ import { expriedTime, submited } from '../../constants/msgNotify';
 import TextArea from '../Commons/TextArea/TextArea';
 import { sessionServices } from '../../services/SessionServices';
 import './doExam.scss';
+import { useParams } from 'react-router-dom';
 
 interface IExamResult {
-  user_name: string;
+  userName: string;
   point: number;
 }
 
 interface IShowQuestionProps {
+  isRealtime?: boolean;
   indexQuestion: number;
   setIndexQuestion: React.Dispatch<React.SetStateAction<number>>;
   startTimeCountdown?: number;
@@ -32,11 +38,14 @@ interface IShowQuestionProps {
 }
 
 const ShowQuestion: React.FC<IShowQuestionProps> = ({
+  isRealtime = false,
   indexQuestion = 0,
   setIndexQuestion,
   startTimeCountdown = 0,
   expriedCountdownRealtime = false,
 }) => {
+  const { exam_id } = useParams();
+
   const {
     exam: { questions },
     setDataExamResult,
@@ -90,8 +99,8 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
   };
 
   const onSumitAnswers = async () => {
-    setIsSubmitExam(true);
-    setErrorMsgSubmit('Bạn đã nộp bài');
+    // setIsSubmitExam(true);
+    // setErrorMsgSubmit('Bạn đã nộp bài');
     sessionServices.setData(IS_SUBMIT_EXAM, true);
     try {
       const payload: IPayloadEndExam = {
@@ -99,11 +108,19 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
         answerUsers: answers,
       };
 
-      const { data } = await examServices.submitExam(payload);
+      const payloadRealtime: IPayloadEndExamRealtime = {
+        url: exam_id || '',
+        userID: userDoExam.userId,
+        answerUsers: answers,
+      };
+
+      const { data } = isRealtime
+        ? await examServices.submitExam(payload)
+        : await examServices.submitExamRealtime(payloadRealtime);
 
       if (data.success) {
         setExamResult({
-          user_name: data.data.username,
+          userName: data.data.username,
           point: data.data.point,
         } as IExamResult);
         setDataExamResult({
