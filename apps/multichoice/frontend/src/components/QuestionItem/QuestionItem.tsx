@@ -87,7 +87,7 @@ const QuestionItem: React.FC<IQuestionItem> = ({
                       className={classNames(
                         'font-semibold flex items-center min-w-max',
                         {
-                          'text-green-600 underline': answer.isCorrect,
+                          'text-green-600': answer.isCorrect,
                         }
                       )}
                     >

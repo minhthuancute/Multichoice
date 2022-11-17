@@ -1,17 +1,21 @@
 import { Api } from './Api';
 import { CreateTopicDto } from '@monorepo/multichoice/dto';
+import { IPagination } from '../types';
 
 class TopicServices extends Api {
-  getAllTopic() {
-    return this.get('/topic/all');
+  async getAllTopic(pagination: IPagination) {
+    const { page, take } = pagination;
+    const { data } = await this.get(`/topic/all?page=${page}&take=${take}`);
+    return data;
   }
 
   createTopic(formData: CreateTopicDto) {
     return this.post('/topic/create', formData);
   }
 
-  getTopicById(id: number) {
-    return this.get('/topic/' + id);
+  async getTopicById(id: number) {
+    const { data } = await this.get('/topic/' + id);
+    return data;
   }
 
   updateTopicById(id: number, formData: CreateTopicDto) {

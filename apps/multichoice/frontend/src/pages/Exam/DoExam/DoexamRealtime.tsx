@@ -48,6 +48,31 @@ const DoExamRealtime: React.FC = () => {
     }
   };
 
+  const getExamDetail = async () => {
+    setIsRealtime(true);
+    try {
+      setIsLoading(true);
+      const { data, status } = await examServices.getExamInfor(exam_id || '');
+      if (status === 200) {
+        const initAnswers: IAnswers[] = data.questions.map(
+          (questions: IQuestion) => {
+            const tempArr: IAnswers = {
+              questionID: questions.id,
+              answerID: [],
+            };
+            return tempArr;
+          }
+        );
+        setAnswers(initAnswers);
+        setExamData(data);
+        startExam(data.id);
+        setIsLoading(false);
+      }
+    } catch (err) {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     const shouldNavPageLogin = !localServices.getData(TOKEN);
 
@@ -68,35 +93,7 @@ const DoExamRealtime: React.FC = () => {
         const recordValue: ITestRealtimeRecord = data;
         setIsLoading(!recordValue?.started);
         if (recordValue?.started && !exam.questions) {
-          setIsRealtime(true);
-          try {
-            setIsLoading(true);
-            const { data, status } = await examServices.getExamInfor(
-              exam_id || ''
-            );
-            if (status === 200) {
-              const initAnswers: IAnswers[] = data.questions.map(
-                (questions: IQuestion) => {
-                  const tempArr: IAnswers = {
-                    questionID: questions.id,
-                    answerID: [],
-                  };
-                  return tempArr;
-                }
-              );
-              setAnswers(initAnswers);
-
-              // const shouldExpriedTest =
-              //   new Date().getTime() >
-              //   +recordValue.startTime + +data.expirationTime;
-              setExamData(data);
-              startExam(data.id);
-              setIsLoading(false);
-            }
-          } catch {
-            navigate('/');
-            setIsLoading(false);
-          }
+          getExamDetail();
         }
       });
     };

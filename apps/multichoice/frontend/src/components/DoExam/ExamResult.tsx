@@ -35,7 +35,7 @@ const ExamResult: React.FC<IExamResult> = ({
         </div>
         <div className="body ctas flex items-center gap-x-2 mt-8">
           <button
-            className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
+            className="create-test rounded-md flex justify-center items-center w-32 h-10 text-sm
           text-white font-bold bg-slate-800 ml-auto mr-4"
             onClick={() => setOpenModalResult(false)}
           >

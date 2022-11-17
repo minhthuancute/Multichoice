@@ -62,9 +62,9 @@ const Select: React.FC<ISelect> = ({
           <button
             onClick={() => setCollapseSelect(!collapseSelect)}
             type="button"
-            className="flex items-center justify-between capitalizetransition-all duration-200 w-full
+            className="flex items-center justify-between capitalize transition-all duration-200 w-full
             text-slate-800 outline-none border px-4 py-2 border-solid border-stone-200
-             focus:border-primary-900 rounded-md text-sm capitalize"
+             focus:border-primary-900 rounded-md text-sm"
           >
             {selectedOption ? selectedOption : defaultValue}
             <BiChevronDown
@@ -80,7 +80,7 @@ const Select: React.FC<ISelect> = ({
         <ul
           className={classNames(
             `wrapper-options overflow-hidden max-w-lg min-w-max w-full bg-white mt-2 border border-solid border-primary-900
-            rounded-md absolute z-40 top-full transform origin-top transition-all duration-300`,
+            rounded-md absolute z-40 top-full transform origin-top transition-all duration-200`,
             {
               'scale-y-0': collapseSelect,
               'left-0': placementOptions === 'LEFT',
