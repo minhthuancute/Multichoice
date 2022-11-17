@@ -8,7 +8,11 @@ import { fireGet } from '../../utils/firebase_utils';
 import NavQuestion from './NavQuestion';
 import ShowQuestion from './ShowQuestion';
 
-const MainDoExam: React.FC = () => {
+interface IMainDoExamProps {
+  isRealtime?: boolean;
+}
+
+const MainDoExam: React.FC<IMainDoExamProps> = ({ isRealtime = false }) => {
   const { exam_id } = useParams();
   const { exam } = examStore();
 
@@ -22,8 +26,6 @@ const MainDoExam: React.FC = () => {
 
     const onValueFirebase = () => {
       fireGet(testPath, (data: any) => {
-        console.log(data);
-
         const recordValue: ITestRealtimeRecord = data;
         if (recordValue?.started) {
           const shouldExpriedTest =
@@ -31,12 +33,6 @@ const MainDoExam: React.FC = () => {
             +recordValue.startTime + +exam.expirationTime;
 
           setStartTimeCountdown(+recordValue.startTime);
-          // recordValue?.duration
-          //   ? setStartTimeCountdown(
-          //       new Date().getTime() - +recordValue?.duration
-          //     )
-          //   : setStartTimeCountdown(+recordValue.startTime);
-
           setExpriedCountdownRealtime(shouldExpriedTest);
         }
       });

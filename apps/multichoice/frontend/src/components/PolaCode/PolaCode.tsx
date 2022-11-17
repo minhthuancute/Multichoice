@@ -46,7 +46,7 @@ const PolaCode: React.FC<IPolaCodeProps> = ({
           />
 
           <button
-            className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
+            className="create-test rounded-md flex justify-center items-center w-32 h-10 text-sm
             text-white font-bold bg-slate-800 mt-4 ml-auto"
             onClick={() => setSrcZoomImage('')}
           >

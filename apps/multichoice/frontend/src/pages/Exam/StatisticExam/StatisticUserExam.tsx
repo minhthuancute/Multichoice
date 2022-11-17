@@ -66,9 +66,7 @@ const StatisticUserExam: React.FC = () => {
       >
         <div className="container h-max pt-4 rounded-md pb-10">
           <div className="mb-10">
-            <h4 className="text-primary-900 mb-2 font-semibold underline">
-              Chi tiết:
-            </h4>
+            <h4 className="text-primary-900 mb-2 font-semibold">Chi tiết:</h4>
             <ul
               className="relative border-b border-slate-200 last:border-none py-5 px-6 bg-white
               shadow-md last:mb-0 text-tiny text-slate-800"
@@ -106,7 +104,7 @@ const StatisticUserExam: React.FC = () => {
             </ul>
           </div>
           <div>
-            <h4 className="text-primary-900 mb-2 font-semibold underline">
+            <h4 className="text-primary-900 mb-2 font-semibold">
               Danh sách câu hỏi:
             </h4>
             <QuestionsUserExam questions={userExamDetail?.questions || []} />

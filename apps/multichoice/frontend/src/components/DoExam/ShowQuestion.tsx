@@ -2,7 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { BiSkipNext, BiSkipPrevious } from 'react-icons/bi';
 import { iNotification } from 'react-notifications-component';
 import { notify } from '../../helper/notify';
-import { examServices, IPayloadEndExam } from '../../services/ExamServices';
+import {
+  examServices,
+  IPayloadEndExam,
+  IPayloadEndExamRealtime,
+} from '../../services/ExamServices';
 import { answerStore, examStore, IAnswers } from '../../store/rootReducer';
 import { IAnswer } from '../../types';
 import ExamResult from './ExamResult';
@@ -17,14 +21,17 @@ import { QuestionType } from '../../types/ICommons';
 import { expriedTime, submited } from '../../constants/msgNotify';
 import TextArea from '../Commons/TextArea/TextArea';
 import { sessionServices } from '../../services/SessionServices';
+import { useParams } from 'react-router-dom';
+
 import './doExam.scss';
 
 interface IExamResult {
-  user_name: string;
+  userName: string;
   point: number;
 }
 
 interface IShowQuestionProps {
+  isRealtime?: boolean;
   indexQuestion: number;
   setIndexQuestion: React.Dispatch<React.SetStateAction<number>>;
   startTimeCountdown?: number;
@@ -32,16 +39,18 @@ interface IShowQuestionProps {
 }
 
 const ShowQuestion: React.FC<IShowQuestionProps> = ({
+  isRealtime = false,
   indexQuestion = 0,
   setIndexQuestion,
   startTimeCountdown = 0,
   expriedCountdownRealtime = false,
 }) => {
+  const { exam_id } = useParams();
+
   const {
     exam: { questions },
     setDataExamResult,
     exam,
-    setIsSubmitExam,
     isSubmitExam,
     isExpriedExam,
   } = examStore();
@@ -90,8 +99,6 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
   };
 
   const onSumitAnswers = async () => {
-    setIsSubmitExam(true);
-    setErrorMsgSubmit('Bạn đã nộp bài');
     sessionServices.setData(IS_SUBMIT_EXAM, true);
     try {
       const payload: IPayloadEndExam = {
@@ -99,27 +106,34 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
         answerUsers: answers,
       };
 
-      const { data } = await examServices.submitExam(payload);
+      const payloadRealtime: IPayloadEndExamRealtime = {
+        url: exam_id || '',
+        userID: userDoExam.userId,
+        answerUsers: answers,
+      };
+
+      const { data } = isRealtime
+        ? await examServices.submitExam(payload)
+        : await examServices.submitExamRealtime(payloadRealtime);
 
       if (data.success) {
         setExamResult({
-          user_name: data.data.username,
+          userName: data.data.username,
           point: data.data.point,
         } as IExamResult);
         setDataExamResult({
-          user_name: data.data.username,
+          userName: data.data.username,
           point: data.data.point,
         });
 
         setOpenModalResult(true);
       }
     } catch (error: any) {
-      // if (error.response.data.statusCode === 400) {
-      //   notify({
-      //     message: errCanNotSubmit,
-      //     type: 'danger',
-      //   } as iNotification);
-      // }
+      const { message } = error.response.data;
+      notify({
+        message: message,
+        type: 'danger',
+      } as iNotification);
     }
     setOpenModalConfirm(false);
     setConfirmSubmit(false);
@@ -164,12 +178,8 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
     }
   }, [confirmSubmit]);
 
-  if (!questions) {
-    return null;
-  }
-
   const questionType = questions[indexQuestion].type;
-  return (
+  return questions ? (
     <div className="w-full h-full">
       <div className="modals">
         <ExamResult
@@ -314,7 +324,7 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
         </div>
       </div>
     </div>
-  );
+  ) : null;
 };
 
 export default React.memo(ShowQuestion);

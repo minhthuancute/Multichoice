@@ -25,25 +25,25 @@ const HeaderAuthen: React.FC = () => {
       </div>
       <div className="header-right xs:hidden md:block">
         {isLoginPage ? (
-          <p className="text-sm">
-            Don't have account ?
+          <p className="text-slate-800">
+            Don't have account?
             <Link
               to={
                 redirectUrl ? `/register?redirect=${redirectUrl}` : '/register'
               }
               className="inline-block ml-1 text-primary-900 font-semibold"
             >
-              Sign up now !
+              Sign up now
             </Link>
           </p>
         ) : (
-          <p className="text-sm">
-            Already have an account ?
+          <p className="text-slate-800">
+            Already have an account?
             <Link
               to={redirectUrl ? `/login?redirect=${redirectUrl}` : '/login'}
               className="inline-block ml-1 text-primary-900 font-semibold"
             >
-              Log in !
+              Log in
             </Link>
           </p>
         )}

@@ -1,4 +1,8 @@
-import { CreateTopicDto } from '@monorepo/multichoice/dto';
+import {
+  AddGroupForTopic,
+  CreateTopicDto,
+  PageOptionsDto,
+} from '@monorepo/multichoice/dto';
 import {
   Body,
   Controller,
@@ -7,14 +11,15 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthenticationGuard } from '../auth/guards/auth.guard';
+import { GConfig } from '../config/gconfig';
 import { SucessResponse } from '../model/SucessResponse';
-import { Topic } from '../question/entities/topic.entity';
 import { TopicService } from './topic.service';
 
 @ApiTags('topic')
@@ -30,14 +35,18 @@ export class TopicController {
     @Res() res
   ): Promise<SucessResponse> {
     const result = await this.topicService.create(topic, req.user);
-    return res.status(201).json(result);
+    return res.status(201).json(new SucessResponse(201, result));
   }
 
   @UseGuards(AuthenticationGuard)
   @Get('/all')
   @ApiBearerAuth()
-  async getTopicAll(@Req() req, @Res() res): Promise<Topic[]> {
-    const result = await this.topicService.findAllTopics(req.user);
+  async getTopicAll(
+    @Query() pageDto: PageOptionsDto,
+    @Req() req,
+    @Res() res
+  ): Promise<SucessResponse> {
+    const result = await this.topicService.findAllTopics(pageDto, req.user);
     return res.status(200).json(new SucessResponse(200, result));
   }
 
@@ -48,10 +57,10 @@ export class TopicController {
     @Param('id') id: number,
     @Res() res,
     @Req() req
-  ): Promise<Topic> {
+  ): Promise<SucessResponse> {
     const result = await this.topicService.getTopicByID(id, req.user);
 
-    return res.status(200).json(result);
+    return res.status(200).json(new SucessResponse(200, result));
   }
 
   @UseGuards(AuthenticationGuard)
@@ -72,6 +81,20 @@ export class TopicController {
     @Res() res
   ): Promise<SucessResponse> {
     const result = await this.topicService.update(id, topic, req.user);
-    return res.status(200).json(result);
+    return res.status(200).json(new SucessResponse(200, result));
+  }
+
+  @UseGuards(AuthenticationGuard)
+  @Post('addgroupfortopic')
+  @ApiBearerAuth()
+  async addGroupForTopic(
+    @Body() query: AddGroupForTopic,
+    @Req() req,
+    @Res() res
+  ): Promise<SucessResponse> {
+    await this.topicService.addGroupForTopic(query, req.user.id);
+    return res
+      .status(200)
+      .json(new SucessResponse(200, GConfig.ADD_MES_SUCESS));
   }
 }

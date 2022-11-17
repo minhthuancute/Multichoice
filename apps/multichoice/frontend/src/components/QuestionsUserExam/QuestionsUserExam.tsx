@@ -107,7 +107,7 @@ const QuestionsUserExam: React.FC<IQuestionsUserExamProps> = ({
                               'font-semibold flex items-center min-w-max',
                               {
                                 // for correct
-                                'text-green-600 underline':
+                                'text-green-600':
                                   questionType === QuestionTypeEnum.SINGLE &&
                                   typeof answerUser !== 'string'
                                     ? answerUser.includes(answerId) &&
@@ -116,7 +116,7 @@ const QuestionsUserExam: React.FC<IQuestionsUserExamProps> = ({
                                       answerUser.includes(answerId) &&
                                       isCorrectMulti,
                                 // for incorrect
-                                'text-red-500 underline':
+                                'text-red-500':
                                   questionType === QuestionTypeEnum.SINGLE &&
                                   typeof answerUser !== 'string'
                                     ? answerUser.includes(answerId) &&

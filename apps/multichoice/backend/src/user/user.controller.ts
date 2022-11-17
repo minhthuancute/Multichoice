@@ -16,7 +16,6 @@ import {
 import { UserService } from './user.service';
 import {
   ResultUserDto,
-  ResultUserExamRealtimeDto,
   UpdateUserDto,
   UserExamDto,
 } from '@monorepo/multichoice/dto';
@@ -25,6 +24,8 @@ import { AuthenticationGuard } from '../auth/guards/auth.guard';
 import { SucessResponse } from '../model/SucessResponse';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { multerOptions } from '../uploads/upload';
+import { GConfig } from '../config/gconfig';
+import { JwtAuthGuard } from '../auth/guards/JwtAuthGuard';
 
 @ApiTags('User')
 @Controller()
@@ -32,28 +33,44 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('/exam/end')
-  async endExam(@Body() resultUserDto: ResultUserDto, @Res() res) {
+  async endExam(
+    @Body() resultUserDto: ResultUserDto,
+    @Res() res
+  ): Promise<SucessResponse> {
     const result = await this.userService.endExam(resultUserDto);
-    return res.status(200).json(result);
+    return res.status(200).json(new SucessResponse(200, result));
   }
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Post('/exam/start')
-  async startExam(@Res() res, @Body() resultUserDto: UserExamDto) {
-    const result = await this.userService.startExam(resultUserDto);
-    return res.status(200).json(result);
+  async startExam(
+    @Res() res,
+    @Req() req,
+    @Body() resultUserDto: UserExamDto
+  ): Promise<SucessResponse> {
+    const result = await this.userService.startExam(resultUserDto, req.user);
+    return res.status(200).json(new SucessResponse(200, result));
   }
 
   @Get(':url')
-  async findTopicByUrl(@Param('url') url: string, @Res() res) {
+  async findTopicByUrl(
+    @Param('url') url: string,
+    @Res() res
+  ): Promise<SucessResponse> {
     const result = await this.userService.findTopicByUrl(url);
-    return res.status(200).json(result);
+    return res.status(200).json(new SucessResponse(200, result));
   }
   @UseGuards(AuthenticationGuard)
   @ApiBearerAuth()
   @Get('/getlistexambytopicid/:id')
-  async getListExamByTopicID(@Param('id') id: number, @Res() res, @Req() req) {
+  async getListExamByTopicID(
+    @Param('id') id: number,
+    @Res() res,
+    @Req() req
+  ): Promise<SucessResponse> {
     const result = await this.userService.getUserExamByTopic(id, req.user);
-    return res.status(200).json(result);
+    return res.status(200).json(new SucessResponse(200, result));
   }
 
   @UseGuards(AuthenticationGuard)
@@ -64,13 +81,13 @@ export class UserController {
     @Query('userID') userID: number,
     @Res() res,
     @Req() req
-  ) {
+  ): Promise<SucessResponse> {
     const result = await this.userService.getUserExamdetail(
       topicID,
       userID,
       req.user
     );
-    return res.status(200).json(result);
+    return res.status(200).json(new SucessResponse(200, result));
   }
 
   @UseGuards(AuthenticationGuard)
@@ -81,9 +98,8 @@ export class UserController {
     @Res() res,
     @Req() req
   ): Promise<SucessResponse> {
-    return res
-      .status(200)
-      .json(await this.userService.deleteUserExamByID(id, req.user));
+    await this.userService.deleteUserExamByID(id, req.user);
+    return res.status(200).json(new SucessResponse(200, GConfig.SUCESS));
   }
 
   @UseGuards(AuthenticationGuard)
@@ -96,10 +112,9 @@ export class UserController {
     @Res() res,
     @Req() req,
     @UploadedFiles() file
-  ) {
-    return res
-      .status(200)
-      .json(this.userService.updateUserByID(updateUserDto, file, req.user));
+  ): Promise<SucessResponse> {
+    this.userService.updateUserByID(updateUserDto, file, req.user);
+    return res.status(200).json(new SucessResponse(200, GConfig.SUCESS));
   }
 
   @UseGuards(AuthenticationGuard)
@@ -109,11 +124,11 @@ export class UserController {
     @Body() resultUserRealTimeDto: ResultUserDto,
     @Res() res,
     @Req() req
-  ) {
+  ): Promise<SucessResponse> {
     const result = await this.userService.endExamRealTime(
       resultUserRealTimeDto,
-      req.user.id
+      req.user
     );
-    return res.status(200).json(result);
+    return res.status(200).json(new SucessResponse(200, result));
   }
 }

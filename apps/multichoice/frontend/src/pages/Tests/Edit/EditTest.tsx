@@ -1,14 +1,15 @@
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import HeaderEditTest from '../../../components/EditTest/HeaderEditTest';
 import QuestionList from '../../../components/QuestionList/QuestionList';
 import { withBackTop } from '../../../HOCs/withBackTop';
 import { topicServices } from '../../../services/TopicServices';
 import { topicStore } from '../../../store/rootReducer';
-import {ITopicDetailResponse} from "../../../types";
+import { ITopicDetailResponse } from '../../../types';
 
 const EditTest: React.FC = () => {
   const query = useParams();
+  const navigate = useNavigate();
   const { setTopicDetailData } = topicStore();
 
   const getTopicDetail = async () => {
@@ -16,8 +17,8 @@ const EditTest: React.FC = () => {
     try {
       const { data } = await topicServices.getTopicById(Number(id));
       setTopicDetailData(data);
-    } catch (error) {
-      //
+    } catch {
+      navigate('/');
     }
   };
 
@@ -25,7 +26,7 @@ const EditTest: React.FC = () => {
     getTopicDetail();
     return () => {
       setTopicDetailData({} as ITopicDetailResponse);
-    }
+    };
   }, []);
 
   return (

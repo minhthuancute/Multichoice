@@ -44,7 +44,7 @@ const QuestionList: React.FC = () => {
         } as iNotification);
 
         setOpenModalDelete(false);
-        getTopicDetail();
+        // getTopicDetail();
       }
     } catch (error) {
       notify({
@@ -56,7 +56,7 @@ const QuestionList: React.FC = () => {
   };
 
   useEffect(() => {
-    getTopicDetail();
+    // getTopicDetail();
   }, []);
 
   return (
@@ -65,11 +65,14 @@ const QuestionList: React.FC = () => {
         openModal={openModalDelete}
         setOpenModal={setOpenModalDelete}
         placement="CENTER"
+        size="sm"
       >
-        <div className="modal-content mx-auto px-5 flex flex-col justify-center bg-white rounded-md max-w-lg w-full h-60">
+        <div
+          className="modal-content mx-auto flex flex-col justify-center
+        bg-white rounded-md max-w-lg w-full py-8"
+        >
           <div className="header text-center">
-            <RiErrorWarningLine className="text-red-600 text-5xl mx-auto" />
-            <h4 className="mt-4 text-slate-800 text-tiny flex justify-center">
+            <h4 className="text-slate-800 text-tiny flex justify-center">
               Bạn có chắc chắn muốn xóa bỏ câu hỏi:{' '}
               <PolaCode
                 content={questionDel?.content || ''}
@@ -80,7 +83,7 @@ const QuestionList: React.FC = () => {
           </div>
           <div className="body ctas flex items-center justify-center gap-x-2 mt-12">
             <button
-              className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
+              className="create-test rounded-md flex justify-center items-center w-32 h-10 text-sm
             text-slate-800 font-bold border border-solid border-slate-800"
               onClick={() => setOpenModalDelete(false)}
             >

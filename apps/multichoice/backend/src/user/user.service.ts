@@ -3,14 +3,15 @@ import {
   forwardRef,
   Inject,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import {
   AnswersUserDto,
   IUserDoExam,
   IUserDoExamdetail,
+  IUserExam,
   Questiondetail,
   ResultUserDto,
-  ResultUserExamRealtimeDto,
   UpdateUserDto,
   UserExamDto,
 } from '@monorepo/multichoice/dto';
@@ -22,7 +23,6 @@ import { Topic } from '../question/entities/topic.entity';
 import { Question } from '../question/entities/question.entity';
 import { UserExam } from './entities/userExam.entity';
 import { UserAnswer } from './entities/userAnswer.entity';
-import { SucessResponse } from '../model/SucessResponse';
 import {
   firebasePath,
   QuestionTypeEnum,
@@ -32,7 +32,6 @@ import { GConfig } from '../config/gconfig';
 import { RedisService } from '../redis/redis.service';
 import { FirebaseService } from '../firebase/firebase.service';
 import { realtimeExam } from '../firebase/dto/realtimeExam.dto';
-import configuration from '../config/configuration';
 
 @Injectable()
 export class UserService {
@@ -56,6 +55,7 @@ export class UserService {
     });
     return lst;
   }
+
   convertUserDoExam(userExams: UserExam): IUserDoExam {
     const userDoExam: IUserDoExam = {
       username: userExams.username,
@@ -158,7 +158,11 @@ export class UserService {
     return null;
   }
 
-  async getUserExamdetail(topicID: number, userID: number, user: User) {
+  async getUserExamdetail(
+    topicID: number,
+    userID: number,
+    user: User
+  ): Promise<IUserDoExamdetail> {
     const topic = await this.topicService.getTopicByID(topicID, user);
 
     const result = await this.userExamRepository.findOne({
@@ -169,29 +173,33 @@ export class UserService {
       relations: ['userAnswer'],
     });
     if (!result) throw new BadRequestException(GConfig.USER_NOT_FOUND);
-    return new SucessResponse(200, this.convertUserDoExamdetail(result, topic));
+    return this.convertUserDoExamdetail(result, topic);
   }
 
-  async getUserExamByTopic(id: number, user: User) {
+  async getUserExamByTopic(id: number, user: User): Promise<IUserDoExam[]> {
     if (await this.topicService.checkAuth(id, user)) {
       const result = await this.findOneByTopicID(id);
-      return new SucessResponse(200, this.convertListUserDoExam(result));
+      return this.convertListUserDoExam(result);
     }
     throw new BadRequestException(GConfig.NOT_PERMISSION_VIEW);
   }
 
-  async endExamRealTime(
-    resultUserRealTimeDto: ResultUserExamRealtimeDto,
-    userID: number
-  ) {
+  async endExamRealTime(resultUserRealTimeDto: ResultUserDto, user: User) {
     const endTime = new Date().getTime();
     if (resultUserRealTimeDto.url == undefined)
       throw new BadRequestException(GConfig.URL_NOT_EMPTY);
     const topic = await this.topicService.getIsCorrectByUrl(
       resultUserRealTimeDto.url
     );
-    const user = await this.getUserById(userID);
-    if (!user) throw new BadRequestException(GConfig.USER_NOT_FOUND);
+
+    if (topic.timeType === TopicTimeTypeEnum.FIXEDTIME)
+      throw new BadRequestException(GConfig.TOPIC_NOT_REALTIME);
+
+    if (topic.isPrivate)
+      await this.topicService.checkPermissionUserOfTopic(topic.id, user.id);
+
+    if (await this.topicService.checkUserIsExistUserExam(topic.id, user.id))
+      throw new BadRequestException(GConfig.USER_EXISTS_USEREXAM);
 
     const exam: UserExam = new UserExam();
 
@@ -200,27 +208,30 @@ export class UserService {
     )) as realtimeExam;
 
     if (dataFirebase && dataFirebase.started) {
-      exam.startTime = dataFirebase.startTime;
-      exam.username = user.username;
-      exam.topic = topic;
-      exam.endTime = endTime;
       if (
         Number(endTime) >=
         Number(topic.expirationTime) + Number(exam.startTime)
       )
-        exam.status = true;
+        throw new BadRequestException(GConfig.EXPRIED_TIME);
 
+      exam.startTime = dataFirebase.startTime;
+      exam.username = user.username;
+      exam.topic = topic;
+      exam.endTime = endTime;
       exam.point = this.pointCount(
         topic.questions,
         resultUserRealTimeDto.answerUsers
       );
+      exam.owner = user;
+
       const saveUserExam = await this.userExamRepository.save(exam);
       this.saveListUserAnswer(resultUserRealTimeDto.answerUsers, saveUserExam);
-      return new SucessResponse(200, {
-        username: saveUserExam.username,
-        point: saveUserExam.point,
-        time: Number(endTime) - Number(saveUserExam.startTime),
-      });
+      return new IUserExam(
+        saveUserExam.username,
+        saveUserExam.point,
+        saveUserExam.startTime,
+        endTime
+      );
     }
   }
 
@@ -247,6 +258,7 @@ export class UserService {
       this.userAnswerRepository.save(lst);
     }
   }
+
   async endExam(resultUserDto: ResultUserDto) {
     const endTime = new Date().getTime();
     const userID: string = resultUserDto.userID.toString();
@@ -271,21 +283,34 @@ export class UserService {
     const saveUserExam = await this.userExamRepository.save(userExam);
     this.saveListUserAnswer(resultUserDto.answerUsers, saveUserExam);
 
-    return new SucessResponse(200, {
-      username: saveUserExam.username,
-      point: saveUserExam.point,
-      time: Number(endTime) - Number(saveUserExam.startTime),
-    });
+    return new IUserExam(
+      saveUserExam.username,
+      saveUserExam.point,
+      saveUserExam.startTime,
+      endTime
+    );
   }
 
   uniqueID(): number {
     return Math.floor(Math.random() * Date.now());
   }
 
-  async startExam(userExamDto: UserExamDto) {
+  async startExam(userExamDto: UserExamDto, user: User) {
     const topic = await this.topicService.fineOneByID(userExamDto.topicID);
+
+    if (topic.timeType === TopicTimeTypeEnum.REALTIME)
+      throw new BadRequestException(GConfig.TOPIC_NOT_FIXEDTIME);
+
     const exam: UserExam = new UserExam();
-    exam.username = userExamDto.username;
+    if (topic.isPrivate) {
+      if (!user) throw new UnauthorizedException();
+      await this.topicService.checkPermissionUserOfTopic(topic.id, user.id);
+      exam.username = user.username;
+      exam.owner = new User(user.id);
+    } else {
+      exam.username = userExamDto.username;
+    }
+
     exam.topic = new Topic(topic.id);
     exam.startTime = new Date().getTime();
 
@@ -297,8 +322,7 @@ export class UserService {
       exam,
       (Number(topic.expirationTime) + Number(over)) / 1000 // chuyển về đơn vị giây
     );
-
-    return new SucessResponse(200, { userid });
+    return { userid };
   }
 
   async getUserById(id: number): Promise<User> {
@@ -383,10 +407,7 @@ export class UserService {
     });
   }
 
-  async deleteUserExamByID(
-    userID: number,
-    user: User
-  ): Promise<SucessResponse> {
+  async deleteUserExamByID(userID: number, user: User): Promise<void> {
     const userExam = await this.getUserExambyID(userID);
     if (!userExam) throw new BadRequestException(GConfig.USER_NOT_FOUND);
 
@@ -394,7 +415,6 @@ export class UserService {
       throw new BadRequestException(GConfig.NOT_PERMISSION_DELETE);
 
     await this.userExamRepository.delete({ id: userID });
-    return new SucessResponse(200, GConfig.SUCESS);
   }
 
   convertUserEntity(updateUserDto: UpdateUserDto, file: any): User {
@@ -407,11 +427,14 @@ export class UserService {
     return user;
   }
 
-  updateUserByID(updateUserDto: UpdateUserDto, file: any, user: User) {
-    this.userRepository.update(
+  async updateUserByID(
+    updateUserDto: UpdateUserDto,
+    file: any,
+    user: User
+  ): Promise<void> {
+    await this.userRepository.update(
       { id: user.id },
       this.convertUserEntity(updateUserDto, file)
     );
-    return new SucessResponse(200, GConfig.SUCESS);
   }
 }

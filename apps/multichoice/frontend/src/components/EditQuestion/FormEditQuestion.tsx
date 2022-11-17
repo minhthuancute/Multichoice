@@ -113,8 +113,8 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
 
   const getTopicDetail = async () => {
     try {
-      const { data } = await topicServices.getTopicById(Number(id));
-      setTopicDetailData(data);
+      // const { data } = await topicServices.getTopicById(Number(id));
+      // setTopicDetailData(data);
     } catch {
       //
     }
@@ -176,7 +176,7 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
       );
 
       if (data.success) {
-        getTopicDetail();
+        // getTopicDetail();
         setOpenModalEditQuestion(false);
       }
     } catch (error) {
@@ -336,7 +336,7 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
         <div className="ctas flex items-center justify-end gap-x-2 mt-8">
           <button
             type="button"
-            className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
+            className="create-test rounded-md flex justify-center items-center w-32 h-10 text-sm
           text-slate-800 font-bold border border-solid border-slate-800"
             onClick={() => setOpenModalEditQuestion(false)}
           >

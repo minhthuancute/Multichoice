@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { UseFormRegisterReturn } from 'react-hook-form';
 import { BsCheck } from 'react-icons/bs';
 import { classNames } from '../../../helper/classNames';
 import PolaCode from '../../PolaCode/PolaCode';
@@ -6,7 +7,7 @@ import './checkbox.scss';
 
 interface CheckboxProps {
   disable?: boolean;
-  registerField?: any;
+  registerField?: UseFormRegisterReturn;
   id: string;
   className?: string;
   isChecked?: boolean;
@@ -58,9 +59,12 @@ const Checkbox: React.FC<CheckboxProps> = ({
       <label
         htmlFor={id}
         onClick={(e: React.FormEvent<HTMLElement>) => onCLickLabel(e)}
-        className={classNames('flex items-center cursor-pointer text-sm', {
-          'cursor-not-allowed': disable,
-        })}
+        className={classNames(
+          'flex items-center cursor-pointer text-sm text-slate-800',
+          {
+            'cursor-not-allowed': disable,
+          }
+        )}
       >
         <div className="box mr-2 w-4 h-4 rounded-sm border border-solid border-slate-400">
           <BsCheck className="icon opacity-0 fill-white" />

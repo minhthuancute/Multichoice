@@ -124,7 +124,7 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
       <div className="test-item cursor-pointer p-4 rounded-md bg-white mb-3 last:mb-0">
         <div className="test-item__header title">
           <Link
-            className="font-semibold text-lg hover:underline text-slate-800"
+            className="font-semibold text-lg text-slate-800"
             to={'/tests/edit/' + test.id}
           >
             {test.title}
@@ -231,7 +231,7 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
               Sao chép liên kết
             </button>
             <Link
-              className="ml-5 text-sm text-slate-800 font-semibold hover:underline"
+              className="ml-5 text-sm text-slate-800 font-semibold"
               to={`/tests/${test.id}/statistic`}
             >
               Thống kê kết quả

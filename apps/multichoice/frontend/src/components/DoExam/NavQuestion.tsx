@@ -62,8 +62,7 @@ const NavQuestion: React.FC<INavQuestion> = ({
                 />
                 <h4
                   className={classNames(
-                    `text-sm text-slate-800 whitespace-nowrap overflow-ellipsis overflow-hidden
-                    hover:underline flex`,
+                    `text-sm text-slate-800 whitespace-nowrap overflow-ellipsis overflow-hidden flex`,
                     {
                       'font-semibold': index === indexQuestion,
                     }
