@@ -4,6 +4,6 @@ export * from './lib/topic.dto';
 export * from './lib/question.dto';
 export * from './lib/page.dto';
 export * from './lib/pageOptions.dto';
-export * from './lib/pagemeta.dto';
+export * from './lib/pageMeta.dto';
 export * from './lib/pageMetaParameters.dto';
 export * from './lib/group.dto';
