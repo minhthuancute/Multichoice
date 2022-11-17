@@ -21,8 +21,9 @@ import { QuestionType } from '../../types/ICommons';
 import { expriedTime, submited } from '../../constants/msgNotify';
 import TextArea from '../Commons/TextArea/TextArea';
 import { sessionServices } from '../../services/SessionServices';
-import './doExam.scss';
 import { useParams } from 'react-router-dom';
+
+import './doExam.scss';
 
 interface IExamResult {
   userName: string;
@@ -50,7 +51,6 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
     exam: { questions },
     setDataExamResult,
     exam,
-    setIsSubmitExam,
     isSubmitExam,
     isExpriedExam,
   } = examStore();
@@ -99,8 +99,6 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
   };
 
   const onSumitAnswers = async () => {
-    // setIsSubmitExam(true);
-    // setErrorMsgSubmit('Bạn đã nộp bài');
     sessionServices.setData(IS_SUBMIT_EXAM, true);
     try {
       const payload: IPayloadEndExam = {
@@ -124,19 +122,18 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
           point: data.data.point,
         } as IExamResult);
         setDataExamResult({
-          user_name: data.data.username,
+          userName: data.data.username,
           point: data.data.point,
         });
 
         setOpenModalResult(true);
       }
     } catch (error: any) {
-      // if (error.response.data.statusCode === 400) {
-      //   notify({
-      //     message: errCanNotSubmit,
-      //     type: 'danger',
-      //   } as iNotification);
-      // }
+      const { message } = error.response.data;
+      notify({
+        message: message,
+        type: 'danger',
+      } as iNotification);
     }
     setOpenModalConfirm(false);
     setConfirmSubmit(false);
@@ -181,12 +178,8 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
     }
   }, [confirmSubmit]);
 
-  if (!questions) {
-    return null;
-  }
-
   const questionType = questions[indexQuestion].type;
-  return (
+  return questions ? (
     <div className="w-full h-full">
       <div className="modals">
         <ExamResult
@@ -331,7 +324,7 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
         </div>
       </div>
     </div>
-  );
+  ) : null;
 };
 
 export default React.memo(ShowQuestion);

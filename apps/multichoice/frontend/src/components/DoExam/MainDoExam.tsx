@@ -26,8 +26,6 @@ const MainDoExam: React.FC<IMainDoExamProps> = ({ isRealtime = false }) => {
 
     const onValueFirebase = () => {
       fireGet(testPath, (data: any) => {
-        console.log(data);
-
         const recordValue: ITestRealtimeRecord = data;
         if (recordValue?.started) {
           const shouldExpriedTest =
@@ -35,12 +33,6 @@ const MainDoExam: React.FC<IMainDoExamProps> = ({ isRealtime = false }) => {
             +recordValue.startTime + +exam.expirationTime;
 
           setStartTimeCountdown(+recordValue.startTime);
-          // recordValue?.duration
-          //   ? setStartTimeCountdown(
-          //       new Date().getTime() - +recordValue?.duration
-          //     )
-          //   : setStartTimeCountdown(+recordValue.startTime);
-
           setExpriedCountdownRealtime(shouldExpriedTest);
         }
       });

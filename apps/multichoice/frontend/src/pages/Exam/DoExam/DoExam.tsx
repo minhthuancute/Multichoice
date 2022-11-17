@@ -92,15 +92,6 @@ const DoExam: React.FC = () => {
   ) : (
     <Navigate to={`/e/${exam_id}`} />
   );
-
-  // userDoExam.userName && userDoExam.userId ? (
-  //   <div className="h-max relative">
-  //     <HeaderDoExam />
-  //     <MainDoExam />
-  //   </div>
-  // ) : (
-  //   <Navigate to={`/e/${exam_id}`} />
-  // );
 };
 
 export default DoExam;
