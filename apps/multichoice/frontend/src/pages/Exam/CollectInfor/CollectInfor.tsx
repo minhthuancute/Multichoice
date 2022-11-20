@@ -68,7 +68,7 @@ const CollectInfor: React.FC = () => {
       }
       const examDetail = examInfor;
 
-      const initAnswers: IAnswers[] = examInfor.questions.map(
+      const initAnswers: IAnswers[] = data.questions.map(
         (questions: IQuestion) => {
           const tempArr: IAnswers = {
             questionID: questions.id,
@@ -81,7 +81,7 @@ const CollectInfor: React.FC = () => {
       setExamData(data);
       setExamDetailData(examDetail);
     } catch {
-      navigate('/');
+      // navigate('/');
     }
   };
 

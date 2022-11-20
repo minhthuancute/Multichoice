@@ -19,7 +19,7 @@ const HeaderAuthen: React.FC = () => {
   }, [location.pathname]);
 
   return (
-    <header className="header px-10 pt-5 flex items-center justify-between xs:flex-col md:flex-row">
+    <header className="header px-10 pt-3 flex items-center justify-between xs:flex-col md:flex-row">
       <div className="header-left">
         <Logo />
       </div>

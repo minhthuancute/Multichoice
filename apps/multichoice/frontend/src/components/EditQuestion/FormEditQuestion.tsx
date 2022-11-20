@@ -17,10 +17,10 @@ import UpdateAnswer from '../CreateQuestion/UpdateAnswers';
 import QuillEditor from '../QuillEditor/QuillEditor';
 import { hasContentEditor } from '../../utils/emptyContentEditor';
 import { IResetAnswersRef } from '../CreateQuestion/CreateAnswer';
-import { topicServices } from '../../services/TopicServices';
 import { useParams } from 'react-router-dom';
 import { errNotSelectCorrectAnswer } from '../../constants/msgNotify';
 import { classNames } from '../../helper/classNames';
+import { topicServices } from '../../services/TopicServices';
 
 const schemaFormUpdateQuestion = yup.object().shape({
   topicID: yup.number(),
@@ -113,8 +113,8 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
 
   const getTopicDetail = async () => {
     try {
-      // const { data } = await topicServices.getTopicById(Number(id));
-      // setTopicDetailData(data);
+      const { data } = await topicServices.getTopicById(Number(id));
+      setTopicDetailData(data);
     } catch {
       //
     }
@@ -130,7 +130,7 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
     }
     // answers must have correct answer
     const haveCorrectAnswer = answers.some((answers: CreatAnswer) => {
-      return answers.isCorrect === true;
+      return answers.isCorrect;
     });
 
     const haveEmptyContent = answers.some((answers: CreatAnswer) => {
@@ -176,7 +176,7 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
       );
 
       if (data.success) {
-        // getTopicDetail();
+        getTopicDetail();
         setOpenModalEditQuestion(false);
       }
     } catch (error) {

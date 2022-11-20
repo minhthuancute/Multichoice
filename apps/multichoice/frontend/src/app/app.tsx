@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import DefaultLayout from '../layouts/DefaultLayout';
@@ -16,7 +16,6 @@ import CreateQuestion from '../pages/Question/CreateQuestion';
 import PageNotFound from '../pages/Notfound/Notfound';
 
 import { ReactNotifications } from 'react-notifications-component';
-import 'react-notifications-component/dist/theme.css';
 import CollectInfor from '../pages/Exam/CollectInfor/CollectInfor';
 import DoExam from '../pages/Exam/DoExam/DoExam';
 import Home from '../pages/Home/Home';
@@ -25,10 +24,22 @@ import StatisticExam from '../pages/Exam/StatisticExam/StatisticExam';
 import StatisticUserExam from '../pages/Exam/StatisticExam/StatisticUserExam';
 import ExamLayout from '../layouts/ExamLayout';
 import DoExamRealtime from '../pages/Exam/DoExam/DoexamRealtime';
-import './app.scss';
+import FirstLoad from '../components/FirstLoad/FirstLoad';
+import 'react-notifications-component/dist/theme.css';
+import ForgotPassword from '../pages/ForgotPassword/ForgotPassword';
 
 export const App: React.FC = () => {
-  return (
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, []);
+
+  return loading ? (
+    <FirstLoad />
+  ) : (
     <BrowserRouter>
       <ReactNotifications />
       <Routes>
@@ -39,6 +50,10 @@ export const App: React.FC = () => {
         <Route
           path="/register"
           element={<PublicRoute Component={Register} restricted={true} />}
+        />
+        <Route
+          path="/forgot-password"
+          element={<PublicRoute Component={ForgotPassword} restricted={true} />}
         />
 
         <Route path="/" element={<PrivateRoute Component={DefaultLayout} />}>

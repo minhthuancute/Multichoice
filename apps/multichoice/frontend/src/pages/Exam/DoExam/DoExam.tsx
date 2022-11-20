@@ -32,9 +32,9 @@ const DoExam: React.FC = () => {
     try {
       const { data, status } = await examServices.getExamInfor(exam_id || '');
       if (status === 200) {
-        setExamData(data);
+        setExamData(data.data);
         startExam(data.id);
-        setExamDetailData(data);
+        setExamDetailData(data.data);
       }
     } catch {
       navigate('/');

@@ -44,7 +44,7 @@ const QuestionList: React.FC = () => {
         } as iNotification);
 
         setOpenModalDelete(false);
-        // getTopicDetail();
+        getTopicDetail();
       }
     } catch (error) {
       notify({
@@ -54,10 +54,6 @@ const QuestionList: React.FC = () => {
       setOpenModalDelete(false);
     }
   };
-
-  useEffect(() => {
-    // getTopicDetail();
-  }, []);
 
   return (
     <div>
