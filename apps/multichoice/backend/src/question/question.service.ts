@@ -134,7 +134,7 @@ export class QuestionService {
     updateQuestionDto: UpdateQuestionDto,
     files: any,
     user: User
-  ) {
+  ): Promise<void> {
     const question = await this.getFullQuestionByID(id);
     if (!question) throw new BadRequestException(GConfig.QUESTION_NOT_FOUND);
 
@@ -142,7 +142,7 @@ export class QuestionService {
       throw new BadRequestException(GConfig.NOT_PERMISSION_EDIT);
 
     const QuestionEntity = this.convertQuestionEntity(files, updateQuestionDto);
-    this.questionRepository.update({ id }, QuestionEntity);
+    await this.questionRepository.update({ id }, QuestionEntity);
 
     // lay ds questionOption dc phep
     const check = this.getAnswers(question.answers);
@@ -167,7 +167,7 @@ export class QuestionService {
     }
 
     if (check.length !== 0) {
-      this.answerRepository.delete(check);
+      await this.answerRepository.delete(check);
     }
   }
 }
