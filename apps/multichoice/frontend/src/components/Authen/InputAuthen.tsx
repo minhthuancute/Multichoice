@@ -54,7 +54,8 @@ const InputAuthen: React.FC<IInputAuthen> = ({
           defaultValue={defaultValue}
           className={classNames(
             `transition-all duration-200 w-full text-stone-600 outline-none border px-2.5 py-3 border-solid
-            border-stone-200 focus:border-primary-900 rounded-md text-sm placeholder:text-sm`,
+            border-stone-200 focus:border-primary-900 rounded-md text-sm placeholder:text-sm placeholder:text-slate-400
+            focus:placeholder:invisible`,
             {
               'border-stone-200 focus:border-primary-900': !isError,
               'border-red-500 focus:border-red-500': isError,

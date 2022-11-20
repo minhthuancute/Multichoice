@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect } from 'react';
 import { MdOutlineMail } from 'react-icons/md';
 import { VscUnlock } from 'react-icons/vsc';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -34,14 +34,10 @@ const schemaFormLogin = yup
   })
   .required();
 
-const Login: React.FC = () => {
+const ForgotPassword: React.FC = () => {
   const navigate = useNavigate();
   const query = useQuery();
   const { setInforUser } = userStore();
-
-  const [logginError, setLogginError] = useState<string>(
-    'Wrong user name or password'
-  );
 
   const {
     register,
@@ -90,9 +86,12 @@ const Login: React.FC = () => {
           autoComplete="off"
         >
           <div className="form-header mb-10 flex items-center md:flex-col xs:flex-col text-center">
-            <h2 className="font-medium text-black mb-4 text-3xl">Login</h2>
+            <h2 className="font-medium text-black mb-4 text-3xl">
+              Forgot Password
+            </h2>
             <p className="text-slate-800 text-sm">
-              Enter yor email address and password to get access account
+              Enter your email address below and we'll send you a link to reset
+              your password.
             </p>
           </div>
 
@@ -106,23 +105,12 @@ const Login: React.FC = () => {
             id="email"
           />
 
-          <InputAuthen
-            className="mt-5"
-            registerField={register('password')}
-            isError={Boolean(errors.password)}
-            errMessage={errors.password?.message}
-            placeholder="Password"
-            typeInput="password"
-            Icon={VscUnlock}
-            id="password"
-          />
-
           <div className="remember-me flex justify-end mt-5 text-slate-800">
             <Link
-              to="/forgot-password"
+              to="/login"
               className="text-sm transition-all duration-200 hover:text-primary-900"
             >
-              Forgot password?
+              Login Now
             </Link>
           </div>
 
@@ -131,7 +119,7 @@ const Login: React.FC = () => {
               className="w-full py-3 bg-primary-900 rounded-md text-white font-medium"
               type="submit"
             >
-              Sign in Now
+              Reset Password
             </button>
           </div>
 
@@ -142,4 +130,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login;
+export default ForgotPassword;

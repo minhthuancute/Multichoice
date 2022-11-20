@@ -36,6 +36,7 @@ interface IShowQuestionProps {
   setIndexQuestion: React.Dispatch<React.SetStateAction<number>>;
   startTimeCountdown?: number;
   expriedCountdownRealtime?: boolean;
+  questionType: string;
 }
 
 const ShowQuestion: React.FC<IShowQuestionProps> = ({
@@ -44,6 +45,7 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
   setIndexQuestion,
   startTimeCountdown = 0,
   expriedCountdownRealtime = false,
+  questionType,
 }) => {
   const { exam_id } = useParams();
 
@@ -178,7 +180,7 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
     }
   }, [confirmSubmit]);
 
-  const questionType = questions[indexQuestion].type;
+  // const questionType = questions[indexQuestion].type;
   return questions ? (
     <div className="w-full h-full">
       <div className="modals">

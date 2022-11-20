@@ -1,6 +1,6 @@
 import React, { ComponentType } from 'react';
 import { loadingStore } from '../store/rootReducer';
-import './style.css';
+import './loading.css';
 
 export function withLoading<T>(Component: ComponentType<T & any>) {
   const loadingModal = () => (

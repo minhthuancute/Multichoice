@@ -160,7 +160,9 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
                 <li className="relative group mr-4 mt-1">
                   <ToolTip
                     title={
-                      startedTestRealtime ? 'Dừng làm bài' : 'Bắt đầu làm bài'
+                      startedTestRealtime
+                        ? 'Bài thi đã bắt đầu'
+                        : 'Bắt đầu làm bài'
                     }
                   >
                     {startedTestRealtime ? (
