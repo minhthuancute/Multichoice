@@ -25,10 +25,8 @@ const DoExamRealtime: React.FC = () => {
   const { user } = userStore();
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isRealtime, setIsRealtime] = useState<boolean>(false);
 
   const getExamDetail = async () => {
-    setIsRealtime(true);
     try {
       setIsLoading(true);
       const { data } = await examServices.getExamInfor(exam_id || '');
@@ -81,7 +79,7 @@ const DoExamRealtime: React.FC = () => {
   return localServices.getData(TOKEN) ? (
     <div className="h-max relative">
       <HeaderDoExam />
-      {isLoading ? <DoExamSkelenton /> : <MainDoExam isRealtime={isRealtime} />}
+      {isLoading ? <DoExamSkelenton /> : <MainDoExam />}
     </div>
   ) : (
     <Navigate to={`/login?redirect=${exam_id}`} />

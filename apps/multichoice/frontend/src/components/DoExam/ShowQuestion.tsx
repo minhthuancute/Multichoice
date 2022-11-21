@@ -36,7 +36,6 @@ interface IShowQuestionProps {
   setIndexQuestion: React.Dispatch<React.SetStateAction<number>>;
   startTimeCountdown?: number;
   expriedCountdownRealtime?: boolean;
-  questionType: string;
 }
 
 const ShowQuestion: React.FC<IShowQuestionProps> = ({
@@ -45,7 +44,6 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
   setIndexQuestion,
   startTimeCountdown = 0,
   expriedCountdownRealtime = false,
-  questionType,
 }) => {
   const { exam_id } = useParams();
 
@@ -180,7 +178,6 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
     }
   }, [confirmSubmit]);
 
-  // const questionType = questions[indexQuestion].type;
   return questions ? (
     <div className="w-full h-full">
       <div className="modals">
@@ -274,7 +271,8 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
                       <input
                         hidden
                         type={
-                          questionType === QuestionTypeEnum.MULTIPLE
+                          questions[indexQuestion].type ===
+                          QuestionTypeEnum.MULTIPLE
                             ? 'checkbox'
                             : 'radio'
                         }
@@ -285,7 +283,7 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
                         onChange={() =>
                           onChooseAnswer(
                             answers.id,
-                            `${questionType}` as QuestionType
+                            `${questions[indexQuestion].type}` as QuestionType
                           )
                         }
                       />
@@ -305,7 +303,7 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
               }
             )}
 
-          {questionType === QuestionTypeEnum.MULTIPLE ? (
+          {questions[indexQuestion].type === QuestionTypeEnum.MULTIPLE ? (
             <div className="mt-3">
               <p className="text-sm text-primary-800 italic text-center">
                 (Có thể có nhiều đáp án đúng)
@@ -313,12 +311,15 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
             </div>
           ) : null}
 
-          {questionType === QuestionTypeEnum.TEXT ? (
+          {questions[indexQuestion].type === QuestionTypeEnum.TEXT ? (
             <TextArea
               key={'answer-' + indexQuestion}
               defaultValue={answers[indexQuestion].answerID}
               onChange={(value: string) => {
-                onChooseAnswer(value, `${questionType}` as QuestionType);
+                onChooseAnswer(
+                  value,
+                  `${questions[indexQuestion].type}` as QuestionType
+                );
               }}
               placeholder="Nhập câu trả lời..."
             />
