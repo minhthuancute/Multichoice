@@ -54,27 +54,7 @@ const ForgotPassword: React.FC = () => {
   const onSubmit: SubmitHandler<LoginUserDto> = async (
     formData: LoginUserDto
   ) => {
-    try {
-      const data: AxiosResponse = await authenServices.login(formData);
-      const loginResponse: ILoginResponse = data.data;
-      if (loginResponse.success) {
-        const { payload, token } = loginResponse.data;
-        localServices.setData(TOKEN, token);
-        setInforUser(payload, token);
-
-        const redirectUrl = query.get('redirect');
-        if (redirectUrl) {
-          navigate(`/e/${redirectUrl}/do-exam-realtime`);
-        } else {
-          navigate('/');
-        }
-      }
-    } catch (error) {
-      notify({
-        message: loginError,
-        type: 'danger',
-      } as iNotification);
-    }
+    //
   };
 
   return (
