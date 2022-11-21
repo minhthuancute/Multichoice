@@ -21,7 +21,7 @@
 }
 
 #splash { 
-    animation: fadeOut 0.2s var(--splash-timer) linear forwards;
+    animation: fadeOut 0.2s calc(var(--splash-timer) + 0.2s) linear forwards;
 }
 
 

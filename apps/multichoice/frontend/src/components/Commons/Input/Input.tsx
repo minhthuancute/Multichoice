@@ -20,6 +20,7 @@ export interface IInput {
   isRequired?: boolean;
   isDisable?: boolean;
   inputSize?: InputSize;
+  hasBorder?: boolean;
 }
 
 const Input: React.FC<IInput> = ({
@@ -38,6 +39,7 @@ const Input: React.FC<IInput> = ({
   isRequired = false,
   isDisable = false,
   inputSize = 'sm',
+  hasBorder = true,
 }) => {
   return (
     <div className={classNames(['form-group relative', className])}>
@@ -64,7 +66,7 @@ const Input: React.FC<IInput> = ({
           className={classNames(
             [
               `text-sm transition-all duration-200 w-full text-stone-600 outline-none
-            border px-4 border-solid border-stone-200 focus:border-primary-900
+             px-4  
             rounded-md placeholder:text-sm`,
             ],
             {
@@ -75,6 +77,8 @@ const Input: React.FC<IInput> = ({
               'py-2': inputSize === 'sm',
               'py-3': inputSize === 'md',
               'py-4': inputSize === 'lg',
+              'border border-solid border-stone-200 focus:border-primary-900 rounded-md':
+                hasBorder,
             }
           )}
         />
