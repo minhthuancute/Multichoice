@@ -14,6 +14,7 @@ const Header: React.FC = () => {
   const { user } = userStore();
 
   const refDropdownUser = useRef<HTMLDivElement>(null);
+  const refUsername = useRef<HTMLHeadingElement>(null);
 
   const [openDropdown, setOpenDropdown] = useState<boolean>(false);
 
@@ -26,7 +27,7 @@ const Header: React.FC = () => {
     setOpenDropdown(false);
   };
 
-  useOnClickOutside(refDropdownUser, onClickOutsideDropdownUser);
+  useOnClickOutside(refDropdownUser, onClickOutsideDropdownUser, refUsername);
   return (
     <header
       className="bg-white"
@@ -48,12 +49,14 @@ const Header: React.FC = () => {
               <img src={Avatar} alt="" className="w-6 h-6 rounded-full mr-2" />
               <h3
                 className="text-slate-800 font-medium text-tiny cursor-pointer"
-                onClick={() => setOpenDropdown((state) => !state)}
+                onClick={() => {
+                  setOpenDropdown((state) => !state);
+                }}
+                ref={refUsername}
               >
                 Hello, {user.username}
               </h3>
             </div>
-
             <div
               className={classNames(
                 `dropdown-user p-4 bg-white shadow-md absolute right-0 top-full w-[296px] z-40
