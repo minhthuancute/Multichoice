@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { classNames } from '../../helper/classNames';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
+import './modal.scss';
 
 type PlacementContent =
   | 'CENTER'
@@ -64,7 +65,7 @@ const Modal: React.FC<ILayout> = ({
       <div
         className={classNames(
           `modal fixed z-40 top-0 transition-all duration-400 w-full px-4
-         h-full bg-slate-900 bg-opacity-40 overflow-auto py-10`,
+          h-full bg-slate-900 bg-opacity-40 overflow-auto py-10`,
           {
             'visible opacity-100': openModal,
             'invisible opacity-0': !openModal,
