@@ -14,6 +14,7 @@ import { UserAnswer } from '../user/entities/userAnswer.entity';
 import { RedisModule } from '../redis/redis.module';
 import { User } from '../user/entities/user.entity';
 import { firebaseModule } from '../firebase/firebase.module';
+import { GroupModule } from '../group/group.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { firebaseModule } from '../firebase/firebase.module';
     ]),
     RedisModule,
     firebaseModule,
+    GroupModule,
   ],
   controllers: [QuestionController],
   providers: [QuestionService, TopicService, JsonWebTokenStrategy, UserService],

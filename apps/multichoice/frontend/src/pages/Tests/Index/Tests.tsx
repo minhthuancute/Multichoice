@@ -21,21 +21,26 @@ const Tests: React.FC = () => {
           <h3 className="text-xl font-semibold leading-none">
             Danh sách đề thi
           </h3>
-          <Link
-            to="/tests/create"
-            className="create-test btn-primary rounded-md bg-primary-900 text-sm
-            text-white font-bold flex justify-center items-center w-32 h-10 transition-all
-            duration-200 hover:bg-primary-800
-            "
-          >
-            Tạo đề thi
-          </Link>
+          <div className="w-1/2">
+            <FilterTests onFilter={onFilter} />
+          </div>
         </div>
       </div>
 
       <div className="content-page test-body pt-5 pb-10 bg-slate-100">
         <div className="container">
-          <FilterTests onFilter={onFilter} />
+          <div className="flex justify-end">
+            <Link
+              to="/tests/create"
+              className="create-test btn-primary rounded-md bg-primary-900 text-sm
+            text-white font-bold flex justify-center items-center w-32 h-10 transition-all
+            duration-200 hover:bg-primary-800
+            "
+            >
+              Tạo đề thi
+            </Link>
+          </div>
+
           <TestList searchKeyword={searchKeyword} />
         </div>
       </div>

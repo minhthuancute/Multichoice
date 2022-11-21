@@ -6,7 +6,6 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Question } from './entities/question.entity';
 import { Repository } from 'typeorm';
-import { SucessResponse } from '../model/SucessResponse';
 import { plainToClass } from 'class-transformer';
 import { Answer } from '../answer/entities/answer.entity';
 import { TopicService } from '../topic/topic.service';
@@ -29,10 +28,7 @@ export class QuestionService {
     return true;
   }
 
-  async create(
-    createQuestionDto: CreateQuestionDto,
-    files: any
-  ): Promise<SucessResponse> {
+  async create(createQuestionDto: CreateQuestionDto, files: any) {
     const checkTopic = await this.topicService.fineOneByID(
       createQuestionDto.topicID
     );
@@ -74,8 +70,6 @@ export class QuestionService {
       });
       await this.answerRepository.save(answers);
     }
-
-    return new SucessResponse(201, GConfig.SUCESS);
   }
 
   //lay day du thong tin question
@@ -140,7 +134,7 @@ export class QuestionService {
     updateQuestionDto: UpdateQuestionDto,
     files: any,
     user: User
-  ): Promise<SucessResponse> {
+  ): Promise<void> {
     const question = await this.getFullQuestionByID(id);
     if (!question) throw new BadRequestException(GConfig.QUESTION_NOT_FOUND);
 
@@ -148,7 +142,7 @@ export class QuestionService {
       throw new BadRequestException(GConfig.NOT_PERMISSION_EDIT);
 
     const QuestionEntity = this.convertQuestionEntity(files, updateQuestionDto);
-    this.questionRepository.update({ id }, QuestionEntity);
+    await this.questionRepository.update({ id }, QuestionEntity);
 
     // lay ds questionOption dc phep
     const check = this.getAnswers(question.answers);
@@ -173,9 +167,7 @@ export class QuestionService {
     }
 
     if (check.length !== 0) {
-      this.answerRepository.delete(check);
+      await this.answerRepository.delete(check);
     }
-
-    return new SucessResponse(200, GConfig.SUCESS);
   }
 }

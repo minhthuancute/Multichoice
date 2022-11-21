@@ -1,9 +1,13 @@
 import React, { useLayoutEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useQuery } from '../../hooks/useQuery';
 import Logo from '../Logo/Logo';
 
 const HeaderAuthen: React.FC = () => {
   const location = useLocation();
+  const query = useQuery();
+  const redirectUrl = query.get('redirect') || '';
+
   const [isLoginPage, setIsLoginPage] = useState<boolean>(true);
 
   useLayoutEffect(() => {
@@ -15,29 +19,31 @@ const HeaderAuthen: React.FC = () => {
   }, [location.pathname]);
 
   return (
-    <header className="header px-10 pt-5 flex items-center justify-between xs:flex-col md:flex-row">
+    <header className="header px-10 pt-3 flex items-center justify-between xs:flex-col md:flex-row">
       <div className="header-left">
         <Logo />
       </div>
       <div className="header-right xs:hidden md:block">
         {isLoginPage ? (
-          <p className="text-sm">
-            Don't have account ?
+          <p className="text-slate-800">
+            Don't have account?
             <Link
-              to="/register"
+              to={
+                redirectUrl ? `/register?redirect=${redirectUrl}` : '/register'
+              }
               className="inline-block ml-1 text-primary-900 font-semibold"
             >
-              Sign up now !
+              Sign up now
             </Link>
           </p>
         ) : (
-          <p className="text-sm">
-            Already have an account ?
+          <p className="text-slate-800">
+            Already have an account?
             <Link
-              to="/login"
+              to={redirectUrl ? `/login?redirect=${redirectUrl}` : '/login'}
               className="inline-block ml-1 text-primary-900 font-semibold"
             >
-              Log in !
+              Log in
             </Link>
           </p>
         )}

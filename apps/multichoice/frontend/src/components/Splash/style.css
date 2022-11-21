@@ -1,0 +1,38 @@
+:root { 
+    --splash-timer: 1.2s;
+}
+
+#splash > svg path:nth-child(1) {
+    stroke-dasharray: 763.814208984375px;
+    stroke-dashoffset: 763.814208984375px;
+    animation: animate var(--splash-timer) linear forwards;
+}
+
+#splash > svg path:nth-child(2) {
+    stroke-dasharray: 495.2701416015625px;
+    stroke-dashoffset: 495.2701416015625px;
+    animation: animate var(--splash-timer) linear forwards;
+}
+
+#splash > svg path:nth-child(3) {
+    stroke-dasharray: 819.0241088867188px;
+    stroke-dashoffset: 819.0241088867188px;
+    animation: animate var(--splash-timer) linear forwards;
+}
+
+#splash { 
+    animation: fadeOut 0.2s calc(var(--splash-timer) + 0.2s) linear forwards;
+}
+
+
+@keyframes animate {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+    }
+}

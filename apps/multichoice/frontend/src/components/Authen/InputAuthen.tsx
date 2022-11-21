@@ -1,5 +1,7 @@
 import React, { HTMLInputTypeAttribute, useState } from 'react';
+import { UseFormRegisterReturn } from 'react-hook-form';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
+import { IconType } from 'react-icons/lib';
 import { classNames } from '../../helper/classNames';
 
 export interface IInputAuthen {
@@ -7,12 +9,12 @@ export interface IInputAuthen {
   className?: string;
   id?: string;
   placeholder?: string;
-  Icon?: any;
+  Icon?: IconType;
   typeInput?: HTMLInputTypeAttribute;
   isError?: boolean;
   errMessage?: string;
   fieldName?: string;
-  registerField?: any;
+  registerField?: UseFormRegisterReturn;
 }
 
 const InputAuthen: React.FC<IInputAuthen> = ({
@@ -52,7 +54,8 @@ const InputAuthen: React.FC<IInputAuthen> = ({
           defaultValue={defaultValue}
           className={classNames(
             `transition-all duration-200 w-full text-stone-600 outline-none border px-2.5 py-3 border-solid
-            border-stone-200 focus:border-primary-900 rounded-md text-sm placeholder:text-sm`,
+            border-stone-200 focus:border-primary-900 rounded-md text-sm placeholder:text-sm placeholder:text-slate-400
+            focus:placeholder:invisible`,
             {
               'border-stone-200 focus:border-primary-900': !isError,
               'border-red-500 focus:border-red-500': isError,
@@ -77,7 +80,10 @@ const InputAuthen: React.FC<IInputAuthen> = ({
 
         {/* toggle password */}
         {typeInput === 'password' && (
-          <div className="absolute inline-block px-2 right-2 top-1/2 transform -translate-y-1/2">
+          <div
+            className="absolute flex px-2 right-2 top-1/2 transform -translate-y-1/2
+           items-center"
+          >
             <button type="button" onClick={() => setIsHidePass(!isHidePass)}>
               {isHidePass ? (
                 <AiOutlineEye

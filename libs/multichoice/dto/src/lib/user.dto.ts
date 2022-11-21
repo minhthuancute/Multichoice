@@ -89,6 +89,9 @@ export class ResultUserDto {
   @ApiProperty()
   userID: number;
 
+  @ApiProperty()
+  url: string;
+
   @ApiProperty({ type: [AnswersUserDto] })
   answerUsers: AnswersUserDto[];
 }
@@ -127,4 +130,20 @@ export interface Answer {
   id: number;
   content: string;
   isCorrect: boolean;
+}
+
+export class IUserExam {
+  public username: string;
+  public point: number;
+  public time: number;
+  constructor(
+    username: string,
+    point: number,
+    startTime: number,
+    endTime: number
+  ) {
+    this.username = username;
+    this.point = point;
+    this.time = endTime - startTime;
+  }
 }

@@ -35,9 +35,11 @@ export class authController {
   @UseInterceptors(FileFieldsInterceptor([{ name: 'avatar' }], multerOptions))
   async create(
     @Body() createUserDto: CreateUserDto,
-    @UploadedFiles() file
-  ): Promise<any> {
-    return this.authService.create(createUserDto, file);
+    @UploadedFiles() file,
+    @Res() res
+  ): Promise<SucessResponse> {
+    const result = await this.authService.create(createUserDto, file);
+    return res.status(201).json(new SucessResponse(201, result));
   }
 
   @UseGuards(LocalAuthGuard)
@@ -46,7 +48,7 @@ export class authController {
     @Body() login: LoginUserDto,
     @Req() req,
     @Res() res
-  ): Promise<any> {
+  ): Promise<SucessResponse> {
     return res.status(200).json(new SucessResponse(200, req.user));
   }
 
@@ -57,7 +59,7 @@ export class authController {
     @Req() req,
     @Res() res,
     @Body() changePasswordDto: UpdateUserPasswordDto
-  ): Promise<boolean> {
+  ): Promise<SucessResponse> {
     const result = await this.authService.changePassword(
       req.user.id,
       changePasswordDto
@@ -65,7 +67,7 @@ export class authController {
     return res.status(200).json(new SucessResponse(200, result));
   }
 
-  @Post('/forgotPassword')
+  @Post('/forgotpassword')
   async forgotPassword(
     @Query() forgotPasswordDto: ForgotPasswordDto,
     @Res() res
@@ -84,7 +86,7 @@ export class authController {
   async resetPassword(
     @Body() resetPasswordDto: ResetPasswordDto,
     @Res() res
-  ): Promise<void> {
+  ): Promise<SucessResponse> {
     return res
       .status(200)
       .json(

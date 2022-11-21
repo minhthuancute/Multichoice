@@ -17,10 +17,10 @@ import UpdateAnswer from '../CreateQuestion/UpdateAnswers';
 import QuillEditor from '../QuillEditor/QuillEditor';
 import { hasContentEditor } from '../../utils/emptyContentEditor';
 import { IResetAnswersRef } from '../CreateQuestion/CreateAnswer';
-import { topicServices } from '../../services/TopicServices';
 import { useParams } from 'react-router-dom';
 import { errNotSelectCorrectAnswer } from '../../constants/msgNotify';
 import { classNames } from '../../helper/classNames';
+import { topicServices } from '../../services/TopicServices';
 
 const schemaFormUpdateQuestion = yup.object().shape({
   topicID: yup.number(),
@@ -130,7 +130,7 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
     }
     // answers must have correct answer
     const haveCorrectAnswer = answers.some((answers: CreatAnswer) => {
-      return answers.isCorrect === true;
+      return answers.isCorrect;
     });
 
     const haveEmptyContent = answers.some((answers: CreatAnswer) => {
@@ -336,7 +336,7 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
         <div className="ctas flex items-center justify-end gap-x-2 mt-8">
           <button
             type="button"
-            className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
+            className="create-test rounded-md flex justify-center items-center w-32 h-10 text-sm
           text-slate-800 font-bold border border-solid border-slate-800"
             onClick={() => setOpenModalEditQuestion(false)}
           >

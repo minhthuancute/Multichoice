@@ -16,11 +16,7 @@ const HeaderEditTest: React.FC = () => {
   const { topicDetail } = topicStore();
   const [openModalEditTest, setOpenModalEditTest] = useState<boolean>(false);
 
-  if (Object.keys(topicDetail).length === 0) {
-    return null;
-  }
-
-  return (
+  return Object.keys(topicDetail).length !== 0 ? (
     <div className="header-edit-test">
       <Modal
         openModal={openModalEditTest}
@@ -29,7 +25,7 @@ const HeaderEditTest: React.FC = () => {
       >
         <FormEditTest setOpenModalEditTest={setOpenModalEditTest} />
       </Modal>
-      <div className="container py-4 border-b border-solid border-slate-200">
+      <div className="container pt-4">
         <Breadcrumb>
           <Breadcrumb.Item>
             <Link to="/tests">Đề thi</Link>
@@ -44,12 +40,14 @@ const HeaderEditTest: React.FC = () => {
             <h3 className="text-slate-800 text-xl font-semibold">
               {topicDetail.title}
             </h3>
-            <p className="text-slate-800 text-sm">{topicDetail.description}</p>
+            <p className="text-slate-800 text-sm mt-1">
+              {topicDetail.description}
+            </p>
           </div>
           <div className="ctas">
             <ToolTip title="Cập nhật đề thi">
               <button
-                className="create-test btn-primary rounded-md bg-slate-800 text-xs
+                className="create-test rounded-md bg-slate-800 text-xs
               text-white font-bold flex justify-center items-center px-3 h-8"
                 onClick={() => setOpenModalEditTest(true)}
               >
@@ -67,7 +65,7 @@ const HeaderEditTest: React.FC = () => {
           </li>
           <li className="flex items-center text-sm mr-3">
             <AiOutlineQuestionCircle className="text-slate-800 mr-1" />
-            <span>{topicDetail.questions.length} câu hỏi</span>
+            <span>{topicDetail?.questions.length || 0} câu hỏi</span>
           </li>
           <li className="flex items-center text-sm">
             <AiOutlineFieldTime className="text-slate-800 mr-1 text-base" />
@@ -93,7 +91,7 @@ const HeaderEditTest: React.FC = () => {
         </div>
       </div>
     </div>
-  );
+  ) : null;
 };
 
 export default HeaderEditTest;

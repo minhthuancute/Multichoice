@@ -15,7 +15,6 @@ import {
   errMaxlengthAnswer,
   errMinlengthAnswer,
 } from '../../constants/msgNotify';
-import { BsInfoCircle } from 'react-icons/bs';
 
 const answerSchema = yup.object().shape({
   answers: yup.array().of(
@@ -219,8 +218,7 @@ const CreateAnswer: React.FC<ICreateAnswerProps> = forwardRef(
             >
               Thêm đáp án
             </button>
-            <div className="bg-green-50 rounded-md p-4 mt-3 flex items-center">
-              <BsInfoCircle className="fill-green-800 mr-2 text-xl" />
+            <div className="bg-green-50 rounded-md px-4 py-2 mt-3 flex items-center">
               <p className="text-sm text-green-800">
                 Tick vào ô vuông cạnh đáp án để chọn
                 <span className="text-green-600 font-semibold">

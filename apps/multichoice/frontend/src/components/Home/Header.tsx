@@ -88,8 +88,8 @@ const Header: React.FC = () => {
               </ul>
               <div className="logout pt-5 border-t border-slate-200">
                 <button
-                  className="btn-primary bg-red-500 text-white text-sm w-full py-1
-                  rounded-sm font-semibold text-center cursor-pointer"
+                  className="bg-red-500 text-white text-sm w-full py-1
+                  rounded-sm font-semibold text-center cursor-pointer focus:ring focus:ring-red-100"
                   onClick={handleLogout}
                 >
                   Đăng Xuất

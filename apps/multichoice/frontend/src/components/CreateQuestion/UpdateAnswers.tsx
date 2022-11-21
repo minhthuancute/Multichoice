@@ -15,7 +15,6 @@ import {
   errMaxlengthAnswer,
   errMinlengthAnswer,
 } from '../../constants/msgNotify';
-import { BsInfoCircle } from 'react-icons/bs';
 
 export const answerSchema = yup.object().shape({
   answers: yup.array().of(
@@ -26,7 +25,7 @@ export const answerSchema = yup.object().shape({
   ),
 });
 
-export interface IAnswers {
+interface IUpdateAnswers {
   answers: CreatAnswer[];
 }
 
@@ -50,7 +49,7 @@ const UpdateAnswer: React.FC<IUpdateAnswerProps> = forwardRef(
     } = props;
 
     const { setValue, getValues, register, control, watch, reset } =
-      useForm<IAnswers>({
+      useForm<IUpdateAnswers>({
         resolver: yupResolver(answerSchema),
       });
 
@@ -201,8 +200,7 @@ const UpdateAnswer: React.FC<IUpdateAnswerProps> = forwardRef(
             >
               Thêm đáp án
             </button>
-            <div className="bg-green-50 rounded-md p-4 mt-3 flex items-center">
-              <BsInfoCircle className="fill-green-800 mr-2 text-xl" />
+            <div className="bg-green-50 rounded-md px-4 py-2 mt-3 flex items-center">
               <p className="text-sm text-green-800">
                 Tick vào ô vuông cạnh đáp án để chọn
                 <span className="text-green-600 font-semibold">

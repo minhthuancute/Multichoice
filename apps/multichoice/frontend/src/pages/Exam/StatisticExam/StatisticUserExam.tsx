@@ -15,11 +15,9 @@ import { getDate, getDistance, getTime } from '../../../utils/formatDate';
 const StatisticUserExam: React.FC = () => {
   const { id: topic_id } = useParams();
   const query = useQuery();
-
   const topicId = Number(topic_id) || -1;
 
   const [userExamDetail, setUserExamDetail] = useState<IUserDoExamdetail>();
-  const [topicTitle, setTopicTitle] = useState<string>('');
 
   const getStatisticUserDetail = async () => {
     try {
@@ -38,7 +36,6 @@ const StatisticUserExam: React.FC = () => {
   };
 
   useEffect(() => {
-    setTopicTitle(getTopicTitle(topicId));
     getStatisticUserDetail();
   }, []);
 
@@ -52,7 +49,9 @@ const StatisticUserExam: React.FC = () => {
             <Link to="/tests">Đề thi</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
-            <Link to={`/tests/${topicId}/statistic`}>{topicTitle}</Link>
+            <Link to={`/tests/${topicId}/statistic`}>
+              {getTopicTitle(topicId)}
+            </Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
             <div>Thống kê</div>
@@ -67,9 +66,7 @@ const StatisticUserExam: React.FC = () => {
       >
         <div className="container h-max pt-4 rounded-md pb-10">
           <div className="mb-10">
-            <h4 className="text-primary-900 mb-2 font-semibold underline">
-              Chi tiết:
-            </h4>
+            <h4 className="text-primary-900 mb-2 font-semibold">Chi tiết:</h4>
             <ul
               className="relative border-b border-slate-200 last:border-none py-5 px-6 bg-white
               shadow-md last:mb-0 text-tiny text-slate-800"
@@ -107,7 +104,7 @@ const StatisticUserExam: React.FC = () => {
             </ul>
           </div>
           <div>
-            <h4 className="text-primary-900 mb-2 font-semibold underline">
+            <h4 className="text-primary-900 mb-2 font-semibold">
               Danh sách câu hỏi:
             </h4>
             <QuestionsUserExam questions={userExamDetail?.questions || []} />

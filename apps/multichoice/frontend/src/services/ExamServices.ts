@@ -2,12 +2,18 @@ import { IAnswers } from '../store/rootReducer';
 import { Api } from './Api';
 
 export interface IPayloadStartExam {
-  username: string;
+  userName: string;
   topicID: number;
 }
 
 export interface IPayloadEndExam {
   userID: number;
+  answerUsers: IAnswers[];
+}
+
+export interface IPayloadEndExamRealtime {
+  userID: number;
+  url: string;
   answerUsers: IAnswers[];
 }
 
@@ -38,6 +44,12 @@ class ExamServices extends Api {
   // end Exam
   submitExam(payload: IPayloadEndExam) {
     const data = this.post('/exam/end', payload);
+    return data;
+  }
+
+  // end Exam realtime
+  submitExamRealtime(payload: IPayloadEndExamRealtime) {
+    const data = this.post('/examrealtime/end', payload);
     return data;
   }
 

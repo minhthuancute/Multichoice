@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { Timestamp } from '../../orm/timestamp.entity';
 import { Topic } from '../../question/entities/topic.entity';
+import { User } from './user.entity';
 import { UserAnswer } from './userAnswer.entity';
 
 @Entity()
@@ -14,7 +15,7 @@ export class UserExam extends Timestamp {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({default: null})
+  @Column({ default: null })
   username: string;
 
   @Column({ type: 'bigint', default: 0 })
@@ -34,4 +35,7 @@ export class UserExam extends Timestamp {
 
   @OneToMany(() => UserAnswer, (qs) => qs.userExam)
   userAnswer: UserAnswer[];
+
+  @ManyToOne(() => User, (user) => user.userExams, { onDelete: 'CASCADE' })
+  owner: User;
 }

@@ -43,6 +43,7 @@ interface ITestItemProp {
 }
 
 const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
+  const isrealtime = test.timeType.toUpperCase() === 'REALTIME';
   const [modalHandlePlayTest, setModalHandlePlayTest] =
     useState<boolean>(false);
   const [startedTestRealtime, setStartedTestRealtime] =
@@ -51,7 +52,7 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
 
   const examUrl = (): string => {
     const host = window.location.origin + '/e/';
-    return host + test.topicUrl;
+    return host + test.topicUrl + (isrealtime ? '/do-exam-realtime' : '');
   };
 
   const onCopyClipboard = () => {
@@ -86,6 +87,17 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
         setStartedTestRealtime(false);
       }
     });
+    // const dev = setInterval(() => {
+    //   const shouldExpriedTest =
+    //     new Date().getTime() > +time + +test?.expirationTime;
+    //   if (shouldExpriedTest) {
+    //     fireDelete(testPath);
+    //     setStartedTestRealtime(false);
+    //   }
+    // }, 1000);
+    // return () => {
+    //   clearInterval(dev);
+    // };
   }, []);
 
   useEffect(() => {
@@ -112,7 +124,7 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
       <div className="test-item cursor-pointer p-4 rounded-md bg-white mb-3 last:mb-0">
         <div className="test-item__header title">
           <Link
-            className="font-semibold text-lg hover:underline text-slate-800"
+            className="font-semibold text-lg text-slate-800"
             to={'/tests/edit/' + test.id}
           >
             {test.title}
@@ -148,7 +160,9 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
                 <li className="relative group mr-4 mt-1">
                   <ToolTip
                     title={
-                      startedTestRealtime ? 'Dừng làm bài' : 'Bắt đầu làm bài'
+                      startedTestRealtime
+                        ? 'Bài thi đã bắt đầu'
+                        : 'Bắt đầu làm bài'
                     }
                   >
                     {startedTestRealtime ? (
@@ -199,7 +213,14 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
             {test.questionCount === 0 ? (
               <p>Bộ đề chưa có câu hỏi nào. Hãy thêm câu hỏi cho bộ đề</p>
             ) : (
-              <Link to={'/e/' + test.topicUrl} target="_blank">
+              <Link
+                to={
+                  '/e/' +
+                  test.topicUrl +
+                  (isrealtime ? '/do-exam-realtime' : '')
+                }
+                target="_blank"
+              >
                 {examUrl()}
               </Link>
             )}
@@ -212,7 +233,7 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
               Sao chép liên kết
             </button>
             <Link
-              className="ml-5 text-sm text-slate-800 font-semibold hover:underline"
+              className="ml-5 text-sm text-slate-800 font-semibold"
               to={`/tests/${test.id}/statistic`}
             >
               Thống kê kết quả

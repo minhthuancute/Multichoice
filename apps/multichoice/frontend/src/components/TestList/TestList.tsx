@@ -21,6 +21,9 @@ const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
   const [openModalDelete, setOpenModalDelete] = useState<boolean>(false);
   const [testIdDel, setTestIdDel] = useState<number>(-1);
   const [testTitleDel, setTestTitleDel] = useState<string>('');
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSie, setPageSie] = useState<number>(10);
+
   const [paramSearch] = useState<string>(() => {
     const params = query.get('search') || '';
     const formatParamSearch = removeVietnameseTones(params).toLowerCase();
@@ -29,7 +32,10 @@ const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
 
   const getListTest = async () => {
     try {
-      const { data } = await topicServices.getAllTopic();
+      const { data } = await topicServices.getAllTopic({
+        page: currentPage,
+        take: pageSie,
+      });
       const topicResponse: ITopicResponse[] = data.data;
       const topicsData = topicResponse.map((test: ITopicResponse) => {
         const testData: ITestItem = {
