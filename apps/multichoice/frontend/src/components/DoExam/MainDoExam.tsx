@@ -8,11 +8,7 @@ import { fireGet } from '../../utils/firebase_utils';
 import NavQuestion from './NavQuestion';
 import ShowQuestion from './ShowQuestion';
 
-interface IMainDoExamProps {
-  isRealtime?: boolean;
-}
-
-const MainDoExam: React.FC<IMainDoExamProps> = ({ isRealtime = false }) => {
+const MainDoExam: React.FC = () => {
   const { exam_id } = useParams();
   const { exam } = examStore();
 
@@ -41,12 +37,7 @@ const MainDoExam: React.FC<IMainDoExamProps> = ({ isRealtime = false }) => {
   }, []);
 
   return (
-    <div
-      className="main-doexam"
-      style={{
-        minHeight: 'calc(100vh - 57px)',
-      }}
-    >
+    <div className="main-doexam">
       {expriedCountdownRealtime ? (
         <div
           className="flex items-center justify-center"
@@ -62,7 +53,6 @@ const MainDoExam: React.FC<IMainDoExamProps> = ({ isRealtime = false }) => {
         <div className="container mx-auto pt-5 lg:px-10 flex gap-x-8">
           <div className="w-full lg:w-2/3 h-full">
             <ShowQuestion
-              questionType={exam.timeType}
               indexQuestion={indexQuestion}
               setIndexQuestion={setIndexQuestion}
               startTimeCountdown={startTimeCountdown}
