@@ -89,7 +89,7 @@ const QuillEditor: React.FC<IQuillEditorProps> = ({
         value={value}
         defaultValue={defaultValue}
         onChange={handleChange}
-        className={classNames(['editor'], {
+        className={classNames(['editor, rounded-sm'], {
           'border border-red-500': isError,
         })}
         placeholder={placeholder}
