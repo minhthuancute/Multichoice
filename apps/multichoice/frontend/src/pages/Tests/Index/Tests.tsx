@@ -21,7 +21,7 @@ const Tests: React.FC = () => {
           <h3 className="text-xl font-semibold leading-none">
             Danh sách đề thi
           </h3>
-          <div className="w-1/2">
+          <div className="w-2/5">
             <FilterTests onFilter={onFilter} />
           </div>
         </div>
