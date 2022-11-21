@@ -24,24 +24,15 @@ import StatisticExam from '../pages/Exam/StatisticExam/StatisticExam';
 import StatisticUserExam from '../pages/Exam/StatisticExam/StatisticUserExam';
 import ExamLayout from '../layouts/ExamLayout';
 import DoExamRealtime from '../pages/Exam/DoExam/DoexamRealtime';
-import FirstLoad from '../components/FirstLoad/FirstLoad';
+import Splash from '../components/Splash/Splash';
 import 'react-notifications-component/dist/theme.css';
 import ForgotPassword from '../pages/ForgotPassword/ForgotPassword';
 
 export const App: React.FC = () => {
-  const [loading, setLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 1500);
-  }, []);
-
-  return loading ? (
-    <FirstLoad />
-  ) : (
+  return (
     <BrowserRouter>
       <ReactNotifications />
+      <Splash />
       <Routes>
         <Route
           path="/login"
