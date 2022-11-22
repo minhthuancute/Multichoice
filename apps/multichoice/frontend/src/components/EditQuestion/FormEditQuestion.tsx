@@ -277,7 +277,7 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
         </div>
 
         <div className="bg-white rounded-md">
-          {topic.typeCategoryName === 'GAME' ? (
+          {topic.typeCategoryName === 'game' ? (
             <Input
               registerField={register('time')}
               typeInput="number"
@@ -285,7 +285,7 @@ const FormEditQuestion: React.FC<IFormEditQuestion> = ({
               id="expirationTime"
               isError={Boolean(errors.time)}
               errMessage={errors.time?.message}
-              isDisable={topic.typeCategoryName !== 'GAME'}
+              isDisable={topic.typeCategoryName !== 'game'}
             />
           ) : null}
           <Select

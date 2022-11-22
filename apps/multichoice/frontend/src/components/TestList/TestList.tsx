@@ -1,9 +1,10 @@
+import { TopicTimeTypeEnum } from '@monorepo/multichoice/constant';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { TOPIC_LIST } from '../../constants/contstants';
 import { useQuery } from '../../hooks/useQuery';
 import { localServices } from '../../services/LocalServices';
 import { topicServices } from '../../services/TopicServices';
-import { ITopicLocal, TimeType } from '../../types/ICommons';
+import { ITopicLocal } from '../../types/ICommons';
 import { ITopicResponse } from '../../types/TopicResponse';
 import { removeVietnameseTones } from '../../utils/removeVietnameseTones';
 import TestItem, { ITestItem } from '../TestItem/TestItem';
@@ -45,7 +46,7 @@ const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
           date: test.createdAt,
           questionCount: test.questionsCount,
           expirationTime: test.expirationTime,
-          timeType: test.timeType.toUpperCase() as TimeType,
+          timeType: test.timeType.toUpperCase() as `${TopicTimeTypeEnum}`,
           typeCategoryName: test.typeCategoryName,
         };
         return testData;

@@ -13,18 +13,18 @@ import { copyClipboard } from '../../helper/copyClipboard';
 import { notify } from '../../helper/notify';
 import { iNotification } from 'react-notifications-component';
 import { secondsToMinutes } from '../../utils/minutesToSeconds';
-import {
-  ITestRealtimeRecord,
-  TimeType,
-  TopicCategoryType,
-} from '../../types/ICommons';
+import { ITestRealtimeRecord } from '../../types/ICommons';
 import {
   canNotCopyLinkExam,
   copyLinkExamSuccess,
 } from '../../constants/msgNotify';
 import { fireGet, fireUpdate } from '../../utils/firebase_utils';
 import HandlelayTest from './HandlePlayTest';
-import { firebasePath } from '@monorepo/multichoice/constant';
+import {
+  firebasePath,
+  TopicCategoryEnum,
+  TopicTimeTypeEnum,
+} from '@monorepo/multichoice/constant';
 
 export interface ITestItem {
   topicUrl: string;
@@ -33,8 +33,8 @@ export interface ITestItem {
   date: string;
   questionCount: number;
   expirationTime: number;
-  timeType: TimeType;
-  typeCategoryName: TopicCategoryType;
+  timeType: `${TopicTimeTypeEnum}`;
+  typeCategoryName: `${TopicCategoryEnum}`;
 }
 
 interface ITestItemProp {
@@ -144,7 +144,7 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
               <AiOutlineFieldTime className="text-slate-800 mr-1 text-base" />
               <span>
                 {secondsToMinutes(test.expirationTime)} phút
-                {test.timeType === 'REALTIME' ? ' (Realtime)' : null}
+                {test.timeType === 'realtime' ? ' (Realtime)' : null}
               </span>
             </li>
             <li>
@@ -156,7 +156,7 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
           </ul>
           <div className="right">
             <ul className="ctas flex items-center">
-              {test.timeType === 'REALTIME' ? (
+              {test.timeType === 'realtime' ? (
                 <li className="relative group mr-4 mt-1">
                   <ToolTip
                     title={

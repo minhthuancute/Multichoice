@@ -1,9 +1,8 @@
 import { Api } from './Api';
-import { CreateTopicDto } from '@monorepo/multichoice/dto';
-import { IPagination } from '../types';
+import { CreateTopicDto, PageOptionsDto } from '@monorepo/multichoice/dto';
 
 class TopicServices extends Api {
-  async getAllTopic(pagination: IPagination) {
+  async getAllTopic(pagination: PageOptionsDto) {
     const { page, take } = pagination;
     const { data } = await this.get(`/topic/all?page=${page}&take=${take}`);
     return data;

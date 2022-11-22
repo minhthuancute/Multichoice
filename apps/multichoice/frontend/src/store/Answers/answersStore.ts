@@ -1,7 +1,7 @@
+import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 import create from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { ANSWERS_EXAM } from '../../constants/contstants';
-import { QuestionType } from '../../types/ICommons';
 
 export interface IInforUserDoExam {
   topicUrl: string;
@@ -22,7 +22,7 @@ export interface IAnswersStore {
   updateAnswer: (
     questionID: number,
     answerSelect: number | string,
-    questionType: QuestionType
+    questionType: `${QuestionTypeEnum}`
   ) => void; // for update correct answer
   addAnswer: (answer: IAnswers) => void;
   setUserDoexamData: (userData: IInforUserDoExam) => void;
@@ -54,7 +54,7 @@ export const answerStore = create<IAnswersStore>()(
         updateAnswer: (
           questionID: number,
           answerSelect: number | string,
-          questionType: QuestionType
+          questionType: `${QuestionTypeEnum}`
         ) =>
           set((state) => {
             const tempAnswers = [...state.answers];
