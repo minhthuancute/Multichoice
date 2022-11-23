@@ -3,6 +3,7 @@ import {
   TopicTimeTypeEnum,
 } from '@monorepo/multichoice/constant';
 import { ApiProperty } from '@nestjs/swagger';
+import { PageOptionsDto } from './pageOptions.dto';
 
 export class CreateTopicDto {
   @ApiProperty({
@@ -41,4 +42,18 @@ export class AddGroupForTopic {
   //   type: Number,
   // })
   // arrayUser: number[];
+}
+
+export class QueryTopicDto extends PageOptionsDto {
+  @ApiProperty({
+    enum: TopicTimeTypeEnum,
+    default: TopicTimeTypeEnum.FIXEDTIME,
+  })
+  timeType: TopicTimeTypeEnum;
+
+  @ApiProperty({ enum: TopicCategoryEnum, default: TopicCategoryEnum.NONE })
+  typeCategoryName: TopicCategoryEnum;
+
+  @ApiProperty()
+  title: string;
 }

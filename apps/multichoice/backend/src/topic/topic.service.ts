@@ -4,6 +4,7 @@ import {
   PageDto,
   PageMetaDto,
   PageOptionsDto,
+  QueryTopicDto,
 } from '@monorepo/multichoice/dto';
 import {
   BadRequestException,
@@ -230,5 +231,35 @@ export class TopicService {
     });
     if (!result) return false;
     return true;
+  }
+
+  async search(query: QueryTopicDto, userID: number): Promise<PageDto<Topic>> {
+    const queryBuilder = this.topicRepository
+      .createQueryBuilder('topic')
+      .where('topic.ownerId = :owner', { owner: userID })
+      .andWhere(
+        query.title !== undefined &&
+          query.title.length > 0 &&
+          `MATCH(title) AGAINST ('${query.title}' IN BOOLEAN MODE)`
+      )
+      .andWhere(
+        query.typeCategoryName !== undefined &&
+          'topic.typeCategoryName = :typeCategoryName',
+        { typeCategoryName: query.typeCategoryName }
+      )
+      .andWhere(query.timeType !== undefined && 'topic.timeType = :timeType', {
+        timeType: query.timeType,
+      })
+      .leftJoin('topic.questions', 'questions')
+      .loadRelationCountAndMap('topic.questionsCount', 'topic.questions')
+      .skip((query.page - 1) * query.take)
+      .take(query.take);
+
+    const { 0: topics, 1: itemCount } = await queryBuilder.getManyAndCount();
+    const pageMetaDto = new PageMetaDto({
+      pageOptionsDto: { page: query.page, take: query.take },
+      itemCount,
+    });
+    return new PageDto(topics, pageMetaDto);
   }
 }

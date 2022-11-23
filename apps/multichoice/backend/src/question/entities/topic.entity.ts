@@ -2,6 +2,7 @@ import {
   Column,
   Entity,
   Generated,
+  Index,
   ManyToMany,
   ManyToOne,
   OneToMany,
@@ -40,6 +41,7 @@ export class Topic extends Timestamp {
   })
   timeType: TopicTimeTypeEnum;
 
+  @Index({ fulltext: true })
   @Column()
   title: string;
 

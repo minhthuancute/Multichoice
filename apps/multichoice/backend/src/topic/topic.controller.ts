@@ -2,6 +2,7 @@ import {
   AddGroupForTopic,
   CreateTopicDto,
   PageOptionsDto,
+  QueryTopicDto,
 } from '@monorepo/multichoice/dto';
 import {
   Body,
@@ -96,5 +97,17 @@ export class TopicController {
     return res
       .status(200)
       .json(new SucessResponse(200, GConfig.ADD_MES_SUCESS));
+  }
+
+  @UseGuards(AuthenticationGuard)
+  @Post('search')
+  @ApiBearerAuth()
+  async search(
+    @Body() query: QueryTopicDto,
+    @Req() req,
+    @Res() res
+  ): Promise<SucessResponse> {
+    const result = await this.topicService.search(query, req.user.id);
+    return res.status(200).json(new SucessResponse(200, result));
   }
 }
