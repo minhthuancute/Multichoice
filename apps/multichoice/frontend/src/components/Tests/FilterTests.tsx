@@ -90,6 +90,14 @@ const FilterTests: React.FC<IFilterTests> = ({ onFilter }) => {
               position: 'static',
               transform: 'none',
             }),
+            option: (base, state) => ({
+              ...base,
+              backgroundColor: state.isSelected ? '#28c6d7' : 'inherit',
+              '&:hover': {
+                backgroundColor: '#28c6d7',
+                color: 'white',
+              },
+            }),
           }}
         />
       </form>
