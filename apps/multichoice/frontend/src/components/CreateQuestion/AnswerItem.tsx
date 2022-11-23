@@ -3,13 +3,14 @@ import Checkbox from '../Commons/Checkbox/Checkbox';
 import TextArea from '../Commons/TextArea/TextArea';
 import ToolTip from '../Commons/ToolTip/ToolTip';
 import { MdOutlineClear } from 'react-icons/md';
+import { UseFormRegisterReturn } from 'react-hook-form';
 
 interface IAnswerItem {
   correctAnswer?: string;
   answerValue?: string;
   checkedValue?: boolean;
-  registerFieldContent: any;
-  registerFieldIsCorrect: any;
+  registerFieldContent: UseFormRegisterReturn;
+  registerFieldIsCorrect: UseFormRegisterReturn;
   indexAnswer: number;
   indexAscii: number;
   isMultilCorrectAnswer: boolean;

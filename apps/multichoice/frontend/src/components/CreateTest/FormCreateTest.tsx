@@ -1,7 +1,6 @@
 import React, {
   forwardRef,
   useImperativeHandle,
-  useLayoutEffect,
   useRef,
   useState,
 } from 'react';
@@ -19,7 +18,10 @@ import {
 import { topicServices } from '../../services/TopicServices';
 import { useNavigate } from 'react-router-dom';
 import { topicStore } from '../../store/rootReducer';
-import { minutesToSeconds } from '../../utils/minutesToSeconds';
+import {
+  minutesToSeconds,
+  secondsToMinutes,
+} from '../../utils/minutesToSeconds';
 
 const schemaFormCreateTest = yup.object().shape({
   timeType: yup.string().required(),
@@ -40,7 +42,7 @@ interface IFormCreateTest {
 
 const FormCreateTest: React.FC<IFormCreateTest> = forwardRef((props, ref) => {
   const navigate = useNavigate();
-  const formRef: any = useRef<HTMLFormElement>(null);
+  const formRef = useRef<HTMLButtonElement>({} as HTMLButtonElement);
   const { setTopicData } = topicStore();
 
   const {
@@ -50,6 +52,15 @@ const FormCreateTest: React.FC<IFormCreateTest> = forwardRef((props, ref) => {
     formState: { errors },
   } = useForm<CreateTopicDto>({
     resolver: yupResolver(schemaFormCreateTest),
+    defaultValues: {
+      description: '',
+      expirationTime: secondsToMinutes(1000 * 60),
+      isDraft: false,
+      isPrivate: false,
+      timeType: TopicTimeTypeEnum.FIXEDTIME,
+      title: '',
+      typeCategoryName: TopicCategoryEnum.PROGRAMMING,
+    },
   });
 
   const [topicCategories] = useState<IOption[]>(() => {
@@ -81,13 +92,6 @@ const FormCreateTest: React.FC<IFormCreateTest> = forwardRef((props, ref) => {
     });
     return options;
   });
-
-  const initForm = () => {
-    const optionVal: TopicCategoryEnum = topicCategories[0]
-      .value as TopicCategoryEnum;
-    setValue('timeType', TopicTimeTypeEnum.FIXEDTIME);
-    setValue('typeCategoryName', optionVal);
-  };
 
   const onSelectCategory = (item: IOption) => {
     const optionVal: TopicCategoryEnum = item.value as TopicCategoryEnum;
@@ -121,15 +125,13 @@ const FormCreateTest: React.FC<IFormCreateTest> = forwardRef((props, ref) => {
     ref,
     () => ({
       submitForm: () => {
-        formRef.current.click();
+        if (formRef.current) {
+          formRef.current.click();
+        }
       },
     }),
     []
   );
-
-  useLayoutEffect(() => {
-    initForm();
-  }, []);
 
   return (
     <div className="container">

@@ -91,7 +91,7 @@ const CollectInfor: React.FC = () => {
     setUserDoexamData({
       userName: formData.userName,
     } as IInforUserDoExam);
-    const urlNavigate = '/e/' + exam.url + '/do-exam';
+    const urlNavigate = location.pathname + '/do-exam';
     navigate(urlNavigate);
   };
 

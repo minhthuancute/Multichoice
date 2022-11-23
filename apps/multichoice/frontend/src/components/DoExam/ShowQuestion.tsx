@@ -17,7 +17,6 @@ import { classNames } from '../../helper/classNames';
 import ToolTip from '../Commons/ToolTip/ToolTip';
 import PolaCode from '../PolaCode/PolaCode';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
-import { QuestionType } from '../../types/ICommons';
 import { expriedTime, submited } from '../../constants/msgNotify';
 import TextArea from '../Commons/TextArea/TextArea';
 import { sessionServices } from '../../services/SessionServices';
@@ -84,7 +83,7 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
 
   const onChooseAnswer = (
     answerID: number | string,
-    questionType: QuestionType
+    questionType: `${QuestionTypeEnum}`
   ) => {
     const questionID = questions[indexQuestion].id;
 
@@ -283,7 +282,7 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
                         onChange={() =>
                           onChooseAnswer(
                             answers.id,
-                            `${questions[indexQuestion].type}` as QuestionType
+                            questions[indexQuestion].type
                           )
                         }
                       />
@@ -316,10 +315,7 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
               key={'answer-' + indexQuestion}
               defaultValue={answers[indexQuestion].answerID}
               onChange={(value: string) => {
-                onChooseAnswer(
-                  value,
-                  `${questions[indexQuestion].type}` as QuestionType
-                );
+                onChooseAnswer(value, questions[indexQuestion].type);
               }}
               placeholder="Nhập câu trả lời..."
             />

@@ -1,5 +1,7 @@
-import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
-import { TopicCategoryType } from './ICommons';
+import {
+  QuestionTypeEnum,
+  TopicCategoryEnum,
+} from '@monorepo/multichoice/constant';
 
 export interface IAnswer {
   id: number;
@@ -23,7 +25,7 @@ export interface ITopicResponse {
   createdAt: string;
   updatedAt: string;
   id: number;
-  typeCategoryName: TopicCategoryType;
+  typeCategoryName: `${TopicCategoryEnum}`;
   timeType: string;
   title: string;
   description: string | null;
@@ -37,7 +39,7 @@ export interface ITopicDetailResponse {
   createdAt: string;
   updatedAt: string;
   id: number;
-  typeCategoryName: TopicCategoryType;
+  typeCategoryName: `${TopicCategoryEnum}`;
   timeType: string;
   title: string;
   description: string | null;
