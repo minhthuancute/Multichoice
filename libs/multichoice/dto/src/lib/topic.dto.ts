@@ -48,12 +48,17 @@ export class QueryTopicDto extends PageOptionsDto {
   @ApiProperty({
     enum: TopicTimeTypeEnum,
     default: TopicTimeTypeEnum.FIXEDTIME,
+    required: false,
   })
   timeType: TopicTimeTypeEnum;
 
-  @ApiProperty({ enum: TopicCategoryEnum, default: TopicCategoryEnum.NONE })
+  @ApiProperty({
+    enum: TopicCategoryEnum,
+    default: TopicCategoryEnum.NONE,
+    required: false,
+  })
   typeCategoryName: TopicCategoryEnum;
 
-  @ApiProperty()
-  title: string;
+  @ApiProperty({ required: false })
+  searchTerms: string;
 }
