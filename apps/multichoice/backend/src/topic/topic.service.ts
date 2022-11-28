@@ -13,8 +13,8 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
-import { Repository, UpdateResult } from 'typeorm';
-import { Topic } from '../question/entities/topic.entity';
+import { Repository } from 'typeorm';
+import { Topic } from './entities/topic.entity';
 import { User } from '../user/entities/user.entity';
 
 import { Question } from '../question/entities/question.entity';
@@ -30,85 +30,76 @@ export class TopicService {
     private readonly groupService: GroupService
   ) {}
 
-  deleteCorrect(questions: Question[]) {
-    if (questions) {
-      questions.map((x) => {
-        x.answers.map((a) => {
-          delete a.isCorrect;
-          return a;
-        });
-        return x;
-      });
-    }
-  }
-
-  async create(topic: CreateTopicDto, user: User): Promise<Topic> {
+  public async create(topic: CreateTopicDto, userID: number): Promise<Topic> {
     const topicEntity: Topic = plainToClass(Topic, topic);
-    topicEntity.owner = user;
+    topicEntity.owner = new User(userID);
 
-    const result = await this.topicRepository.save(topicEntity);
-    return result;
+    return await this.topicRepository.save(topicEntity);
   }
 
-  async fineOneByID(id: number): Promise<Topic> {
+  public async fineOneByID(id: number): Promise<Topic> {
     const result = await this.topicRepository.findOne({
       where: {
         id,
       },
-      relations: ['questions', 'questions.answers'],
     });
     if (!result) {
       throw new NotFoundException(GConfig.TOPIC_NOT_FOUND);
     }
-    this.deleteCorrect(result.questions);
     return result;
   }
 
-  async getTopicByID(id: number, user: User): Promise<Topic> {
+  public async getTopicByIdAndUserId(
+    id: number,
+    userID: number
+  ): Promise<Topic> {
     const result = await this.topicRepository.findOne({
       where: {
         id,
+        owner: { id: userID },
       },
       relations: ['questions', 'questions.answers'],
     });
     if (!result) {
-      throw new NotFoundException(GConfig.TOPIC_NOT_FOUND);
+      throw new BadRequestException(GConfig.NOT_PERMISSION);
     }
-    if (!(await this.checkAuth(id, user)))
-      throw new BadRequestException(GConfig.NOT_PERMISSION_VIEW);
     return result;
   }
 
-  async findOneByUrl(url: string): Promise<Topic> {
+  public async findOneByUrl(url: string): Promise<Topic> {
     const result = await this.topicRepository.findOne({
       where: {
         url,
       },
       relations: ['questions', 'questions.answers'],
+      select: {
+        id: true,
+        description: true,
+        expirationTime: true,
+        groups: true,
+        isPrivate: true,
+        timeType: true,
+        title: true,
+        typeCategoryName: true,
+        url: true,
+        questions: {
+          id: true,
+          content: true,
+          time: true,
+          image: true,
+          audio: true,
+          type: true,
+          answers: { id: true, content: true },
+        },
+      },
     });
 
     if (!result) throw new BadRequestException(GConfig.TOPIC_NOT_FOUND);
-    this.deleteCorrect(result.questions);
     return result;
   }
 
-  async checkAuth(id: number, user: User): Promise<boolean> {
-    const topic = await this.topicRepository.findOne({
-      where: {
-        id,
-      },
-      relations: ['owner'],
-    });
-    if (topic && topic.owner.id === user.id) return true;
-
-    return false;
-  }
-
-  async deleteById(id: number, user: User): Promise<boolean> {
-    if (!(await this.checkAuth(id, user)))
-      throw new BadRequestException(GConfig.NOT_PERMISSION_DELETE);
-    await this.topicRepository.delete(id);
-    return true;
+  public async deleteById(id: number, userID: number): Promise<void> {
+    await this.topicRepository.delete({ id: id, owner: { id: userID } });
   }
 
   async findAllTopics(
@@ -119,21 +110,18 @@ export class TopicService {
       .createQueryBuilder('topic')
       .where('topic.ownerId = :owner', { owner: userID })
       .andWhere(
-        queryTopicDto.searchTerms !== undefined &&
-          queryTopicDto.searchTerms.length > 0 &&
+        queryTopicDto.searchTerms &&
+          queryTopicDto.searchTerms.length &&
           `MATCH(title) AGAINST ('${queryTopicDto.searchTerms}' IN BOOLEAN MODE)`
       )
       .andWhere(
-        queryTopicDto.typeCategoryName !== undefined &&
+        queryTopicDto.typeCategoryName &&
           'topic.typeCategoryName = :typeCategoryName',
         { typeCategoryName: queryTopicDto.typeCategoryName }
       )
-      .andWhere(
-        queryTopicDto.timeType !== undefined && 'topic.timeType = :timeType',
-        {
-          timeType: queryTopicDto.timeType,
-        }
-      )
+      .andWhere(queryTopicDto.timeType && 'topic.timeType = :timeType', {
+        timeType: queryTopicDto.timeType,
+      })
       .leftJoin('topic.questions', 'questions')
       .loadRelationCountAndMap('topic.questionsCount', 'topic.questions')
       .skip((queryTopicDto.page - 1) * queryTopicDto.take)
@@ -147,20 +135,19 @@ export class TopicService {
     return new PageDto(topics, pageMetaDto);
   }
 
-  async update(
+  public async update(
     id: number,
     topic: CreateTopicDto,
-    user: User
-  ): Promise<UpdateResult> {
+    userID: number
+  ): Promise<void> {
     const topicEntity: Topic = plainToClass(Topic, topic);
-    const result = await this.topicRepository.update(
-      { id, owner: { id: user.id } },
+    await this.topicRepository.update(
+      { id, owner: { id: userID } },
       topicEntity
     );
-    return result;
   }
 
-  async getIsCorrectByTopicID(id: number): Promise<Topic> {
+  public async getIsCorrectByTopicID(id: number): Promise<Topic> {
     const result = await this.topicRepository.findOne({
       where: {
         id,
@@ -188,7 +175,7 @@ export class TopicService {
     return topic;
   }
 
-  async getIsCorrectByUrl(url: string): Promise<Topic> {
+  public async getIsCorrectByUrl(url: string): Promise<Topic> {
     const result = await this.topicRepository.findOne({
       where: {
         url,
@@ -198,7 +185,8 @@ export class TopicService {
     if (!result) throw new BadRequestException(GConfig.TOPIC_NOT_FOUND);
     return this.filterAnswerIsCorrect(result);
   }
-  async checkPermissionUserOfTopic(
+
+  public async checkPermissionUserOfTopic(
     topicID: number,
     userID: number
   ): Promise<Topic> {
@@ -213,7 +201,7 @@ export class TopicService {
     return result;
   }
 
-  async addGroupForTopic(
+  public async addGroupForTopic(
     query: AddGroupForTopic,
     userID: number
   ): Promise<void> {
@@ -237,7 +225,7 @@ export class TopicService {
     this.topicRepository.save(result);
   }
 
-  async checkUserIsExistUserExam(
+  public async checkUserIsExistUserExam(
     topicID: number,
     userID: number
   ): Promise<boolean> {

@@ -104,11 +104,11 @@ export interface IUserDoExam {
   duration: number;
   userID: number;
 }
-export interface IUserDoExamdetail extends IUserDoExam {
-  questions: Questiondetail[];
+export interface IUserDoExamDetail extends IUserDoExam {
+  questions: QuestionDetail[];
 }
 
-export class Questiondetail {
+export class QuestionDetail {
   id: number;
   type: QuestionTypeEnum;
 

@@ -12,10 +12,10 @@ import {
   TopicCategoryEnum,
   TopicTimeTypeEnum,
 } from '@monorepo/multichoice/constant';
-import { Question } from './question.entity';
+import { Question } from '../../question/entities/question.entity';
 import { Timestamp } from '../../orm/timestamp.entity';
 import { User } from '../../user/entities/user.entity';
-import { UserExam } from '../../user/entities/userExam.entity';
+import { UserExam } from '../../userExam/entities/userExam.entity';
 import { Group } from '../../group/entities/group.entity';
 
 @Entity()

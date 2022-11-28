@@ -35,7 +35,7 @@ export class TopicController {
     @Req() req,
     @Res() res
   ): Promise<SucessResponse> {
-    const result = await this.topicService.create(topic, req.user);
+    const result = await this.topicService.create(topic, req.user.id);
     return res.status(201).json(new SucessResponse(201, result));
   }
 
@@ -51,7 +51,7 @@ export class TopicController {
       queryTopicDto,
       req.user.id
     );
-    return res.status(200).json(new SucessResponse(200, result));
+    return res.json(new SucessResponse(200, result));
   }
 
   @UseGuards(AuthenticationGuard)
@@ -62,17 +62,24 @@ export class TopicController {
     @Res() res,
     @Req() req
   ): Promise<SucessResponse> {
-    const result = await this.topicService.getTopicByID(id, req.user);
+    const result = await this.topicService.getTopicByIdAndUserId(
+      id,
+      req.user.id
+    );
 
-    return res.status(200).json(new SucessResponse(200, result));
+    return res.json(new SucessResponse(200, result));
   }
 
   @UseGuards(AuthenticationGuard)
   @Delete(':id')
   @ApiBearerAuth()
-  async deleteTopicById(@Param('id') id: number, @Res() res, @Req() req) {
-    await this.topicService.deleteById(id, req.user);
-    return res.status(200).json(new SucessResponse(200, {}));
+  async deleteTopicById(
+    @Param('id') id: number,
+    @Res() res,
+    @Req() req
+  ): Promise<SucessResponse> {
+    await this.topicService.deleteById(id, req.user.id);
+    return res.json(new SucessResponse(200, GConfig.DELETE_MES_SUCESS));
   }
 
   @UseGuards(AuthenticationGuard)
@@ -84,8 +91,8 @@ export class TopicController {
     @Req() req,
     @Res() res
   ): Promise<SucessResponse> {
-    const result = await this.topicService.update(id, topic, req.user);
-    return res.status(200).json(new SucessResponse(200, result));
+    await this.topicService.update(id, topic, req.user.id);
+    return res.json(new SucessResponse(200, GConfig.UPDATE_MES_SUCESS));
   }
 
   @UseGuards(AuthenticationGuard)
@@ -97,8 +104,6 @@ export class TopicController {
     @Res() res
   ): Promise<SucessResponse> {
     await this.topicService.addGroupForTopic(query, req.user.id);
-    return res
-      .status(200)
-      .json(new SucessResponse(200, GConfig.ADD_MES_SUCESS));
+    return res.json(new SucessResponse(200, GConfig.ADD_MES_SUCESS));
   }
 }
