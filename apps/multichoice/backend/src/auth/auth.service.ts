@@ -42,7 +42,7 @@ export class authService {
     user.email = createUserDto.email;
     user.password = await bcrypt.hash(createUserDto.password, this.saltRounds);
 
-    if (file && file.avatar !== undefined) {
+    if (file && file.avatar) {
       user.avatar = file.avatar[0].filename;
     }
     return user;
@@ -54,7 +54,7 @@ export class authService {
     });
   }
 
-  async create(createUserDto: CreateUserDto, file: any): Promise<User> {
+  async create(createUserDto: CreateUserDto, file: any): Promise<void> {
     const user = await this.getUserByEmail(createUserDto.email);
     if (user) {
       throw new HttpException(
@@ -63,19 +63,20 @@ export class authService {
       );
     }
 
-    return this.userRepository.save(
-      await this.convertUserEntity(createUserDto, file)
-    );
+    this.userRepository.save(await this.convertUserEntity(createUserDto, file));
   }
 
-  async validateUser(login: LoginUserDto): Promise<any> {
-    const user = await this.userRepository.findOneBy({ email: login.email });
-    if (!user) {
-      throw new BadRequestException(GConfig.EMAIL_NOT_FOUND);
-    }
-    const isMatchPassword = await bcrypt.compare(login.password, user.password);
-    if (!isMatchPassword) {
-      throw new BadRequestException(GConfig.PASSWORD_IS_INCORRECT);
+  private async comparePassword(
+    password: string,
+    passwordHash: string
+  ): Promise<boolean> {
+    return await bcrypt.compare(password, passwordHash);
+  }
+
+  async validateUser(login: LoginUserDto): Promise<User> {
+    const user = await this.getUserByEmail(login.email);
+    if (user && !(await this.comparePassword(login.password, user.password))) {
+      throw new BadRequestException(GConfig.LOGIN_ERROR);
     }
     return user;
   }
@@ -97,27 +98,28 @@ export class authService {
     return await this.userRepository.findOne({ where: { id } });
   }
 
+  private async updatePasswordByUserId(
+    userId: number,
+    password: string
+  ): Promise<void> {
+    const passwordHash = await bcrypt.hash(password, this.saltRounds);
+    await this.userRepository.update(userId, { password: passwordHash });
+  }
+
   async changePassword(
     userId: number,
     changePasswordDto: UpdateUserPasswordDto
-  ): Promise<boolean> {
+  ): Promise<void> {
     const user = await this.getUserById(userId);
     if (!user) throw new BadRequestException(GConfig.USER_NOT_FOUND);
 
-    const isMatchPassword = await bcrypt.compare(
-      changePasswordDto.password,
-      user.password
-    );
-    if (!isMatchPassword) {
+    if (
+      !(await this.comparePassword(changePasswordDto.password, user.password))
+    ) {
       throw new BadRequestException(GConfig.PASSWORD_OLD_IS_INCORRECT);
     }
-    const password = await bcrypt.hash(
-      changePasswordDto.newPassword,
-      this.saltRounds
-    );
-    await this.userRepository.update(userId, { password });
 
-    return true;
+    await this.updatePasswordByUserId(userId, changePasswordDto.newPassword);
   }
 
   private generateToken(): string {
@@ -128,10 +130,10 @@ export class authService {
   }
 
   async signUser(user: User): Promise<string> {
-    const token = await this.generateToken();
+    const token = this.generateToken();
 
     // luu token len redis ( luu 5 phut)
-    this.redisService.set(token, user.email, 300);
+    await this.redisService.set(token, user.email, GConfig.EXPRIED_TOKEN_REDIS);
 
     return token;
   }
@@ -148,7 +150,7 @@ export class authService {
     }/auth/forgotPassword?token=${token}`;
 
     this.mailService.send({
-      to: 'hungdiep147@gmail.com',
+      to: forgotPasswordDto.email,
       subject: 'Forgot Password',
       html: `
                 <h3>Hello ${user.username}!</h3>
@@ -159,11 +161,7 @@ export class authService {
   }
 
   async resetPassword(resetPasswordDto: ResetPasswordDto): Promise<void> {
-    if (
-      resetPasswordDto.token === undefined ||
-      resetPasswordDto.password === undefined
-    )
-      return;
+    if (!resetPasswordDto.token || !resetPasswordDto.password) return;
     const email: string = await this.redisService.get(resetPasswordDto.token);
     if (!email) throw new BadRequestException(GConfig.EXPRIED_EMAIL_LINK);
 
@@ -172,10 +170,6 @@ export class authService {
     const user = await this.getUserByEmail(email);
     if (!user) throw new BadRequestException(GConfig.USER_NOT_FOUND);
 
-    const password = await bcrypt.hash(
-      resetPasswordDto.password,
-      this.saltRounds
-    );
-    await this.userRepository.update(user.id, { password });
+    await this.updatePasswordByUserId(user.id, resetPasswordDto.password);
   }
 }

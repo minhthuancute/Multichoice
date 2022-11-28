@@ -23,30 +23,33 @@ export class GroupService {
 
   private convertGroupDtoToGroupEntity(
     createGroupDto: CreateGroupDto,
-    user: User
+    userID: number
   ): Group {
     const group = new Group();
-
-    if (createGroupDto.name === undefined || createGroupDto.name.length === 0)
+    const user = new User(userID);
+    if (!createGroupDto.name || !createGroupDto.name.length)
       throw new BadRequestException(GConfig.NAME_NOT_FOUND);
     group.name = createGroupDto.name.trim();
     group.owner = user;
     group.users = [user];
     return group;
   }
-  create(createGroupDto: CreateGroupDto, user: User) {
-    this.groupRepository.save(
-      this.convertGroupDtoToGroupEntity(createGroupDto, user)
+  public async create(
+    createGroupDto: CreateGroupDto,
+    userID: number
+  ): Promise<void> {
+    await this.groupRepository.save(
+      this.convertGroupDtoToGroupEntity(createGroupDto, userID)
     );
   }
 
-  async findAllGroup(
+  public async findAllGroup(
     pageOptionsDto: PageOptionsDto,
-    user: User
+    userID: number
   ): Promise<PageDto<Group>> {
     const queryBuilder = this.groupRepository
       .createQueryBuilder('group')
-      .where('group.ownerId = :owner', { owner: user.id })
+      .where('group.ownerId = :owner', { owner: userID })
       .leftJoin('group.users', 'users')
       .loadRelationCountAndMap('topic.usersCount', 'group.users')
       .skip((pageOptionsDto.page - 1) * pageOptionsDto.take)
@@ -56,7 +59,10 @@ export class GroupService {
     return new PageDto(topics, pageMetaDto);
   }
 
-  async findOnebyGroupID(groupID: number, userID: number): Promise<Group> {
+  public async findOnebyGroupID(
+    groupID: number,
+    userID: number
+  ): Promise<Group> {
     const result = await this.groupRepository.findOne({
       where: { id: groupID, owner: { id: userID } },
       relations: ['users'],
@@ -72,21 +78,17 @@ export class GroupService {
     });
     return result;
   }
-  async getGroupDetail(groupID: number, userID: number): Promise<Group> {
+  public async getGroupDetail(groupID: number, userID: number): Promise<Group> {
     const group = await this.findOnebyGroupID(groupID, userID);
-    if (!group)
-      throw new BadRequestException(GConfig.NOT_PERMISSION_ADD_USER_FOR_GROUP);
+    if (!group) throw new BadRequestException(GConfig.NOT_PERMISSION_VIEW);
     return group;
   }
 
-  async addUserForGroup(
+  public async addUserForGroup(
     addUserForGroupDto: AddUserGroupDto,
-    user: User
+    userID: number
   ): Promise<void> {
-    const group = await this.getGroupDetail(
-      addUserForGroupDto.groupID,
-      user.id
-    );
+    const group = await this.getGroupDetail(addUserForGroupDto.groupID, userID);
 
     const addUser = await this.authService.getUserByEmail(
       addUserForGroupDto.email
@@ -94,6 +96,6 @@ export class GroupService {
     if (!addUser) throw new BadRequestException(GConfig.USER_NOT_FOUND);
 
     group.users.push(addUser);
-    this.groupRepository.save(group);
+    await this.groupRepository.save(group);
   }
 }

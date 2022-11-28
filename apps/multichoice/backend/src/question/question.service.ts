@@ -7,102 +7,90 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Question } from './entities/question.entity';
 import { Repository } from 'typeorm';
 import { plainToClass } from 'class-transformer';
-import { Answer } from '../answer/entities/answer.entity';
 import { TopicService } from '../topic/topic.service';
-import { User } from '../user/entities/user.entity';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 import { GConfig } from '../config/gconfig';
+import { AnswerService } from '../answer/answer.service';
 
 @Injectable()
 export class QuestionService {
   constructor(
     @InjectRepository(Question)
     private readonly questionRepository: Repository<Question>,
-    @InjectRepository(Answer)
-    private readonly answerRepository: Repository<Answer>,
-    private readonly topicService: TopicService
+    private readonly topicService: TopicService,
+    private readonly answerService: AnswerService
   ) {}
 
-  async deleteByID(id: number): Promise<boolean> {
-    await this.questionRepository.delete(id);
-    return true;
+  public async deleteByID(id: number, userID: number): Promise<void> {
+    if (await this.checkOwnerQuestion(id, userID)) {
+      await this.questionRepository.delete(id);
+    } else {
+      throw new BadRequestException(GConfig.NOT_PERMISSION);
+    }
   }
 
-  async create(createQuestionDto: CreateQuestionDto, files: any) {
-    const checkTopic = await this.topicService.fineOneByID(
-      createQuestionDto.topicID
+  public async create(
+    createQuestionDto: CreateQuestionDto,
+    files: any,
+    userID: number
+  ): Promise<void> {
+    const checkTopic = await this.topicService.getTopicByIdAndUserId(
+      createQuestionDto.topicID,
+      userID
     );
 
     const questionEntity: Question = plainToClass(Question, createQuestionDto);
     if (
       createQuestionDto.type !== QuestionTypeEnum.TEXT &&
-      (createQuestionDto.answers == undefined ||
-        createQuestionDto.answers.length == 0)
+      (!createQuestionDto.answers || !createQuestionDto.answers.length)
     ) {
       throw new BadRequestException(GConfig.ANSWERS_NOT_EMPTY);
     }
-    if (files !== undefined) {
+    if (files) {
       //save image}||audio
-      if (files.audio !== undefined) {
+      if (files.audio) {
         questionEntity.audio = files.audio.filename;
       }
-      if (files.image !== undefined) {
+      if (files.image) {
         questionEntity.image = files.image.filename;
       }
     }
 
     questionEntity.topic = checkTopic;
 
-    // save question
     const saveQuestion = await this.questionRepository.save(questionEntity);
 
-    // save list answer
-    if (
-      createQuestionDto.answers != undefined &&
-      createQuestionDto.type !== QuestionTypeEnum.TEXT
-    ) {
-      const answers: Answer[] = createQuestionDto.answers.map((opt) => {
-        const questionOption = new Answer();
-        questionOption.content = opt.content;
-        questionOption.isCorrect = opt.isCorrect;
-        questionOption.question = saveQuestion;
-        return questionOption;
-      });
-      await this.answerRepository.save(answers);
+    if (createQuestionDto.type !== QuestionTypeEnum.TEXT) {
+      await this.answerService.saveListAnswerforQuestion(
+        createQuestionDto.answers,
+        saveQuestion
+      );
     }
   }
 
-  //lay day du thong tin question
-  async getFullQuestionByID(id: number): Promise<Question> {
+  public async getQestionByID(id: number, userID: number): Promise<Question> {
     const result = await this.questionRepository.findOne({
-      where: { id },
-      relations: ['topic.owner', 'answers'],
+      where: { id, topic: { owner: { id: userID } } },
+      relations: ['answers'],
     });
+    if (!result) throw new BadRequestException(GConfig.NOT_PERMISSION);
     return result;
   }
 
-  async getQestionByID(id: number, user: User): Promise<Question> {
-    const question = await this.getFullQuestionByID(id);
-    if (question) {
-      if (!this.checkOwnerQuestion(question.topic.owner.id, user.id)) {
-        if (question.answers != null) {
-          question.answers.map((x) => {
-            delete x.isCorrect;
-            return x;
-          });
-        }
-      }
-      delete question.topic;
-    }
-    return question;
-  }
-
-  checkOwnerQuestion(id: number, userID: number): boolean {
-    if (id === userID) return true;
+  private async checkOwnerQuestion(
+    id: number,
+    userID: number
+  ): Promise<boolean> {
+    if (
+      await this.questionRepository.findOne({
+        where: { id: id, topic: { owner: { id: userID } } },
+      })
+    )
+      return true;
     return false;
   }
 
-  convertQuestionEntity(
+  private convertQuestionEntity(
     files: any,
     updateQuestionDto: UpdateQuestionDto
   ): Question {
@@ -111,63 +99,32 @@ export class QuestionService {
     QuestionEntity.content = updateQuestionDto.content;
     QuestionEntity.time = updateQuestionDto.time;
     QuestionEntity.isActive = updateQuestionDto.isActive;
-    if (files !== undefined) {
+    if (files) {
       //save image}||audio
-      if (files.audio !== undefined) {
+      if (files.audio) {
         QuestionEntity.audio = files.audio.filename;
       }
-      if (files.image !== undefined) {
+      if (files.image) {
         QuestionEntity.image = files.image.filename;
       }
     }
     return QuestionEntity;
   }
 
-  getAnswers(lst: Answer[]): number[] {
-    return lst.map((x) => {
-      return x.id;
-    });
-  }
-
-  async update(
+  public async update(
     id: number,
     updateQuestionDto: UpdateQuestionDto,
     files: any,
-    user: User
+    userID: number
   ): Promise<void> {
-    const question = await this.getFullQuestionByID(id);
-    if (!question) throw new BadRequestException(GConfig.QUESTION_NOT_FOUND);
-
-    if (!this.checkOwnerQuestion(user.id, question.topic.owner.id))
-      throw new BadRequestException(GConfig.NOT_PERMISSION_EDIT);
+    const question = await this.getQestionByID(id, userID);
 
     const QuestionEntity = this.convertQuestionEntity(files, updateQuestionDto);
     await this.questionRepository.update({ id }, QuestionEntity);
 
-    // lay ds questionOption dc phep
-    const check = this.getAnswers(question.answers);
-    if (
-      updateQuestionDto.answers != undefined &&
-      updateQuestionDto.answers.length > 0
-    ) {
-      updateQuestionDto.answers.forEach((opt) => {
-        const questionOption = new Answer();
-        questionOption.content = opt.content;
-        questionOption.isCorrect = opt.isCorrect;
-        if (!opt.id) {
-          questionOption.question = question;
-          this.answerRepository.insert(questionOption);
-        } else {
-          if (check.includes(opt.id)) {
-            this.answerRepository.update({ id: opt.id }, questionOption);
-            check.splice(check.indexOf(opt.id), 1);
-          }
-        }
-      });
-    }
-
-    if (check.length !== 0) {
-      await this.answerRepository.delete(check);
-    }
+    await this.answerService.updateListAnswerforQuestion(
+      question,
+      updateQuestionDto.answers
+    );
   }
 }

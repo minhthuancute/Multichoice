@@ -1,5 +1,5 @@
 import React from 'react';
-import { Questiondetail } from '@monorepo/multichoice/dto';
+import { QuestionDetail } from '@monorepo/multichoice/dto';
 import { classNames } from '../../helper/classNames';
 import { IAnswer } from '../../types';
 import PolaCode from '../PolaCode/PolaCode';
@@ -8,7 +8,7 @@ import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 import { BsArrowRight } from 'react-icons/bs';
 
 interface IQuestionsUserExamProps {
-  questions: Questiondetail[];
+  questions: QuestionDetail[];
 }
 
 const QuestionsUserExam: React.FC<IQuestionsUserExamProps> = ({
@@ -45,7 +45,7 @@ const QuestionsUserExam: React.FC<IQuestionsUserExamProps> = ({
   return (
     <div>
       {questions &&
-        questions.map((question: Questiondetail, indexQuestion: number) => {
+        questions.map((question: QuestionDetail, indexQuestion: number) => {
           const {
             id,
             type: questionType,

@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Timestamp } from '../../orm/timestamp.entity';
-import { UserExam } from './userExam.entity';
+import { UserExam } from '../../userExam/entities/userExam.entity';
 
 @Entity()
 export class UserAnswer extends Timestamp {

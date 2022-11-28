@@ -8,9 +8,9 @@ import {
 import {
   AnswersUserDto,
   IUserDoExam,
-  IUserDoExamdetail,
+  IUserDoExamDetail,
   IUserExam,
-  Questiondetail,
+  QuestionDetail,
   ResultUserDto,
   UpdateUserDto,
   UserExamDto,
@@ -19,10 +19,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { TopicService } from '../topic/topic.service';
-import { Topic } from '../question/entities/topic.entity';
+import { Topic } from '../topic/entities/topic.entity';
 import { Question } from '../question/entities/question.entity';
-import { UserExam } from './entities/userExam.entity';
-import { UserAnswer } from './entities/userAnswer.entity';
+import { UserExam } from '../userExam/entities/userExam.entity';
+import { UserAnswer } from '../userAnswer/entities/userAnswer.entity';
 import {
   firebasePath,
   QuestionTypeEnum,
@@ -32,23 +32,23 @@ import { GConfig } from '../config/gconfig';
 import { RedisService } from '../redis/redis.service';
 import { FirebaseService } from '../firebase/firebase.service';
 import { realtimeExam } from '../firebase/dto/realtimeExam.dto';
+import { UserExamService } from '../userExam/userExam.service';
+import { UserAnswerService } from '../userAnswer/userAnswer.service';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(UserExam)
-    private readonly userExamRepository: Repository<UserExam>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    @InjectRepository(UserAnswer)
-    private readonly userAnswerRepository: Repository<UserAnswer>,
     @Inject(forwardRef(() => TopicService))
     private readonly topicService: TopicService,
     private readonly redisService: RedisService,
-    private readonly firebaseService: FirebaseService
+    private readonly firebaseService: FirebaseService,
+    private readonly userExamService: UserExamService,
+    private readonly userAnswerService: UserAnswerService
   ) {}
 
-  convertListUserDoExam(userExams: UserExam[]): IUserDoExam[] {
+  private convertListUserDoExam(userExams: UserExam[]): IUserDoExam[] {
     const lst: IUserDoExam[] = [];
     userExams.forEach((element) => {
       lst.push(this.convertUserDoExam(element));
@@ -56,7 +56,7 @@ export class UserService {
     return lst;
   }
 
-  convertUserDoExam(userExams: UserExam): IUserDoExam {
+  private convertUserDoExam(userExams: UserExam): IUserDoExam {
     const userDoExam: IUserDoExam = {
       username: userExams.username,
       startTime: Number(userExams.startTime),
@@ -69,33 +69,30 @@ export class UserService {
     return userDoExam;
   }
 
-  convertUserDoExamdetail(
-    userExams: UserExam,
+  private convertUserDoExamDetail(
+    userExam: UserExam,
     topic: Topic
-  ): IUserDoExamdetail {
-    const result: IUserDoExamdetail = {
-      username: userExams.username,
-      startTime: Number(userExams.startTime),
-      endTime: Number(userExams.endTime),
-      duration: Number(userExams.endTime) - Number(userExams.startTime),
-      point: userExams.point,
-      questions: this.genarateAnswersUser(
-        userExams.userAnswer,
-        topic.questions
-      ),
-      userID: userExams.id,
+  ): IUserDoExamDetail {
+    const result: IUserDoExamDetail = {
+      username: userExam.username,
+      startTime: Number(userExam.startTime),
+      endTime: Number(userExam.endTime),
+      duration: Number(userExam.endTime) - Number(userExam.startTime),
+      point: userExam.point,
+      questions: this.genarateAnswersUser(userExam.userAnswer, topic.questions),
+      userID: userExam.id,
     };
     return result;
   }
 
-  convertQuestiondetail(question: Question): Questiondetail {
-    const result = new Questiondetail();
+  private convertQuestionDetail(question: Question): QuestionDetail {
+    const result = new QuestionDetail();
     result.id = question.id;
     result.type = question.type;
     result.isActive = question.isActive;
     result.content = question.content;
     result.time = question.time;
-    if (question.answers && question.answers.length > 0) {
+    if (question.answers && question.answers.length) {
       question.answers.forEach((answer) => {
         result.answers.push({
           content: answer.content,
@@ -107,13 +104,13 @@ export class UserService {
     return result;
   }
 
-  genarateAnswersUser(
+  private genarateAnswersUser(
     lst: UserAnswer[],
     questions: Question[]
-  ): Questiondetail[] {
+  ): QuestionDetail[] {
     const answersUser: AnswersUserDto[] = [];
     const lstQuestion: number[] = []; // check xem question ton tai chua?
-    if (lst && lst.length > 0) {
+    if (lst && lst.length) {
       lst.forEach((element) => {
         const tam: AnswersUserDto = new AnswersUserDto();
         const answer = Number(element?.answerID);
@@ -138,10 +135,10 @@ export class UserService {
       });
     }
 
-    if (questions && questions.length > 0) {
-      const result: Questiondetail[] = [];
+    if (questions && questions.length) {
+      const result: QuestionDetail[] = [];
       questions.forEach((element) => {
-        const question = this.convertQuestiondetail(element);
+        const question = this.convertQuestionDetail(element);
         //push dap an user
         const check = lstQuestion.indexOf(element.id);
         if (check != -1) {
@@ -158,35 +155,41 @@ export class UserService {
     return null;
   }
 
-  async getUserExamdetail(
+  public async getUserExamDetail(
     topicID: number,
-    userID: number,
-    user: User
-  ): Promise<IUserDoExamdetail> {
-    const topic = await this.topicService.getTopicByID(topicID, user);
+    userExamID: number,
+    userID: number
+  ): Promise<IUserDoExamDetail> {
+    const topic = await this.topicService.getTopicByIdAndUserId(
+      topicID,
+      userID
+    );
 
-    const result = await this.userExamRepository.findOne({
-      where: {
-        id: userID,
-        topic: { id: topicID },
-      },
-      relations: ['userAnswer'],
-    });
+    const result = await this.userExamService.getUserExamByIdAndTopicID(
+      userExamID,
+      topicID
+    );
     if (!result) throw new BadRequestException(GConfig.USER_NOT_FOUND);
-    return this.convertUserDoExamdetail(result, topic);
+    return this.convertUserDoExamDetail(result, topic);
   }
 
-  async getUserExamByTopic(id: number, user: User): Promise<IUserDoExam[]> {
-    if (await this.topicService.checkAuth(id, user)) {
-      const result = await this.findOneByTopicID(id);
+  public async getUserExamByTopic(
+    id: number,
+    userID: number
+  ): Promise<IUserDoExam[]> {
+    const result = await this.userExamService.getUserExamByTopicID(id, userID);
+    if (result) {
       return this.convertListUserDoExam(result);
     }
     throw new BadRequestException(GConfig.NOT_PERMISSION_VIEW);
   }
 
-  async endExamRealTime(resultUserRealTimeDto: ResultUserDto, user: User) {
+  public async endExamRealTime(
+    resultUserRealTimeDto: ResultUserDto,
+    user: User
+  ) {
     const endTime = new Date().getTime();
-    if (resultUserRealTimeDto.url == undefined)
+    if (!resultUserRealTimeDto.url)
       throw new BadRequestException(GConfig.URL_NOT_EMPTY);
     const topic = await this.topicService.getIsCorrectByUrl(
       resultUserRealTimeDto.url
@@ -224,38 +227,17 @@ export class UserService {
       );
       exam.owner = user;
 
-      const saveUserExam = await this.userExamRepository.save(exam);
-      this.saveListUserAnswer(resultUserRealTimeDto.answerUsers, saveUserExam);
+      const saveUserExam = await this.userExamService.save(exam);
+      await this.userAnswerService.saveListUserAnswer(
+        resultUserRealTimeDto.answerUsers,
+        saveUserExam
+      );
       return new IUserExam(
         saveUserExam.username,
         saveUserExam.point,
         saveUserExam.startTime,
         endTime
       );
-    }
-  }
-
-  saveListUserAnswer(answersUserDto: AnswersUserDto[], userExam: UserExam) {
-    if (answersUserDto !== undefined) {
-      const lst: UserAnswer[] = [];
-      answersUserDto.forEach((element) => {
-        if (typeof element.answerID === 'object') {
-          element.answerID.forEach((item) => {
-            const userAnswer: UserAnswer = new UserAnswer();
-            userAnswer.answerID = item;
-            userAnswer.questionID = element.questionID;
-            userAnswer.userExam = userExam;
-            lst.push(userAnswer);
-          });
-        } else {
-          const userAnswer: UserAnswer = new UserAnswer();
-          userAnswer.answerID = element.answerID;
-          userAnswer.questionID = element.questionID;
-          userAnswer.userExam = userExam;
-          lst.push(userAnswer);
-        }
-      });
-      this.userAnswerRepository.save(lst);
     }
   }
 
@@ -280,8 +262,11 @@ export class UserService {
       resultUserDto.answerUsers
     );
     userExam.topic = topic;
-    const saveUserExam = await this.userExamRepository.save(userExam);
-    this.saveListUserAnswer(resultUserDto.answerUsers, saveUserExam);
+    const saveUserExam = await this.userExamService.save(userExam);
+    await this.userAnswerService.saveListUserAnswer(
+      resultUserDto.answerUsers,
+      saveUserExam
+    );
 
     return new IUserExam(
       saveUserExam.username,
@@ -291,11 +276,11 @@ export class UserService {
     );
   }
 
-  uniqueID(): number {
+  private uniqueID(): number {
     return Math.floor(Math.random() * Date.now());
   }
 
-  async startExam(userExamDto: UserExamDto, user: User) {
+  public async startExam(userExamDto: UserExamDto, user: User) {
     const topic = await this.topicService.fineOneByID(userExamDto.topicID);
 
     if (topic.timeType === TopicTimeTypeEnum.REALTIME)
@@ -325,20 +310,16 @@ export class UserService {
     return { userid };
   }
 
-  async getUserById(id: number): Promise<User> {
+  public async getUserById(id: number): Promise<User> {
     return await this.userRepository.findOne({ where: { id } });
   }
 
-  public pointCount(
+  private pointCount(
     questions: Question[],
     answersUserDto: AnswersUserDto[]
   ): number {
     let poit = 0;
-    if (
-      questions.length > 0 &&
-      answersUserDto !== undefined &&
-      answersUserDto.length > 0
-    ) {
+    if (questions.length && answersUserDto && answersUserDto.length) {
       const questionsDBB = questions.reduce((result, item) => {
         return {
           ...result,
@@ -375,7 +356,7 @@ export class UserService {
     return poit;
   }
 
-  async checkTopicRealTime(topic: Topic) {
+  private async checkTopicRealTime(topic: Topic) {
     if (topic.timeType === TopicTimeTypeEnum.REALTIME) {
       const checkRealTimeExam: realtimeExam = (await this.firebaseService.get(
         `${firebasePath}-${topic.url}`
@@ -387,53 +368,35 @@ export class UserService {
     }
   }
 
-  async findTopicByUrl(url: string): Promise<Topic> {
+  public async findTopicByUrl(url: string): Promise<Topic> {
     const result = await this.topicService.findOneByUrl(url);
     await this.checkTopicRealTime(result);
     return result;
   }
 
-  async findOneByTopicID(topicId: number): Promise<UserExam[]> {
-    return this.userExamRepository
-      .createQueryBuilder('userExam')
-      .where('userExam.topicId = :topicId', { topicId })
-      .getMany();
+  public async deleteUserExamByID(
+    userExamID: number,
+    userID: number
+  ): Promise<void> {
+    await this.userExamService.deleteUserExamByID(userExamID, userID);
   }
 
-  async getUserExambyID(userID: number): Promise<UserExam> {
-    return await this.userExamRepository.findOne({
-      where: { id: userID },
-      relations: ['topic'],
-    });
-  }
-
-  async deleteUserExamByID(userID: number, user: User): Promise<void> {
-    const userExam = await this.getUserExambyID(userID);
-    if (!userExam) throw new BadRequestException(GConfig.USER_NOT_FOUND);
-
-    if (!(await this.topicService.checkAuth(userExam.topic.id, user)))
-      throw new BadRequestException(GConfig.NOT_PERMISSION_DELETE);
-
-    await this.userExamRepository.delete({ id: userID });
-  }
-
-  convertUserEntity(updateUserDto: UpdateUserDto, file: any): User {
+  private convertUserEntity(updateUserDto: UpdateUserDto, file: any): User {
     const user: User = new User();
-    if (updateUserDto.username && updateUserDto.username.length > 0)
+    if (updateUserDto.username && updateUserDto.username.length)
       user.username = updateUserDto.username;
-    if (file && file.avatar !== undefined)
-      user.avatar = file.avatar[0].filename;
+    if (file && file.avatar) user.avatar = file.avatar[0].filename;
 
     return user;
   }
 
-  async updateUserByID(
+  public async updateUserByID(
     updateUserDto: UpdateUserDto,
     file: any,
-    user: User
+    userID: number
   ): Promise<void> {
     await this.userRepository.update(
-      { id: user.id },
+      { id: userID },
       this.convertUserEntity(updateUserDto, file)
     );
   }

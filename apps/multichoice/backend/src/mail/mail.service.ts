@@ -5,7 +5,7 @@ import { MailDto } from './dto/mail.dto';
 export class MailService {
   constructor(private readonly mailerService: MailerService) {}
 
-  async send(data: MailDto): Promise<void> {
+  public async send(data: MailDto): Promise<void> {
     await this.mailerService.sendMail(data);
   }
 }

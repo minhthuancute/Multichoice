@@ -24,6 +24,7 @@ import { SucessResponse } from '../model/SucessResponse';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { multerOptions } from '../uploads/upload';
 import { AuthenticationGuard } from './guards/auth.guard';
+import { GConfig } from '../config/gconfig';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -38,8 +39,10 @@ export class authController {
     @UploadedFiles() file,
     @Res() res
   ): Promise<SucessResponse> {
-    const result = await this.authService.create(createUserDto, file);
-    return res.status(201).json(new SucessResponse(201, result));
+    await this.authService.create(createUserDto, file);
+    return res
+      .status(201)
+      .json(new SucessResponse(201, GConfig.ADD_MES_SUCESS));
   }
 
   @UseGuards(LocalAuthGuard)
@@ -49,7 +52,7 @@ export class authController {
     @Req() req,
     @Res() res
   ): Promise<SucessResponse> {
-    return res.status(200).json(new SucessResponse(200, req.user));
+    return res.json(new SucessResponse(200, req.user));
   }
 
   @Patch('/changepassword')
@@ -60,26 +63,17 @@ export class authController {
     @Res() res,
     @Body() changePasswordDto: UpdateUserPasswordDto
   ): Promise<SucessResponse> {
-    const result = await this.authService.changePassword(
-      req.user.id,
-      changePasswordDto
-    );
-    return res.status(200).json(new SucessResponse(200, result));
+    await this.authService.changePassword(req.user.id, changePasswordDto);
+    return res.json(new SucessResponse(200, GConfig.UPDATE_MES_SUCESS));
   }
 
   @Post('/forgotpassword')
   async forgotPassword(
     @Query() forgotPasswordDto: ForgotPasswordDto,
     @Res() res
-  ): Promise<void> {
-    return res
-      .status(200)
-      .json(
-        new SucessResponse(
-          200,
-          await this.authService.forgotPassword(forgotPasswordDto)
-        )
-      );
+  ): Promise<SucessResponse> {
+    await this.authService.forgotPassword(forgotPasswordDto);
+    return res.json(new SucessResponse(200, GConfig.EMAIL_CHECK));
   }
 
   @Post('/resetpassword')
@@ -87,13 +81,7 @@ export class authController {
     @Body() resetPasswordDto: ResetPasswordDto,
     @Res() res
   ): Promise<SucessResponse> {
-    return res
-      .status(200)
-      .json(
-        new SucessResponse(
-          200,
-          await this.authService.resetPassword(resetPasswordDto)
-        )
-      );
+    await this.authService.resetPassword(resetPasswordDto);
+    return res.json(new SucessResponse(200, GConfig.RESET_MES_SUCESS));
   }
 }
