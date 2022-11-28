@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { isLogin } from '../../utils/authen';
+import { isLogin } from '../../utils/check_logged';
 
 interface IPrivateRoute {
   Component: React.FunctionComponent<any>;

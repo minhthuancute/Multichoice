@@ -4,12 +4,12 @@ import Breadcrumb from '../Commons/Breadcrumb/Breadcrumb';
 import { FaPencilAlt } from 'react-icons/fa';
 import ToolTip from '../Commons/ToolTip/ToolTip';
 import { BsCalendarDate } from 'react-icons/bs';
-import { getDate } from '../../utils/formatDate';
+import { getDate } from '../../utils/format_date';
 import { AiOutlineFieldTime, AiOutlineQuestionCircle } from 'react-icons/ai';
 import { FaPlus } from 'react-icons/fa';
 import Modal from '../Modal/Modal';
 import FormEditTest from '../../pages/Tests/Edit/FormEditTest';
-import { secondsToMinutes } from '../../utils/minutesToSeconds';
+import { secondsToMinutes } from '../../utils/minutes_to_seconds';
 import { topicStore } from '../../store/rootReducer';
 
 const HeaderEditTest: React.FC = () => {
@@ -17,10 +17,10 @@ const HeaderEditTest: React.FC = () => {
   const [openModalEditTest, setOpenModalEditTest] = useState<boolean>(false);
 
   return Object.keys(topicDetail).length !== 0 ? (
-    <div className="header-edit-test">
+    <>
       <Modal
-        openModal={openModalEditTest}
-        setOpenModal={setOpenModalEditTest}
+        visible={openModalEditTest}
+        setVisibleModal={setOpenModalEditTest}
         size="md"
       >
         <FormEditTest setOpenModalEditTest={setOpenModalEditTest} />
@@ -90,7 +90,7 @@ const HeaderEditTest: React.FC = () => {
           </Link>
         </div>
       </div>
-    </div>
+    </>
   ) : null;
 };
 

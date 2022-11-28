@@ -4,14 +4,13 @@ import { classNames } from '../../../helper/classNames';
 import { useOnClickOutside } from '../../../hooks/useOnClickOutside';
 
 type PlacementOptions = 'LEFT' | 'RIGHT';
-// type SizeOptions = 'NORMAL' | 'MD' | ;
 
 export interface IOption {
   label: string;
   value: string;
 }
 
-export interface ISelect {
+export interface ISelectProps {
   onChange?: (value: IOption) => void;
   defaultValue?: string;
   className?: string;
@@ -21,7 +20,7 @@ export interface ISelect {
   placementOptions?: PlacementOptions;
 }
 
-const Select: React.FC<ISelect> = ({
+const Select: React.FC<ISelectProps> = ({
   onChange,
   defaultValue = '',
   options,

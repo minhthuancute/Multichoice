@@ -21,7 +21,7 @@ import { topicStore } from '../../store/rootReducer';
 import {
   minutesToSeconds,
   secondsToMinutes,
-} from '../../utils/minutesToSeconds';
+} from '../../utils/minutes_to_seconds';
 
 const schemaFormCreateTest = yup.object().shape({
   timeType: yup.string().required(),

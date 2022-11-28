@@ -19,5 +19,4 @@ export const deleteTopicSuccess = 'Xóa đề thi thành công';
 export const deleteResultUserExamSuccess = 'Xoá kết quả thi thành công';
 
 // Fire base
-
 export const errorStartedTestRealtime = 'Bạn đã bắt dầu bài thi này';

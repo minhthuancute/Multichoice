@@ -1,26 +1,23 @@
-import React from 'react';
-import { RiErrorWarningLine } from 'react-icons/ri';
+import React, { useState } from 'react';
 import { iNotification } from 'react-notifications-component';
 import { deleteTopicSuccess } from '../../constants/msgNotify';
 import { notify } from '../../helper/notify';
 import { topicServices } from '../../services/TopicServices';
 import Modal from '../Modal/Modal';
 
-interface IDeleteTest {
-  openModalDelete: boolean;
+interface IDeleteTestProps {
   testID: number;
   testTitle: string;
-  setOpenModalDelete: React.Dispatch<React.SetStateAction<boolean>>;
   cbConfirmDel: () => void;
 }
 
-const DeleteTest: React.FC<IDeleteTest> = ({
+const DeleteTest: React.FC<IDeleteTestProps> = ({
   testID,
   testTitle,
-  openModalDelete,
-  setOpenModalDelete,
   cbConfirmDel,
 }) => {
+  const [visibleModalDelete, setVisibleModalDelete] = useState<boolean>(false);
+
   const deleteTopic = async () => {
     try {
       const { status } = await topicServices.deleteTopicById(testID);
@@ -37,8 +34,8 @@ const DeleteTest: React.FC<IDeleteTest> = ({
 
   return (
     <Modal
-      openModal={openModalDelete}
-      setOpenModal={setOpenModalDelete}
+      visible={visibleModalDelete}
+      setVisibleModal={setVisibleModalDelete}
       placement="CENTER"
     >
       <div className="modal-content px-5 flex flex-col justify-center bg-white rounded-md max-w-lg w-full py-8">
@@ -55,7 +52,7 @@ const DeleteTest: React.FC<IDeleteTest> = ({
           <button
             className="create-test rounded-md flex justify-center items-center w-32 h-10 text-sm
           text-slate-800 font-bold border border-solid border-slate-800 focus:ring focus:ring-slate-100"
-            onClick={() => setOpenModalDelete(false)}
+            onClick={() => setVisibleModalDelete(false)}
           >
             Huỷ
           </button>

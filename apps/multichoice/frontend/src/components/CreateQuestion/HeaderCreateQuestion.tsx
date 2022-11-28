@@ -17,7 +17,8 @@ const HeaderCreateQuestion: React.FC<IHeaderCreateTest> = ({ submitForm }) => {
   const getTopicDetail = async () => {
     try {
       const { data } = await topicServices.getTopicById(
-        Number(query.get('topic_id'))
+        // Number(query.get('topic_id'))
+        1
       );
       setTopicDetailData(data);
     } catch (error) {

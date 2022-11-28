@@ -8,7 +8,6 @@ export interface IExamDetailStore {
   setExamDetailData: (examData: IExamDetail) => void;
 }
 
-// Topic detail
 export const examDetailStore = create<IExamDetailStore>()(
   devtools(
     (set) => ({

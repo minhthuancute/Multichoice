@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { ComponentType } from 'react';
 import { loadingStore } from '../store/rootReducer';
 import './loading.css';
 
-export function withLoading<T>(Component: ComponentType<T & any>) {
+export function withLoading<T>(Component: ComponentType<any>) {
   const loadingModal = () => (
     <div
       className="fixed top-0 left-0 z-50 w-screen h-screen flex items-center justify-center"
@@ -26,7 +27,6 @@ export function withLoading<T>(Component: ComponentType<T & any>) {
     return (
       <>
         <Component {...props} />
-        {/* loading */}
         {isLoading ? loadingModal() : null}
       </>
     );

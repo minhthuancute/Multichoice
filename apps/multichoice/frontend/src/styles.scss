@@ -1,15 +1,63 @@
 @tailwind components;
 @tailwind base;
 @tailwind utilities;
-@import './styles/global';
 
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&family=Lexend:wght@100;200;300;400;500;600;700;800;900&family=Open+Sans&family=Roboto:ital,wght@0,100;0,300;1,100&display=swap');
+
+:root {
+  --primaryColor: theme('colors.primary.800');
+}
+
 * {
   -webkit-tap-highlight-color: transparent;
   font-family: 'DM Sans', sans-serif;
   font-family: 'Lexend', sans-serif;
+
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: theme('colors.slate.500');
+    border-radius: 20px;
+  }
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  input[type='number'] {
+    -moz-appearance: textfield;
+  }
 }
 
-:root {
-  --primaryColor: theme('colors.primary.800');
+.container {
+  max-width: 1200px;
+  padding-left: 15px;
+  padding-right: 15px;
+  @media (min-width: 1400px) {
+    max-width: 1440px;
+  }
+}
+
+.btn-primary {
+  &:focus {
+    box-shadow: rgba(22, 160, 133, 0.2) 0 0 0 3px;
+  }
+}
+
+.wrapper-input {
+  &.no-error {
+    input:focus ~ label {
+      svg {
+        fill: var(--primaryColor);
+      }
+    }
+  }
+}
+
+.content-page {
+  min-height: calc(100vh - 125px);
 }

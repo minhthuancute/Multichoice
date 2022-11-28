@@ -18,7 +18,7 @@ import { localServices } from '../../services/LocalServices';
 import { TOKEN } from '../../constants/contstants';
 import { notify } from '../../helper/notify';
 import { loginError } from '../../constants/msgNotify';
-import InputAuthen from '../../components/Authen/InputAuthen';
+import InputAuthen from '../../components/Commons/InputAuthen/InputAuthen';
 import AuthenLayout from '../../layouts/AuthenLayout';
 
 const { email, password } = validation();

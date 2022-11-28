@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import FormCreateQuestion, {
   IFormCreateQuestionRef,
-} from '../../components/CreateQuestion/FormCreateQuestion';
+} from '../../components/CreateQuestion/FormCreateQuestion/FormCreateQuestion';
 import HeaderCreateQuestion from '../../components/CreateQuestion/HeaderCreateQuestion';
 
 const CreateQuestion: React.FC = () => {

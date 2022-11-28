@@ -5,22 +5,22 @@ import { RiDeleteBin6Line } from 'react-icons/ri';
 import { classNames } from '../../helper/classNames';
 import { IAnswer, IQuestion } from '../../types';
 import ToolTip from '../Commons/ToolTip/ToolTip';
-import FormEditQuestion from '../EditQuestion/FormEditQuestion';
+import UpdateQuestion from '../UpdateQuestion/UpdateQuestion';
 import Modal from '../Modal/Modal';
 import PolaCode from '../PolaCode/PolaCode';
 
-export interface IQuestionItem {
+export interface IQuestionItemProps {
   index: number;
   question: IQuestion;
   handleDeleteQuestion: (question: IQuestion) => void;
 }
 
-const QuestionItem: React.FC<IQuestionItem> = ({
+const QuestionItem: React.FC<IQuestionItemProps> = ({
   question,
   index,
   handleDeleteQuestion,
 }) => {
-  const [openModalEditQuestion, setOpenModalEditQuestion] =
+  const [visibleModalEditQuestion, setVisibleModalEditQuestion] =
     useState<boolean>(false);
 
   const isTypeTextQuestion = question.type === QuestionTypeEnum.TEXT;
@@ -28,12 +28,12 @@ const QuestionItem: React.FC<IQuestionItem> = ({
   return (
     <>
       <Modal
-        openModal={openModalEditQuestion}
-        setOpenModal={setOpenModalEditQuestion}
+        visible={visibleModalEditQuestion}
+        setVisibleModal={setVisibleModalEditQuestion}
       >
-        <FormEditQuestion
+        <UpdateQuestion
           questionData={question}
-          setOpenModalEditQuestion={setOpenModalEditQuestion}
+          setOpenModalEditQuestion={setVisibleModalEditQuestion}
         />
       </Modal>
       <div className="container mb-4 last:mb-0">
@@ -56,7 +56,7 @@ const QuestionItem: React.FC<IQuestionItem> = ({
               <ul className="ctas flex items-center ml-auto">
                 <li className="relative group mr-5 mb-0.5">
                   <ToolTip title="Cập nhật câu hỏi">
-                    <button onClick={() => setOpenModalEditQuestion(true)}>
+                    <button onClick={() => setVisibleModalEditQuestion(true)}>
                       <FaPencilAlt className="text-slate-800 text-xs" />
                     </button>
                   </ToolTip>

@@ -19,7 +19,7 @@ import { topicStore } from '../../../store/rootReducer';
 import {
   minutesToSeconds,
   secondsToMinutes,
-} from '../../../utils/minutesToSeconds';
+} from '../../../utils/minutes_to_seconds';
 import { ITopicDetailResponse } from '../../../types';
 
 const schemaFormLogin = yup.object().shape({

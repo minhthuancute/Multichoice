@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { classNames } from '../../helper/classNames';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import './modal.scss';
 
-type PlacementContent =
+type PlacementModal =
   | 'CENTER'
   | 'TOP_CENTER'
   | 'TOP_LEFT'
@@ -14,17 +15,17 @@ type PlacementContent =
 
 type SizeModal = 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | '3xl' | 'full';
 
-interface ILayout {
-  setOpenModal: React.Dispatch<React.SetStateAction<any>>;
+interface IModalProps {
+  visible?: boolean;
+  setVisibleModal?: React.Dispatch<React.SetStateAction<any>>;
   children?: React.ReactNode;
-  openModal?: boolean;
-  placement?: PlacementContent;
+  placement?: PlacementModal;
   size?: SizeModal;
 }
 
-const Modal: React.FC<ILayout> = ({
-  setOpenModal,
-  openModal = false,
+const Modal: React.FC<IModalProps> = ({
+  setVisibleModal,
+  visible = false,
   placement = 'TOP_CENTER',
   size = 'md',
   children,
@@ -32,9 +33,8 @@ const Modal: React.FC<ILayout> = ({
   const refModal = useRef<HTMLDivElement>(null);
 
   const onClickOutSide = () => {
-    setOpenModal(false);
+    setVisibleModal && setVisibleModal(false);
   };
-  useOnClickOutside(refModal, onClickOutSide);
 
   const getSizeModal = (): string => {
     const sizeObj = {
@@ -50,25 +50,26 @@ const Modal: React.FC<ILayout> = ({
   };
 
   useEffect(() => {
-    const body = document.querySelector('body');
-    if (!body) return;
-    if (openModal) {
+    const body = document.querySelector('body') || ({} as HTMLBodyElement);
+    if (visible) {
       body.style.overflow = 'hidden';
     }
     return () => {
       body.style.overflow = 'auto';
     };
-  }, [openModal]);
+  }, [visible]);
+
+  useOnClickOutside(refModal, onClickOutSide);
 
   return ReactDOM.createPortal(
-    openModal ? (
+    visible ? (
       <div
         className={classNames(
           `modal fixed z-40 top-0 transition-all duration-400 w-full px-4
           h-full bg-slate-900 bg-opacity-40 overflow-auto py-10`,
           {
-            'visible opacity-100': openModal,
-            'invisible opacity-0': !openModal,
+            'visible opacity-100': visible,
+            'invisible opacity-0': !visible,
           }
         )}
       >

@@ -1,8 +1,9 @@
-import React from 'react';
-import { useLocation } from 'react-router-dom';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useSearchParams } from 'react-router-dom';
 
 export const useQuery = () => {
-  const { search } = useLocation();
+  const [params, setSearchParams] = useSearchParams();
+  const query = Object.fromEntries([...(params as any)]);
 
-  return React.useMemo(() => new URLSearchParams(search), [search]);
+  return [query, setSearchParams];
 };

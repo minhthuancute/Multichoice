@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import * as yup from 'yup';
-import AnswerItem from './AnswerItem';
+import AnswerItem from './AnswerItem/AnswerItem';
 import { iNotification } from 'react-notifications-component';
 import { notify } from '../../helper/notify';
 import {

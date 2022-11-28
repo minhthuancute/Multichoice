@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import DefaultLayout from '../layouts/DefaultLayout';
@@ -16,14 +16,14 @@ import CreateQuestion from '../pages/Question/CreateQuestion';
 import PageNotFound from '../pages/Notfound/Notfound';
 
 import { ReactNotifications } from 'react-notifications-component';
-import CollectInfor from '../pages/Exam/CollectInfor/CollectInfor';
-import DoExam from '../pages/Exam/DoExam/DoExam';
+import CollectInfor from '../pages/CollectInfor/CollectInfor';
+import DoExam from '../pages/DoExam/DoExam';
 import Home from '../pages/Home/Home';
 import Statistical from '../pages/Statistical/Statistical';
-import StatisticExam from '../pages/Exam/StatisticExam/StatisticExam';
-import StatisticUserExam from '../pages/Exam/StatisticExam/StatisticUserExam';
+import StatisticExam from '../pages/StatisticExam/StatisticExam';
+import StatisticUserExam from '../pages/StatisticUserExam/StatisticUserExam';
 import ExamLayout from '../layouts/ExamLayout';
-import DoExamRealtime from '../pages/Exam/DoExam/DoexamRealtime';
+import DoExamRealtime from '../pages/DoexamRealtime/DoexamRealtime';
 import Splash from '../components/Splash/Splash';
 import 'react-notifications-component/dist/theme.css';
 import ForgotPassword from '../pages/ForgotPassword/ForgotPassword';

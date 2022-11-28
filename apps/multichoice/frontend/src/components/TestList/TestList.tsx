@@ -1,41 +1,36 @@
 import { TopicTimeTypeEnum } from '@monorepo/multichoice/constant';
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TOPIC_LIST } from '../../constants/contstants';
 import { useQuery } from '../../hooks/useQuery';
 import { localServices } from '../../services/LocalServices';
 import { topicServices } from '../../services/TopicServices';
 import { ITopicLocal } from '../../types/ICommons';
 import { ITopicResponse } from '../../types/TopicResponse';
-import { removeVietnameseTones } from '../../utils/removeVietnameseTones';
+import { removeVietnameseTones } from '../../utils/remove_vietnamese_tones';
 import TestItem, { ITestItem } from '../TestItem/TestItem';
 import DeleteTest from './DeleteTest';
 
-interface ITestList {
-  searchKeyword: string;
-}
-
-const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
-  const query = useQuery();
+const TestList: React.FC = () => {
+  const [query] = useQuery();
 
   const [testList, setTestList] = useState<ITestItem[]>([]);
   const [testsFilter, setTestsFilter] = useState<ITestItem[]>([]);
-  const [openModalDelete, setOpenModalDelete] = useState<boolean>(false);
   const [testIdDel, setTestIdDel] = useState<number>(-1);
   const [testTitleDel, setTestTitleDel] = useState<string>('');
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [pageSie, setPageSie] = useState<number>(10);
+  const [page, setPage] = useState<number>(1);
 
   const [paramSearch] = useState<string>(() => {
-    const params = query.get('search') || '';
-    const formatParamSearch = removeVietnameseTones(params).toLowerCase();
+    const formatParamSearch = removeVietnameseTones(
+      query['searchTerm'] || ''
+    ).toLowerCase();
     return formatParamSearch;
   });
 
   const getListTest = async () => {
     try {
       const { data } = await topicServices.getAllTopic({
-        page: currentPage,
-        take: pageSie,
+        page: page,
+        take: 10,
       });
       const topicResponse: ITopicResponse[] = data.data;
       const topicsData = topicResponse.map((test: ITopicResponse) => {
@@ -46,7 +41,7 @@ const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
           date: test.createdAt,
           questionCount: test.questionsCount,
           expirationTime: test.expirationTime,
-          timeType: test.timeType.toUpperCase() as `${TopicTimeTypeEnum}`,
+          timeType: test.timeType as `${TopicTimeTypeEnum}`,
           typeCategoryName: test.typeCategoryName,
         };
         return testData;
@@ -88,29 +83,21 @@ const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
   };
 
   const handleDeleteTest = (testID: number, title: string) => {
-    setOpenModalDelete(true);
     setTestIdDel(testID);
     setTestTitleDel(title);
   };
 
   const onConfirmDel = () => {
     getListTest();
-    setOpenModalDelete(false);
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     getListTest();
   }, []);
 
-  useEffect(() => {
-    filterTest(searchKeyword);
-  }, [searchKeyword]);
-
   return (
-    <div>
+    <>
       <DeleteTest
-        setOpenModalDelete={setOpenModalDelete}
-        openModalDelete={openModalDelete}
         testID={testIdDel}
         testTitle={testTitleDel}
         cbConfirmDel={onConfirmDel}
@@ -133,7 +120,7 @@ const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
           </p>
         )}
       </div>
-    </div>
+    </>
   );
 };
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { HTMLInputTypeAttribute } from 'react';
 import { classNames } from '../../../helper/classNames';
 
@@ -35,7 +36,6 @@ const TextArea: React.FC<ITextAreaProps> = ({
 }) => {
   return (
     <div className={classNames('form-group relative', className)}>
-      {/* input content */}
       <div
         className={classNames('relative wrapper-input h-full', {
           'no-error': !isError,
@@ -50,12 +50,10 @@ const TextArea: React.FC<ITextAreaProps> = ({
         </label>
 
         <textarea
-          onChange={(e) => {
-            if (onChange) {
-              onChange(e.target.value);
-            }
-          }}
           {...registerField}
+          onChange={(e) => {
+            onChange && onChange(e.target.value);
+          }}
           defaultValue={defaultValue}
           id={id}
           type={typeInput}
@@ -77,7 +75,6 @@ const TextArea: React.FC<ITextAreaProps> = ({
         />
       </div>
 
-      {/* show error */}
       {isError && (
         <p className="mt-1 text-xs text-red-500 first-letter:capitalize">
           {errMessage}

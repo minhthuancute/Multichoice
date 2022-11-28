@@ -17,8 +17,8 @@ const ConfirmDeleteUserExam: React.FC<IConfirmDeleteUserExamProps> = ({
 }) => {
   return (
     <Modal
-      openModal={openModalConfirm}
-      setOpenModal={setOpenModalConfirm}
+      visible={openModalConfirm}
+      setVisibleModal={setOpenModalConfirm}
       placement="CENTER"
       size="sm"
     >

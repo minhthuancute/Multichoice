@@ -18,7 +18,7 @@ import { localServices } from '../../services/LocalServices';
 import { TOKEN } from '../../constants/contstants';
 import { notify } from '../../helper/notify';
 import { loginError } from '../../constants/msgNotify';
-import InputAuthen from '../../components/Authen/InputAuthen';
+import InputAuthen from '../../components/Commons/InputAuthen/InputAuthen';
 import AuthenLayout from '../../layouts/AuthenLayout';
 
 const { email, password } = validation();
@@ -39,10 +39,6 @@ const Login: React.FC = () => {
   const query = useQuery();
   const { setInforUser } = userStore();
 
-  const [logginError, setLogginError] = useState<string>(
-    'Wrong user name or password'
-  );
-
   const {
     register,
     handleSubmit,
@@ -55,9 +51,7 @@ const Login: React.FC = () => {
     titleServices.addSub('Login');
   }, []);
 
-  const onSubmit: SubmitHandler<LoginUserDto> = async (
-    formData: LoginUserDto
-  ) => {
+  const onSubmit: SubmitHandler<LoginUserDto> = async (formData) => {
     try {
       const data: AxiosResponse = await authenServices.login(formData);
       const loginResponse: ILoginResponse = data.data;
@@ -66,7 +60,8 @@ const Login: React.FC = () => {
         localServices.setData(TOKEN, token);
         setInforUser(payload, token);
 
-        const redirectUrl = query.get('redirect');
+        // const redirectUrl = query.get('redirect');
+        const redirectUrl = '';
         if (redirectUrl) {
           navigate(`/e/${redirectUrl}/do-exam-realtime`);
         } else {
@@ -83,61 +78,59 @@ const Login: React.FC = () => {
 
   return (
     <AuthenLayout>
-      <div className="wrapper-form">
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="form"
-          autoComplete="off"
-        >
-          <div className="form-header mb-10 flex items-center md:flex-col xs:flex-col text-center">
-            <h2 className="font-medium text-black mb-4 text-3xl">Login</h2>
-            <p className="text-slate-800 text-sm">
-              Enter yor email address and password to get access account
-            </p>
-          </div>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="form"
+        autoComplete="off"
+      >
+        <div className="form-header mb-10 flex items-center md:flex-col xs:flex-col text-center">
+          <h2 className="font-medium text-black mb-4 text-3xl">Login</h2>
+          <p className="text-slate-800 text-sm">
+            Enter yor email address and password to get access account
+          </p>
+        </div>
 
-          <InputAuthen
-            registerField={register('email')}
-            isError={Boolean(errors.email)}
-            errMessage={errors.email?.message}
-            placeholder="Email Address"
-            typeInput="email"
-            Icon={MdOutlineMail}
-            id="email"
-          />
+        <InputAuthen
+          registerField={register('email')}
+          isError={Boolean(errors.email)}
+          errMessage={errors.email?.message}
+          placeholder="Email Address"
+          typeInput="email"
+          Icon={MdOutlineMail}
+          id="email"
+        />
 
-          <InputAuthen
-            className="mt-5"
-            registerField={register('password')}
-            isError={Boolean(errors.password)}
-            errMessage={errors.password?.message}
-            placeholder="Password"
-            typeInput="password"
-            Icon={VscUnlock}
-            id="password"
-          />
+        <InputAuthen
+          className="mt-5"
+          registerField={register('password')}
+          isError={Boolean(errors.password)}
+          errMessage={errors.password?.message}
+          placeholder="Password"
+          typeInput="password"
+          Icon={VscUnlock}
+          id="password"
+        />
 
-          <div className="remember-me flex justify-end mt-5 text-slate-800">
-            <Link
-              to="/forgot-password"
-              className="text-sm transition-all duration-200 hover:text-primary-900"
-            >
-              Forgot password?
-            </Link>
-          </div>
+        <div className="remember-me flex justify-end mt-5 text-slate-800">
+          <Link
+            to="/forgot-password"
+            className="text-sm transition-all duration-200 hover:text-primary-900"
+          >
+            Forgot password?
+          </Link>
+        </div>
 
-          <div className="submit mt-5">
-            <button
-              className="w-full py-3 bg-primary-900 rounded-md text-white font-medium"
-              type="submit"
-            >
-              Sign in Now
-            </button>
-          </div>
+        <div className="submit mt-5">
+          <button
+            className="w-full py-3 bg-primary-900 rounded-md text-white font-medium"
+            type="submit"
+          >
+            Sign in Now
+          </button>
+        </div>
 
-          {/* <SignUpOptions isLoginPage={true} /> */}
-        </form>
-      </div>
+        {/* <SignUpOptions isLoginPage={true} /> */}
+      </form>
     </AuthenLayout>
   );
 };

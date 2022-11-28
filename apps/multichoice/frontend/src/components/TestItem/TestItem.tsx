@@ -3,7 +3,7 @@ import { BsCalendarDate, BsPause, BsPlay } from 'react-icons/bs';
 import { AiOutlineQuestionCircle, AiOutlineFieldTime } from 'react-icons/ai';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 
-import { getDate } from '../../utils/formatDate';
+import { getDate } from '../../utils/format_date';
 import ToolTip from '../Commons/ToolTip/ToolTip';
 import { Link } from 'react-router-dom';
 import { TiPencil } from 'react-icons/ti';
@@ -12,7 +12,7 @@ import Badge from '../Commons/Badge/Badge';
 import { copyClipboard } from '../../helper/copyClipboard';
 import { notify } from '../../helper/notify';
 import { iNotification } from 'react-notifications-component';
-import { secondsToMinutes } from '../../utils/minutesToSeconds';
+import { secondsToMinutes } from '../../utils/minutes_to_seconds';
 import { ITestRealtimeRecord } from '../../types/ICommons';
 import {
   canNotCopyLinkExam,
