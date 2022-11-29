@@ -2,7 +2,6 @@ import React, { useLayoutEffect, useState } from 'react';
 import { MdOutlineMail } from 'react-icons/md';
 import { VscUnlock } from 'react-icons/vsc';
 import { AiOutlineUser } from 'react-icons/ai';
-
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -19,6 +18,8 @@ import { titleServices } from '../../services/TitleServices';
 import InputAuthen from '../../components/Commons/InputAuthen/InputAuthen';
 import Checkbox from '../../components/Commons/Checkbox/Checkbox';
 import AuthenLayout from '../../layouts/AuthenLayout';
+import { RedirectQuery } from '../../types/AuthenQuery';
+import Button from '../../components/Button/Button';
 
 const { username, email, password } = validation();
 const schemaFormRegister = yup
@@ -36,9 +37,8 @@ const schemaFormRegister = yup
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
-  const query = useQuery();
-  // const redirectUrl = query.get('redirect') || '';
-  const redirectUrl = '';
+  const [query] = useQuery<RedirectQuery>();
+  const redirectUrl = query.redirect;
 
   const [isUserAccept, setIsUserAccept] = useState<boolean>(false);
 
@@ -50,9 +50,7 @@ const Register: React.FC = () => {
     resolver: yupResolver(schemaFormRegister),
   });
 
-  const onSubmit: SubmitHandler<CreateUserDto> = async (
-    formData: CreateUserDto
-  ) => {
+  const onSubmit: SubmitHandler<CreateUserDto> = async (formData) => {
     if (isUserAccept) {
       try {
         await authenServices.register(formData);
@@ -99,7 +97,7 @@ const Register: React.FC = () => {
           isError={Boolean(errors.username)}
           errMessage={errors.username?.message}
           placeholder="User Name"
-          typeInput="text"
+          type="text"
           Icon={AiOutlineUser}
           id="username"
         />
@@ -110,7 +108,7 @@ const Register: React.FC = () => {
           isError={Boolean(errors.email)}
           errMessage={errors.email?.message}
           placeholder="Email Address"
-          typeInput="email"
+          type="email"
           Icon={MdOutlineMail}
           id="email"
         />
@@ -121,7 +119,7 @@ const Register: React.FC = () => {
           isError={Boolean(errors.password)}
           errMessage={errors.password?.message}
           placeholder="Password"
-          typeInput="password"
+          type="password"
           Icon={VscUnlock}
           id="password"
         />
@@ -140,12 +138,9 @@ const Register: React.FC = () => {
         </div>
 
         <div className="submit mt-5">
-          <button
-            className="w-full py-3 bg-primary-900 rounded-md text-white font-medium"
-            type="submit"
-          >
-            Sign up Now
-          </button>
+          <Button type="submit" fullWidth>
+            Sign up
+          </Button>
         </div>
       </form>
     </AuthenLayout>

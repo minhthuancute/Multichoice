@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect } from 'react';
 import { MdOutlineMail } from 'react-icons/md';
 import { VscUnlock } from 'react-icons/vsc';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -20,6 +20,8 @@ import { notify } from '../../helper/notify';
 import { loginError } from '../../constants/msgNotify';
 import InputAuthen from '../../components/Commons/InputAuthen/InputAuthen';
 import AuthenLayout from '../../layouts/AuthenLayout';
+import { RedirectQuery } from '../../types/AuthenQuery';
+import Button from '../../components/Button/Button';
 
 const { email, password } = validation();
 const schemaFormLogin = yup
@@ -36,9 +38,10 @@ const schemaFormLogin = yup
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const query = useQuery();
-  const { setInforUser } = userStore();
+  const [query] = useQuery<RedirectQuery>();
+  const redirectUrl = query.redirect;
 
+  const { setInforUser } = userStore();
   const {
     register,
     handleSubmit,
@@ -46,10 +49,6 @@ const Login: React.FC = () => {
   } = useForm<LoginUserDto>({
     resolver: yupResolver(schemaFormLogin),
   });
-
-  useLayoutEffect(() => {
-    titleServices.addSub('Login');
-  }, []);
 
   const onSubmit: SubmitHandler<LoginUserDto> = async (formData) => {
     try {
@@ -60,8 +59,6 @@ const Login: React.FC = () => {
         localServices.setData(TOKEN, token);
         setInforUser(payload, token);
 
-        // const redirectUrl = query.get('redirect');
-        const redirectUrl = '';
         if (redirectUrl) {
           navigate(`/e/${redirectUrl}/do-exam-realtime`);
         } else {
@@ -75,6 +72,10 @@ const Login: React.FC = () => {
       } as iNotification);
     }
   };
+
+  useLayoutEffect(() => {
+    titleServices.addSub('Login');
+  }, []);
 
   return (
     <AuthenLayout>
@@ -95,7 +96,7 @@ const Login: React.FC = () => {
           isError={Boolean(errors.email)}
           errMessage={errors.email?.message}
           placeholder="Email Address"
-          typeInput="email"
+          type="email"
           Icon={MdOutlineMail}
           id="email"
         />
@@ -106,7 +107,7 @@ const Login: React.FC = () => {
           isError={Boolean(errors.password)}
           errMessage={errors.password?.message}
           placeholder="Password"
-          typeInput="password"
+          type="password"
           Icon={VscUnlock}
           id="password"
         />
@@ -121,12 +122,9 @@ const Login: React.FC = () => {
         </div>
 
         <div className="submit mt-5">
-          <button
-            className="w-full py-3 bg-primary-900 rounded-md text-white font-medium"
-            type="submit"
-          >
-            Sign in Now
-          </button>
+          <Button type="submit" fullWidth>
+            Sign in
+          </Button>
         </div>
 
         {/* <SignUpOptions isLoginPage={true} /> */}

@@ -20,6 +20,7 @@ import { notify } from '../../helper/notify';
 import { loginError } from '../../constants/msgNotify';
 import InputAuthen from '../../components/Commons/InputAuthen/InputAuthen';
 import AuthenLayout from '../../layouts/AuthenLayout';
+import Button from '../../components/Button/Button';
 
 const { email, password } = validation();
 const schemaFormLogin = yup
@@ -80,7 +81,7 @@ const ForgotPassword: React.FC = () => {
             isError={Boolean(errors.email)}
             errMessage={errors.email?.message}
             placeholder="Email Address"
-            typeInput="email"
+            type="email"
             Icon={MdOutlineMail}
             id="email"
           />
@@ -95,12 +96,12 @@ const ForgotPassword: React.FC = () => {
           </div>
 
           <div className="submit mt-5">
-            <button
+            <Button
               className="w-full py-3 bg-primary-900 rounded-md text-white font-medium"
               type="submit"
             >
               Reset Password
-            </button>
+            </Button>
           </div>
 
           {/* <SignUpOptions isLoginPage={true} /> */}

@@ -1,38 +1,37 @@
-import React, { HTMLInputTypeAttribute, useState } from 'react';
+import React, {
+  HTMLInputTypeAttribute,
+  InputHTMLAttributes,
+  useState,
+} from 'react';
 import { UseFormRegisterReturn } from 'react-hook-form';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import { IconType } from 'react-icons/lib';
 import { classNames } from '../../../helper/classNames';
 
-export interface IInputAuthen {
-  defaultValue?: string;
+export interface IInputAuthen extends InputHTMLAttributes<HTMLInputElement> {
   className?: string;
-  id?: string;
-  placeholder?: string;
   Icon?: IconType;
-  typeInput?: HTMLInputTypeAttribute;
   isError?: boolean;
   errMessage?: string;
   fieldName?: string;
   registerField?: UseFormRegisterReturn;
+  type: HTMLInputTypeAttribute;
 }
 
 const InputAuthen: React.FC<IInputAuthen> = ({
-  defaultValue = '',
   className,
-  id = '',
   registerField = null,
   isError = false,
   errMessage = '',
   Icon = '',
-  placeholder,
-  typeInput = 'text',
+  type = 'text',
+  ...rest
 }) => {
   const [isHidePass, setIsHidePass] = useState<boolean>(true);
 
   const getTypeInput = (): HTMLInputTypeAttribute => {
-    if (typeInput !== 'password') {
-      return typeInput;
+    if (type !== 'password') {
+      return type;
     } else {
       return isHidePass ? 'password' : 'text';
     }
@@ -48,25 +47,25 @@ const InputAuthen: React.FC<IInputAuthen> = ({
       >
         <input
           {...registerField}
-          id={id}
+          {...rest}
           type={getTypeInput()}
-          placeholder={placeholder}
-          defaultValue={defaultValue}
           className={classNames(
-            `transition-all duration-200 w-full text-stone-600 outline-none border px-2.5 py-3 border-solid
-            border-stone-200 focus:border-primary-900 rounded-md text-sm placeholder:text-sm placeholder:text-slate-400
-            focus:placeholder:invisible`,
+            `transition-all duration-200 w-full outline-none border px-4 py-3 border-solid
+            rounded-md text-sm placeholder:text-sm`,
             {
-              'border-stone-200 focus:border-primary-900': !isError,
-              'border-red-500 focus:border-red-500': isError,
-              'pl-9': Icon,
+              'border-stone-200 focus:border-primary-900 placeholder:text-slate-400':
+                !isError,
+              'border-red-500 focus:border-red-500 text-red-500 placeholder:text-red-500':
+                isError,
+              'text-slate-800': !isError,
+              'pl-10': Icon,
               'pl-2.5': !Icon,
             }
           )}
         />
         <label
           htmlFor="password"
-          className="absolute inline-block px-2 left-0 top-1/2 transform -translate-y-1/2"
+          className="absolute inline-block pl-3 left-0 top-1/2 transform -translate-y-1/2"
         >
           {Icon && (
             <Icon
@@ -78,8 +77,7 @@ const InputAuthen: React.FC<IInputAuthen> = ({
           )}
         </label>
 
-        {/* toggle password */}
-        {typeInput === 'password' && (
+        {type === 'password' && (
           <div
             className="absolute flex px-2 right-2 top-1/2 transform -translate-y-1/2
            items-center"
@@ -103,7 +101,6 @@ const InputAuthen: React.FC<IInputAuthen> = ({
             </button>
           </div>
         )}
-        {/* toggle password */}
       </div>
 
       {/* show error */}

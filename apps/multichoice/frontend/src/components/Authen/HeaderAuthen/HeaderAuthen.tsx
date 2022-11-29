@@ -1,13 +1,13 @@
 import React, { useLayoutEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useQuery } from '../../../hooks/useQuery';
+import { RedirectQuery } from '../../../types/AuthenQuery';
 import Logo from '../../Logo/Logo';
 
 const HeaderAuthen: React.FC = () => {
   const location = useLocation();
-  const [query] = useQuery();
-  // const redirectUrl = query.get('redirect') || '';
-  const redirectUrl = '';
+  const [query] = useQuery<RedirectQuery>();
+  const redirectUrl = query.redirect;
 
   const [isLoginPage, setIsLoginPage] = useState<boolean>(true);
 

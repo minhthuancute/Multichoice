@@ -21,7 +21,8 @@ const TestList: React.FC = () => {
 
   const [paramSearch] = useState<string>(() => {
     const formatParamSearch = removeVietnameseTones(
-      query['searchTerm'] || ''
+      // query['searchTerm'] || ''
+      ''
     ).toLowerCase();
     return formatParamSearch;
   });
