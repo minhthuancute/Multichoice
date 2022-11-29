@@ -12,9 +12,13 @@ import {
 } from '../../services/ExamServices';
 import { getDate, getDistance, getTime } from '../../utils/format_date';
 
+interface IStatisticUserExamQuery {
+  user_id: string;
+}
+
 const StatisticUserExam: React.FC = () => {
   const { id: topic_id } = useParams();
-  const [query] = useQuery();
+  const [query] = useQuery<IStatisticUserExamQuery>();
   const topicId = Number(topic_id) || -1;
 
   const [userExamDetail, setUserExamDetail] = useState<IUserDoExamdetail>();
@@ -23,12 +27,11 @@ const StatisticUserExam: React.FC = () => {
     try {
       const payload: IPayloadGetUserExamDetail = {
         topicId: topicId,
-        // userId: Number(query.get('user_id')) || -1,
-        userId: -1,
+        userId: +query.user_id,
       };
-      const response = await examServices.getUserExamDetail(payload);
-      if (response) {
-        const userExamDetail: IUserDoExamdetail = response.data.data;
+      const { data } = await examServices.getUserExamDetail(payload);
+      if (data) {
+        const userExamDetail: IUserDoExamdetail = data.data;
         setUserExamDetail(userExamDetail);
       }
     } catch {
@@ -40,9 +43,7 @@ const StatisticUserExam: React.FC = () => {
     getStatisticUserDetail();
   }, []);
 
-  if (!userExamDetail) return null;
-
-  return (
+  return userExamDetail ? (
     <div>
       <header className="container py-4">
         <Breadcrumb>
@@ -113,7 +114,7 @@ const StatisticUserExam: React.FC = () => {
         </div>
       </main>
     </div>
-  );
+  ) : null;
 };
 
 export default withBackTop(StatisticUserExam);
