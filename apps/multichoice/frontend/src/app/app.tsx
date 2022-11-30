@@ -12,7 +12,7 @@ import Login from '../pages/Login/Login';
 import Register from '../pages/Register/Register';
 import Tests from '../pages/Tests/Index/Tests';
 import EditTest from '../pages/Tests/Edit/EditTest';
-import CreateQuestion from '../pages/Question/CreateQuestion';
+import CreateQuestion from '../pages/Question/Question';
 import PageNotFound from '../pages/Notfound/Notfound';
 
 import { ReactNotifications } from 'react-notifications-component';

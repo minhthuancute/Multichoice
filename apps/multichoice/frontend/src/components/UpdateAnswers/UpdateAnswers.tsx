@@ -10,13 +10,13 @@ import { useFieldArray, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import AnswerItem from '../AnswerItem/AnswerItem';
 import { iNotification } from 'react-notifications-component';
-import { notify } from '../../../helper/notify';
+import { notify } from '../../helper/notify';
 import {
   errMaxlengthAnswer,
   errMinlengthAnswer,
-} from '../../../constants/msgNotify';
+} from '../../constants/msgNotify';
 
-const answerSchema = yup.object().shape({
+export const answerSchema = yup.object().shape({
   answers: yup.array().of(
     yup.object().shape({
       content: yup.string().required(),
@@ -24,15 +24,13 @@ const answerSchema = yup.object().shape({
     })
   ),
 });
-interface IAnswers {
+
+interface IUpdateAnswers {
   answers: CreatAnswer[];
 }
 
-export interface IResetAnswersRef {
-  resetAnswers: (newAnswers: CreatAnswer[]) => void;
-}
-
-interface ICreateAnswerProps {
+interface IUpdateAnswerProps {
+  answers: CreatAnswer[];
   onRemoveAnswer: (filterAnswer: CreatAnswer[]) => void;
   onAddAnswer: (answers: CreatAnswer[]) => void;
   invalidAnswers?: boolean;
@@ -40,25 +38,20 @@ interface ICreateAnswerProps {
   ref: any;
 }
 
-const CreateAnswer: React.FC<ICreateAnswerProps> = forwardRef(
-  (props: ICreateAnswerProps, ref) => {
+const UpdateAnswer: React.FC<IUpdateAnswerProps> = forwardRef(
+  (props: IUpdateAnswerProps, ref) => {
     const {
+      answers,
       onAddAnswer,
       onRemoveAnswer,
       invalidAnswers = false,
-      isMultilCorrectAnswer = false,
+      isMultilCorrectAnswer,
     } = props;
-    const {
-      setValue,
-      getValues,
-      register,
-      control,
-      watch,
-      reset,
-      formState: { errors },
-    } = useForm<IAnswers>({
-      resolver: yupResolver(answerSchema),
-    });
+
+    const { setValue, getValues, register, control, watch, reset } =
+      useForm<IUpdateAnswers>({
+        resolver: yupResolver(answerSchema),
+      });
 
     const { remove, fields, append } = useFieldArray({
       control,
@@ -96,9 +89,11 @@ const CreateAnswer: React.FC<ICreateAnswerProps> = forwardRef(
         }
 
         const answers: CreatAnswer[] = getValues('answers');
-        const filterAnswer = answers.filter((_: CreatAnswer, index: number) => {
-          return indexAnswer !== index;
-        });
+        const filterAnswer = answers.filter(
+          (_: CreatAnswer, indexAnswerFilter: number) => {
+            return indexAnswer !== indexAnswerFilter;
+          }
+        );
 
         onRemoveAnswer(filterAnswer);
         remove(indexAnswer);
@@ -112,10 +107,7 @@ const CreateAnswer: React.FC<ICreateAnswerProps> = forwardRef(
       }
     };
 
-    const handleIndexCorrectAnswer = (answers: CreatAnswer[] = []) => {
-      if (isMultilCorrectAnswer) {
-        return;
-      }
+    const indexCorrectAnswer = (answers: CreatAnswer[] = []) => {
       const valueCorrect = answers.find((answer: CreatAnswer) => {
         return answer.isCorrect;
       })?.content;
@@ -125,36 +117,32 @@ const CreateAnswer: React.FC<ICreateAnswerProps> = forwardRef(
     useEffect(() => {
       const subscription = watch((value: any) => {
         onAddAnswer(value.answers as CreatAnswer[]);
-        handleIndexCorrectAnswer(value.answers);
+        indexCorrectAnswer(value.answers);
       });
       return () => {
         subscription.unsubscribe();
       };
-    }, []);
+    }, [watch]);
 
     useEffect(() => {
-      if (isMultilCorrectAnswer) {
-        setCorrectAnswer('');
-      }
-    }, [isMultilCorrectAnswer]);
-
-    useEffect(() => {
-      const answers = Array.from({ length: 4 }).map((item) => {
-        const answer: CreatAnswer = {
-          content: '',
-          isCorrect: false,
-        };
-        return answer;
-      });
       setValue('answers', answers);
     }, []);
 
     useImperativeHandle(
       ref,
       () => ({
-        resetAnswers: (newAnswers: CreatAnswer[]) => {
+        resetAnswers: () => {
+          const answers = getValues('answers');
+          const resetAnswers: CreatAnswer[] = answers.map(
+            (answer: CreatAnswer) => {
+              return {
+                ...answer,
+                isCorrect: false,
+              };
+            }
+          );
           reset({
-            answers: newAnswers,
+            answers: resetAnswers,
           });
         },
       }),
@@ -203,17 +191,11 @@ const CreateAnswer: React.FC<ICreateAnswerProps> = forwardRef(
               </p>
             </div>
           ) : null}
-
-          {errors.answers ? (
-            <div className="show-error mt-3">
-              <p className="text-red-500 text-xs">{errors.answers.message}</p>
-            </div>
-          ) : null}
           <div className="add-answer mt-5">
             <button
               type="button"
               className="create-test rounded-md flex justify-center items-center w-32 h-10 text-sm
-            text-white font-bold bg-green-00 ml-auto bg-slate-800"
+            text-white font-bold bg-slate-800 ml-auto"
               onClick={() => addNewAnswer()}
             >
               Thêm đáp án
@@ -234,4 +216,4 @@ const CreateAnswer: React.FC<ICreateAnswerProps> = forwardRef(
   }
 );
 
-export default CreateAnswer;
+export default UpdateAnswer;

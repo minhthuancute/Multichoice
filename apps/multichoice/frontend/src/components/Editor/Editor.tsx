@@ -66,20 +66,20 @@ const Editor: React.FC<IEditorProps> = ({
   };
 
   return (
-    <div>
+    <>
       <style
         dangerouslySetInnerHTML={{
           __html: `
           .ql-container{
             min-height: ${height}px;
-            height: max-content
+            height: max-content;
           }
 
           .ql-editor{
             font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji;
             font-size: 14px;
             color: rgb(87, 83, 78);
-            font-weight: 400 !important
+            font-weight: 400 !important;
           }
         `,
         }}
@@ -89,7 +89,7 @@ const Editor: React.FC<IEditorProps> = ({
         value={value}
         defaultValue={defaultValue}
         onChange={handleChange}
-        className={classNames(['editor, rounded-sm'], {
+        className={classNames(['editor, rounded-md'], {
           'border border-red-500': isError,
         })}
         placeholder={placeholder}
@@ -102,7 +102,7 @@ const Editor: React.FC<IEditorProps> = ({
           {errMessage}
         </p>
       )}
-    </div>
+    </>
   );
 };
 
