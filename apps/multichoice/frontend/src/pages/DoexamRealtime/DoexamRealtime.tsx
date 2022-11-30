@@ -16,39 +16,37 @@ import {
 import { IQuestion } from '../../types';
 import { ITestRealtimeRecord } from '../../types/ICommons';
 import { fireGet } from '../../utils/firebase_utils';
-import DoExamSkelenton from '../../components/DoExamSkelenton/DoExamSkelenton';
+import DoExamSkelenton from '../../components/DoExam/DoExamSkelenton/DoExamSkelenton';
 
 const DoExamRealtime: React.FC = () => {
   const { exam_id } = useParams();
-  const { exam, setExamData, setIsSubmitExam } = examStore();
+  const { exam, fetchExamData, setIsSubmitExam } = examStore();
   const { userDoExam, setUserDoexamData, setAnswers, answers } = answerStore();
   const { user } = userStore();
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const getExamDetail = async () => {
-    try {
-      setIsLoading(true);
-      const { data } = await examServices.getExamInfor(exam_id || '');
-
-      if (answers.length === 0) {
-        const initAnswers: IAnswers[] = data.data.questions.map(
-          (questions: IQuestion) => {
-            const tempArr: IAnswers = {
-              questionID: questions.id,
-              answerID: [],
-            };
-            return tempArr;
-          }
-        );
-        setAnswers(initAnswers);
-      }
-
-      setExamData(data.data);
-      setIsLoading(false);
-    } catch (err) {
-      setIsLoading(false);
-    }
+    // try {
+    //   setIsLoading(true);
+    //   const { data } = await examServices.getExamInfor(exam_id || '');
+    //   if (answers.length === 0) {
+    //     const initAnswers: IAnswers[] = data.data.questions.map(
+    //       (questions: IQuestion) => {
+    //         const tempArr: IAnswers = {
+    //           questionID: questions.id,
+    //           answerID: [],
+    //         };
+    //         return tempArr;
+    //       }
+    //     );
+    //     setAnswers(initAnswers);
+    //   }
+    //   setExamData(data.data);
+    //   setIsLoading(false);
+    // } catch (err) {
+    //   setIsLoading(false);
+    // }
   };
 
   useEffect(() => {

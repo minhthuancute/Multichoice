@@ -1,6 +1,6 @@
 import React from 'react';
 import { BsInfoCircle } from 'react-icons/bs';
-import Skelenton from '../Commons/Skelenton/Skelenton';
+import Skelenton from '../../Commons/Skelenton/Skelenton';
 
 const DoExamSkelenton: React.FC = () => {
   return (

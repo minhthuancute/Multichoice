@@ -2,13 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Breadcrumb from '../Commons/Breadcrumb/Breadcrumb';
 
-interface IHeaderCreateTest {
-  onSubmitCreateTest: () => void;
-}
-
-const HeaderCreateTest: React.FC<IHeaderCreateTest> = ({
-  onSubmitCreateTest,
-}) => {
+const HeaderCreateTest: React.FC = () => {
   const navigate = useNavigate();
 
   return (
@@ -34,7 +28,7 @@ const HeaderCreateTest: React.FC<IHeaderCreateTest> = ({
           <button
             className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
             text-white font-bold bg-primary-900 transition-all duration-200 hover:bg-opacity-90"
-            onClick={() => onSubmitCreateTest()}
+            form="form-create-test"
           >
             Tạo mới
           </button>

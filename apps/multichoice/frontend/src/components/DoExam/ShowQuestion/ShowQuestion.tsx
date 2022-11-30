@@ -15,7 +15,7 @@ import CountDown from '../../Commons/CountDown/CountDown';
 import { IS_SUBMIT_EXAM, START_TIME } from '../../../constants/contstants';
 import { classNames } from '../../../helper/classNames';
 import ToolTip from '../../Commons/ToolTip/ToolTip';
-import PolaCode from '../../PolaCode/PolaCode';
+import PolaCode from '../../Commons/PolaCode/PolaCode';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 import { expriedTime, submited } from '../../../constants/msgNotify';
 import TextArea from '../../Commons/TextArea/TextArea';

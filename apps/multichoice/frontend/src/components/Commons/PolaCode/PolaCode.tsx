@@ -1,5 +1,5 @@
 import React, { createRef, useEffect, useState } from 'react';
-import { classNames } from '../../helper/classNames';
+import { classNames } from '../../../helper/classNames';
 import Modal from '../Modal/Modal';
 import './polacode.scss';
 interface IPolaCodeProps {

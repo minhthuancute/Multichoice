@@ -1,7 +1,7 @@
 import React from 'react';
 import { ITestRealtimeRecord } from '../../types/ICommons';
 import { fireGet, fireUpdate } from '../../utils/firebase_utils';
-import Modal from '../Modal/Modal';
+import Modal from '../Commons/Modal/Modal';
 
 interface IHandlelayTestProps {
   openModal: boolean;

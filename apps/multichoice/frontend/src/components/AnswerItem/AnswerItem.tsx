@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Checkbox from '../Commons/Checkbox/Checkbox';
 import TextArea from '../Commons/TextArea/TextArea';
 import ToolTip from '../Commons/ToolTip/ToolTip';

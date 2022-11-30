@@ -8,8 +8,8 @@ import { topicServices } from '../../services/TopicServices';
 import { topicStore } from '../../store/rootReducer';
 import { IQuestion } from '../../types';
 import ModalConfirm from '../Commons/ModalConfirm/ModalConfirm';
-import Modal from '../Modal/Modal';
-import PolaCode from '../PolaCode/PolaCode';
+import Modal from '../Commons/Modal/Modal';
+import PolaCode from '../Commons/PolaCode/PolaCode';
 import QuestionItem from '../QuestionItem/QuestionItem';
 
 const QuestionList: React.FC = () => {

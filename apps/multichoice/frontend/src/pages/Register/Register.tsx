@@ -19,7 +19,7 @@ import InputAuthen from '../../components/Commons/InputAuthen/InputAuthen';
 import Checkbox from '../../components/Commons/Checkbox/Checkbox';
 import AuthenLayout from '../../layouts/AuthenLayout';
 import { RedirectQuery } from '../../types/AuthenQuery';
-import Button from '../../components/Button/Button';
+import Button from '../../components/Commons/Button/Button';
 
 const { username, email, password } = validation();
 const schemaFormRegister = yup
@@ -53,11 +53,13 @@ const Register: React.FC = () => {
   const onSubmit: SubmitHandler<CreateUserDto> = async (formData) => {
     if (isUserAccept) {
       try {
-        await authenServices.register(formData);
-        const urlNavigate = redirectUrl
-          ? `/login?redirect=${redirectUrl}`
-          : '/login';
-        navigate(urlNavigate);
+        const { data } = await authenServices.register(formData);
+        if (data.success) {
+          const urlNavigate = redirectUrl
+            ? `/login?redirect=${redirectUrl}`
+            : '/login';
+          navigate(urlNavigate);
+        }
       } catch (error) {
         notify({
           message: emailExisted,

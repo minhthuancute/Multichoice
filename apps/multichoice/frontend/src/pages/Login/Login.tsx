@@ -21,7 +21,7 @@ import { loginError } from '../../constants/msgNotify';
 import InputAuthen from '../../components/Commons/InputAuthen/InputAuthen';
 import AuthenLayout from '../../layouts/AuthenLayout';
 import { RedirectQuery } from '../../types/AuthenQuery';
-import Button from '../../components/Button/Button';
+import Button from '../../components/Commons/Button/Button';
 
 const { email, password } = validation();
 const schemaFormLogin = yup

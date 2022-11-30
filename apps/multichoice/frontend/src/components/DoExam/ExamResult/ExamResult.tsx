@@ -1,6 +1,5 @@
 import React from 'react';
-import { answerStore } from '../../../store/rootReducer';
-import Modal from '../../Modal/Modal';
+import Modal from '../../Commons/Modal/Modal';
 
 interface IExamResult {
   setOpenModalResult: React.Dispatch<React.SetStateAction<boolean>>;

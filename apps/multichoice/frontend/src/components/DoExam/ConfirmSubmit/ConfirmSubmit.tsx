@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Modal from '../../Modal/Modal';
+import Modal from '../../Commons/Modal/Modal';
 
 interface IConfirmSubmitProps {
   unSelectAnswer: number;

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { UseFormRegisterReturn } from 'react-hook-form';
 import { BsCheck } from 'react-icons/bs';
 import { classNames } from '../../../helper/classNames';
-import PolaCode from '../../PolaCode/PolaCode';
+import PolaCode from '../PolaCode/PolaCode';
 import './checkbox.scss';
 
 interface CheckboxProps {
@@ -12,7 +12,7 @@ interface CheckboxProps {
   className?: string;
   isChecked?: boolean;
   textLabel?: string;
-  onChange?: (isChecked: boolean) => void;
+  onChange?: (checked: boolean) => void;
 }
 
 const Checkbox: React.FC<CheckboxProps> = ({
@@ -36,7 +36,6 @@ const Checkbox: React.FC<CheckboxProps> = ({
   const onCLickLabel = (e: React.FormEvent<HTMLElement>): void => {
     if (disable) {
       e.preventDefault();
-      return;
     } else {
       onChangeCheckbox();
     }

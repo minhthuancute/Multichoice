@@ -3,7 +3,7 @@ import { iNotification } from 'react-notifications-component';
 import { deleteTopicSuccess } from '../../constants/msgNotify';
 import { notify } from '../../helper/notify';
 import { topicServices } from '../../services/TopicServices';
-import Modal from '../Modal/Modal';
+import Modal from '../Commons/Modal/Modal';
 
 interface IDeleteTestProps {
   testID: number;

@@ -1,26 +1,18 @@
 import React, { useLayoutEffect } from 'react';
 import { MdOutlineMail } from 'react-icons/md';
-import { VscUnlock } from 'react-icons/vsc';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Link, useNavigate } from 'react-router-dom';
 import { validation } from '@monorepo/multichoice/validation';
 import { LoginUserDto } from '@monorepo/multichoice/dto';
-import { AxiosResponse } from 'axios';
-import { iNotification } from 'react-notifications-component';
 import { useQuery } from '../../hooks/useQuery';
 import { userStore } from '../../store/rootReducer';
 import { titleServices } from '../../services/TitleServices';
-import { authenServices } from '../../services/AuthenServices';
-import { ILoginResponse } from '../../types';
-import { localServices } from '../../services/LocalServices';
-import { TOKEN } from '../../constants/contstants';
-import { notify } from '../../helper/notify';
-import { loginError } from '../../constants/msgNotify';
+
 import InputAuthen from '../../components/Commons/InputAuthen/InputAuthen';
 import AuthenLayout from '../../layouts/AuthenLayout';
-import Button from '../../components/Button/Button';
+import Button from '../../components/Commons/Button/Button';
 
 const { email, password } = validation();
 const schemaFormLogin = yup
@@ -36,10 +28,6 @@ const schemaFormLogin = yup
   .required();
 
 const ForgotPassword: React.FC = () => {
-  const navigate = useNavigate();
-  const query = useQuery();
-  const { setInforUser } = userStore();
-
   const {
     register,
     handleSubmit,
@@ -52,9 +40,7 @@ const ForgotPassword: React.FC = () => {
     titleServices.addSub('Login');
   }, []);
 
-  const onSubmit: SubmitHandler<LoginUserDto> = async (
-    formData: LoginUserDto
-  ) => {
+  const onSubmit: SubmitHandler<LoginUserDto> = async (formData) => {
     //
   };
 

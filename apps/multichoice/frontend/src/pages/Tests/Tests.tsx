@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import FilterTests from '../../../components/Tests/FilterTests';
-import TestList from '../../../components/TestList/TestList';
-import { withBackTop } from '../../../HOCs/withBackTop';
+import FilterTests from '../../components/Tests/FilterTests';
+import TestList from '../../components/TestList/TestList';
+import { withBackTop } from '../../HOCs/withBackTop';
 
 const Tests: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();

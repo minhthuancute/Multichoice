@@ -1,17 +1,13 @@
-import React, { HTMLInputTypeAttribute } from 'react';
+import React, { HTMLInputTypeAttribute, InputHTMLAttributes } from 'react';
 import { UseFormRegisterReturn } from 'react-hook-form';
 import { classNames } from '../../../helper/classNames';
 
 export type InputSize = 'xs' | 'sm' | 'md' | 'lg';
 
-export interface IInput {
-  onChange?: (value: string) => void;
+export interface IInputProps extends InputHTMLAttributes<HTMLInputElement> {
   textLabel?: React.ReactNode;
-  defaultValue?: any;
   className?: string;
   classInput?: string;
-  id?: string;
-  placeholder?: string;
   Icon?: React.ReactNode;
   typeInput?: HTMLInputTypeAttribute;
   isError?: boolean;
@@ -23,23 +19,18 @@ export interface IInput {
   hasBorder?: boolean;
 }
 
-const Input: React.FC<IInput> = ({
-  onChange,
+const Input: React.FC<IInputProps> = ({
   textLabel = '',
-  defaultValue = '',
-  className = '',
-  classInput = '',
-  id = '',
   registerField = null,
   isError = false,
   errMessage = '',
   Icon = '',
-  placeholder = '',
+  className = '',
   typeInput = 'text',
   isRequired = false,
-  isDisable = false,
   inputSize = 'sm',
   hasBorder = true,
+  ...rest
 }) => {
   return (
     <div className={classNames(['form-group relative', className])}>
@@ -50,7 +41,7 @@ const Input: React.FC<IInput> = ({
         })}
       >
         <label
-          htmlFor={id}
+          htmlFor={rest.id}
           className="font-semibold text-slate-800 text-sm inline-block mb-2"
         >
           {textLabel}
@@ -58,15 +49,12 @@ const Input: React.FC<IInput> = ({
         </label>
         <input
           {...registerField}
-          // onChange={(e) => onChangeInput(e.target.value)}
-          id={id}
+          {...rest}
           type={typeInput}
-          placeholder={placeholder}
-          defaultValue={defaultValue}
           className={classNames(
             [
               `text-sm transition-all duration-200 w-full text-stone-600 outline-none
-             px-4  
+             px-4
             rounded-md placeholder:text-sm`,
             ],
             {

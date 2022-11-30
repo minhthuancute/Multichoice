@@ -21,21 +21,21 @@ import {
 const DoExam: React.FC = () => {
   const navigate = useNavigate();
   const { exam_id } = useParams();
-  const { setExamData } = examStore();
+  const { fetchExamData } = examStore();
   const { setExamDetailData } = examDetailStore();
   const { userDoExam, setUserDoexamData } = answerStore();
 
   const getExamInfor = async () => {
-    try {
-      const { data, status } = await examServices.getExamInfor(exam_id || '');
-      if (status === 200) {
-        setExamData(data.data);
-        startExam(data.data.id);
-        setExamDetailData(data.data);
-      }
-    } catch {
-      navigate('/');
-    }
+    // try {
+    //   const { data, status } = await examServices.getExamInfor(exam_id || '');
+    //   if (status === 200) {
+    //     setExamData(data.data);
+    //     startExam(data.data.id);
+    //     setExamDetailData(data.data);
+    //   }
+    // } catch {
+    //   navigate('/');
+    // }
   };
 
   const startExam = async (id: number) => {
