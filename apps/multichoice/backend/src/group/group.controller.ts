@@ -27,8 +27,12 @@ export class GroupController {
   @UseGuards(AuthenticationGuard)
   @ApiBearerAuth()
   @Post('create')
-  create(@Body() createGroupDto: CreateGroupDto, @Req() req, @Res() res) {
-    this.groupService.create(createGroupDto, req.user);
+  async create(
+    @Body() createGroupDto: CreateGroupDto,
+    @Req() req,
+    @Res() res
+  ): Promise<SucessResponse> {
+    await this.groupService.create(createGroupDto, req.user.id);
     return res
       .status(201)
       .json(new SucessResponse(201, GConfig.ADD_MES_SUCESS));
@@ -42,14 +46,12 @@ export class GroupController {
     @Req() req,
     @Res() res
   ): Promise<SucessResponse> {
-    return res
-      .status(200)
-      .json(
-        new SucessResponse(
-          200,
-          await this.groupService.findAllGroup(pageDto, req.user)
-        )
-      );
+    return res.json(
+      new SucessResponse(
+        200,
+        await this.groupService.findAllGroup(pageDto, req.user.id)
+      )
+    );
   }
 
   @UseGuards(AuthenticationGuard)
@@ -60,14 +62,12 @@ export class GroupController {
     @Res() res,
     @Req() req
   ): Promise<SucessResponse> {
-    return res
-      .status(200)
-      .json(
-        new SucessResponse(
-          200,
-          await this.groupService.getGroupDetail(groupID, req.user.id)
-        )
-      );
+    return res.json(
+      new SucessResponse(
+        200,
+        await this.groupService.getGroupDetail(groupID, req.user.id)
+      )
+    );
   }
 
   @UseGuards(AuthenticationGuard)
@@ -78,9 +78,7 @@ export class GroupController {
     @Res() res,
     @Req() req
   ): Promise<SucessResponse> {
-    await this.groupService.addUserForGroup(addUserForGroupDto, req.user);
-    return res
-      .status(200)
-      .json(new SucessResponse(200, GConfig.ADD_MES_SUCESS));
+    await this.groupService.addUserForGroup(addUserForGroupDto, req.user.id);
+    return res.json(new SucessResponse(200, GConfig.ADD_MES_SUCESS));
   }
 }

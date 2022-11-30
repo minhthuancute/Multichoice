@@ -1,4 +1,4 @@
-import { IUserDoExamdetail } from '@monorepo/multichoice/dto';
+import { IUserDoExamDetail } from '@monorepo/multichoice/dto';
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import Breadcrumb from '../../components/Commons/Breadcrumb/Breadcrumb';
@@ -17,7 +17,7 @@ const StatisticUserExam: React.FC = () => {
   const [query] = useQuery();
   const topicId = Number(topic_id) || -1;
 
-  const [userExamDetail, setUserExamDetail] = useState<IUserDoExamdetail>();
+  const [userExamDetail, setUserExamDetail] = useState<IUserDoExamDetail>();
 
   const getStatisticUserDetail = async () => {
     try {
@@ -28,7 +28,7 @@ const StatisticUserExam: React.FC = () => {
       };
       const response = await examServices.getUserExamDetail(payload);
       if (response) {
-        const userExamDetail: IUserDoExamdetail = response.data.data;
+        const userExamDetail: IUserDoExamDetail = response.data.data;
         setUserExamDetail(userExamDetail);
       }
     } catch {

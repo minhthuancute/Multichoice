@@ -4,9 +4,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../user/entities/user.entity';
 import { Question } from '../question/entities/question.entity';
 import { Answer } from '../answer/entities/answer.entity';
-import { Topic } from '../question/entities/topic.entity';
-import { UserAnswer } from '../user/entities/userAnswer.entity';
-import { UserExam } from '../user/entities/userExam.entity';
+import { Topic } from '../topic/entities/topic.entity';
+import { UserAnswer } from '../userAnswer/entities/userAnswer.entity';
+import { UserExam } from '../userExam/entities/userExam.entity';
 import { Group } from '../group/entities/group.entity';
 
 @Module({

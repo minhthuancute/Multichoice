@@ -6,9 +6,9 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Timestamp } from '../../orm/timestamp.entity';
-import { Topic } from '../../question/entities/topic.entity';
-import { User } from './user.entity';
-import { UserAnswer } from './userAnswer.entity';
+import { Topic } from '../../topic/entities/topic.entity';
+import { User } from '../../user/entities/user.entity';
+import { UserAnswer } from '../../userAnswer/entities/userAnswer.entity';
 
 @Entity()
 export class UserExam extends Timestamp {

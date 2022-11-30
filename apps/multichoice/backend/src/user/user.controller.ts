@@ -38,7 +38,7 @@ export class UserController {
     @Res() res
   ): Promise<SucessResponse> {
     const result = await this.userService.endExam(resultUserDto);
-    return res.status(200).json(new SucessResponse(200, result));
+    return res.json(new SucessResponse(200, result));
   }
 
   @UseGuards(JwtAuthGuard)
@@ -50,7 +50,7 @@ export class UserController {
     @Body() resultUserDto: UserExamDto
   ): Promise<SucessResponse> {
     const result = await this.userService.startExam(resultUserDto, req.user);
-    return res.status(200).json(new SucessResponse(200, result));
+    return res.json(new SucessResponse(200, result));
   }
 
   @Get(':url')
@@ -59,8 +59,9 @@ export class UserController {
     @Res() res
   ): Promise<SucessResponse> {
     const result = await this.userService.findTopicByUrl(url);
-    return res.status(200).json(new SucessResponse(200, result));
+    return res.json(new SucessResponse(200, result));
   }
+
   @UseGuards(AuthenticationGuard)
   @ApiBearerAuth()
   @Get('/getlistexambytopicid/:id')
@@ -69,8 +70,8 @@ export class UserController {
     @Res() res,
     @Req() req
   ): Promise<SucessResponse> {
-    const result = await this.userService.getUserExamByTopic(id, req.user);
-    return res.status(200).json(new SucessResponse(200, result));
+    const result = await this.userService.getUserExamByTopic(id, req.user.id);
+    return res.json(new SucessResponse(200, result));
   }
 
   @UseGuards(AuthenticationGuard)
@@ -82,12 +83,12 @@ export class UserController {
     @Res() res,
     @Req() req
   ): Promise<SucessResponse> {
-    const result = await this.userService.getUserExamdetail(
+    const result = await this.userService.getUserExamDetail(
       topicID,
       userID,
-      req.user
+      req.user.id
     );
-    return res.status(200).json(new SucessResponse(200, result));
+    return res.json(new SucessResponse(200, result));
   }
 
   @UseGuards(AuthenticationGuard)
@@ -98,8 +99,8 @@ export class UserController {
     @Res() res,
     @Req() req
   ): Promise<SucessResponse> {
-    await this.userService.deleteUserExamByID(id, req.user);
-    return res.status(200).json(new SucessResponse(200, GConfig.SUCESS));
+    await this.userService.deleteUserExamByID(id, req.user.id);
+    return res.json(new SucessResponse(200, GConfig.DELETE_MES_SUCESS));
   }
 
   @UseGuards(AuthenticationGuard)
@@ -107,14 +108,14 @@ export class UserController {
   @Patch('/user/updatebyid')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileFieldsInterceptor([{ name: 'avatar' }], multerOptions))
-  updateUserByID(
+  async updateUserByID(
     @Body() updateUserDto: UpdateUserDto,
     @Res() res,
     @Req() req,
     @UploadedFiles() file
   ): Promise<SucessResponse> {
-    this.userService.updateUserByID(updateUserDto, file, req.user);
-    return res.status(200).json(new SucessResponse(200, GConfig.SUCESS));
+    await this.userService.updateUserByID(updateUserDto, file, req.user.id);
+    return res.json(new SucessResponse(200, GConfig.UPDATE_MES_SUCESS));
   }
 
   @UseGuards(AuthenticationGuard)
@@ -129,6 +130,6 @@ export class UserController {
       resultUserRealTimeDto,
       req.user
     );
-    return res.status(200).json(new SucessResponse(200, result));
+    return res.json(new SucessResponse(200, result));
   }
 }

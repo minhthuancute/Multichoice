@@ -7,9 +7,9 @@ import {
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { Timestamp } from '../../orm/timestamp.entity';
-import { Topic } from '../../question/entities/topic.entity';
+import { Topic } from '../../topic/entities/topic.entity';
 import { Group } from '../../group/entities/group.entity';
-import { UserExam } from './userExam.entity';
+import { UserExam } from '../../userExam/entities/userExam.entity';
 
 @Entity()
 export class User extends Timestamp {
