@@ -12,7 +12,7 @@ interface IButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 const Button: React.FC<IButtonProps> = ({
   dissable = false,
   fullWidth = false,
-  children = 'Button',
+  children,
   ...rest
 }) => {
   const defaultCss = 'py-3 bg-primary-900 rounded-md text-white font-medium';

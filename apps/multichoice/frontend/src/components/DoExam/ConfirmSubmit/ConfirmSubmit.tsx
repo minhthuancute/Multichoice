@@ -6,19 +6,19 @@ interface IConfirmSubmitProps {
   unSelectAnswer: number;
   onCancleModalConfirm: () => void;
   setConfirmSubmit: React.Dispatch<React.SetStateAction<boolean>>;
-  setOpenModalConfirm: React.Dispatch<React.SetStateAction<boolean>>;
-  openModalConfirm?: boolean;
+  setVisibleMoal: React.Dispatch<React.SetStateAction<boolean>>;
+  visibleModal?: boolean;
 }
 
 const ConfirmSubmit: React.FC<IConfirmSubmitProps> = ({
   unSelectAnswer,
   onCancleModalConfirm,
   setConfirmSubmit,
-  openModalConfirm = false,
+  visibleModal = false,
 }) => {
   return (
     <Modal
-      visible={openModalConfirm}
+      visible={visibleModal}
       setVisibleModal={setConfirmSubmit}
       size="sm"
       placement="CENTER"

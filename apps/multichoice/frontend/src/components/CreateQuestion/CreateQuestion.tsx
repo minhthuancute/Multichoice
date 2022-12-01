@@ -18,7 +18,7 @@ import { hasContentEditor } from '../../utils/empty_content_editor';
 import { classNames } from '../../helper/classNames';
 import { errNotSelectCorrectAnswer } from '../../constants/msgNotify';
 
-const schemaFormCreateQuestion = yup.object().shape({
+const schemaCreateQuestion = yup.object().shape({
   topicID: yup.number(),
   content: yup.string().required('Question content is a required field'),
   time: yup.number(),
@@ -55,7 +55,7 @@ const CreateQuestion: React.FC = () => {
     setError,
     formState: { errors },
   } = useForm<CreateQuestionDto>({
-    resolver: yupResolver(schemaFormCreateQuestion),
+    resolver: yupResolver(schemaCreateQuestion),
     defaultValues: {
       answers: [],
       content: '',
@@ -159,9 +159,7 @@ const CreateQuestion: React.FC = () => {
   };
 
   // create Question
-  const onSubmit: SubmitHandler<CreateQuestionDto> = async (
-    formData: CreateQuestionDto
-  ) => {
+  const onSubmit: SubmitHandler<CreateQuestionDto> = async (formData) => {
     const isValidAnswer = validAnswer();
     if (isValidAnswer === false) {
       return;
@@ -176,7 +174,6 @@ const CreateQuestion: React.FC = () => {
 
       const { data } = await questionServices.createQuestion(formData);
       if (data.success) {
-        // const topicId = query.get('topic_id') || -1;
         const topicId = 1;
         const urlNavigate = '/tests/edit/' + topicId;
         navigate(urlNavigate);

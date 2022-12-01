@@ -2,13 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { BiSkipNext, BiSkipPrevious } from 'react-icons/bi';
 import { iNotification } from 'react-notifications-component';
 import { notify } from '../../../helper/notify';
-import {
-  examServices,
-  IPayloadEndExam,
-  IPayloadEndExamRealtime,
-} from '../../../services/ExamServices';
 import { answerStore, examStore, IAnswers } from '../../../store/rootReducer';
-import { IAnswer } from '../../../types';
+import { IAnswer, IQuestion } from '../../../types';
 import ExamResult from '../ExamResult/ExamResult';
 import ConfirmSubmit from '../ConfirmSubmit/ConfirmSubmit';
 import CountDown from '../../Commons/CountDown/CountDown';
@@ -20,8 +15,7 @@ import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 import { expriedTime, submited } from '../../../constants/msgNotify';
 import TextArea from '../../Commons/TextArea/TextArea';
 import { sessionServices } from '../../../services/SessionServices';
-import { useParams } from 'react-router-dom';
-
+import { validArray } from '../../../helper/validArray';
 import './style.scss';
 
 interface IExamResult {
@@ -30,6 +24,8 @@ interface IExamResult {
 }
 
 interface IShowQuestionProps {
+  handleSubmitExam: () => void;
+  questions: IQuestion[];
   isRealtime?: boolean;
   indexQuestion: number;
   setIndexQuestion: React.Dispatch<React.SetStateAction<number>>;
@@ -38,25 +34,18 @@ interface IShowQuestionProps {
 }
 
 const ShowQuestion: React.FC<IShowQuestionProps> = ({
-  isRealtime = false,
+  handleSubmitExam,
+  questions = [],
   indexQuestion = 0,
   setIndexQuestion,
   startTimeCountdown = 0,
   expriedCountdownRealtime = false,
 }) => {
-  const { url } = useParams();
-
-  const {
-    exam: { questions },
-    setDataExamResult,
-    exam,
-    isSubmitExam,
-    isExpriedExam,
-  } = examStore();
+  const { setDataExamResult, exam, isSubmitExam, isExpriedExam } = examStore();
   const { answers, updateAnswer, userDoExam } = answerStore();
 
   const [confirmSubmit, setConfirmSubmit] = useState<boolean>(false);
-  const [openModalConfirm, setOpenModalConfirm] = useState<boolean>(false);
+  const [visibleModal, setVisibleModal] = useState<boolean>(false);
   const [openModalResult, setOpenModalResult] = useState<boolean>(false);
   const [examResult, setExamResult] = useState<IExamResult>();
   const [errorMsgSubmit, setErrorMsgSubmit] = useState<string>('');
@@ -97,48 +86,6 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
     return count.length;
   };
 
-  const onSumitAnswers = async () => {
-    sessionServices.setData(IS_SUBMIT_EXAM, true);
-    try {
-      const payload: IPayloadEndExam = {
-        userID: userDoExam.userId,
-        answerUsers: answers,
-      };
-
-      const payloadRealtime: IPayloadEndExamRealtime = {
-        url: url || '',
-        userID: userDoExam.userId,
-        answerUsers: answers,
-      };
-
-      const { data } = isRealtime
-        ? await examServices.submitExam(payload)
-        : await examServices.submitExamRealtime(payloadRealtime);
-
-      if (data.success) {
-        setExamResult({
-          userName: data.data.username,
-          point: data.data.point,
-        } as IExamResult);
-        setDataExamResult({
-          userName: data.data.username,
-          point: data.data.point,
-        });
-
-        setOpenModalResult(true);
-      }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      const { message } = error.response.data;
-      notify({
-        message: message,
-        type: 'danger',
-      } as iNotification);
-    }
-    setOpenModalConfirm(false);
-    setConfirmSubmit(false);
-  };
-
   const requestSubmit = () => {
     if (isExpriedExam) {
       setErrorMsgSubmit(expriedTime);
@@ -156,11 +103,11 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
       } as iNotification);
       return;
     }
-    setOpenModalConfirm(true);
+    setVisibleModal(true);
   };
 
   const onCancleModalConfirm = () => {
-    setOpenModalConfirm(false);
+    setVisibleModal(false);
     setConfirmSubmit(false);
   };
 
@@ -174,11 +121,13 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
 
   useEffect(() => {
     if (confirmSubmit) {
-      onSumitAnswers();
+      // onSumitAnswers();
+      handleSubmitExam();
+      setVisibleModal(false);
     }
   }, [confirmSubmit]);
 
-  return questions ? (
+  return validArray(questions) ? (
     <div className="w-full h-full">
       <div className="modals">
         <ExamResult
@@ -190,8 +139,8 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
         <ConfirmSubmit
           setConfirmSubmit={setConfirmSubmit}
           onCancleModalConfirm={onCancleModalConfirm}
-          setOpenModalConfirm={setOpenModalConfirm}
-          openModalConfirm={openModalConfirm}
+          setVisibleMoal={setVisibleModal}
+          visibleModal={visibleModal}
           unSelectAnswer={countUnSelectAnswer()}
         />
       </div>
@@ -232,7 +181,7 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
           Câu hỏi trước
         </button>
         <span className="text-slate-800 font-semibold">
-          {indexQuestion + 1}/{exam.questions.length}
+          {indexQuestion + 1}/{questions.length}
         </span>
 
         <button
