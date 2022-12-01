@@ -1,15 +1,14 @@
 import React from 'react';
-import { Questiondetail } from '@monorepo/multichoice/dto';
+import { QuestionDetail } from '@monorepo/multichoice/dto';
 import { classNames } from '../../helper/classNames';
 import { IAnswer } from '../../types';
 import PolaCode from '../PolaCode/PolaCode';
 import { BiCheckDouble } from 'react-icons/bi';
-import { QuestionType } from '../../types/ICommons';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
-import { BsArrowRight, BsFillArrowRightCircleFill } from 'react-icons/bs';
+import { BsArrowRight } from 'react-icons/bs';
 
 interface IQuestionsUserExamProps {
-  questions: Questiondetail[];
+  questions: QuestionDetail[];
 }
 
 const QuestionsUserExam: React.FC<IQuestionsUserExamProps> = ({
@@ -18,7 +17,7 @@ const QuestionsUserExam: React.FC<IQuestionsUserExamProps> = ({
   const isCorrectMultiAnswer = (
     answers: IAnswer[],
     answersUser: number[] | string,
-    questionType: QuestionType
+    questionType: `${QuestionTypeEnum}`
   ): boolean => {
     if (typeof answersUser === 'string') return true; // for question type TEXT
 
@@ -46,7 +45,7 @@ const QuestionsUserExam: React.FC<IQuestionsUserExamProps> = ({
   return (
     <div>
       {questions &&
-        questions.map((question: Questiondetail, indexQuestion: number) => {
+        questions.map((question: QuestionDetail, indexQuestion: number) => {
           const {
             id,
             type: questionType,
@@ -86,7 +85,7 @@ const QuestionsUserExam: React.FC<IQuestionsUserExamProps> = ({
                       const isCorrectMulti = isCorrectMultiAnswer(
                         answers,
                         answerUser,
-                        `${questionType}` as QuestionType
+                        questionType
                       );
                       return (
                         <li

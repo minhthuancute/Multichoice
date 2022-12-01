@@ -12,6 +12,7 @@ const MainDoExam: React.FC = () => {
   const { exam_id } = useParams();
   const { exam } = examStore();
 
+  const [isRealtime, setIsRealtime] = useState<boolean>(false);
   const [indexQuestion, setIndexQuestion] = useState<number>(0);
   const [expriedCountdownRealtime, setExpriedCountdownRealtime] =
     useState<boolean>(false);
@@ -22,6 +23,7 @@ const MainDoExam: React.FC = () => {
 
     const onValueFirebase = () => {
       fireGet(testPath, (data: any) => {
+        setIsRealtime(true);
         const recordValue: ITestRealtimeRecord = data;
         if (recordValue?.started) {
           const shouldExpriedTest =
@@ -57,6 +59,7 @@ const MainDoExam: React.FC = () => {
               setIndexQuestion={setIndexQuestion}
               startTimeCountdown={startTimeCountdown}
               expriedCountdownRealtime={expriedCountdownRealtime}
+              isRealtime={isRealtime}
             />
           </div>
           <div className="w-1/3 xs:hidden lg:block h-full">

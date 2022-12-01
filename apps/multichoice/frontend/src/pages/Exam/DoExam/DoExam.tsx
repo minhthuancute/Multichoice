@@ -33,7 +33,7 @@ const DoExam: React.FC = () => {
       const { data, status } = await examServices.getExamInfor(exam_id || '');
       if (status === 200) {
         setExamData(data.data);
-        startExam(data.id);
+        startExam(data.data.id);
         setExamDetailData(data.data);
       }
     } catch {

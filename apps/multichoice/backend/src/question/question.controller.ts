@@ -38,26 +38,35 @@ export class QuestionController {
   async create(
     @Body() createQuestionDto: CreateQuestionDto,
     @UploadedFiles() files,
-    @Res() res
+    @Res() res,
+    @Req() req
   ): Promise<SucessResponse> {
-    await this.questionService.create(createQuestionDto, files);
+    await this.questionService.create(createQuestionDto, files, req.user.id);
     return res.status(201).json(new SucessResponse(201, GConfig.SUCESS));
   }
 
   @UseGuards(AuthenticationGuard)
   @ApiBearerAuth()
   @Delete(':id')
-  async deleteByID(@Param('id') id: number, @Res() res) {
-    await this.questionService.deleteByID(id);
-    return res.status(200).json(new SucessResponse(200, {}));
+  async deleteByID(
+    @Param('id') id: number,
+    @Res() res,
+    @Req() req
+  ): Promise<SucessResponse> {
+    await this.questionService.deleteByID(id, req.user.id);
+    return res.json(new SucessResponse(200, GConfig.DELETE_MES_SUCESS));
   }
 
   @UseGuards(AuthenticationGuard)
   @ApiBearerAuth()
   @Get(':id')
-  async findByID(@Param('id') id: number, @Res() res, @Req() req) {
-    const result = await this.questionService.getQestionByID(id, req.user);
-    return res.status(200).json(new SucessResponse(200, { result }));
+  async findByID(
+    @Param('id') id: number,
+    @Res() res,
+    @Req() req
+  ): Promise<SucessResponse> {
+    const result = await this.questionService.getQestionByID(id, req.user.id);
+    return res.json(new SucessResponse(200, { result }));
   }
 
   @UseGuards(AuthenticationGuard)
@@ -73,7 +82,12 @@ export class QuestionController {
     @Res() res,
     @Req() req
   ): Promise<SucessResponse> {
-    await this.questionService.update(id, updateQuestionDto, files, req.user);
-    return res.status(200).json(new SucessResponse(200, GConfig.SUCESS));
+    await this.questionService.update(
+      id,
+      updateQuestionDto,
+      files,
+      req.user.id
+    );
+    return res.json(new SucessResponse(200, GConfig.UPDATE_MES_SUCESS));
   }
 }

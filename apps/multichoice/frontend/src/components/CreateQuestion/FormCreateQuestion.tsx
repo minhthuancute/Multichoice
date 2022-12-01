@@ -252,7 +252,7 @@ const FormCreateQuestion: React.FC<ICreateQuestionProps> = forwardRef(
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className="form-left w-1/3 p-4 bg-white rounded-md">
-            {topic.typeCategoryName === 'GAME' ? (
+            {topic.typeCategoryName === 'game' ? (
               <Input
                 registerField={register('time')}
                 typeInput="number"
@@ -260,7 +260,7 @@ const FormCreateQuestion: React.FC<ICreateQuestionProps> = forwardRef(
                 id="expirationTime"
                 isError={Boolean(errors.time)}
                 errMessage={errors.time?.message}
-                isDisable={topic.typeCategoryName !== 'GAME'}
+                isDisable={topic.typeCategoryName !== 'game'}
               />
             ) : null}
             <Select

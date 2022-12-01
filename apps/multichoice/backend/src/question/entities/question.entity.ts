@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { Timestamp } from '../../orm/timestamp.entity';
 import { Answer } from '../../answer/entities/answer.entity';
-import { Topic } from './topic.entity';
+import { Topic } from '../../topic/entities/topic.entity';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 
 @Entity()

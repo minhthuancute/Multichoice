@@ -130,7 +130,7 @@ const CreateAnswer: React.FC<ICreateAnswerProps> = forwardRef(
       return () => {
         subscription.unsubscribe();
       };
-    }, [watch]);
+    }, []);
 
     useEffect(() => {
       if (isMultilCorrectAnswer) {
