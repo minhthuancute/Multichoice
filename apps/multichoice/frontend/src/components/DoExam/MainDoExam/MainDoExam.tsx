@@ -9,7 +9,7 @@ import NavQuestion from '../NavQuestion/NavQuestion';
 import ShowQuestion from '../ShowQuestion/ShowQuestion';
 
 const MainDoExam: React.FC = () => {
-  const { exam_id } = useParams();
+  const { url } = useParams();
   const { exam } = examStore();
 
   const [isRealtime, setIsRealtime] = useState<boolean>(false);
@@ -19,9 +19,10 @@ const MainDoExam: React.FC = () => {
   const [startTimeCountdown, setStartTimeCountdown] = useState<number>(0);
 
   useEffect(() => {
-    const testPath: string = `${firebasePath}-` + exam_id;
+    const testPath: string = `${firebasePath}-` + url;
 
     const onValueFirebase = () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       fireGet(testPath, (data: any) => {
         setIsRealtime(true);
         const recordValue: ITestRealtimeRecord = data;

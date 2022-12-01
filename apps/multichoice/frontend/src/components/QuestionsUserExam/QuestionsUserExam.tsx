@@ -2,7 +2,7 @@ import React from 'react';
 import { QuestionDetail } from '@monorepo/multichoice/dto';
 import { classNames } from '../../helper/classNames';
 import { IAnswer } from '../../types';
-import PolaCode from '../PolaCode/PolaCode';
+import PolaCode from '../Commons/PolaCode/PolaCode';
 import { BiCheckDouble } from 'react-icons/bi';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 import { BsArrowRight } from 'react-icons/bs';

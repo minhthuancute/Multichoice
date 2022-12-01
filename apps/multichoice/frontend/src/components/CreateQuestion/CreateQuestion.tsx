@@ -31,10 +31,6 @@ const schemaFormCreateQuestion = yup.object().shape({
   ),
 });
 
-export interface IFormCreateQuestionRef {
-  submitFormCreateAnswer: () => void;
-}
-
 interface CreateQuestionQuery {
   topic_id: string;
 }

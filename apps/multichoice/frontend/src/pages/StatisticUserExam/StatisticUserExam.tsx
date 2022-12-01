@@ -17,9 +17,9 @@ interface IStatisticUserExamQuery {
 }
 
 const StatisticUserExam: React.FC = () => {
-  const { id: topic_id } = useParams();
+  const { id } = useParams();
   const [query] = useQuery<IStatisticUserExamQuery>();
-  const topicId = Number(topic_id) || -1;
+  const topicId = Number(id) || -1;
 
   const [userExamDetail, setUserExamDetail] = useState<IUserDoExamDetail>();
 

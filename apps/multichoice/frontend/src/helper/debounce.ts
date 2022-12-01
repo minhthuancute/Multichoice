@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 type FunctionDebounce = (args: any) => any;
 
 export const debounce = (fn: FunctionDebounce, delay = 200) => {

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
-import { classNames } from '../../helper/classNames';
-import { useOnClickOutside } from '../../hooks/useOnClickOutside';
+import { classNames } from '../../../helper/classNames';
+import { useOnClickOutside } from '../../../hooks/useOnClickOutside';
 import './modal.scss';
 
 type PlacementModal =

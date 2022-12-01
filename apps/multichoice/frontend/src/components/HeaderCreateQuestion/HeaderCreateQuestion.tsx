@@ -5,17 +5,18 @@ import { topicServices } from '../../services/TopicServices';
 import { topicStore } from '../../store/rootReducer';
 import Breadcrumb from '../Commons/Breadcrumb/Breadcrumb';
 
+interface HeaderCreateQuestionQuery {
+  topic_id: string;
+}
+
 const HeaderCreateQuestion: React.FC = () => {
   const navigate = useNavigate();
-  const [query] = useQuery();
+  const [query] = useQuery<HeaderCreateQuestionQuery>();
   const { setTopicDetailData, topicDetail } = topicStore();
 
   const getTopicDetail = async () => {
     try {
-      const { data } = await topicServices.getTopicById(
-        // Number(query.get('topic_id'))
-        1
-      );
+      const { data } = await topicServices.getTopicById(+query.topic_id);
       setTopicDetailData(data);
     } catch (error) {
       //

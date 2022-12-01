@@ -10,8 +10,12 @@ import { removeVietnameseTones } from '../../utils/remove_vietnamese_tones';
 import TestItem, { ITestItem } from '../TestItem/TestItem';
 import DeleteTest from './DeleteTest';
 
+interface TestListQuery {
+  searchTerm: string;
+}
+
 const TestList: React.FC = () => {
-  const [query] = useQuery();
+  const [query] = useQuery<TestListQuery>();
 
   const [testList, setTestList] = useState<ITestItem[]>([]);
   const [testsFilter, setTestsFilter] = useState<ITestItem[]>([]);
@@ -21,8 +25,7 @@ const TestList: React.FC = () => {
 
   const [paramSearch] = useState<string>(() => {
     const formatParamSearch = removeVietnameseTones(
-      // query['searchTerm'] || ''
-      ''
+      query.searchTerm
     ).toLowerCase();
     return formatParamSearch;
   });
@@ -106,15 +109,13 @@ const TestList: React.FC = () => {
 
       <div className="mt-4">
         {testsFilter && testsFilter.length > 0 ? (
-          testsFilter.map((test: ITestItem) => {
-            return (
-              <TestItem
-                test={test}
-                key={test.id}
-                handleDeleteTest={handleDeleteTest}
-              />
-            );
-          })
+          testsFilter.map((test: ITestItem) => (
+            <TestItem
+              test={test}
+              key={test.id}
+              handleDeleteTest={handleDeleteTest}
+            />
+          ))
         ) : (
           <p className="font-semibold text-red-500 text-center mt-10 text-tiny">
             {/* Hiện tại bạn chưa có đề thi nào! */}

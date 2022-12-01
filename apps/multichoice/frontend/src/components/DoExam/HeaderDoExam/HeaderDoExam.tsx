@@ -24,7 +24,7 @@ const HeaderDoExam: React.FC = () => {
   const sideBarRef = useRef<HTMLDivElement>(null);
 
   const navigate = useNavigate();
-  const { exam_id } = useParams();
+  const { url } = useParams();
   const { exam, setIsSubmitExam, dataExamResult, isSubmitExam } = examStore();
   const { user } = userStore();
   const { userDoExam, setUserDoexamData } = answerStore();
@@ -45,7 +45,7 @@ const HeaderDoExam: React.FC = () => {
     if (Object.keys(user).length) {
       navigate('/');
     } else {
-      const urlNavigate = '/e/' + exam_id;
+      const urlNavigate = '/e/' + url;
       navigate(urlNavigate);
     }
   };
@@ -58,7 +58,7 @@ const HeaderDoExam: React.FC = () => {
 
   return (
     <header
-      className="header py-3"
+      className="py-3"
       style={{
         boxShadow: '0 1px 14px 0 rgb(0 0 0 / 10%)',
       }}

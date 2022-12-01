@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useState } from 'react';
 import * as yup from 'yup';
 
 import { CreateTopicDto } from '@monorepo/multichoice/dto';
@@ -9,20 +9,20 @@ import {
   TopicTimeTypeEnum,
 } from '@monorepo/multichoice/constant';
 import { useParams } from 'react-router-dom';
-import Select, { IOption } from '../../../components/Commons/Select/Select';
-import { topicServices } from '../../../services/TopicServices';
-import Input from '../../../components/Commons/Input/Input';
-import TextArea from '../../../components/Commons/TextArea/TextArea';
+import Select, { IOption } from '../Commons/Select/Select';
+import { topicServices } from '../../services/TopicServices';
+import Input from '../Commons/Input/Input';
+import TextArea from '../Commons/TextArea/TextArea';
 import { IoMdClose } from 'react-icons/io';
-import ToolTip from '../../../components/Commons/ToolTip/ToolTip';
-import { topicStore } from '../../../store/rootReducer';
+import ToolTip from '../Commons/ToolTip/ToolTip';
+import { topicStore } from '../../store/rootReducer';
 import {
   minutesToSeconds,
   secondsToMinutes,
-} from '../../../utils/minutes_to_seconds';
-import { ITopicDetailResponse } from '../../../types';
+} from '../../utils/minutes_to_seconds';
+import { ITopicDetailResponse } from '../../types';
 
-const schemaFormLogin = yup.object().shape({
+const schemaFormEditTest = yup.object().shape({
   timeType: yup.string().required(),
   typeCategoryName: yup.string().required(),
   title: yup.string().required(),
@@ -38,7 +38,7 @@ interface IFormEditTestProps {
 const FormEditTest: React.FC<IFormEditTestProps> = ({
   setOpenModalEditTest,
 }) => {
-  const { id: topicId } = useParams();
+  const { id } = useParams();
 
   const { topicDetail, setTopicDetailData } = topicStore();
   const { expirationTime, typeCategoryName, timeType, title, description } =
@@ -50,48 +50,45 @@ const FormEditTest: React.FC<IFormEditTestProps> = ({
     setValue,
     formState: { errors },
   } = useForm<CreateTopicDto>({
-    resolver: yupResolver(schemaFormLogin),
+    resolver: yupResolver(schemaFormEditTest),
+    defaultValues: {
+      description: description || '',
+      expirationTime: +secondsToMinutes(+expirationTime),
+      isDraft: false,
+      isPrivate: false,
+      timeType: topicDetail.timeType as TopicTimeTypeEnum,
+      title: title,
+      typeCategoryName: topicDetail.typeCategoryName as TopicCategoryEnum,
+    },
   });
 
   const [topicCategories] = useState<IOption[]>(() => {
     const topics: TopicCategoryEnum[] = [];
     for (const topic in TopicCategoryEnum) {
-      const topicVal = topic.toLocaleLowerCase() as TopicCategoryEnum;
+      const topicVal = topic as TopicCategoryEnum;
       topics.push(topicVal);
     }
-    const options: IOption[] = topics.map((topic: TopicCategoryEnum) => {
-      return {
-        label: topic,
-        value: topic,
-      };
-    });
+    const options: IOption[] = topics.map((topic: TopicCategoryEnum) => ({
+      label: topic,
+      value: topic,
+    }));
     return options;
   });
 
   const [topicTimeTypes] = useState<IOption[]>(() => {
     const timeTypes: TopicTimeTypeEnum[] = [];
     for (const types in TopicTimeTypeEnum) {
-      const topicVal = types.toLocaleLowerCase() as TopicTimeTypeEnum;
+      const topicVal = types as TopicTimeTypeEnum;
       timeTypes.push(topicVal);
     }
-    const options: IOption[] = timeTypes.map((timeTypes: TopicTimeTypeEnum) => {
-      return {
+    const options: IOption[] = timeTypes.map(
+      (timeTypes: TopicTimeTypeEnum) => ({
         label: timeTypes,
         value: timeTypes,
-      };
-    });
+      })
+    );
     return options;
   });
-
-  const initForm = () => {
-    const timeType = topicDetail.timeType as TopicTimeTypeEnum;
-    const typeCategoryName = topicDetail.typeCategoryName as TopicCategoryEnum;
-    setValue('timeType', timeType);
-    setValue('typeCategoryName', typeCategoryName);
-    setValue('title', title);
-    setValue('description', description || '');
-    setValue('expirationTime', +secondsToMinutes(+expirationTime));
-  };
 
   const onSelectCategory = (item: IOption) => {
     const optionVal: TopicCategoryEnum = item.value as TopicCategoryEnum;
@@ -106,8 +103,10 @@ const FormEditTest: React.FC<IFormEditTestProps> = ({
   const getTopicById = async () => {
     try {
       const { data }: { data: ITopicDetailResponse } =
-        await topicServices.getTopicById(Number(topicId));
-      setTopicDetailData(data);
+        await topicServices.getTopicById(Number(id));
+      if (data) {
+        setTopicDetailData(data);
+      }
     } catch (error) {
       //
     }
@@ -119,8 +118,10 @@ const FormEditTest: React.FC<IFormEditTestProps> = ({
   ) => {
     try {
       formData.expirationTime = minutesToSeconds(formData.expirationTime);
-      const id = topicId || -1;
-      const { data } = await topicServices.updateTopicById(+id, formData);
+      const { data } = await topicServices.updateTopicById(
+        Number(id),
+        formData
+      );
       if (data.success) {
         setOpenModalEditTest(false);
         getTopicById();
@@ -129,10 +130,6 @@ const FormEditTest: React.FC<IFormEditTestProps> = ({
       //
     }
   };
-
-  useLayoutEffect(() => {
-    initForm();
-  }, []);
 
   return (
     <div className="py-4 px-5 rounded-md bg-white">

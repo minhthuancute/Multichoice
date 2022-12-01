@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import FilterTests from '../../../components/Tests/FilterTests';
-import TestList from '../../../components/TestList/TestList';
-import { withBackTop } from '../../../HOCs/withBackTop';
+import FilterTests from '../../components/Tests/FilterTests';
+import TestList from '../../components/TestList/TestList';
+import { withBackTop } from '../../HOCs/withBackTop';
 
 const Tests: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -11,11 +11,13 @@ const Tests: React.FC = () => {
   // on search Test
   const onFilter = (keyword: string) => {
     setSearchKeyword(keyword);
-    setSearchParams('?search=' + keyword);
+    setSearchParams({
+      search: keyword,
+    });
   };
 
   return (
-    <div className="wrapper-tests">
+    <>
       <div className="test-header">
         <div className="container flex items-center justify-between py-4">
           <h3 className="text-xl font-semibold leading-none">
@@ -43,7 +45,7 @@ const Tests: React.FC = () => {
           <TestList />
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

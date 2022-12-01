@@ -19,8 +19,8 @@ import { withBackTop } from '../../HOCs/withBackTop';
 import { deleteResultUserExamSuccess } from '../../constants/msgNotify';
 
 const StatisticExam: React.FC = () => {
-  const { id: topic_id } = useParams();
-  const topicId = Number(topic_id) || -1;
+  const { id } = useParams();
+  const topicId = Number(id) || -1;
 
   const [usersDoExam, setUsersDoExam] = useState<IUserDoExam[]>([]);
   const [showModalConfirmDelete, setShowModalConfirmDelete] =
@@ -153,7 +153,7 @@ const StatisticExam: React.FC = () => {
                         </td>
                         <td className="pl-4 font-semibold text-primary-800">
                           <Link
-                            to={`/tests/${topic_id}/statistic/detail?user_id=${user.userID}`}
+                            to={`/tests/${id}/statistic/detail?user_id=${user.userID}`}
                           >
                             Xem chi tiết
                           </Link>

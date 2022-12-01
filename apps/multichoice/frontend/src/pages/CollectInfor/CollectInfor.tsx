@@ -43,9 +43,9 @@ interface IColectInforForm {
 const CollectInfor: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { exam_id } = useParams();
+  const { url } = useParams();
 
-  const { exam, setExamData } = examStore();
+  const { exam, getExam } = examStore();
   const { setExamDetailData } = examDetailStore();
   const { userDoExam, setUserDoexamData, setAnswers } = answerStore();
   const { user } = userStore();
@@ -58,36 +58,7 @@ const CollectInfor: React.FC = () => {
     resolver: yupResolver(schemaInfor),
   });
 
-  const getExamInfor = async () => {
-    try {
-      const { data } = await examServices.getExamInfor(exam_id || '');
-      const examInfor: IExamResponse = data;
-      if (examInfor.timeType === TopicTimeTypeEnum.REALTIME) {
-        const urlNavigate = '/e/' + exam_id + '/do-exam-realtime';
-        navigate(urlNavigate);
-      }
-      const examDetail = examInfor;
-
-      const initAnswers: IAnswers[] = data.questions.map(
-        (questions: IQuestion) => {
-          const tempArr: IAnswers = {
-            questionID: questions.id,
-            answerID: [],
-          };
-          return tempArr;
-        }
-      );
-      setAnswers(initAnswers);
-      setExamData(data);
-      setExamDetailData(examDetail);
-    } catch {
-      // navigate('/');
-    }
-  };
-
-  const onSubmit: SubmitHandler<IColectInforForm> = (
-    formData: IColectInforForm
-  ) => {
+  const onSubmit: SubmitHandler<IColectInforForm> = (formData) => {
     setUserDoexamData({
       userName: formData.userName,
     } as IInforUserDoExam);
@@ -96,7 +67,19 @@ const CollectInfor: React.FC = () => {
   };
 
   useEffect(() => {
-    getExamInfor();
+    getExam(url || '');
+    // if (exam.questions) {
+    //   const initAnswers: IAnswers[] = exam.questions.map(
+    //     (questions: IQuestion) => {
+    //       const tempArr: IAnswers = {
+    //         questionID: questions.id,
+    //         answerID: [],
+    //       };
+    //       return tempArr;
+    //     }
+    //   );
+    //   setAnswers(initAnswers);
+    // }
     if (user.username) {
       setUserDoexamData({
         userName: user.username,

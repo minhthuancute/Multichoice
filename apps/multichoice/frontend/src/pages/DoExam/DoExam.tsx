@@ -20,25 +20,18 @@ import {
 
 const DoExam: React.FC = () => {
   const navigate = useNavigate();
-  const { exam_id } = useParams();
-  const { setExamData } = examStore();
+  const { url } = useParams();
+  const { getExam } = examStore();
   const { setExamDetailData } = examDetailStore();
   const { userDoExam, setUserDoexamData } = answerStore();
 
-  const getExamInfor = async () => {
-    try {
-      const { data, status } = await examServices.getExamInfor(exam_id || '');
-      if (status === 200) {
-        setExamData(data.data);
-        startExam(data.data.id);
-        setExamDetailData(data.data);
-      }
-    } catch {
-      navigate('/');
-    }
+  const getExamInfor = () => {
+    getExam(url || '');
   };
 
   const startExam = async (id: number) => {
+    // getExam(exam_id);
+    // const id =
     const canStartExam: boolean = sessionServices.getData(START_EXAM) === false;
 
     if (canStartExam) {
@@ -64,14 +57,7 @@ const DoExam: React.FC = () => {
 
   useEffect(() => {
     getExamInfor();
-    // window.addEventListener('beforeunload', function (e) {
-    //   const confirmationMessage =
-    //     'It looks like you have been editing something. ' +
-    //     'If you leave before saving, your changes will be lost.';
 
-    //   (e || window.event).returnValue = confirmationMessage;
-    //   return confirmationMessage;
-    // });
     if (!sessionServices.getData(START_TIME)) {
       sessionServices.setData(START_TIME, Date.now());
     }
@@ -87,7 +73,7 @@ const DoExam: React.FC = () => {
       <MainDoExam />
     </div>
   ) : (
-    <Navigate to={`/e/${exam_id}`} />
+    <Navigate to={`/e/${url}`} />
   );
 };
 

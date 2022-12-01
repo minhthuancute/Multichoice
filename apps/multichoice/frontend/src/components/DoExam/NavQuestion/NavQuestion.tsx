@@ -6,7 +6,7 @@ import { sessionServices } from '../../../services/SessionServices';
 import { answerStore, examStore } from '../../../store/rootReducer';
 import { IQuestion } from '../../../types';
 import CountDown from '../../Commons/CountDown/CountDown';
-import PolaCode from '../../PolaCode/PolaCode';
+import PolaCode from '../../Commons/PolaCode/PolaCode';
 
 interface INavQuestion {
   indexQuestion: number;

@@ -1,54 +1,50 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { firebasePath } from '@monorepo/multichoice/constant';
 import React, { useEffect, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import HeaderDoExam from '../../components/DoExam/HeaderDoExam/HeaderDoExam';
 import MainDoExam from '../../components/DoExam/MainDoExam/MainDoExam';
 import { TOKEN } from '../../constants/contstants';
-import { examServices } from '../../services/ExamServices';
 import { localServices } from '../../services/LocalServices';
 import {
   answerStore,
   examStore,
-  IAnswers,
   IInforUserDoExam,
   userStore,
 } from '../../store/rootReducer';
-import { IQuestion } from '../../types';
 import { ITestRealtimeRecord } from '../../types/ICommons';
 import { fireGet } from '../../utils/firebase_utils';
-import DoExamSkelenton from '../../components/DoExamSkelenton/DoExamSkelenton';
+import DoExamSkelenton from '../../components/DoExam/DoExamSkelenton/DoExamSkelenton';
 
 const DoExamRealtime: React.FC = () => {
-  const { exam_id } = useParams();
-  const { exam, setExamData, setIsSubmitExam } = examStore();
+  const { url } = useParams();
+  const { exam, getExam, setIsSubmitExam } = examStore();
   const { userDoExam, setUserDoexamData, setAnswers, answers } = answerStore();
   const { user } = userStore();
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const getExamDetail = async () => {
-    try {
-      setIsLoading(true);
-      const { data } = await examServices.getExamInfor(exam_id || '');
-
-      if (answers.length === 0) {
-        const initAnswers: IAnswers[] = data.data.questions.map(
-          (questions: IQuestion) => {
-            const tempArr: IAnswers = {
-              questionID: questions.id,
-              answerID: [],
-            };
-            return tempArr;
-          }
-        );
-        setAnswers(initAnswers);
-      }
-
-      setExamData(data.data);
-      setIsLoading(false);
-    } catch (err) {
-      setIsLoading(false);
-    }
+    // try {
+    //   setIsLoading(true);
+    //   const { data } = await examServices.getExamInfor(exam_id || '');
+    //   if (answers.length === 0) {
+    //     const initAnswers: IAnswers[] = data.data.questions.map(
+    //       (questions: IQuestion) => {
+    //         const tempArr: IAnswers = {
+    //           questionID: questions.id,
+    //           answerID: [],
+    //         };
+    //         return tempArr;
+    //       }
+    //     );
+    //     setAnswers(initAnswers);
+    //   }
+    //   setExamData(data.data);
+    //   setIsLoading(false);
+    // } catch (err) {
+    //   setIsLoading(false);
+    // }
   };
 
   useEffect(() => {
@@ -62,14 +58,14 @@ const DoExamRealtime: React.FC = () => {
   }, [exam.timeType]);
 
   useEffect(() => {
-    const testPath: string = `${firebasePath}-` + exam_id;
+    const testPath: string = `${firebasePath}-` + url;
 
     const onValueFirebase = () => {
       fireGet(testPath, async (data: any) => {
         const recordValue: ITestRealtimeRecord = data;
         setIsLoading(!recordValue?.started);
         if (recordValue?.started && !exam.questions) {
-          getExamDetail();
+          getExam(url || '');
         }
       });
     };
@@ -82,7 +78,7 @@ const DoExamRealtime: React.FC = () => {
       {isLoading ? <DoExamSkelenton /> : <MainDoExam />}
     </div>
   ) : (
-    <Navigate to={`/login?redirect=${exam_id}`} />
+    <Navigate to={`/login?redirect=${url}`} />
   );
 };
 

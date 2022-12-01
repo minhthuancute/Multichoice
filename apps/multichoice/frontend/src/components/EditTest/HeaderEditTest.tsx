@@ -7,8 +7,8 @@ import { BsCalendarDate } from 'react-icons/bs';
 import { getDate } from '../../utils/format_date';
 import { AiOutlineFieldTime, AiOutlineQuestionCircle } from 'react-icons/ai';
 import { FaPlus } from 'react-icons/fa';
-import Modal from '../Modal/Modal';
-import FormEditTest from '../../pages/Tests/Edit/FormEditTest';
+import Modal from '../Commons/Modal/Modal';
+import FormEditTest from '../FormEditTest/FormEditTest';
 import { secondsToMinutes } from '../../utils/minutes_to_seconds';
 import { topicStore } from '../../store/rootReducer';
 

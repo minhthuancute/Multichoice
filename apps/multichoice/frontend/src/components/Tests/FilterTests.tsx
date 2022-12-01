@@ -12,7 +12,7 @@ interface IFormFilterTest {
   category: TopicCategoryEnum; // category search
 }
 
-interface IFilterTests {
+interface IFilterTestsProps {
   onFilter?: (keyword: string) => void;
 }
 
@@ -30,7 +30,7 @@ const options = Object.values(TopicCategoryEnum).map((val) => {
   };
 });
 
-const FilterTests: React.FC<IFilterTests> = ({ onFilter }) => {
+const FilterTests: React.FC<IFilterTestsProps> = ({ onFilter }) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const { register, handleSubmit, setValue } = useForm<IFormFilterTest>({
@@ -53,7 +53,7 @@ const FilterTests: React.FC<IFilterTests> = ({ onFilter }) => {
         placeholder="Tìm kiếm đề thi"
         registerField={register('searchTerm')}
         inputSize="md"
-        defaultValue={searchParams.get('search')}
+        defaultValue={searchParams.get('search') || ''}
         hasBorder={false}
       />
       <div className="h-6 bg-stone-200 w-[1px]"></div>

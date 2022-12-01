@@ -6,8 +6,8 @@ import { classNames } from '../../helper/classNames';
 import { IAnswer, IQuestion } from '../../types';
 import ToolTip from '../Commons/ToolTip/ToolTip';
 import UpdateQuestion from '../UpdateQuestion/UpdateQuestion';
-import Modal from '../Modal/Modal';
-import PolaCode from '../PolaCode/PolaCode';
+import Modal from '../Commons/Modal/Modal';
+import PolaCode from '../Commons/PolaCode/PolaCode';
 
 export interface IQuestionItemProps {
   index: number;

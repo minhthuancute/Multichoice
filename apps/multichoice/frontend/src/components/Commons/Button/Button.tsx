@@ -1,5 +1,5 @@
 import React, { ButtonHTMLAttributes } from 'react';
-import { classNames } from '../../helper/classNames';
+import { classNames } from '../../../helper/classNames';
 
 type ButtonColors = 'success' | 'danger' | 'warning' | 'default' | 'infor';
 interface IButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {

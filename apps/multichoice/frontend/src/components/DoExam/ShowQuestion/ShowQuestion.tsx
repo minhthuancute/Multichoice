@@ -15,7 +15,7 @@ import CountDown from '../../Commons/CountDown/CountDown';
 import { IS_SUBMIT_EXAM, START_TIME } from '../../../constants/contstants';
 import { classNames } from '../../../helper/classNames';
 import ToolTip from '../../Commons/ToolTip/ToolTip';
-import PolaCode from '../../PolaCode/PolaCode';
+import PolaCode from '../../Commons/PolaCode/PolaCode';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 import { expriedTime, submited } from '../../../constants/msgNotify';
 import TextArea from '../../Commons/TextArea/TextArea';
@@ -44,7 +44,7 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
   startTimeCountdown = 0,
   expriedCountdownRealtime = false,
 }) => {
-  const { exam_id } = useParams();
+  const { url } = useParams();
 
   const {
     exam: { questions },
@@ -106,7 +106,7 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
       };
 
       const payloadRealtime: IPayloadEndExamRealtime = {
-        url: exam_id || '',
+        url: url || '',
         userID: userDoExam.userId,
         answerUsers: answers,
       };
@@ -127,6 +127,7 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
 
         setOpenModalResult(true);
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       const { message } = error.response.data;
       notify({

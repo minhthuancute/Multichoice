@@ -7,11 +7,11 @@ import PrivateRoute from '../components/Routes/PrivateRoute';
 import PublicRoute from '../components/Routes/PublicRoute';
 
 // Pages
-import CreateTest from '../pages/Tests/Create/CreateTest';
+import CreateTest from '../pages/CreateTest/CreateTest';
 import Login from '../pages/Login/Login';
 import Register from '../pages/Register/Register';
-import Tests from '../pages/Tests/Index/Tests';
-import EditTest from '../pages/Tests/Edit/EditTest';
+import Tests from '../pages/Tests/Tests';
+import EditTest from '../pages/EditTest/EditTest';
 import CreateQuestion from '../pages/Question/Question';
 import PageNotFound from '../pages/Notfound/Notfound';
 
@@ -67,12 +67,9 @@ export const App: React.FC = () => {
         </Route>
 
         <Route path="e" element={<ExamLayout />}>
-          <Route
-            path=":exam_id/do-exam-realtime"
-            element={<DoExamRealtime />}
-          />
-          <Route path=":exam_id" element={<CollectInfor />} />
-          <Route path=":exam_id/do-exam" element={<DoExam />} />
+          <Route path=":url/do-exam-realtime" element={<DoExamRealtime />} />
+          <Route path=":url" element={<CollectInfor />} />
+          <Route path=":url/do-exam" element={<DoExam />} />
         </Route>
 
         <Route path="*" element={<PageNotFound />} />
