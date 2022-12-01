@@ -46,7 +46,7 @@ export class GConfig {
   public static DELETE_MES_SUCESS = 'Xóa thành công';
   public static UPDATE_MES_SUCESS = 'Sủa mới thành công';
   public static RESET_MES_SUCESS = 'Reset mật khẩu  mới thành công';
-  public static EXPRIED_TIME = 'Hết thời gian làm bài';
+  public static EXPRIED_TIME = 'không thể nộp bài';
   public static EXPRIED_EMAIL_LINK = 'Link hết thời gian hoặc không tồn tại';
   public static EXPRIED_TOKEN_REDIS = 300;
   public static EMAIL_CHECK = 'Vui lòng kiểm tra email của bạn';
