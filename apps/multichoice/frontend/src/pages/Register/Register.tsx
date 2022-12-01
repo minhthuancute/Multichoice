@@ -128,7 +128,7 @@ const Register: React.FC = () => {
             id="password"
           />
 
-          <div className="remember-me flex items-center justify-between mt-5 text-slate-800">
+          {/* <div className="remember-me flex items-center justify-between mt-5 text-slate-800">
             <div className="check-box cursor-pointer flex items-center">
               <Checkbox
                 onChange={setIsUserAccept}
@@ -139,7 +139,7 @@ const Register: React.FC = () => {
                 id="accept-term"
               />
             </div>
-          </div>
+          </div> */}
 
           <div className="submit mt-5">
             <button
