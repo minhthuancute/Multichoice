@@ -2,6 +2,7 @@ import {
   AddGroupForTopic,
   CreateTopicDto,
   PageOptionsDto,
+  QueryTopicDto,
 } from '@monorepo/multichoice/dto';
 import {
   Body,
@@ -39,14 +40,17 @@ export class TopicController {
   }
 
   @UseGuards(AuthenticationGuard)
-  @Get('/all')
+  @Get('/gettopics')
   @ApiBearerAuth()
   async getTopicAll(
-    @Query() pageDto: PageOptionsDto,
+    @Query() queryTopicDto: QueryTopicDto,
     @Req() req,
     @Res() res
   ): Promise<SucessResponse> {
-    const result = await this.topicService.findAllTopics(pageDto, req.user);
+    const result = await this.topicService.findAllTopics(
+      queryTopicDto,
+      req.user.id
+    );
     return res.json(new SucessResponse(200, result));
   }
 
