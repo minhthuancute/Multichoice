@@ -243,13 +243,11 @@ export class UserService {
 
   async endExam(resultUserDto: ResultUserDto) {
     const endTime = new Date().getTime();
-    const userID: string = resultUserDto.userID.toString();
+    const userID: string = resultUserDto.userID?.toString() || '0';
 
-    // get data redis
     const userExam: UserExam = await this.redisService.get(userID);
     if (!userExam) throw new BadRequestException(GConfig.EXPRIED_TIME);
 
-    //xóa key trong redis
     this.redisService.delete(userID);
 
     const topic: Topic = await this.topicService.getIsCorrectByTopicID(
