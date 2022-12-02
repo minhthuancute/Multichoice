@@ -84,16 +84,6 @@ const ForgotPassword: React.FC = () => {
             Icon={MdOutlineMail}
             id="email"
           />
-
-          <div className="remember-me flex justify-end mt-5 text-slate-800">
-            <Link
-              to="/login"
-              className="text-sm transition-all duration-200 hover:text-primary-900"
-            >
-              Login Now
-            </Link>
-          </div>
-
           <div className="submit mt-5">
             <button
               className="w-full py-3 bg-primary-900 rounded-md text-white font-medium"
