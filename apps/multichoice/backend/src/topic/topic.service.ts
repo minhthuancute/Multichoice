@@ -106,30 +106,34 @@ export class TopicService {
     queryTopicDto: QueryTopicDto,
     userID: number
   ): Promise<PageDto<Topic>> {
+    const page = queryTopicDto?.page || 1;
+    const take = queryTopicDto?.take || 10;
     const queryBuilder = this.topicRepository
       .createQueryBuilder('topic')
       .where('topic.ownerId = :owner', { owner: userID })
-      .andWhere(
-        queryTopicDto.searchTerms &&
-          queryTopicDto.searchTerms.length &&
-          `MATCH(title) AGAINST ('${queryTopicDto.searchTerms}' IN BOOLEAN MODE)`
-      )
-      .andWhere(
-        queryTopicDto.typeCategoryName &&
-          'topic.typeCategoryName = :typeCategoryName',
-        { typeCategoryName: queryTopicDto.typeCategoryName }
-      )
-      .andWhere(queryTopicDto.timeType && 'topic.timeType = :timeType', {
-        timeType: queryTopicDto.timeType,
-      })
       .leftJoin('topic.questions', 'questions')
       .loadRelationCountAndMap('topic.questionsCount', 'topic.questions')
-      .skip((queryTopicDto.page - 1) * queryTopicDto.take)
-      .take(queryTopicDto.take);
+      .skip((page - 1) * take)
+      .take(take);
 
+    if (queryTopicDto.timeType) {
+      queryBuilder.andWhere('topic.timeType = :timeType', {
+        timeType: queryTopicDto.timeType,
+      });
+    }
+    if (queryTopicDto.typeCategoryName) {
+      queryBuilder.andWhere('topic.typeCategoryName = :typeCategoryName', {
+        typeCategoryName: queryTopicDto.typeCategoryName,
+      });
+    }
+    if (queryTopicDto.searchTerms && queryTopicDto.searchTerms.length) {
+      queryBuilder.andWhere(
+        `MATCH(title) AGAINST ('${queryTopicDto.searchTerms}' IN BOOLEAN MODE)`
+      );
+    }
     const { 0: topics, 1: itemCount } = await queryBuilder.getManyAndCount();
     const pageMetaDto = new PageMetaDto({
-      pageOptionsDto: { page: queryTopicDto.page, take: queryTopicDto.take },
+      pageOptionsDto: { page, take },
       itemCount,
     });
     return new PageDto(topics, pageMetaDto);

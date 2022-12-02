@@ -53,9 +53,9 @@ export class UserController {
     return res.json(new SucessResponse(200, result));
   }
 
-  @Get(':url')
+  @Get('/gettopicbyurl')
   async findTopicByUrl(
-    @Param('url') url: string,
+    @Query('url') url: string,
     @Res() res
   ): Promise<SucessResponse> {
     const result = await this.userService.findTopicByUrl(url);

@@ -40,7 +40,7 @@ export class TopicController {
   }
 
   @UseGuards(AuthenticationGuard)
-  @Get('/gettopics')
+  @Get()
   @ApiBearerAuth()
   async getTopicAll(
     @Query() queryTopicDto: QueryTopicDto,
