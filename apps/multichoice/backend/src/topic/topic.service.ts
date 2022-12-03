@@ -4,6 +4,7 @@ import {
   PageDto,
   PageMetaDto,
   PageOptionsDto,
+  QueryTopicDto,
 } from '@monorepo/multichoice/dto';
 import {
   BadRequestException,
@@ -101,19 +102,40 @@ export class TopicService {
     await this.topicRepository.delete({ id: id, owner: { id: userID } });
   }
 
-  public async findAllTopics(
-    pageOptionsDto: PageOptionsDto,
-    user: User
+  async findAllTopics(
+    queryTopicDto: QueryTopicDto,
+    userID: number
   ): Promise<PageDto<Topic>> {
+    const page = queryTopicDto?.page || 1;
+    const take = queryTopicDto?.take || 10;
     const queryBuilder = this.topicRepository
       .createQueryBuilder('topic')
-      .where('topic.ownerId = :owner', { owner: user.id })
+      .where('topic.ownerId = :owner', { owner: userID })
       .leftJoin('topic.questions', 'questions')
       .loadRelationCountAndMap('topic.questionsCount', 'topic.questions')
-      .skip((pageOptionsDto.page - 1) * pageOptionsDto.take)
-      .take(pageOptionsDto.take);
+      .skip((page - 1) * take)
+      .take(take);
+
+    if (queryTopicDto.timeType) {
+      queryBuilder.andWhere('topic.timeType = :timeType', {
+        timeType: queryTopicDto.timeType,
+      });
+    }
+    if (queryTopicDto.typeCategoryName) {
+      queryBuilder.andWhere('topic.typeCategoryName = :typeCategoryName', {
+        typeCategoryName: queryTopicDto.typeCategoryName,
+      });
+    }
+    if (queryTopicDto.searchTerms && queryTopicDto.searchTerms.length) {
+      queryBuilder.andWhere(
+        `MATCH(title) AGAINST ('${queryTopicDto.searchTerms}' IN BOOLEAN MODE)`
+      );
+    }
     const { 0: topics, 1: itemCount } = await queryBuilder.getManyAndCount();
-    const pageMetaDto = new PageMetaDto({ pageOptionsDto, itemCount });
+    const pageMetaDto = new PageMetaDto({
+      pageOptionsDto: { page, take },
+      itemCount,
+    });
     return new PageDto(topics, pageMetaDto);
   }
 
