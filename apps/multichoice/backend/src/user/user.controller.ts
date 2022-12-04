@@ -38,7 +38,7 @@ export class UserController {
     @Res() res
   ): Promise<SucessResponse> {
     const result = await this.userService.endExam(resultUserDto);
-    return res.json(new SucessResponse(200, result));
+    return res.status(200).json(new SucessResponse(200, result));
   }
 
   @UseGuards(JwtAuthGuard)
@@ -130,6 +130,6 @@ export class UserController {
       resultUserRealTimeDto,
       req.user
     );
-    return res.json(new SucessResponse(200, result));
+    return res.status(200).json(new SucessResponse(200, result));
   }
 }
