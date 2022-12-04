@@ -1,47 +1,38 @@
 import React from 'react';
+import Button from '../../Commons/Button/Button';
 import Modal from '../../Commons/Modal/Modal';
 
 interface IIntroExamProps {
-  openModalIntro: boolean;
-  setOpenModalIntro: React.Dispatch<React.SetStateAction<boolean>>;
+  visibleModalIntro: boolean;
+  setVisibleModalIntro: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const IntroExam: React.FC<IIntroExamProps> = ({
-  openModalIntro,
-  setOpenModalIntro,
+  visibleModalIntro,
+  setVisibleModalIntro,
 }) => {
   return (
     <Modal
-      visible={openModalIntro}
-      setVisibleModal={setOpenModalIntro}
+      visible={visibleModalIntro}
+      setVisibleModal={setVisibleModalIntro}
       placement="CENTER"
     >
-      <div
-        className="modal-content px-5 flex flex-col justify-center
-      bg-white rounded-md w-full py-8 text-slate-800"
-      >
+      <>
         <h4 className="text-center text-xl font-semibold mb-5 capitalize">
           Hướng dẫn làm bài
         </h4>
-        <p>
-          <span className="font-semibold">+</span> Đề thi chỉ nộp bài một lần
-        </p>
-        <p>
-          <span className="font-semibold">+</span> Không thể nộp bài khi đã hết
-          thời gian
-        </p>
-        <p>
-          <span className="font-semibold">+</span> Bấm <b>"Thoát"</b> để làm lại
-          bài thi
-        </p>
-        <button
-          className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
-        text-white font-bold bg-slate-800 mt-5 ml-auto"
-          onClick={() => setOpenModalIntro(false)}
-        >
+        <ul>
+          <li>- Đề thi chỉ nộp bài một lần</li>
+          <li>- Không thể nộp bài khi đã hết thời gian</li>
+          <li>
+            - Bấm <b>"Thoát"</b> để làm lại bài thi
+          </li>
+        </ul>
+
+        <Button className="mt-5" onClick={() => setVisibleModalIntro(false)}>
           Đóng
-        </button>
-      </div>
+        </Button>
+      </>
     </Modal>
   );
 };

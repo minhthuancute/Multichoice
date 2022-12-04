@@ -21,6 +21,8 @@ const TestList: React.FC = () => {
   const [testsFilter, setTestsFilter] = useState<ITestItem[]>([]);
   const [testIdDel, setTestIdDel] = useState<number>(-1);
   const [testTitleDel, setTestTitleDel] = useState<string>('');
+  const [visibleModal, setVisibleModal] = useState<boolean>(false);
+
   const [page, setPage] = useState<number>(1);
 
   const [paramSearch] = useState<string>(() => {
@@ -87,12 +89,9 @@ const TestList: React.FC = () => {
   };
 
   const handleDeleteTest = (testID: number, title: string) => {
+    setVisibleModal(true);
     setTestIdDel(testID);
     setTestTitleDel(title);
-  };
-
-  const onConfirmDel = () => {
-    getListTest();
   };
 
   useEffect(() => {
@@ -104,7 +103,12 @@ const TestList: React.FC = () => {
       <DeleteTest
         testID={testIdDel}
         testTitle={testTitleDel}
-        cbConfirmDel={onConfirmDel}
+        visibleModal={visibleModal}
+        setVisibleModal={setVisibleModal}
+        onConfirmDelete={() => {
+          getListTest();
+          setVisibleModal(false);
+        }}
       />
 
       <div className="mt-4">

@@ -173,13 +173,10 @@ const UpdateAnswer: React.FC<IUpdateAnswerProps> = forwardRef(
                   key={index}
                   registerFieldContent={registerContent}
                   registerFieldIsCorrect={registerIsCorrect}
-                  onDeleteAnswer={onDeleteAnswer}
                   correctAnswer={correctAnswer}
                   answerValue={getValues(nameContent) || ''}
                   indexAnswer={index}
-                  indexAscii={index}
-                  isMultilCorrectAnswer={isMultilCorrectAnswer}
-                  isCheckedAnswer={getValues(`answers.${index}.isCorrect`)}
+                  lengthAnswers={0}
                 />
               );
             })}

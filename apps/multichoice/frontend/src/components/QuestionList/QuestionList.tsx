@@ -11,24 +11,30 @@ import ModalConfirm from '../Commons/ModalConfirm/ModalConfirm';
 import Modal from '../Commons/Modal/Modal';
 import PolaCode from '../Commons/PolaCode/PolaCode';
 import QuestionItem from '../QuestionItem/QuestionItem';
+import UpdateQuestion from '../UpdateQuestion/UpdateQuestion';
 
 const QuestionList: React.FC = () => {
   const query = useParams();
-  const { topicDetail, setTopicDetailData } = topicStore();
+  const { topicDetail, setTopicDetail } = topicStore();
 
-  const [visibleModalDelete, setVisibleModalDelete] = useState<boolean>(false);
-  const [questionDel, setQuestionDel] = useState<IQuestion>();
+  const [visibleModal, setVisibleModal] = useState<boolean>(false);
+  const [question, setQuestion] = useState<IQuestion>({} as IQuestion);
 
-  const handleDeleteQuestion = (question: IQuestion) => {
-    setQuestionDel(question);
-    setVisibleModalDelete(true);
+  const onClickUpdateQuestion = (question: IQuestion) => {
+    setQuestion(question);
+    setVisibleModal(true);
+  };
+
+  const onClickDeleteQuestion = (question: IQuestion) => {
+    setQuestion(question);
+    setVisibleModal(true);
   };
 
   const getTopicDetail = async () => {
     const { id } = query;
     try {
       const { data } = await topicServices.getTopicById(Number(id));
-      setTopicDetailData(data);
+      setTopicDetail(data);
     } catch {
       //
     }
@@ -43,7 +49,6 @@ const QuestionList: React.FC = () => {
           type: 'success',
         } as iNotification);
 
-        setVisibleModalDelete(false);
         getTopicDetail();
       }
     } catch (error) {
@@ -51,21 +56,21 @@ const QuestionList: React.FC = () => {
         message: 'Something went wrong !',
         type: 'danger',
       } as iNotification);
-      setVisibleModalDelete(false);
     }
+    setVisibleModal(false);
   };
 
   return (
     <>
       <ModalConfirm
-        visible={visibleModalDelete}
+        visible={visibleModal}
         onConfirm={deleteQuestion}
-        onCancle={() => setVisibleModalDelete(false)}
+        onCancle={() => setVisibleModal(false)}
         title={
           <>
             Bạn có chắc chắn muốn xóa bỏ câu hỏi:{' '}
             <PolaCode
-              content={questionDel?.content || ''}
+              content={question?.content || ''}
               className="ml-2 font-semibold"
             />
             ?
@@ -73,11 +78,19 @@ const QuestionList: React.FC = () => {
         }
       />
 
+      <Modal visible={visibleModal} setVisibleModal={setVisibleModal}>
+        <UpdateQuestion
+          questionData={question}
+          setVisibleModalEditQuestion={setVisibleModal}
+        />
+      </Modal>
+
       {topicDetail.questions &&
         topicDetail.questions.map((question: IQuestion, index: number) => {
           return (
             <QuestionItem
-              handleDeleteQuestion={handleDeleteQuestion}
+              onClickDeleteQuestion={onClickDeleteQuestion}
+              onClickUpdateQuestion={onClickUpdateQuestion}
               question={question}
               index={index + 1}
               key={question.id}

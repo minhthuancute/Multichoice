@@ -28,7 +28,7 @@ export const examStore = create<IExamStore>()(
     dataExamResult: {} as IExamResult,
 
     getExam: async (url = '') => {
-      const { data } = await examServices.getExamInfor(url);
+      const { data } = await examServices.getExamByUrl(url);
       set({
         exam: data.data,
       });

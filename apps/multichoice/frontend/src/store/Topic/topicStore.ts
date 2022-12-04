@@ -6,7 +6,7 @@ export interface ITopicStore {
   topic: ITopicResponse;
   topicDetail: ITopicDetailResponse;
   setTopicData: (topicData: ITopicResponse) => void;
-  setTopicDetailData: (topicData: ITopicDetailResponse) => void;
+  setTopicDetail: (topicData: ITopicDetailResponse) => void;
 }
 
 // Topic detail
@@ -21,7 +21,7 @@ export const topicStore = create<ITopicStore>()(
         };
       }),
 
-    setTopicDetailData: (topicDetailData: ITopicDetailResponse) =>
+    setTopicDetail: (topicDetailData: ITopicDetailResponse) =>
       set(() => {
         return {
           topicDetail: topicDetailData,

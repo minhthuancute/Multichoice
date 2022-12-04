@@ -2,7 +2,7 @@ import React, { useLayoutEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useQuery } from '../../../hooks/useQuery';
 import { RedirectQuery } from '../../../types/AuthenQuery';
-import Logo from '../../Logo/Logo';
+import Logo from '../../Commons/Logo/Logo';
 
 const HeaderAuthen: React.FC = () => {
   const location = useLocation();

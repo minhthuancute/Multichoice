@@ -1,8 +1,7 @@
-import React, { useRef, useState } from 'react';
-import * as yup from 'yup';
+import React, { useEffect, useState } from 'react';
 import Input from '../Commons/Input/Input';
-import { CreatAnswer } from '@monorepo/multichoice/dto';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { CreatAnswer, CreateQuestionDto } from '@monorepo/multichoice/dto';
+import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Select, { IOption } from '../Commons/Select/Select';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
@@ -10,198 +9,77 @@ import { questionServices } from '../../services/QuestionServices';
 import { topicStore } from '../../store/rootReducer';
 import { notify } from '../../helper/notify';
 import { iNotification } from 'react-notifications-component';
+import Editor from '../Commons/Editor/Editor';
+import { classNames } from '../../helper/classNames';
+import { errNotSelectCorrectAnswer } from '../../constants/msgNotify';
+import Button from '../Commons/Button/Button';
+import AnswerItem from '../AnswerItem/AnswerItem';
+import { schemaUpdateQuestion } from './updateQuestionSchema';
+import { IQuestion } from '../../types';
 import ToolTip from '../Commons/ToolTip/ToolTip';
 import { IoMdClose } from 'react-icons/io';
-import { IQuestion } from '../../types';
-import UpdateAnswer from '../UpdateAnswers/UpdateAnswers';
-import Editor from '../Editor/Editor';
-import { hasContentEditor } from '../../utils/empty_content_editor';
-import { IResetAnswersRef } from '../CreateAnswer/CreateAnswer';
-import { useParams } from 'react-router-dom';
-import { errNotSelectCorrectAnswer } from '../../constants/msgNotify';
-import { classNames } from '../../helper/classNames';
-import { topicServices } from '../../services/TopicServices';
 
-const schemaUpdateQuestion = yup.object().shape({
-  topicID: yup.number(),
-  content: yup.string().required('Question content is a required field'),
-  time: yup.number(),
-  isActive: yup.boolean(),
-  answers: yup.array().of(
-    yup.object().shape({
-      content: yup.string(),
-      isCorrect: yup.boolean(),
-    })
-  ),
-});
-
-export interface IUpdateAnswer {
-  content: string;
-  isCorrect: boolean;
-  id?: number;
-}
-
-export interface IUpdateQuestionPayload {
-  type: QuestionTypeEnum;
-  content: string;
-  time: number;
-  isActive: boolean;
-  answers: IUpdateAnswer[];
-}
-
-interface IUpdateQuestionProps {
+interface IUpdateQuestionprops {
   questionData: IQuestion;
-  setOpenModalEditQuestion: React.Dispatch<React.SetStateAction<boolean>>;
+  setVisibleModalEditQuestion: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const UpdateQuestion: React.FC<IUpdateQuestionProps> = ({
+const UpdateQuestion: React.FC<IUpdateQuestionprops> = ({
   questionData,
-  setOpenModalEditQuestion,
+  setVisibleModalEditQuestion,
 }) => {
-  const { type, content, time, isActive, answers } = questionData;
-
-  const { id } = useParams();
-  const { topic, setTopicDetailData } = topicStore();
-  const updateAnswerRef = useRef<IResetAnswersRef>();
+  const { topic } = topicStore();
 
   const {
-    resetField,
     register,
     handleSubmit,
     setValue,
     getValues,
     clearErrors,
     setError,
+    control,
+    watch,
     formState: { errors },
-  } = useForm<IUpdateQuestionPayload>({
+  } = useForm<CreateQuestionDto>({
     resolver: yupResolver(schemaUpdateQuestion),
-    defaultValues: {
-      type,
-      content,
-      time,
-      isActive,
-      answers,
-    },
+    mode: 'all',
+    defaultValues: questionData,
+  });
+  const { remove, fields, append } = useFieldArray({
+    control,
+    name: 'answers',
   });
 
-  const [isMutilAnswer, setIsMutilAnswer] = useState<boolean>(
-    type === QuestionTypeEnum.MULTIPLE
-  );
-  const [shouldRemoveAnswers, setShouldRemoveAnswers] = useState<boolean>(
-    type === QuestionTypeEnum.TEXT
-  );
+  const { setTopicDetail } = topicStore();
 
-  const [optionsQuestionType] = useState<IOption[]>(() => {
-    const types = Object.values(QuestionTypeEnum).map((type) => {
+  const [hideAnswer, setHideAnswer] = useState<boolean>(false);
+  const [correctAnswer, setCorrectAnswer] = useState<string>('');
+  const [questionTypes] = useState<IOption[]>(() => {
+    const types: QuestionTypeEnum[] = [];
+    for (const topic in QuestionTypeEnum) {
+      const topicVal = topic.toLocaleLowerCase() as QuestionTypeEnum;
+      types.push(topicVal);
+    }
+    const options: IOption[] = types.map((topic: QuestionTypeEnum) => {
       return {
-        label: type,
-        value: type,
+        label: topic,
+        value: topic,
       };
     });
-    return types;
+    return options;
   });
 
-  const getTopicDetail = async () => {
-    try {
-      const { data } = await topicServices.getTopicById(Number(id));
-      setTopicDetailData(data);
-    } catch {
-      //
-    }
-  };
-
-  const validAnswer = (): boolean => {
-    const answers = getValues('answers');
-    const questionType = getValues('type');
-    const isQuestionTypeText = questionType === QuestionTypeEnum.TEXT;
-
-    if (isQuestionTypeText) {
-      return true;
-    }
-    // answers must have correct answer
-    const haveCorrectAnswer = answers.some((answers: CreatAnswer) => {
-      return answers.isCorrect;
-    });
-
-    const haveEmptyContent = answers.some((answers: CreatAnswer) => {
-      return answers.content === '';
-    });
-
-    if (haveEmptyContent) {
-      setError('answers', {
-        message: 'Answers content is required',
-      });
-      return false;
-    }
-
-    if (haveCorrectAnswer === false) {
-      notify({
-        message: errNotSelectCorrectAnswer,
-        type: 'danger',
-      } as iNotification);
-      return false;
-    }
-    return true;
-  };
-
-  // create Question
-  const onSubmit: SubmitHandler<IUpdateQuestionPayload> = async (formData) => {
-    const isValidAnswer = validAnswer();
-    if (isValidAnswer === false) {
-      return;
-    }
-
-    try {
-      // should remove answer if question type is TEXT
-      const isQuestionTypeText = getValues('type') === QuestionTypeEnum.TEXT;
-      if (isQuestionTypeText) {
-        formData.answers.length = 0;
-      }
-
-      const { data } = await questionServices.updateQuestion(
-        questionData.id,
-        formData
-      );
-
-      if (data.success) {
-        getTopicDetail();
-        setOpenModalEditQuestion(false);
-      }
-    } catch (error) {
-      //
-    }
-  };
-
-  const onAddAnswer = (answers: IUpdateAnswer[]) => {
-    setValue('answers', answers);
-    clearErrors('answers');
-  };
-
-  const onRemoveAnswer = (filterAnswer: IUpdateAnswer[]) => {
-    resetField('answers');
-
-    const answers = getValues('answers');
-    if (answers) {
-      setValue('answers', filterAnswer);
-      resetField('answers');
-    }
-  };
-
   const onSelectQuestionType = (item: IOption) => {
-    const optionVal: QuestionTypeEnum = item.value as QuestionTypeEnum;
-    setValue('type', optionVal);
-    setValue('isActive', true);
+    setValue('type', item.value as QuestionTypeEnum);
 
     switch (item.value) {
       case QuestionTypeEnum.MULTIPLE: {
-        setIsMutilAnswer(true);
-        setShouldRemoveAnswers(false);
+        setHideAnswer(false);
         break;
       }
 
       case QuestionTypeEnum.SINGLE: {
-        setIsMutilAnswer(false);
-        setShouldRemoveAnswers(false);
+        setHideAnswer(false);
         const answers = getValues('answers');
         const resetAnswers: CreatAnswer[] = answers.map(
           (answer: CreatAnswer) => {
@@ -212,14 +90,11 @@ const UpdateQuestion: React.FC<IUpdateQuestionProps> = ({
           }
         );
         setValue('answers', resetAnswers);
-        if (updateAnswerRef.current) {
-          updateAnswerRef.current.resetAnswers(resetAnswers);
-        }
         break;
       }
 
       case QuestionTypeEnum.TEXT: {
-        setShouldRemoveAnswers(true);
+        setHideAnswer(true);
         clearErrors('answers');
         break;
       }
@@ -229,113 +104,188 @@ const UpdateQuestion: React.FC<IUpdateQuestionProps> = ({
     }
   };
 
-  const onChangeEditor = (value: string) => {
-    if (hasContentEditor(value)) {
-      clearErrors('content');
-    } else {
-      setError(
-        'content',
-        { message: 'Question content is a required field' },
-        { shouldFocus: true }
-      );
+  const validAnswers = (): boolean => {
+    const answers = getValues('answers');
+    const questionType = getValues('type');
+    if (questionType === QuestionTypeEnum.TEXT) {
+      return true;
     }
-    setValue('content', value);
+    const haveCorrectAnswer = answers.some(
+      (answers: CreatAnswer) => answers.isCorrect
+    );
+    const haveEmptyContent = answers.some(
+      (answers: CreatAnswer) => answers.content === ''
+    );
+
+    if (haveEmptyContent) {
+      setError('answers', {
+        message: 'Answers content is required',
+      });
+      return false;
+    }
+
+    if (!haveCorrectAnswer) {
+      notify({
+        message: errNotSelectCorrectAnswer,
+        type: 'danger',
+      } as iNotification);
+      return false;
+    }
+    return true;
   };
 
+  const onSubmit: SubmitHandler<CreateQuestionDto> = async (formData) => {
+    if (validAnswers()) {
+      try {
+        if (formData.type === QuestionTypeEnum.TEXT) {
+          formData.answers.length = 0;
+        }
+
+        const { data } = await questionServices.updateQuestion(
+          questionData.id,
+          formData
+        );
+        if (data.success) {
+          setTopicDetail(data.data);
+          setVisibleModalEditQuestion(false);
+        }
+      } catch (error) {
+        //
+      }
+    }
+  };
+
+  useEffect(() => {
+    const subscription = watch(({ type, answers }) => {
+      if (type === QuestionTypeEnum.SINGLE) {
+        const correctAnswer = answers?.find((answer) => answer?.isCorrect);
+        setCorrectAnswer(correctAnswer?.content || '');
+      }
+    });
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
   return (
-    <div className="py-4 px-5 mx-auto rounded-md bg-white">
-      <form className="form" onSubmit={handleSubmit(onSubmit)}>
-        <div className="form-header flex items-center justify-between mb-8">
-          <h4 className="text-slate-800 text-xl font-semibold">
-            Cập nhật câu hỏi
-          </h4>
-          <ToolTip title="Đóng">
-            <button
-              type="button"
-              className="text-lg"
-              onClick={() => setOpenModalEditQuestion(false)}
-            >
-              <IoMdClose />
-            </button>
-          </ToolTip>
-        </div>
-
-        <div className="bg-white rounded-md">
-          {topic.typeCategoryName === 'game' ? (
-            <Input
-              registerField={register('time')}
-              typeInput="number"
-              textLabel="Thời gian làm bài"
-              id="expirationTime"
-              isError={Boolean(errors.time)}
-              errMessage={errors.time?.message}
-              isDisable={topic.typeCategoryName !== 'game'}
-            />
-          ) : null}
-          <Select
-            onChange={onSelectQuestionType}
-            defaultValue={questionData.type}
-            options={optionsQuestionType}
-            textLabel="Loại câu hỏi"
-          />
-        </div>
-        <div className="bg-white rounded-md mt-5">
-          <Editor
-            placeholder="Nội dung câu hỏi"
-            className="h-[248px]"
-            onChange={onChangeEditor}
-            isError={Boolean(errors.content)}
-            errMessage={errors.content?.message}
-            defaultValue={questionData.content}
-          />
-          <div
-            className={classNames('create-answer', {
-              hidden: shouldRemoveAnswers,
-            })}
-          >
-            <UpdateAnswer
-              isMultilCorrectAnswer={isMutilAnswer}
-              answers={
-                questionData.answers.length
-                  ? questionData.answers
-                  : ([
-                      {
-                        content: '',
-                        isCorrect: false,
-                      },
-                      {
-                        content: '',
-                        isCorrect: false,
-                      },
-                    ] as CreatAnswer[])
-              }
-              onAddAnswer={onAddAnswer}
-              onRemoveAnswer={onRemoveAnswer}
-              invalidAnswers={Boolean(errors.answers)}
-              ref={updateAnswerRef}
-            />
-          </div>
-        </div>
-
-        <div className="ctas flex items-center justify-end gap-x-2 mt-8">
+    <form className="bg-white p-4" onSubmit={handleSubmit(onSubmit)}>
+      <div className="form-header flex items-center justify-between mb-6">
+        <h4 className="text-slate-800 text-xl font-semibold">
+          Cập nhật câu hỏi
+        </h4>
+        <ToolTip title="Đóng">
           <button
             type="button"
-            className="create-test rounded-md flex justify-center items-center w-32 h-10 text-sm
-          text-slate-800 font-bold border border-solid border-slate-800"
-            onClick={() => setOpenModalEditQuestion(false)}
+            className="text-lg"
+            onClick={() => setVisibleModalEditQuestion(false)}
           >
-            Huỷ
+            <IoMdClose />
           </button>
-          <button
-            type="submit"
-            className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
-          text-white font-bold bg-primary-900 transition-all duration-200 hover:bg-primary-800"
-          >
-            Cập nhật
-          </button>
+        </ToolTip>
+      </div>
+
+      <div className="bg-white rounded-md mb-4">
+        {topic.typeCategoryName === 'game' ? (
+          <Input
+            registerField={register('time')}
+            typeInput="number"
+            textLabel="Thời gian làm bài"
+            id="expirationTime"
+            isError={Boolean(errors.time)}
+            errMessage={errors.time?.message}
+            isDisable={topic.typeCategoryName !== 'game'}
+          />
+        ) : null}
+        <Select
+          onChange={onSelectQuestionType}
+          defaultValue={questionTypes[0].label}
+          options={questionTypes}
+          textLabel="Loại câu hỏi"
+        />
+      </div>
+      <div className="relative">
+        <label className="font-semibold text-slate-800 text-sm inline-block mb-2">
+          Nội dung
+          <span className="ml-1 text-red-600">*</span>
+        </label>
+        <Editor
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          control={control as any}
+          name="content"
+          placeholder="Nội dung câu hỏi"
+          isError={Boolean(errors.content)}
+          errMessage={errors.content?.message}
+        />
+      </div>
+      <div
+        className={classNames('create-answer', {
+          hidden: hideAnswer,
+        })}
+      >
+        <div className="answer mt-4">
+          <div className="answer-header">
+            <label className="font-semibold text-slate-800 text-sm inline-block mb-2">
+              Đáp án
+              <span className="ml-1 text-red-600">*</span>
+            </label>
+          </div>
+          <div className="answer-body">
+            {fields.map((item: CreatAnswer, index: number) => {
+              return (
+                <AnswerItem
+                  key={index}
+                  indexAnswer={index}
+                  lengthAnswers={watch('answers').length}
+                  correctAnswer={correctAnswer}
+                  registerFieldContent={register(`answers.${index}.content`)}
+                  registerFieldIsCorrect={register(
+                    `answers.${index}.isCorrect`
+                  )}
+                  answerValue={watch(`answers.${index}.content`)}
+                  questionType={watch('type')}
+                  removeAnswer={remove}
+                />
+              );
+            })}
+          </div>
+          {errors.answers ? (
+            <div className="show-error mt-3">
+              <p className="text-red-500 text-xs">{errors.answers.message}</p>
+            </div>
+          ) : null}
+          <div className="add-answer mt-5 text-end">
+            <Button
+              type="button"
+              onClick={() => {
+                if (getValues('answers').length + 1 !== 5) {
+                  append({
+                    content: '',
+                    isCorrect: false,
+                  });
+                }
+              }}
+            >
+              Thêm đáp án
+            </Button>
+          </div>
         </div>
-      </form>
-    </div>
+      </div>
+      <div className="ctas flex items-center justify-end gap-x-2 mt-8">
+        <Button
+          type="button"
+          onClick={() => setVisibleModalEditQuestion(false)}
+        >
+          Huỷ
+        </Button>
+        <Button
+          type="submit"
+          color="success"
+          // onClick={() => setVisibleModalEditQuestion(false)}
+        >
+          Cập nhật
+        </Button>
+      </div>
+    </form>
   );
 };
 

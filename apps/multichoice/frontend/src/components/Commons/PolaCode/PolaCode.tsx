@@ -1,5 +1,6 @@
 import React, { createRef, useEffect, useState } from 'react';
 import { classNames } from '../../../helper/classNames';
+import Button from '../Button/Button';
 import Modal from '../Modal/Modal';
 import './polacode.scss';
 interface IPolaCodeProps {
@@ -9,15 +10,19 @@ interface IPolaCodeProps {
 
 const PolaCode: React.FC<IPolaCodeProps> = ({ content, className = '' }) => {
   const editorRef = createRef<HTMLDivElement>();
+  const [visibleModal, setVisibleModal] = useState<boolean>(false);
   const [srcImage, setSrcImage] = useState<string>('');
 
   const handleZoomImage = () => {
     const imgsEditor = editorRef.current?.querySelectorAll('img');
+    console.log(imgsEditor);
+
     if (imgsEditor) {
       imgsEditor.forEach((imgElement) => {
         imgElement.addEventListener('click', function () {
           const src: string = this.getAttribute('src') || '';
           setSrcImage(src);
+          setVisibleModal(true);
         });
       });
     }
@@ -27,24 +32,31 @@ const PolaCode: React.FC<IPolaCodeProps> = ({ content, className = '' }) => {
     handleZoomImage();
   }, [editorRef]);
 
-  return content ? (
+  return (
     <>
-      <Modal placement="CENTER" setVisibleModal={setSrcImage} size="full">
-        <div className="px-4 py-4 my-4 bg-white shadow-lg">
+      <Modal
+        placement="CENTER"
+        visible={visibleModal}
+        setVisibleModal={setVisibleModal}
+        size="xxl"
+      >
+        <>
           <img
             src={srcImage}
             alt=""
             className="inline-block max-h-[548px] w-full object-contain object-center"
           />
 
-          <button
-            className="create-test rounded-md flex justify-center items-center w-32 h-10 text-sm
-            text-white font-bold bg-slate-800 mt-4 ml-auto"
-            onClick={() => setSrcImage('')}
+          <Button
+            className="mt-5 ml-auto"
+            onClick={() => {
+              setSrcImage('');
+              setVisibleModal(false);
+            }}
           >
             Đóng
-          </button>
-        </div>
+          </Button>
+        </>
       </Modal>
 
       <div
@@ -58,7 +70,7 @@ const PolaCode: React.FC<IPolaCodeProps> = ({ content, className = '' }) => {
         }}
       ></div>
     </>
-  ) : null;
+  );
 };
 
 export default PolaCode;

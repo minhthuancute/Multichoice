@@ -22,10 +22,7 @@ const ConfirmDeleteUserExam: React.FC<IConfirmDeleteUserExamProps> = ({
       placement="CENTER"
       size="sm"
     >
-      <div
-        className="modal-content px-5
-       bg-white rounded-md w-full py-8"
-      >
+      <>
         <div>
           <h4 className="text-slate-800 text-lg text-center">
             Bạn có chắc chắn muốn xóa bỏ kết quả thi của:{' '}
@@ -48,7 +45,7 @@ const ConfirmDeleteUserExam: React.FC<IConfirmDeleteUserExamProps> = ({
             Xoá
           </button>
         </div>
-      </div>
+      </>
     </Modal>
   );
 };

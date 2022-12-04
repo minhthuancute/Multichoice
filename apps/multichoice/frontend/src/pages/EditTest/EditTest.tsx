@@ -10,13 +10,13 @@ import { ITopicDetailResponse } from '../../types';
 const EditTest: React.FC = () => {
   const query = useParams();
   const navigate = useNavigate();
-  const { setTopicDetailData } = topicStore();
+  const { setTopicDetail } = topicStore();
 
   const getTopicDetail = async () => {
     const { id } = query;
     try {
       const { data } = await topicServices.getTopicById(Number(id));
-      setTopicDetailData(data);
+      setTopicDetail(data);
     } catch {
       navigate('/');
     }
@@ -25,7 +25,7 @@ const EditTest: React.FC = () => {
   useEffect(() => {
     getTopicDetail();
     return () => {
-      setTopicDetailData({} as ITopicDetailResponse);
+      setTopicDetail({} as ITopicDetailResponse);
     };
   }, []);
 

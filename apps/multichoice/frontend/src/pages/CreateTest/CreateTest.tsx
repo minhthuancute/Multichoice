@@ -8,7 +8,7 @@ const CreateTest: React.FC = () => {
       <div className="header">
         <HeaderCreateTest />
       </div>
-      <div className="content-page py-5 bg-slate-100">
+      <div className="py-5 pb-10">
         <FormCreateTest />
       </div>
     </>

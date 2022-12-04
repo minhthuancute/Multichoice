@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { BiSkipNext, BiSkipPrevious } from 'react-icons/bi';
 import { iNotification } from 'react-notifications-component';
 import { notify } from '../../../helper/notify';
 import { answerStore, examStore, IAnswers } from '../../../store/rootReducer';
 import { IAnswer, IQuestion } from '../../../types';
-import ExamResult from '../ExamResult/ExamResult';
 import ConfirmSubmit from '../ConfirmSubmit/ConfirmSubmit';
 import CountDown from '../../Commons/CountDown/CountDown';
 import { IS_SUBMIT_EXAM, START_TIME } from '../../../constants/contstants';
@@ -18,36 +17,30 @@ import { sessionServices } from '../../../services/SessionServices';
 import { validArray } from '../../../helper/validArray';
 import './style.scss';
 
-interface IExamResult {
-  userName: string;
-  point: number;
-}
-
 interface IShowQuestionProps {
-  handleSubmitExam: () => void;
   questions: IQuestion[];
   isRealtime?: boolean;
   indexQuestion: number;
   setIndexQuestion: React.Dispatch<React.SetStateAction<number>>;
   startTimeCountdown?: number;
   expriedCountdownRealtime?: boolean;
+  isSubmited?: boolean;
 }
 
 const ShowQuestion: React.FC<IShowQuestionProps> = ({
-  handleSubmitExam,
   questions = [],
   indexQuestion = 0,
   setIndexQuestion,
   startTimeCountdown = 0,
   expriedCountdownRealtime = false,
+  isSubmited = false,
 }) => {
-  const { setDataExamResult, exam, isSubmitExam, isExpriedExam } = examStore();
+  const { setDataExamResult, exam, isExpriedExam } = examStore();
   const { answers, updateAnswer, userDoExam } = answerStore();
 
   const [confirmSubmit, setConfirmSubmit] = useState<boolean>(false);
   const [visibleModal, setVisibleModal] = useState<boolean>(false);
-  const [openModalResult, setOpenModalResult] = useState<boolean>(false);
-  const [examResult, setExamResult] = useState<IExamResult>();
+  const [visibleModalResult, setVisibleModalResult] = useState<boolean>(false);
   const [errorMsgSubmit, setErrorMsgSubmit] = useState<string>('');
 
   const startTime: number = sessionServices.getData(START_TIME) || 0;
@@ -64,7 +57,7 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
 
   const preQuestion = () => {
     if (indexQuestion - 1 < 0) {
-      setIndexQuestion(exam.questions.length - 1);
+      setIndexQuestion(questions.length - 1);
     } else {
       setIndexQuestion(indexQuestion - 1);
     }
@@ -75,7 +68,6 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
     questionType: `${QuestionTypeEnum}`
   ) => {
     const questionID = questions[indexQuestion].id;
-
     updateAnswer(questionID, answerID, questionType);
   };
 
@@ -86,29 +78,28 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
     return count.length;
   };
 
-  const requestSubmit = () => {
-    if (isExpriedExam) {
-      setErrorMsgSubmit(expriedTime);
-      notify({
-        message: expriedTime,
-        type: 'danger',
-      } as iNotification);
-      return;
-    }
-    if (isSubmitExam) {
-      setErrorMsgSubmit(submited);
-      notify({
-        message: submited,
-        type: 'danger',
-      } as iNotification);
-      return;
-    }
+  const onClickSubmit = () => {
+    // if (isExpriedExam) {
+    //   setErrorMsgSubmit(expriedTime);
+    //   notify({
+    //     message: expriedTime,
+    //     type: 'danger',
+    //   } as iNotification);
+    //   return;
+    // }
+    // if (isSubmited) {
+    //   setErrorMsgSubmit(submited);
+    //   notify({
+    //     message: submited,
+    //     type: 'danger',
+    //   } as iNotification);
+    //   return;
+    // }
     setVisibleModal(true);
   };
 
   const onCancleModalConfirm = () => {
     setVisibleModal(false);
-    setConfirmSubmit(false);
   };
 
   const isCheckAnswer = (answerID: number): boolean => {
@@ -119,27 +110,19 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
     return shouldChecked;
   };
 
-  useEffect(() => {
-    if (confirmSubmit) {
-      // onSumitAnswers();
-      handleSubmitExam();
-      setVisibleModal(false);
-    }
-  }, [confirmSubmit]);
+  // useEffect(() => {
+  //   if (confirmSubmit) {
+  //     handleSubmitExam();
+  //     setVisibleModal(false);
+  //   }
+  // }, [confirmSubmit]);
 
   return validArray(questions) ? (
     <div className="w-full h-full">
       <div className="modals">
-        <ExamResult
-          setOpenModalResult={setOpenModalResult}
-          openModalResult={openModalResult}
-          point={examResult?.point || 0}
-        />
-
         <ConfirmSubmit
+          onCancle={onCancleModalConfirm}
           setConfirmSubmit={setConfirmSubmit}
-          onCancleModalConfirm={onCancleModalConfirm}
-          setVisibleMoal={setVisibleModal}
           visibleModal={visibleModal}
           unSelectAnswer={countUnSelectAnswer()}
         />
@@ -151,9 +134,12 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
             <button
               className={classNames(
                 `px-8 py-2 bg-primary-800 rounded-3xl text-sm text-white
-                mb-4 font-semibold focus:ring-blue-100 focus:ring`
+                mb-4 font-semibold focus:ring-blue-100 focus:ring`,
+                {
+                  hidden: isSubmited,
+                }
               )}
-              onClick={() => requestSubmit()}
+              onClick={() => onClickSubmit()}
             >
               Nộp Bài
             </button>
@@ -162,7 +148,7 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
 
         <div className="lg:hidden">
           <CountDown
-            isHidden={isSubmitExam}
+            isHidden={isSubmited}
             startTime={startTimeCountdown || startTime}
             endTime={endTime}
             key="count-down-mobile"
@@ -194,7 +180,7 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
         </button>
       </div>
 
-      <div className="p-4 lg:p-10 bg-slate-50 shadow-xl lg:min-h-[335px] xs:min-h-[435px]">
+      <div className="p-4 bg-white lg:p-10 shadow-xl lg:min-h-[335px] xs:min-h-[435px]">
         <h4 className="text-slate-800 xs:text-tiny lg:text-lg lg:flex items-start">
           <span className="min-w-max flex font-semibold">
             Câu hỏi {indexQuestion + 1}:{' '}
@@ -264,9 +250,9 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
             <TextArea
               key={'answer-' + indexQuestion}
               defaultValue={answers[indexQuestion].answerID}
-              onChange={(value: string) => {
-                onChooseAnswer(value, questions[indexQuestion].type);
-              }}
+              // onChange={(value: string) => {
+              //   onChooseAnswer(value, questions[indexQuestion].type);
+              // }}
               placeholder="Nhập câu trả lời..."
             />
           ) : null}

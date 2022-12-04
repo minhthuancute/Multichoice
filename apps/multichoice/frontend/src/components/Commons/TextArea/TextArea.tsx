@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { HTMLInputTypeAttribute } from 'react';
+import React, { AreaHTMLAttributes, HTMLInputTypeAttribute } from 'react';
 import { classNames } from '../../../helper/classNames';
 
-export interface ITextAreaProps {
-  onChange?: (value: string) => void;
+export interface ITextAreaProps extends AreaHTMLAttributes<HTMLAreaElement> {
   textLabel?: React.ReactNode;
   defaultValue?: any;
   className?: string;
@@ -20,7 +19,6 @@ export interface ITextAreaProps {
 }
 
 const TextArea: React.FC<ITextAreaProps> = ({
-  onChange,
   textLabel = '',
   defaultValue = '',
   className,
@@ -51,9 +49,6 @@ const TextArea: React.FC<ITextAreaProps> = ({
 
         <textarea
           {...registerField}
-          onChange={(e) => {
-            onChange && onChange(e.target.value);
-          }}
           defaultValue={defaultValue}
           id={id}
           type={typeInput}
