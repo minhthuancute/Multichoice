@@ -72,7 +72,7 @@ export class GroupController {
 
   @UseGuards(AuthenticationGuard)
   @ApiBearerAuth()
-  @Post('adduserforgroup')
+  @Post('user')
   async addUserForGroup(
     @Body() addUserForGroupDto: AddUserGroupDto,
     @Res() res,

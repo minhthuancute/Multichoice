@@ -60,5 +60,5 @@ export class QueryTopicDto extends PageOptionsDto {
   typeCategoryName: TopicCategoryEnum;
 
   @ApiProperty({ required: false })
-  searchTerms: string;
+  searchTerm: string;
 }

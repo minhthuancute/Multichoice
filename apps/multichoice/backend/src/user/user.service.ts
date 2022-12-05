@@ -198,7 +198,7 @@ export class UserService {
     if (topic.timeType === TopicTimeTypeEnum.FIXEDTIME)
       throw new BadRequestException(GConfig.TOPIC_NOT_REALTIME);
 
-    if (topic.isPrivate)
+    if (topic.isPublic)
       await this.topicService.checkPermissionUserOfTopic(topic.id, user.id);
 
     if (await this.topicService.checkUserIsExistUserExam(topic.id, user.id))
@@ -285,7 +285,7 @@ export class UserService {
       throw new BadRequestException(GConfig.TOPIC_NOT_FIXEDTIME);
 
     const exam: UserExam = new UserExam();
-    if (topic.isPrivate) {
+    if (topic.isPublic) {
       if (!user) throw new UnauthorizedException();
       await this.topicService.checkPermissionUserOfTopic(topic.id, user.id);
       exam.username = user.username;
