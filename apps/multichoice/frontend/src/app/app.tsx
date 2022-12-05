@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import DefaultLayout from '../layouts/DefaultLayout';
@@ -7,23 +7,23 @@ import PrivateRoute from '../components/Routes/PrivateRoute';
 import PublicRoute from '../components/Routes/PublicRoute';
 
 // Pages
-import CreateTest from '../pages/Tests/Create/CreateTest';
+import CreateTest from '../pages/CreateTest/CreateTest';
 import Login from '../pages/Login/Login';
 import Register from '../pages/Register/Register';
-import Tests from '../pages/Tests/Index/Tests';
-import EditTest from '../pages/Tests/Edit/EditTest';
-import CreateQuestion from '../pages/Question/CreateQuestion';
+import Tests from '../pages/Tests/Tests';
+import EditTest from '../pages/EditTest/EditTest';
+import CreateQuestion from '../pages/Question/Question';
 import PageNotFound from '../pages/Notfound/Notfound';
 
 import { ReactNotifications } from 'react-notifications-component';
-import CollectInfor from '../pages/Exam/CollectInfor/CollectInfor';
-import DoExam from '../pages/Exam/DoExam/DoExam';
+import CollectInfor from '../pages/CollectInfor/CollectInfor';
+import DoExam from '../pages/DoExam/DoExam';
 import Home from '../pages/Home/Home';
 import Statistical from '../pages/Statistical/Statistical';
-import StatisticExam from '../pages/Exam/StatisticExam/StatisticExam';
-import StatisticUserExam from '../pages/Exam/StatisticExam/StatisticUserExam';
+import StatisticExam from '../pages/StatisticExam/StatisticExam';
+import StatisticUserExam from '../pages/StatisticUserExam/StatisticUserExam';
 import ExamLayout from '../layouts/ExamLayout';
-import DoExamRealtime from '../pages/Exam/DoExam/DoexamRealtime';
+import DoExamRealtime from '../pages/DoexamRealtime/DoexamRealtime';
 import Splash from '../components/Splash/Splash';
 import 'react-notifications-component/dist/theme.css';
 import ForgotPassword from '../pages/ForgotPassword/ForgotPassword';
@@ -67,12 +67,9 @@ export const App: React.FC = () => {
         </Route>
 
         <Route path="e" element={<ExamLayout />}>
-          <Route
-            path=":exam_id/do-exam-realtime"
-            element={<DoExamRealtime />}
-          />
-          <Route path=":exam_id" element={<CollectInfor />} />
-          <Route path=":exam_id/do-exam" element={<DoExam />} />
+          <Route path=":url/do-exam-realtime" element={<DoExamRealtime />} />
+          <Route path=":url" element={<CollectInfor />} />
+          <Route path=":url/do-exam" element={<DoExam />} />
         </Route>
 
         <Route path="*" element={<PageNotFound />} />

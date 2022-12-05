@@ -2,7 +2,6 @@ import React, { useLayoutEffect, useState } from 'react';
 import { MdOutlineMail } from 'react-icons/md';
 import { VscUnlock } from 'react-icons/vsc';
 import { AiOutlineUser } from 'react-icons/ai';
-
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -16,9 +15,11 @@ import { authenServices } from '../../services/AuthenServices';
 import { notify } from '../../helper/notify';
 import { acceptTerm, emailExisted } from '../../constants/msgNotify';
 import { titleServices } from '../../services/TitleServices';
-import InputAuthen from '../../components/Authen/InputAuthen';
+import InputAuthen from '../../components/Commons/InputAuthen/InputAuthen';
 import Checkbox from '../../components/Commons/Checkbox/Checkbox';
 import AuthenLayout from '../../layouts/AuthenLayout';
+import { RedirectQuery } from '../../types/AuthenQuery';
+import Button from '../../components/Commons/Button/Button';
 
 const { username, email, password } = validation();
 const schemaFormRegister = yup
@@ -36,8 +37,9 @@ const schemaFormRegister = yup
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
-  const query = useQuery();
-  const redirectUrl = query.get('redirect') || '';
+  const [query] = useQuery<RedirectQuery>();
+  const redirectUrl = query.redirect;
+
   const [isUserAccept, setIsUserAccept] = useState<boolean>(false);
 
   const {
@@ -48,16 +50,16 @@ const Register: React.FC = () => {
     resolver: yupResolver(schemaFormRegister),
   });
 
-  const onSubmit: SubmitHandler<CreateUserDto> = async (
-    formData: CreateUserDto
-  ) => {
+  const onSubmit: SubmitHandler<CreateUserDto> = async (formData) => {
     if (isUserAccept) {
       try {
-        await authenServices.register(formData);
-        const urlNavigate = redirectUrl
-          ? `/login?redirect=${redirectUrl}`
-          : '/login';
-        navigate(urlNavigate);
+        const { data } = await authenServices.register(formData);
+        if (data.success) {
+          const urlNavigate = redirectUrl
+            ? `/login?redirect=${redirectUrl}`
+            : '/login';
+          navigate(urlNavigate);
+        }
       } catch (error) {
         notify({
           message: emailExisted,
@@ -78,79 +80,71 @@ const Register: React.FC = () => {
 
   return (
     <AuthenLayout>
-      <div className="wrapper-form">
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="form"
-          autoComplete="off"
-        >
-          <div className="form-header mb-10 text-center">
-            <h2 className="font-medium text-black mb-4 text-3xl">
-              Sign up Now
-            </h2>
-            <p className="text-slate-800 text-sm">
-              Enter yor valid email address and password to register your
-              account
-            </p>
-          </div>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="form"
+        autoComplete="off"
+      >
+        <div className="form-header mb-10 text-center">
+          <h2 className="font-medium text-black mb-4 text-3xl">Sign up Now</h2>
+          <p className="text-slate-800 text-sm">
+            Enter yor valid email address and password to register your account
+          </p>
+        </div>
 
-          {/* <SignUpOptions isLoginPage={false} /> */}
+        {/* <SignUpOptions isLoginPage={false} /> */}
 
-          <InputAuthen
-            registerField={register('username')}
-            isError={Boolean(errors.username)}
-            errMessage={errors.username?.message}
-            placeholder="User Name"
-            typeInput="text"
-            Icon={AiOutlineUser}
-            id="username"
-          />
+        <InputAuthen
+          registerField={register('username')}
+          isError={Boolean(errors.username)}
+          errMessage={errors.username?.message}
+          placeholder="User Name"
+          type="text"
+          Icon={AiOutlineUser}
+          id="username"
+        />
 
-          <InputAuthen
-            className="mt-5"
-            registerField={register('email')}
-            isError={Boolean(errors.email)}
-            errMessage={errors.email?.message}
-            placeholder="Email Address"
-            typeInput="email"
-            Icon={MdOutlineMail}
-            id="email"
-          />
+        <InputAuthen
+          className="mt-5"
+          registerField={register('email')}
+          isError={Boolean(errors.email)}
+          errMessage={errors.email?.message}
+          placeholder="Email Address"
+          type="email"
+          Icon={MdOutlineMail}
+          id="email"
+        />
 
-          <InputAuthen
-            className="mt-5"
-            registerField={register('password')}
-            isError={Boolean(errors.password)}
-            errMessage={errors.password?.message}
-            placeholder="Password"
-            typeInput="password"
-            Icon={VscUnlock}
-            id="password"
-          />
+        <InputAuthen
+          className="mt-5"
+          registerField={register('password')}
+          isError={Boolean(errors.password)}
+          errMessage={errors.password?.message}
+          placeholder="Password"
+          type="password"
+          Icon={VscUnlock}
+          id="password"
+        />
 
-          {/* <div className="remember-me flex items-center justify-between mt-5 text-slate-800">
-            <div className="check-box cursor-pointer flex items-center">
-              <Checkbox
-                onChange={setIsUserAccept}
-                textLabel="<p>
+        <div className="remember-me flex items-center justify-between mt-5 text-slate-800">
+          <div className="check-box cursor-pointer flex items-center">
+            <Checkbox
+              // onChange={setIsUserAccept}
+              textLabel="<p>
                 I accept the <span class='text-primary-900'>Term of Conditions</span>
                 and <span class='text-primary-900'>Privacy Policy</span>
               </p>"
-                id="accept-term"
-              />
-            </div>
-          </div> */}
-
-          <div className="submit mt-5">
-            <button
-              className="w-full py-3 bg-primary-900 rounded-md text-white font-medium"
-              type="submit"
-            >
-              Sign up Now
-            </button>
+              id="accept-term"
+            />
           </div>
-        </form>
-      </div>
+        </div>
+
+        <div className="submit mt-5">
+          <Button type="submit" widthFull color="success" size="lg">
+            Sign up
+          </Button>
+        </div>
+      </form>
     </AuthenLayout>
   );
 };

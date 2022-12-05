@@ -1,8 +1,8 @@
-import React, { HTMLInputTypeAttribute } from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { AreaHTMLAttributes, HTMLInputTypeAttribute } from 'react';
 import { classNames } from '../../../helper/classNames';
 
-export interface ITextAreaProps {
-  onChange?: (value: string) => void;
+export interface ITextAreaProps extends AreaHTMLAttributes<HTMLAreaElement> {
   textLabel?: React.ReactNode;
   defaultValue?: any;
   className?: string;
@@ -19,7 +19,6 @@ export interface ITextAreaProps {
 }
 
 const TextArea: React.FC<ITextAreaProps> = ({
-  onChange,
   textLabel = '',
   defaultValue = '',
   className,
@@ -35,7 +34,6 @@ const TextArea: React.FC<ITextAreaProps> = ({
 }) => {
   return (
     <div className={classNames('form-group relative', className)}>
-      {/* input content */}
       <div
         className={classNames('relative wrapper-input h-full', {
           'no-error': !isError,
@@ -50,11 +48,6 @@ const TextArea: React.FC<ITextAreaProps> = ({
         </label>
 
         <textarea
-          onChange={(e) => {
-            if (onChange) {
-              onChange(e.target.value);
-            }
-          }}
           {...registerField}
           defaultValue={defaultValue}
           id={id}
@@ -77,7 +70,6 @@ const TextArea: React.FC<ITextAreaProps> = ({
         />
       </div>
 
-      {/* show error */}
       {isError && (
         <p className="mt-1 text-xs text-red-500 first-letter:capitalize">
           {errMessage}

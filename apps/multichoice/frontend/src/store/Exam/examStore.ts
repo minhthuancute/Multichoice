@@ -1,3 +1,4 @@
+import { examServices } from './../../services/ExamServices';
 import create from 'zustand';
 import { devtools } from 'zustand/middleware';
 import { IExamResponse } from '../../types';
@@ -10,14 +11,12 @@ interface IExamResult {
 export interface IExamStore {
   isExpriedExam: boolean;
   isSubmitExam: boolean;
-  isLoggout: boolean;
   exam: IExamResponse;
   dataExamResult: IExamResult;
   setIsExpriedExam: (isExpriedExam: boolean) => void;
   setIsSubmitExam: (isSubmitExam: boolean) => void;
-  setExamData: (examData: IExamResponse) => void;
+  getExam: (url: string) => void;
   setDataExamResult: (examResult: IExamResult) => void;
-  handleLoggout: () => void;
 }
 
 // Topic detail
@@ -25,22 +24,15 @@ export const examStore = create<IExamStore>()(
   devtools((set) => ({
     isSubmitExam: false,
     isExpriedExam: false,
-    isLoggout: false,
     exam: {} as IExamResponse,
     dataExamResult: {} as IExamResult,
-    setExamData: (examData: IExamResponse) =>
-      set(() => {
-        return {
-          exam: examData,
-        };
-      }),
 
-    handleLoggout: () =>
-      set(() => {
-        return {
-          isLoggout: true,
-        };
-      }),
+    getExam: async (url = '') => {
+      const { data } = await examServices.getExamByUrl(url);
+      set({
+        exam: data.data,
+      });
+    },
 
     setIsExpriedExam: (isExpriedExam: boolean) =>
       set(() => {

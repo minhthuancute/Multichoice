@@ -3,7 +3,7 @@ import { BsCalendarDate, BsPause, BsPlay } from 'react-icons/bs';
 import { AiOutlineQuestionCircle, AiOutlineFieldTime } from 'react-icons/ai';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 
-import { getDate } from '../../utils/formatDate';
+import { getDate } from '../../utils/format_date';
 import ToolTip from '../Commons/ToolTip/ToolTip';
 import { Link } from 'react-router-dom';
 import { TiPencil } from 'react-icons/ti';
@@ -12,7 +12,7 @@ import Badge from '../Commons/Badge/Badge';
 import { copyClipboard } from '../../helper/copyClipboard';
 import { notify } from '../../helper/notify';
 import { iNotification } from 'react-notifications-component';
-import { secondsToMinutes } from '../../utils/minutesToSeconds';
+import { secondsToMinutes } from '../../utils/minutes_to_seconds';
 import { ITestRealtimeRecord } from '../../types/ICommons';
 import {
   canNotCopyLinkExam,
@@ -37,14 +37,14 @@ export interface ITestItem {
   typeCategoryName: `${TopicCategoryEnum}`;
 }
 
-interface ITestItemProp {
+interface ITestItemProps {
   test: ITestItem;
   handleDeleteTest: (testID: number, testTitle: string) => void;
 }
 
-const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
+const TestItem: React.FC<ITestItemProps> = ({ test, handleDeleteTest }) => {
   const isrealtime = test.timeType.toUpperCase() === 'REALTIME';
-  const [modalHandlePlayTest, setModalHandlePlayTest] =
+  const [visibleModalPlayTest, setVisibleModalPlayTest] =
     useState<boolean>(false);
   const [startedTestRealtime, setStartedTestRealtime] =
     useState<boolean>(false);
@@ -103,6 +103,7 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
   useEffect(() => {
     const testPath: string = 'test-' + test.topicUrl;
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     fireGet(testPath, (data: any) => {
       const recordValue: ITestRealtimeRecord = data;
 
@@ -114,8 +115,8 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
   return (
     <>
       <HandlelayTest
-        openModal={modalHandlePlayTest}
-        setOpenModal={setModalHandlePlayTest}
+        visibleModal={visibleModalPlayTest}
+        setVisibleModal={setVisibleModalPlayTest}
         topicTitle={test.title}
         topicUrl={test.topicUrl}
         isPlaytest={isPlaytest}
@@ -178,7 +179,7 @@ const TestItem: React.FC<ITestItemProp> = ({ test, handleDeleteTest }) => {
                       <button
                         onClick={() => {
                           setIsPlaytest(true);
-                          setModalHandlePlayTest(true);
+                          setVisibleModalPlayTest(true);
                         }}
                       >
                         <BsPlay className="text-slate-800 text-2xl" />

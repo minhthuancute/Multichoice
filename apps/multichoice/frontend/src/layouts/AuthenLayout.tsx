@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import HeaderAuthen from '../components/Authen/HeaderAuthen';
+import HeaderAuthen from '../components/Authen/HeaderAuthen/HeaderAuthen';
 import { titleServices } from '../services/TitleServices';
 
 interface ILayout {

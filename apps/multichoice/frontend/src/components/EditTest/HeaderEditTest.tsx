@@ -4,26 +4,28 @@ import Breadcrumb from '../Commons/Breadcrumb/Breadcrumb';
 import { FaPencilAlt } from 'react-icons/fa';
 import ToolTip from '../Commons/ToolTip/ToolTip';
 import { BsCalendarDate } from 'react-icons/bs';
-import { getDate } from '../../utils/formatDate';
+import { getDate } from '../../utils/format_date';
 import { AiOutlineFieldTime, AiOutlineQuestionCircle } from 'react-icons/ai';
 import { FaPlus } from 'react-icons/fa';
-import Modal from '../Modal/Modal';
-import FormEditTest from '../../pages/Tests/Edit/FormEditTest';
-import { secondsToMinutes } from '../../utils/minutesToSeconds';
+import Modal from '../Commons/Modal/Modal';
+import FormEditTest from '../FormEditTest/FormEditTest';
+import { secondsToMinutes } from '../../utils/minutes_to_seconds';
 import { topicStore } from '../../store/rootReducer';
+import { validObject } from '../../helper/validObject';
 
 const HeaderEditTest: React.FC = () => {
   const { topicDetail } = topicStore();
-  const [openModalEditTest, setOpenModalEditTest] = useState<boolean>(false);
+  const [visibleModalEditTest, setVisibleModalEditTest] =
+    useState<boolean>(false);
 
-  return Object.keys(topicDetail).length !== 0 ? (
-    <div className="header-edit-test">
+  return validObject(topicDetail) ? (
+    <div className="bg-white">
       <Modal
-        openModal={openModalEditTest}
-        setOpenModal={setOpenModalEditTest}
+        visible={visibleModalEditTest}
+        setVisibleModal={setVisibleModalEditTest}
         size="md"
       >
-        <FormEditTest setOpenModalEditTest={setOpenModalEditTest} />
+        <FormEditTest setVisibleModalEditTest={setVisibleModalEditTest} />
       </Modal>
       <div className="container pt-4">
         <Breadcrumb>
@@ -49,7 +51,7 @@ const HeaderEditTest: React.FC = () => {
               <button
                 className="create-test rounded-md bg-slate-800 text-xs
               text-white font-bold flex justify-center items-center px-3 h-8"
-                onClick={() => setOpenModalEditTest(true)}
+                onClick={() => setVisibleModalEditTest(true)}
               >
                 <FaPencilAlt />
               </button>
@@ -80,7 +82,7 @@ const HeaderEditTest: React.FC = () => {
         <div className="right">
           <Link
             to={'/questions/create?topic_id=' + topicDetail.id}
-            className="create-test btn-primary rounded-md bg-primary-900 text-sm
+            className="btn-success rounded-md bg-primary-900 text-sm
             text-white font-bold flex justify-center items-center px-4 h-10 transition-all
             duration-200 hover:bg-primary-800
             "

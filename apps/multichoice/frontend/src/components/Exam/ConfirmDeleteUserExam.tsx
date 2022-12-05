@@ -1,6 +1,6 @@
 import { IUserDoExam } from '@monorepo/multichoice/dto';
 import React from 'react';
-import Modal from '../Modal/Modal';
+import Modal from '../Commons/Modal/Modal';
 
 interface IConfirmDeleteUserExamProps {
   userData: IUserDoExam;
@@ -17,15 +17,12 @@ const ConfirmDeleteUserExam: React.FC<IConfirmDeleteUserExamProps> = ({
 }) => {
   return (
     <Modal
-      openModal={openModalConfirm}
-      setOpenModal={setOpenModalConfirm}
+      visible={openModalConfirm}
+      setVisibleModal={setOpenModalConfirm}
       placement="CENTER"
       size="sm"
     >
-      <div
-        className="modal-content px-5
-       bg-white rounded-md w-full py-8"
-      >
+      <>
         <div>
           <h4 className="text-slate-800 text-lg text-center">
             Bạn có chắc chắn muốn xóa bỏ kết quả thi của:{' '}
@@ -48,7 +45,7 @@ const ConfirmDeleteUserExam: React.FC<IConfirmDeleteUserExamProps> = ({
             Xoá
           </button>
         </div>
-      </div>
+      </>
     </Modal>
   );
 };

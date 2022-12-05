@@ -5,9 +5,10 @@ import { classNames } from '../../helper/classNames';
 import { localServices } from '../../services/LocalServices';
 import { userStore } from '../../store/rootReducer';
 import Navabar from '../Navbar/Navabar';
-import Logo from '../Logo/Logo';
+import Logo from '../Commons/Logo/Logo';
 import Avatar from '../../assets/images/avatar.svg';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
+import Button from '../Commons/Button/Button';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -29,12 +30,7 @@ const Header: React.FC = () => {
 
   useOnClickOutside(refDropdownUser, onClickOutsideDropdownUser, refUsername);
   return (
-    <header
-      className="bg-white"
-      style={{
-        boxShadow: 'rgba(0, 0, 0, 0.075) 0 2px 10px 0',
-      }}
-    >
+    <header className="bg-white border-b border-slate-200">
       <div className="wrapper-header container flex items-center justify-between">
         <div className="header-left logo">
           <Logo />
@@ -90,13 +86,22 @@ const Header: React.FC = () => {
                 </Link>
               </ul>
               <div className="logout pt-5 border-t border-slate-200">
-                <button
+                <Button
+                  color="danger"
+                  size="sm"
+                  widthFull
+                  onClick={handleLogout}
+                >
+                  {' '}
+                  Đăng Xuất
+                </Button>
+                {/* <button
                   className="bg-red-500 text-white text-sm w-full py-1
                   rounded-sm font-semibold text-center cursor-pointer focus:ring focus:ring-red-100"
                   onClick={handleLogout}
                 >
                   Đăng Xuất
-                </button>
+                </button> */}
               </div>
             </div>
           </div>
