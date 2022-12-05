@@ -129,7 +129,7 @@ const Register: React.FC = () => {
         <div className="remember-me flex items-center justify-between mt-5 text-slate-800">
           <div className="check-box cursor-pointer flex items-center">
             <Checkbox
-              onChange={setIsUserAccept}
+              // onChange={setIsUserAccept}
               textLabel="<p>
                 I accept the <span class='text-primary-900'>Term of Conditions</span>
                 and <span class='text-primary-900'>Privacy Policy</span>
@@ -140,7 +140,7 @@ const Register: React.FC = () => {
         </div>
 
         <div className="submit mt-5">
-          <Button type="submit" fullWidth>
+          <Button type="submit" widthFull color="success" size="lg">
             Sign up
           </Button>
         </div>

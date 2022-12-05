@@ -37,7 +37,7 @@ const NavQuestion: React.FC<INavQuestion> = ({
   };
 
   return (
-    <div className="shadow-xl w-full min-h-[430px] px-8 pt-12 pb-6 bg-slate-50 relative">
+    <div className="bg-white shadow-xl w-full min-h-[430px] px-8 pt-12 pb-6 relative">
       <div className="mb-2">
         <h2 className="text-center text-lg font-semibold text-slate-800 capitalize">
           Danh sách câu hỏi

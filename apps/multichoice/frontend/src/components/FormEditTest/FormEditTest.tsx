@@ -21,6 +21,7 @@ import {
   secondsToMinutes,
 } from '../../utils/minutes_to_seconds';
 import { ITopicDetailResponse } from '../../types';
+import Button from '../Commons/Button/Button';
 
 const schemaFormEditTest = yup.object().shape({
   timeType: yup.string().required(),
@@ -32,15 +33,15 @@ const schemaFormEditTest = yup.object().shape({
 });
 
 interface IFormEditTestProps {
-  setOpenModalEditTest: React.Dispatch<React.SetStateAction<boolean>>;
+  setVisibleModalEditTest: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const FormEditTest: React.FC<IFormEditTestProps> = ({
-  setOpenModalEditTest,
+  setVisibleModalEditTest,
 }) => {
   const { id } = useParams();
 
-  const { topicDetail, setTopicDetailData } = topicStore();
+  const { topicDetail, setTopicDetail } = topicStore();
   const { expirationTime, typeCategoryName, timeType, title, description } =
     topicDetail;
 
@@ -105,7 +106,7 @@ const FormEditTest: React.FC<IFormEditTestProps> = ({
       const { data }: { data: ITopicDetailResponse } =
         await topicServices.getTopicById(Number(id));
       if (data) {
-        setTopicDetailData(data);
+        setTopicDetail(data);
       }
     } catch (error) {
       //
@@ -123,7 +124,7 @@ const FormEditTest: React.FC<IFormEditTestProps> = ({
         formData
       );
       if (data.success) {
-        setOpenModalEditTest(false);
+        setVisibleModalEditTest(false);
         getTopicById();
       }
     } catch (error) {
@@ -142,7 +143,7 @@ const FormEditTest: React.FC<IFormEditTestProps> = ({
             <button
               type="button"
               className="text-lg"
-              onClick={() => setOpenModalEditTest(false)}
+              onClick={() => setVisibleModalEditTest(false)}
             >
               <IoMdClose />
             </button>
@@ -198,21 +199,12 @@ const FormEditTest: React.FC<IFormEditTestProps> = ({
         />
 
         <div className="ctas flex items-center justify-end gap-x-2 mt-8">
-          <button
-            type="button"
-            className="create-test rounded-md flex justify-center items-center w-32 h-10 text-sm
-          text-slate-800 font-bold border border-solid border-slate-800 focus:ring focus:ring-slate-100"
-            onClick={() => setOpenModalEditTest(false)}
-          >
+          <Button type="button" onClick={() => setVisibleModalEditTest(false)}>
             Huỷ
-          </button>
-          <button
-            type="submit"
-            className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
-          text-white font-bold bg-primary-900 transition-all duration-200 hover:bg-primary-800"
-          >
+          </Button>
+          <Button type="submit" color="success">
             Cập nhật
-          </button>
+          </Button>
         </div>
       </form>
     </div>

@@ -29,10 +29,9 @@ const HeaderDoExam: React.FC = () => {
   const { user } = userStore();
   const { userDoExam, setUserDoexamData } = answerStore();
 
-  const [openModalIntro, setOpenModalIntro] = useState<boolean>(false);
-  const [openModalResult, setOpenModalResult] = useState<boolean>(false);
-  const [openModalConfirmExit, setOpenModalConfirmExit] =
-    useState<boolean>(false);
+  const [visibleModalIntro, setVisibleModalIntro] = useState<boolean>(false);
+  const [visibleModalResult, setVisibleModalResult] = useState<boolean>(false);
+  const [visibleModalExit, setVisileModalExit] = useState<boolean>(false);
   const [activeSideBar, setActiveSideBar] = useState<boolean>(false);
 
   const handleExitExam = () => {
@@ -58,28 +57,29 @@ const HeaderDoExam: React.FC = () => {
 
   return (
     <header
-      className="py-3"
+      className="py-3 bg-white"
       style={{
         boxShadow: '0 1px 14px 0 rgb(0 0 0 / 10%)',
       }}
     >
       <ExamResult
-        setOpenModalResult={setOpenModalResult}
-        openModalResult={openModalResult}
+        setVisibleModal={setVisibleModalResult}
+        visibleModal={visibleModalResult}
         point={dataExamResult?.point || 0}
       />
+
       <ModalConfirm
-        visible={openModalConfirmExit}
+        visible={visibleModalExit}
         label="Thoát khỏi bài thi"
         title="Bạn có chắc chắn muốn thoát khỏi bài thi?
         Khi thoát khỏi bài thi, kết quả thi của bạn sẽ không được lưu lại."
         onConfirm={handleExitExam}
-        onCancle={() => setOpenModalConfirmExit(false)}
+        onCancle={() => setVisileModalExit(false)}
       />
 
       <IntroExam
-        openModalIntro={openModalIntro}
-        setOpenModalIntro={setOpenModalIntro}
+        visibleModalIntro={visibleModalIntro}
+        setVisibleModalIntro={setVisibleModalIntro}
       />
 
       <div
@@ -122,8 +122,9 @@ const HeaderDoExam: React.FC = () => {
               }
             )}
             onClick={() => {
-              if (!isSubmitExam) return;
-              setOpenModalResult(true);
+              if (isSubmitExam) {
+                setVisibleModalResult(true);
+              }
             }}
           >
             Xem lại kết quả
@@ -131,14 +132,14 @@ const HeaderDoExam: React.FC = () => {
           <button
             className="w-full rounded-md bg-violet-100 py-2 mt-4
             text-violet-500"
-            onClick={() => setOpenModalIntro(true)}
+            onClick={() => setVisibleModalIntro(true)}
           >
             Hướng dẫn
           </button>
           <button
             className="w-full rounded-md bg-red-100 py-2 mt-4
             text-red-500"
-            onClick={() => setOpenModalConfirmExit(true)}
+            onClick={() => setVisileModalExit(true)}
           >
             Thoát
           </button>
@@ -172,8 +173,9 @@ const HeaderDoExam: React.FC = () => {
                 }
               )}
               onClick={() => {
-                if (!isSubmitExam) return;
-                setOpenModalResult(true);
+                if (isSubmitExam) {
+                  setVisibleModalResult(true);
+                }
               }}
             >
               Xem lại kết quả
@@ -182,7 +184,7 @@ const HeaderDoExam: React.FC = () => {
             <button
               className="px-4 py-1.5 bg-violet-50 text-violet-500 rounded-2xl ml-4
               flex items-center"
-              onClick={() => setOpenModalIntro(true)}
+              onClick={() => setVisibleModalIntro(true)}
             >
               Hướng dẫn
             </button>
@@ -190,7 +192,7 @@ const HeaderDoExam: React.FC = () => {
             <button
               className="px-4 py-1.5 bg-slate-100 rounded-2xl ml-4
               flex items-center"
-              onClick={() => setOpenModalConfirmExit(true)}
+              onClick={() => setVisileModalExit(true)}
             >
               Thoát
             </button>

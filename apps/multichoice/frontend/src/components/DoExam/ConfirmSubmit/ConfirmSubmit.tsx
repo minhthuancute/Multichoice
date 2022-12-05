@@ -1,21 +1,23 @@
-import React from 'react';
-
+import React, { useContext } from 'react';
+import { doExamContext } from '../../../contexts/DoExamContext';
+import Button from '../../Commons/Button/Button';
 import Modal from '../../Commons/Modal/Modal';
 
 interface IConfirmSubmitProps {
   unSelectAnswer: number;
-  onCancleModalConfirm: () => void;
+  onCancle: () => void;
   setConfirmSubmit: React.Dispatch<React.SetStateAction<boolean>>;
-  setVisibleMoal: React.Dispatch<React.SetStateAction<boolean>>;
   visibleModal?: boolean;
 }
 
 const ConfirmSubmit: React.FC<IConfirmSubmitProps> = ({
+  onCancle,
   unSelectAnswer,
-  onCancleModalConfirm,
   setConfirmSubmit,
   visibleModal = false,
 }) => {
+  const { handleSubmitExam } = useContext(doExamContext);
+
   return (
     <Modal
       visible={visibleModal}
@@ -23,10 +25,7 @@ const ConfirmSubmit: React.FC<IConfirmSubmitProps> = ({
       size="sm"
       placement="CENTER"
     >
-      <div
-        className="modal-content px-5 flex flex-col justify-center
-       bg-white rounded-md py-8"
-      >
+      <>
         <div className="header text-center">
           <h4 className="text-slate-800 font-semibold text-xl">Nộp Bài</h4>
           {unSelectAnswer > 0 ? (
@@ -41,23 +40,22 @@ const ConfirmSubmit: React.FC<IConfirmSubmitProps> = ({
             </p>
           )}
         </div>
-        <div className="body ctas flex items-center justify-center gap-x-2 mt-5">
-          <button
-            className="create-test rounded-md flex justify-center items-center w-32 h-10 text-sm
-          text-slate-800 font-bold border border-solid border-slate-800 focus:ring focus:ring-slate-100"
-            onClick={() => onCancleModalConfirm()}
-          >
+        <div className="ctas flex items-center justify-center gap-x-2 mt-5">
+          <Button type="button" onClick={() => onCancle()}>
             Huỷ
-          </button>
-          <button
-            className="create-test btn-primary rounded-md flex justify-center items-center w-32 h-10 text-sm
-          text-white font-bold bg-primary-900 transition-all duration-200 hover:bg-primary-800"
-            onClick={() => setConfirmSubmit(true)}
+          </Button>
+          <Button
+            color="success"
+            type="button"
+            onClick={() => {
+              handleSubmitExam();
+              onCancle();
+            }}
           >
             Nộp bài
-          </button>
+          </Button>
         </div>
-      </div>
+      </>
     </Modal>
   );
 };

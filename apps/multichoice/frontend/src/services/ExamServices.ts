@@ -31,8 +31,8 @@ export interface IPayloadDeleteUserExam {
 }
 
 class ExamServices extends Api {
-  getExamInfor(examUrl: string) {
-    const data = this.get('/' + examUrl);
+  getExamByUrl(url: string) {
+    const data = this.get('/gettopicbyurl?url=' + url);
     return data;
   }
 
@@ -41,20 +41,18 @@ class ExamServices extends Api {
     return data;
   }
 
-  // end Exam
   submitExam(payload: IPayloadEndExam) {
     const data = this.post('/exam/end', payload);
     return data;
   }
 
-  // end Exam realtime
-  submitExamRealtime(payload: IPayloadEndExamRealtime) {
-    const data = this.post('/examrealtime/end', payload);
+  async submitExamRealtime(payload: IPayloadEndExamRealtime) {
+    const { data } = await this.post('/examrealtime/end', payload);
     return data;
   }
 
-  getListExamByTopicId(payload: IPayloadgetListExamByTopicId) {
-    const data = this.get('/getListexambytopicid/' + payload.topicID);
+  async getListExamByTopicId(payload: IPayloadgetListExamByTopicId) {
+    const { data } = await this.get('/getListexambytopicid/' + payload.topicID);
     return data;
   }
 

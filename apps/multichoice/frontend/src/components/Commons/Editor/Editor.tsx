@@ -1,29 +1,27 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ReactQuill, { ReactQuillProps } from 'react-quill';
+import { classNames } from '../../../helper/classNames';
 import 'react-quill/dist/quill.snow.css';
-import { classNames } from '../../helper/classNames';
+import { Control, Controller } from 'react-hook-form';
 
 interface IEditorProps {
+  name?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  control?: Control<any, any>;
   height?: number;
-  className?: string;
   placeholder?: string;
   isError?: boolean;
   errMessage?: string;
-  defaultValue?: string;
-  onChange: (value: string) => void;
 }
 
 const Editor: React.FC<IEditorProps> = ({
+  control,
+  name = '',
   height = 200,
-  onChange,
-  className = '',
   placeholder = 'Write something',
   isError = true,
   errMessage = '',
-  defaultValue = '',
 }) => {
-  const [value, setValue] = useState<string>(defaultValue);
-
   const Editor: ReactQuillProps = {};
   Editor.modules = {
     toolbar: [
@@ -43,6 +41,7 @@ const Editor: React.FC<IEditorProps> = ({
       matchVisual: false,
     },
   };
+
   Editor.formats = [
     'header',
     'font',
@@ -60,12 +59,7 @@ const Editor: React.FC<IEditorProps> = ({
     'video',
   ];
 
-  const handleChange = (value: string) => {
-    onChange(value);
-    setValue(value);
-  };
-
-  return (
+  return control ? (
     <>
       <style
         dangerouslySetInnerHTML={{
@@ -76,7 +70,7 @@ const Editor: React.FC<IEditorProps> = ({
           }
 
           .ql-editor{
-            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji;
+            font-family: 'Lexend', sans-serif;
             font-size: 14px;
             color: rgb(87, 83, 78);
             font-weight: 400 !important;
@@ -84,26 +78,30 @@ const Editor: React.FC<IEditorProps> = ({
         `,
         }}
       />
-      <ReactQuill
-        theme="snow"
-        value={value}
-        defaultValue={defaultValue}
-        onChange={handleChange}
-        className={classNames(['editor, rounded-md'], {
-          'border border-red-500': isError,
-        })}
-        placeholder={placeholder}
-        modules={Editor.modules}
-        formats={Editor.formats}
-      />
-      {/* show error */}
+      <Controller
+        control={control}
+        name={name}
+        render={({ field: { ...fieldProps } }) => (
+          <ReactQuill
+            {...fieldProps}
+            theme="snow"
+            className={classNames(['editor, rounded-sm'], {
+              'border border-red-400': isError,
+            })}
+            placeholder={placeholder}
+            modules={Editor.modules}
+            formats={Editor.formats}
+          />
+        )}
+      ></Controller>
+
       {isError && (
         <p className="mt-1 text-xs text-red-500 first-letter:capitalize">
           {errMessage}
         </p>
       )}
     </>
-  );
+  ) : null;
 };
 
 export default React.memo(Editor);

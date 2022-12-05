@@ -34,7 +34,7 @@ const StatisticExam: React.FC = () => {
       };
       const { data, status } = await examServices.getListExamByTopicId(payload);
       if (status === 200) {
-        setUsersDoExam(data.data.reverse());
+        setUsersDoExam(data.reverse());
       }
     } catch (error) {
       //
@@ -100,7 +100,7 @@ const StatisticExam: React.FC = () => {
           <div className="flex justify-end items-center">
             <FilterStatisticExam />
           </div>
-          <div className=" content-page pt-5 pb-10">
+          <div className="pt-5 pb-10">
             {usersDoExam && usersDoExam.length ? (
               <table className="shadow-xl w-full">
                 <thead className="bg-slate-800 text-white text-tiny">

@@ -3,39 +3,37 @@ import Checkbox from '../Commons/Checkbox/Checkbox';
 import TextArea from '../Commons/TextArea/TextArea';
 import ToolTip from '../Commons/ToolTip/ToolTip';
 import { MdOutlineClear } from 'react-icons/md';
-import { UseFormRegisterReturn } from 'react-hook-form';
+import { UseFieldArrayRemove, UseFormRegisterReturn } from 'react-hook-form';
+import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 
-interface IAnswerItem {
+interface IAnswerItemProps {
+  indexAnswer: number;
+  lengthAnswers: number;
   correctAnswer?: string;
   answerValue?: string;
-  checkedValue?: boolean;
   registerFieldContent: UseFormRegisterReturn;
   registerFieldIsCorrect: UseFormRegisterReturn;
-  indexAnswer: number;
-  indexAscii: number;
-  isMultilCorrectAnswer: boolean;
-  isCheckedAnswer: boolean;
-  onDeleteAnswer: (indexAnswer: number) => void;
+  questionType?: QuestionTypeEnum;
+  removeAnswer?: UseFieldArrayRemove;
 }
 
-const AnswerItem: React.FC<IAnswerItem> = ({
+const AnswerItem: React.FC<IAnswerItemProps> = ({
+  lengthAnswers,
   correctAnswer = '',
   answerValue = '',
   registerFieldContent,
   registerFieldIsCorrect,
   indexAnswer,
-  indexAscii,
-  onDeleteAnswer,
-  isMultilCorrectAnswer,
-  isCheckedAnswer,
+  questionType = QuestionTypeEnum.SINGLE,
+  removeAnswer,
 }) => {
   const getAsciiCode = (): string => {
     const startCharacter = 65; // 'A'
-    return String.fromCharCode(startCharacter + indexAscii) + ')';
+    return String.fromCharCode(startCharacter + indexAnswer) + ')';
   };
 
   const shouldDisableCheckbox = (): boolean => {
-    if (isMultilCorrectAnswer) return false;
+    if (questionType === QuestionTypeEnum.MULTIPLE) return false;
     const shouldDisable = correctAnswer !== answerValue && correctAnswer !== '';
     return shouldDisable || !answerValue;
   };
@@ -54,11 +52,12 @@ const AnswerItem: React.FC<IAnswerItem> = ({
             }
           >
             <Checkbox
+              key={indexAnswer}
               disable={shouldDisableCheckbox()}
               registerField={registerFieldIsCorrect}
               className="mt-1"
-              isChecked={isCheckedAnswer}
               id={'answers-' + indexAnswer}
+              type="checkbox"
             />
           </ToolTip>
           <span className="font-semibold">{getAsciiCode()}</span>
@@ -74,11 +73,13 @@ const AnswerItem: React.FC<IAnswerItem> = ({
           <ToolTip title="Xóa câu trả lời">
             <button
               type="button"
-              className="text-sm font-semibold bg-red-50 text-red-500
-              rounded-full w-6 h-6 flex items-center justify-center"
-              onClick={() => onDeleteAnswer(indexAnswer)}
+              onClick={() => {
+                if (lengthAnswers - 1 !== 1) {
+                  removeAnswer && removeAnswer(indexAnswer);
+                }
+              }}
             >
-              <MdOutlineClear className="text-tiny" />
+              <MdOutlineClear className="text-tiny text-red-500" />
             </button>
           </ToolTip>
         </div>

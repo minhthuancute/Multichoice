@@ -2,14 +2,14 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { isLogin } from '../../utils/check_logged';
 
-interface IPrivateRoute {
+interface IPrivateRouteProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Component: React.FunctionComponent<any>;
-  rest?: any;
 }
 
-const PrivateRoute: React.FC<IPrivateRoute> = ({ Component, ...rest }) => {
+const PrivateRoute: React.FC<IPrivateRouteProps> = ({ Component, ...rest }) => {
   const loggedIn = isLogin();
-  return loggedIn ? <Component {...rest} /> : <Navigate to="/login" />;
+  return loggedIn ? <Component {...rest} /> : <Navigate to="/login" replace />;
 };
 
 export default PrivateRoute;

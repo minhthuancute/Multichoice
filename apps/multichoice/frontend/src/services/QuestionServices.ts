@@ -1,5 +1,4 @@
 import { CreateQuestionDto } from '@monorepo/multichoice/dto';
-import { IUpdateQuestionPayload } from '../components/UpdateQuestion/UpdateQuestion';
 import { Api } from './Api';
 
 class QuestionServices extends Api {
@@ -7,7 +6,7 @@ class QuestionServices extends Api {
     return this.post('/question/create', formData);
   }
 
-  updateQuestion(questionId: number, formData: IUpdateQuestionPayload) {
+  updateQuestion(questionId: number, formData: CreateQuestionDto) {
     return this.update('/question/' + questionId, formData);
   }
 

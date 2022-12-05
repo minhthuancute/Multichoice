@@ -10,8 +10,9 @@ const DefaultLayout: React.FC<ILayout> = ({ children }) => {
   return (
     <div className="layout-default">
       <Header />
-      <main className="layout-default__main">{children}</main>
-      <Outlet />
+      <main className="layout-default__main">
+        <Outlet />
+      </main>
     </div>
   );
 };

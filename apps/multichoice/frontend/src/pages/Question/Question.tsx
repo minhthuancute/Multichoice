@@ -8,7 +8,7 @@ const Question: React.FC = () => {
       <div className="header">
         <HeaderCreateQuestion />
       </div>
-      <div className="content-page pt-5 pb-10 bg-slate-100">
+      <div className="pt-5 pb-10">
         <CreateQuestion />
       </div>
     </>

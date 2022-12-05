@@ -122,7 +122,7 @@ const Login: React.FC = () => {
         </div>
 
         <div className="submit mt-5">
-          <Button type="submit" fullWidth>
+          <Button type="submit" widthFull color="success" size="lg">
             Sign in
           </Button>
         </div>
