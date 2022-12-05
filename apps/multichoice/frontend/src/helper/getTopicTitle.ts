@@ -1,5 +1,5 @@
 import { TOPIC_LIST } from '../constants/contstants';
-import { localServices } from '../services/LocalServices';
+import { localServices } from '../services/Applications/LocalServices';
 import { ITopicLocal } from '../types/ICommons';
 
 export const getTopicTitle = (topicId: number): string => {

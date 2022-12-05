@@ -2,8 +2,8 @@ import { TopicTimeTypeEnum } from '@monorepo/multichoice/constant';
 import React, { useEffect, useState } from 'react';
 import { TOPIC_LIST } from '../../constants/contstants';
 import { useQuery } from '../../hooks/useQuery';
-import { localServices } from '../../services/LocalServices';
-import { topicServices } from '../../services/TopicServices';
+import { localServices } from '../../services/Applications/LocalServices';
+import { topicServices } from '../../services/Title/TopicServices';
 import { ITopicLocal } from '../../types/ICommons';
 import { ITopicResponse } from '../../types/TopicResponse';
 import { removeVietnameseTones } from '../../utils/remove_vietnamese_tones';
@@ -38,7 +38,7 @@ const TestList: React.FC = () => {
         page: page,
         take: 10,
       });
-      const topicResponse: ITopicResponse[] = data.data;
+      const topicResponse: ITopicResponse[] = data.result;
       const topicsData = topicResponse.map((test: ITopicResponse) => {
         const testData: ITestItem = {
           topicUrl: test.url,

@@ -4,7 +4,7 @@ export const schemaUpdateQuestion = yup.object().shape({
   topicID: yup.number(),
   content: yup
     .string()
-    .required('Question content is a required')
+    .required('Question content is required')
     .matches(/(^<([^>]+)>)/gi),
   time: yup.number(),
   isActive: yup.boolean(),

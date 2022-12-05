@@ -9,7 +9,7 @@ interface ICheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
   disable?: boolean;
   registerField?: UseFormRegisterReturn;
   className?: string;
-  textLabel?: string;
+  textLabel?: React.ReactNode;
 }
 
 const Checkbox: React.FC<ICheckboxProps> = ({
@@ -40,9 +40,9 @@ const Checkbox: React.FC<ICheckboxProps> = ({
         )}
       >
         <div className="box mr-2 w-4 h-4 rounded-sm border border-solid border-slate-400">
-          <BsCheck className="icon opacity-0 fill-white" />
+          <BsCheck className="icon opacity-0" />
         </div>
-        <PolaCode content={textLabel} className="text-slate-800 text-sm" />
+        {textLabel}
       </label>
     </div>
   );

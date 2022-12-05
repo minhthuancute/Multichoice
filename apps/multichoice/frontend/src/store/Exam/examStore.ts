@@ -1,4 +1,4 @@
-import { examServices } from './../../services/ExamServices';
+import { examServices } from '../../services/Exam/ExamServices';
 import create from 'zustand';
 import { devtools } from 'zustand/middleware';
 import { IExamResponse } from '../../types';

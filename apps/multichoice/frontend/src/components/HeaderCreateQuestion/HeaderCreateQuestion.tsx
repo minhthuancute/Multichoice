@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '../../hooks/useQuery';
-import { topicServices } from '../../services/TopicServices';
+import { topicServices } from '../../services/Title/TopicServices';
 import { topicStore } from '../../store/rootReducer';
 import Breadcrumb from '../Commons/Breadcrumb/Breadcrumb';
 import Button from '../Commons/Button/Button';
@@ -19,8 +19,8 @@ const HeaderCreateQuestion: React.FC = () => {
     try {
       const { data } = await topicServices.getTopicById(+query.topic_id);
       setTopicDetail(data);
-    } catch (error) {
-      //
+    } catch {
+      navigate('/');
     }
   };
 
@@ -35,11 +35,6 @@ const HeaderCreateQuestion: React.FC = () => {
           <Breadcrumb.Item>
             <Link to={'/tests/edit/' + topicDetail.id}>
               {topicDetail.title}
-            </Link>
-          </Breadcrumb.Item>
-          <Breadcrumb.Item>
-            <Link to={'/questions/create?topic_id=' + topicDetail.id}>
-              Câu hỏi
             </Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>

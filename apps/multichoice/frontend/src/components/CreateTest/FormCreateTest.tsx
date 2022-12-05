@@ -10,7 +10,7 @@ import {
   TopicCategoryEnum,
   TopicTimeTypeEnum,
 } from '@monorepo/multichoice/constant';
-import { topicServices } from '../../services/TopicServices';
+import { topicServices } from '../../services/Title/TopicServices';
 import { useNavigate } from 'react-router-dom';
 import { topicStore } from '../../store/rootReducer';
 import {

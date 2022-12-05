@@ -8,15 +8,16 @@ import {
   START_TIME,
   TOKEN,
 } from '../../constants/contstants';
-import { examServices, IPayloadStartExam } from '../../services/ExamServices';
-import { localServices } from '../../services/LocalServices';
-import { sessionServices } from '../../services/SessionServices';
+import { examServices } from '../../services/Exam/ExamServices';
+import { localServices } from '../../services/Applications/LocalServices';
+import { sessionServices } from '../../services/Applications/SessionServices';
 import { examDetailStore } from '../../store/Exam/examDetailStore';
 import {
   answerStore,
   examStore,
   IInforUserDoExam,
 } from '../../store/rootReducer';
+import { IPayloadStartExam } from '../../services/Exam/type';
 
 const DoExam: React.FC = () => {
   const navigate = useNavigate();

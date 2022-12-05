@@ -35,7 +35,6 @@ const PolaCode: React.FC<IPolaCodeProps> = ({ content, className = '' }) => {
   return (
     <>
       <Modal
-        placement="CENTER"
         visible={visibleModal}
         setVisibleModal={setVisibleModal}
         size="xxl"

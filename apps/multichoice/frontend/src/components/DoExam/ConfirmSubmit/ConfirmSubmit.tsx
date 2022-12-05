@@ -1,37 +1,46 @@
 import React, { useContext } from 'react';
 import { doExamContext } from '../../../contexts/DoExamContext';
+import { answerStore } from '../../../store/rootReducer';
 import Button from '../../Commons/Button/Button';
 import Modal from '../../Commons/Modal/Modal';
 
 interface IConfirmSubmitProps {
-  unSelectAnswer: number;
   onCancle: () => void;
-  setConfirmSubmit: React.Dispatch<React.SetStateAction<boolean>>;
+  setVisibleModal: React.Dispatch<React.SetStateAction<boolean>>;
   visibleModal?: boolean;
 }
 
 const ConfirmSubmit: React.FC<IConfirmSubmitProps> = ({
   onCancle,
-  unSelectAnswer,
-  setConfirmSubmit,
+  setVisibleModal,
   visibleModal = false,
 }) => {
   const { handleSubmitExam } = useContext(doExamContext);
+  const { answers } = answerStore();
+
+  const countUnSelectAnswer = (): number => {
+    const count = answers.filter((answer) => {
+      return answer?.answerID.length === 0;
+    });
+    return count.length;
+  };
 
   return (
     <Modal
       visible={visibleModal}
-      setVisibleModal={setConfirmSubmit}
+      setVisibleModal={setVisibleModal}
       size="sm"
       placement="CENTER"
     >
       <>
         <div className="header text-center">
           <h4 className="text-slate-800 font-semibold text-xl">Nộp Bài</h4>
-          {unSelectAnswer > 0 ? (
+          {countUnSelectAnswer() > 0 ? (
             <p className="mt-4 text-slate-800 font-semibold">
               Bạn còn{' '}
-              <span className="font-semibold">{unSelectAnswer} (câu hỏi)</span>{' '}
+              <span className="font-semibold">
+                {countUnSelectAnswer()} (câu hỏi)
+              </span>{' '}
               chưa chọn đáp án. Bạn có chắc chắn muốn nộp bài ?
             </p>
           ) : (
@@ -50,6 +59,7 @@ const ConfirmSubmit: React.FC<IConfirmSubmitProps> = ({
             onClick={() => {
               handleSubmitExam();
               onCancle();
+              setVisibleModal(false);
             }}
           >
             Nộp bài

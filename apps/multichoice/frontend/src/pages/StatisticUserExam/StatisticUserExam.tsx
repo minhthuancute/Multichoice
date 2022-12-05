@@ -6,10 +6,8 @@ import QuestionsUserExam from '../../components/QuestionsUserExam/QuestionsUserE
 import { getTopicTitle } from '../../helper/getTopicTitle';
 import { withBackTop } from '../../HOCs/withBackTop';
 import { useQuery } from '../../hooks/useQuery';
-import {
-  examServices,
-  IPayloadGetUserExamDetail,
-} from '../../services/ExamServices';
+import { examServices } from '../../services/Exam/ExamServices';
+import { IPayloadGetUserExamDetail } from '../../services/Exam/type';
 import { getDate, getDistance, getTime } from '../../utils/format_date';
 
 interface IStatisticUserExamQuery {
@@ -19,14 +17,13 @@ interface IStatisticUserExamQuery {
 const StatisticUserExam: React.FC = () => {
   const { id } = useParams();
   const [query] = useQuery<IStatisticUserExamQuery>();
-  const topicId = Number(id) || -1;
 
   const [userExamDetail, setUserExamDetail] = useState<IUserDoExamDetail>();
 
   const getStatisticUserDetail = async () => {
     try {
       const payload: IPayloadGetUserExamDetail = {
-        topicId: topicId,
+        topicId: Number(id),
         userId: +query.user_id,
       };
       const { data } = await examServices.getUserExamDetail(payload);
@@ -51,8 +48,8 @@ const StatisticUserExam: React.FC = () => {
             <Link to="/tests">Đề thi</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
-            <Link to={`/tests/${topicId}/statistic`}>
-              {getTopicTitle(topicId)}
+            <Link to={`/tests/${Number(id)}/statistic`}>
+              {getTopicTitle(Number(id))}
             </Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>

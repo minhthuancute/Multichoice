@@ -6,7 +6,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import Select, { IOption } from '../Commons/Select/Select';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 import { useNavigate } from 'react-router-dom';
-import { questionServices } from '../../services/QuestionServices';
+import { questionServices } from '../../services/Question/QuestionServices';
 import { topicStore } from '../../store/rootReducer';
 import { useQuery } from '../../hooks/useQuery';
 import { notify } from '../../helper/notify';

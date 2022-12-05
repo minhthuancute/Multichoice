@@ -2,7 +2,7 @@ import React from 'react';
 import { BiCheckDouble } from 'react-icons/bi';
 import { START_TIME } from '../../../constants/contstants';
 import { classNames } from '../../../helper/classNames';
-import { sessionServices } from '../../../services/SessionServices';
+import { sessionServices } from '../../../services/Applications/SessionServices';
 import { answerStore, examStore } from '../../../store/rootReducer';
 import { IQuestion } from '../../../types';
 import CountDown from '../../Commons/CountDown/CountDown';
@@ -11,14 +11,14 @@ import PolaCode from '../../Commons/PolaCode/PolaCode';
 interface INavQuestion {
   indexQuestion: number;
   setIndexQuestion: React.Dispatch<React.SetStateAction<number>>;
-  expriedCountdownRealtime?: boolean;
+  expriedRealtime?: boolean;
   startTimeCountdown?: number;
 }
 
 const NavQuestion: React.FC<INavQuestion> = ({
   indexQuestion = 0,
   setIndexQuestion,
-  expriedCountdownRealtime = false,
+  expriedRealtime = false,
   startTimeCountdown = 0,
 }) => {
   const { answers } = answerStore();
@@ -83,7 +83,7 @@ const NavQuestion: React.FC<INavQuestion> = ({
         className="border-b border-slate-200 absolute top-0 left-1/2 transform -translate-x-1/2
         w-full flex justify-center items-center h-10"
       >
-        {exam.expirationTime && expriedCountdownRealtime === false && (
+        {exam.expirationTime && expriedRealtime === false && (
           <CountDown
             isHidden={isSubmitExam}
             startTime={startTimeCountdown || startTime}

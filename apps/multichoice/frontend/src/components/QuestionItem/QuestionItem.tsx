@@ -27,17 +27,14 @@ const QuestionItem: React.FC<IQuestionItemProps> = ({
       <div className="question-content py-4 px-6 bg-white rounded-lg">
         <div
           className={classNames(
-            'header text-slate-800 text-tiny flex justify-between',
-            {
-              'pb-2': !isTypeText,
-            }
+            'header text-slate-800 text-tiny flex justify-between h-max'
           )}
         >
           <div className="header-left flex text-tiny">
             <span className="font-semibold mr-2 min-w-max">
               Câu hỏi {index}:
             </span>
-            <PolaCode content={question.content} />
+            {/* <PolaCode content={question.content} /> */}
           </div>
           <div className="header-right ml-2">
             <ul className="ctas flex items-center ml-auto">
@@ -58,8 +55,11 @@ const QuestionItem: React.FC<IQuestionItemProps> = ({
             </ul>
           </div>
         </div>
+
+        <PolaCode content={question.content} />
+
         <div
-          className={classNames('body ', {
+          className={classNames('body mt-2', {
             'pt-2 border-t border-slate-200': !isTypeText,
           })}
         >

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { iNotification } from 'react-notifications-component';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { deleteQuestionSuccess } from '../../constants/msgNotify';
 import { notify } from '../../helper/notify';
-import { questionServices } from '../../services/QuestionServices';
-import { topicServices } from '../../services/TopicServices';
+import { questionServices } from '../../services/Question/QuestionServices';
+import { topicServices } from '../../services/Title/TopicServices';
 import { topicStore } from '../../store/rootReducer';
 import { IQuestion } from '../../types';
 import ModalConfirm from '../Commons/ModalConfirm/ModalConfirm';
@@ -14,7 +14,8 @@ import QuestionItem from '../QuestionItem/QuestionItem';
 import UpdateQuestion from '../UpdateQuestion/UpdateQuestion';
 
 const QuestionList: React.FC = () => {
-  const query = useParams();
+  const { id } = useParams();
+  const navigate = useNavigate();
   const { topicDetail, setTopicDetail } = topicStore();
 
   const [visibleModal, setVisibleModal] = useState<boolean>(false);
@@ -31,12 +32,11 @@ const QuestionList: React.FC = () => {
   };
 
   const getTopicDetail = async () => {
-    const { id } = query;
     try {
       const { data } = await topicServices.getTopicById(Number(id));
       setTopicDetail(data);
     } catch {
-      //
+      navigate('/');
     }
   };
 

@@ -3,7 +3,7 @@ import { iNotification } from 'react-notifications-component';
 import { useNavigate } from 'react-router-dom';
 import { deleteTopicSuccess } from '../../constants/msgNotify';
 import { notify } from '../../helper/notify';
-import { topicServices } from '../../services/TopicServices';
+import { topicServices } from '../../services/Title/TopicServices';
 import Button from '../Commons/Button/Button';
 import Modal from '../Commons/Modal/Modal';
 

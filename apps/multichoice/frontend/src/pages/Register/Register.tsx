@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { CreateUserDto } from '@monorepo/multichoice/dto';
 import { iNotification } from 'react-notifications-component';
 import { useQuery } from '../../hooks/useQuery';
-import { authenServices } from '../../services/AuthenServices';
+import { authenServices } from '../../services/Authen/AuthenServices';
 import { notify } from '../../helper/notify';
 import { acceptTerm, emailExisted } from '../../constants/msgNotify';
 import { titleServices } from '../../services/TitleServices';
@@ -32,6 +32,7 @@ const schemaFormRegister = yup
       .required('Email is required')
       .email(),
     password: yup.string().min(password.minLength).max(password.maxLength),
+    acceptTern: yup.boolean(),
   })
   .required();
 
@@ -40,7 +41,7 @@ const Register: React.FC = () => {
   const [query] = useQuery<RedirectQuery>();
   const redirectUrl = query.redirect;
 
-  const [isUserAccept, setIsUserAccept] = useState<boolean>(false);
+  const [acceptTern, setAcceptTern] = useState<boolean>(false);
 
   const {
     register,
@@ -51,7 +52,7 @@ const Register: React.FC = () => {
   });
 
   const onSubmit: SubmitHandler<CreateUserDto> = async (formData) => {
-    if (isUserAccept) {
+    if (acceptTern) {
       try {
         const { data } = await authenServices.register(formData);
         if (data.success) {
@@ -86,9 +87,12 @@ const Register: React.FC = () => {
         autoComplete="off"
       >
         <div className="form-header mb-10 text-center">
-          <h2 className="font-medium text-black mb-4 text-3xl">Sign up Now</h2>
-          <p className="text-slate-800 text-sm">
-            Enter yor valid email address and password to register your account
+          <h2 className="font-medium text-black mb-4 text-3xl">
+            Register to Multichoice
+          </h2>
+          <p className="text-slate-500 text-sm">
+            Enter yor valid email address and password <br /> to register your
+            account
           </p>
         </div>
 
@@ -129,11 +133,14 @@ const Register: React.FC = () => {
         <div className="remember-me flex items-center justify-between mt-5 text-slate-800">
           <div className="check-box cursor-pointer flex items-center">
             <Checkbox
-              // onChange={setIsUserAccept}
-              textLabel="<p>
-                I accept the <span class='text-primary-900'>Term of Conditions</span>
-                and <span class='text-primary-900'>Privacy Policy</span>
-              </p>"
+              onClick={() => setAcceptTern((prev) => !prev)}
+              textLabel={
+                <p>
+                  I accept the{' '}
+                  <span className="text-primary-900">Term of Conditions</span>
+                  and <span className="text-primary-900">Privacy Policy</span>
+                </p>
+              }
               id="accept-term"
             />
           </div>

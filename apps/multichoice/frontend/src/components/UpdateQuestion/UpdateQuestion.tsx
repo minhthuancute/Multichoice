@@ -5,7 +5,7 @@ import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Select, { IOption } from '../Commons/Select/Select';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
-import { questionServices } from '../../services/QuestionServices';
+import { questionServices } from '../../services/Question/QuestionServices';
 import { topicStore } from '../../store/rootReducer';
 import { notify } from '../../helper/notify';
 import { iNotification } from 'react-notifications-component';

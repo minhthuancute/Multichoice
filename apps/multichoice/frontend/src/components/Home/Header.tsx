@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { TOKEN } from '../../constants/contstants';
 import { classNames } from '../../helper/classNames';
-import { localServices } from '../../services/LocalServices';
+import { localServices } from '../../services/Applications/LocalServices';
 import { userStore } from '../../store/rootReducer';
 import Navabar from '../Navbar/Navabar';
 import Logo from '../Commons/Logo/Logo';

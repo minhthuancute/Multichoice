@@ -10,7 +10,7 @@ import {
 } from '@monorepo/multichoice/constant';
 import { useParams } from 'react-router-dom';
 import Select, { IOption } from '../Commons/Select/Select';
-import { topicServices } from '../../services/TopicServices';
+import { topicServices } from '../../services/Title/TopicServices';
 import Input from '../Commons/Input/Input';
 import TextArea from '../Commons/TextArea/TextArea';
 import { IoMdClose } from 'react-icons/io';
@@ -133,7 +133,7 @@ const FormEditTest: React.FC<IFormEditTestProps> = ({
   };
 
   return (
-    <div className="py-4 px-5 rounded-md bg-white">
+    <div className="rounded-md bg-white">
       <form className="form" onSubmit={handleSubmit(onSubmit)}>
         <div className="form-header flex items-center justify-between mb-8">
           <h4 className="text-slate-800 text-xl font-semibold">
