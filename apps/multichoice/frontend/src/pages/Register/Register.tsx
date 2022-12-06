@@ -137,8 +137,8 @@ const Register: React.FC = () => {
               textLabel={
                 <p>
                   I accept the{' '}
-                  <span className="text-primary-900">Term of Conditions</span>
-                  and <span className="text-primary-900">Privacy Policy</span>
+                  <span className="text-primary-900">Term of Conditions </span>
+                  and <span className="text-primary-900"> Privacy Policy</span>
                 </p>
               }
               id="accept-term"

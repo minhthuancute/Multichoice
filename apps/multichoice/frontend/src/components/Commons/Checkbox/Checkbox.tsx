@@ -2,7 +2,6 @@ import React, { InputHTMLAttributes } from 'react';
 import { UseFormRegisterReturn } from 'react-hook-form';
 import { BsCheck } from 'react-icons/bs';
 import { classNames } from '../../../helper/classNames';
-import PolaCode from '../PolaCode/PolaCode';
 import './checkbox.scss';
 
 interface ICheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -39,8 +38,8 @@ const Checkbox: React.FC<ICheckboxProps> = ({
           }
         )}
       >
-        <div className="box mr-2 w-4 h-4 rounded-sm border border-solid border-slate-400">
-          <BsCheck className="icon opacity-0" />
+        <div className="box mr-2 w-5 h-5 rounded-sm border border-solid border-slate-400">
+          <BsCheck className="icon fill-white text-lg opacity-0" />
         </div>
         {textLabel}
       </label>

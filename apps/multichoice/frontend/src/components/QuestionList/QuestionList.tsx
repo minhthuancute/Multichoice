@@ -16,7 +16,8 @@ import UpdateQuestion from '../UpdateQuestion/UpdateQuestion';
 const QuestionList: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { topicDetail, setTopicDetail } = topicStore();
+
+  const { topic, getTopic } = topicStore();
 
   const [visibleModal, setVisibleModal] = useState<boolean>(false);
   const [question, setQuestion] = useState<IQuestion>({} as IQuestion);
@@ -31,15 +32,6 @@ const QuestionList: React.FC = () => {
     setVisibleModal(true);
   };
 
-  const getTopicDetail = async () => {
-    try {
-      const { data } = await topicServices.getTopicById(Number(id));
-      setTopicDetail(data);
-    } catch {
-      navigate('/');
-    }
-  };
-
   const deleteQuestion = async (questionId = -1) => {
     try {
       const { data } = await questionServices.deleteQuestion(questionId);
@@ -49,7 +41,7 @@ const QuestionList: React.FC = () => {
           type: 'success',
         } as iNotification);
 
-        getTopicDetail();
+        getTopic(Number(id));
       }
     } catch (error) {
       notify({
@@ -85,8 +77,8 @@ const QuestionList: React.FC = () => {
         />
       </Modal>
 
-      {topicDetail.questions &&
-        topicDetail.questions.map((question: IQuestion, index: number) => {
+      {topic.questions &&
+        topic.questions.map((question: IQuestion, index: number) => {
           return (
             <QuestionItem
               onClickDeleteQuestion={onClickDeleteQuestion}

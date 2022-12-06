@@ -51,7 +51,7 @@ const DoExam: React.FC = () => {
           } as IInforUserDoExam);
         }
       } catch {
-        //
+        navigate('/');
       }
     }
   };

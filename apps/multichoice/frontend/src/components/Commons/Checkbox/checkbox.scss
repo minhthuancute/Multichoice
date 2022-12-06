@@ -1,8 +1,14 @@
 .wrapper-input {
-  input:checked ~ label .box {
-    background-color: var(--primaryColor);
+  input:checked + label .box {
+    background-color: var(--primaryColor) !important;
     .icon {
-      opacity: 1;
+      opacity: 1 !important;
     }
   }
+  // input ~ label .box {
+  //   background-color: var(--primaryColor);
+  //   .icon {
+  //     opacity: 0;
+  //   }
+  // }
 }

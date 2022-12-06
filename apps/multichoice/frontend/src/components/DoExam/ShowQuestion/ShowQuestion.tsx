@@ -32,7 +32,7 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
   expriedRealtime = false,
   isSubmited = false,
 }) => {
-  const { setDataExamResult, exam, isExpriedExam } = examStore();
+  const { exam, isExpriedExam } = examStore();
   const { answers, updateAnswer, userDoExam } = answerStore();
 
   const [visibleModal, setVisibleModal] = useState<boolean>(false);
@@ -67,14 +67,6 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
     updateAnswer(questionID, answerID, questionType);
   };
 
-  const onClickSubmit = () => {
-    setVisibleModal(true);
-  };
-
-  const onCancleModalConfirm = () => {
-    setVisibleModalSubmit(false);
-  };
-
   const isCheckAnswer = (answerID: number): boolean => {
     const shouldChecked = (
       answers[indexQuestion]?.answerID as number[]
@@ -87,9 +79,8 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
     <div className="w-full h-full">
       <div className="modals">
         <ConfirmSubmit
-          onCancle={onCancleModalConfirm}
-          setVisibleModal={setVisibleModal}
-          visibleModal={visibleModal}
+          setVisibleModal={setVisibleModalSubmit}
+          visibleModal={visibleModalSubmit}
         />
       </div>
 
@@ -104,7 +95,7 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
                   hidden: isSubmited,
                 }
               )}
-              onClick={() => onClickSubmit()}
+              onClick={() => setVisibleModalSubmit(true)}
             >
               Nộp Bài
             </button>

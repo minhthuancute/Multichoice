@@ -174,6 +174,8 @@ const CreateQuestion: React.FC = () => {
 
   useEffect(() => {
     const subscription = watch(({ type, answers }) => {
+      console.log(answers);
+
       if (type === QuestionTypeEnum.SINGLE) {
         const correctAnswer = answers?.find((answer) => answer?.isCorrect);
         setCorrectAnswer(correctAnswer?.content || '');

@@ -50,8 +50,6 @@ const UpdateQuestion: React.FC<IUpdateQuestionprops> = ({
     name: 'answers',
   });
 
-  const { setTopicDetail } = topicStore();
-
   const [hideAnswer, setHideAnswer] = useState<boolean>(false);
   const [correctAnswer, setCorrectAnswer] = useState<string>('');
   const [questionTypes] = useState<IOption[]>(() => {
@@ -146,7 +144,7 @@ const UpdateQuestion: React.FC<IUpdateQuestionprops> = ({
           formData
         );
         if (data.success) {
-          setTopicDetail(data.data);
+          // setTopicDetail(data.data);
           setVisibleModalEditQuestion(false);
         }
       } catch (error) {
@@ -168,7 +166,7 @@ const UpdateQuestion: React.FC<IUpdateQuestionprops> = ({
   }, []);
 
   return (
-    <form className="bg-white p-4" onSubmit={handleSubmit(onSubmit)}>
+    <form className="bg-white" onSubmit={handleSubmit(onSubmit)}>
       <div className="form-header flex items-center justify-between mb-6">
         <h4 className="text-slate-800 text-xl font-semibold">
           Cập nhật câu hỏi

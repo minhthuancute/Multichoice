@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '../../hooks/useQuery';
-import { topicServices } from '../../services/Title/TopicServices';
 import { topicStore } from '../../store/rootReducer';
 import Breadcrumb from '../Commons/Breadcrumb/Breadcrumb';
 import Button from '../Commons/Button/Button';
@@ -13,19 +12,10 @@ interface HeaderCreateQuestionQuery {
 const HeaderCreateQuestion: React.FC = () => {
   const navigate = useNavigate();
   const [query] = useQuery<HeaderCreateQuestionQuery>();
-  const { setTopicDetail, topicDetail } = topicStore();
-
-  const getTopicDetail = async () => {
-    try {
-      const { data } = await topicServices.getTopicById(+query.topic_id);
-      setTopicDetail(data);
-    } catch {
-      navigate('/');
-    }
-  };
+  const { getTopic, topic } = topicStore();
 
   useEffect(() => {
-    getTopicDetail();
+    getTopic(Number(query.topic_id));
   }, []);
 
   return (
@@ -33,9 +23,7 @@ const HeaderCreateQuestion: React.FC = () => {
       <div className="container flex justify-between py-4 ">
         <Breadcrumb>
           <Breadcrumb.Item>
-            <Link to={'/tests/edit/' + topicDetail.id}>
-              {topicDetail.title}
-            </Link>
+            <Link to={'/tests/edit/' + topic.id}>{topic.title}</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
             <div>Tạo mới câu hỏi</div>

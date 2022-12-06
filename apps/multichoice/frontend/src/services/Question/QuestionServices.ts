@@ -7,7 +7,7 @@ export const questionServices = {
   },
 
   updateQuestion(questionId: number, formData: CreateQuestionDto) {
-    return axiosClient.put('/question/' + questionId, formData);
+    return axiosClient.patch('/question/' + questionId, formData);
   },
 
   deleteQuestion(questionId: number) {

@@ -5,13 +5,11 @@ import Button from '../../Commons/Button/Button';
 import Modal from '../../Commons/Modal/Modal';
 
 interface IConfirmSubmitProps {
-  onCancle: () => void;
   setVisibleModal: React.Dispatch<React.SetStateAction<boolean>>;
   visibleModal?: boolean;
 }
 
 const ConfirmSubmit: React.FC<IConfirmSubmitProps> = ({
-  onCancle,
   setVisibleModal,
   visibleModal = false,
 }) => {
@@ -50,7 +48,7 @@ const ConfirmSubmit: React.FC<IConfirmSubmitProps> = ({
           )}
         </div>
         <div className="ctas flex items-center justify-center gap-x-2 mt-5">
-          <Button type="button" onClick={() => onCancle()}>
+          <Button type="button" onClick={() => setVisibleModal(false)}>
             Huỷ
           </Button>
           <Button
@@ -58,7 +56,6 @@ const ConfirmSubmit: React.FC<IConfirmSubmitProps> = ({
             type="button"
             onClick={() => {
               handleSubmitExam();
-              onCancle();
               setVisibleModal(false);
             }}
           >

@@ -29,7 +29,7 @@ const schemaFormCreateTest = yup.object().shape({
 
 const FormCreateTest: React.FC = () => {
   const navigate = useNavigate();
-  const { setTopicData } = topicStore();
+  const { getTopic } = topicStore();
 
   const {
     register,
@@ -93,7 +93,7 @@ const FormCreateTest: React.FC = () => {
       if (data.success) {
         const topicId = data.data.id;
         const urlNavigate = '/tests/edit/' + topicId;
-        setTopicData(data.data);
+        // getTopic(data.data);
         navigate(urlNavigate);
       }
     } catch (error) {

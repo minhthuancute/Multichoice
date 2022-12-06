@@ -20,8 +20,8 @@ import {
   minutesToSeconds,
   secondsToMinutes,
 } from '../../utils/minutes_to_seconds';
-import { ITopicDetailResponse } from '../../types';
 import Button from '../Commons/Button/Button';
+import { ITopic } from '../../types';
 
 const schemaFormEditTest = yup.object().shape({
   timeType: yup.string().required(),
@@ -41,9 +41,9 @@ const FormEditTest: React.FC<IFormEditTestProps> = ({
 }) => {
   const { id } = useParams();
 
-  const { topicDetail, setTopicDetail } = topicStore();
+  const { topic, getTopic } = topicStore();
   const { expirationTime, typeCategoryName, timeType, title, description } =
-    topicDetail;
+    topic;
 
   const {
     register,
@@ -57,9 +57,9 @@ const FormEditTest: React.FC<IFormEditTestProps> = ({
       expirationTime: +secondsToMinutes(+expirationTime),
       isDraft: false,
       isPrivate: false,
-      timeType: topicDetail.timeType as TopicTimeTypeEnum,
+      timeType: topic.timeType as TopicTimeTypeEnum,
       title: title,
-      typeCategoryName: topicDetail.typeCategoryName as TopicCategoryEnum,
+      typeCategoryName: topic.typeCategoryName as TopicCategoryEnum,
     },
   });
 
@@ -103,10 +103,11 @@ const FormEditTest: React.FC<IFormEditTestProps> = ({
 
   const getTopicById = async () => {
     try {
-      const { data }: { data: ITopicDetailResponse } =
-        await topicServices.getTopicById(Number(id));
+      const { data }: { data: ITopic } = await topicServices.getTopicById(
+        Number(id)
+      );
       if (data) {
-        setTopicDetail(data);
+        // setTopicDetail(data);
       }
     } catch (error) {
       //
