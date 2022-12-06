@@ -25,7 +25,7 @@ export class CreateTopicDto {
   isDraft: boolean;
 
   @ApiProperty({ default: false })
-  isPrivate: boolean;
+  isPublic: boolean;
 
   @ApiProperty()
   expirationTime: number;
