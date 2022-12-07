@@ -236,7 +236,6 @@ const CreateQuestion: React.FC = () => {
                 Đáp án
                 <span className="ml-1 text-red-600">*</span>
               </label>
-              AnswerItem
             </div>
             <div className="answer-body">
               {fields.map((item: CreatAnswer, index: number) => {
