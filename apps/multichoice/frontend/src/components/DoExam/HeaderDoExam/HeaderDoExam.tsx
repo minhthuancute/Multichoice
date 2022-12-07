@@ -5,7 +5,7 @@ import {
   START_EXAM,
   START_TIME,
 } from '../../../constants/contstants';
-import { localServices } from '../../../services/LocalServices';
+import { localServices } from '../../../services/Applications/LocalServices';
 import {
   answerStore,
   examStore,
@@ -18,7 +18,7 @@ import { classNames } from '../../../helper/classNames';
 import { IoMdClose } from 'react-icons/io';
 import { useOnClickOutside } from '../../../hooks/useOnClickOutside';
 import IntroExam from '../IntroExam/IntroExam';
-import { sessionServices } from '../../../services/SessionServices';
+import { sessionServices } from '../../../services/Applications/SessionServices';
 
 const HeaderDoExam: React.FC = () => {
   const sideBarRef = useRef<HTMLDivElement>(null);
@@ -114,12 +114,11 @@ const HeaderDoExam: React.FC = () => {
           </p>
           <button
             className={classNames(
-              `w-full rounded-md bg-slate-200 py-2 mt-6 text-center
-              justify-center`,
-              {
-                flex: isSubmitExam,
-                hidden: !isSubmitExam,
-              }
+              `w-full rounded-md bg-slate-200 py-2 mt-6`
+              // {
+              //   flex: isSubmitExam,
+              //   hidden: !isSubmitExam,
+              // }
             )}
             onClick={() => {
               if (isSubmitExam) {
@@ -165,12 +164,11 @@ const HeaderDoExam: React.FC = () => {
           <div className="ctas items-center xs:hidden lg:flex">
             <button
               className={classNames(
-                `px-4 py-1.5 bg-green-100 rounded-2xl ml-4
-                items-center text-green-600 `,
-                {
-                  flex: isSubmitExam,
-                  hidden: !isSubmitExam,
-                }
+                `px-4 py-1.5 bg-green-100 rounded-2xl ml-4 text-green-600 `
+                // {
+                //   flex: isSubmitExam,
+                //   hidden: !isSubmitExam,
+                // }
               )}
               onClick={() => {
                 if (isSubmitExam) {

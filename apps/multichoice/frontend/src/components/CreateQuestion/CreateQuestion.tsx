@@ -6,7 +6,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import Select, { IOption } from '../Commons/Select/Select';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 import { useNavigate } from 'react-router-dom';
-import { questionServices } from '../../services/QuestionServices';
+import { questionServices } from '../../services/Question/QuestionServices';
 import { topicStore } from '../../store/rootReducer';
 import { useQuery } from '../../hooks/useQuery';
 import { notify } from '../../helper/notify';
@@ -174,6 +174,8 @@ const CreateQuestion: React.FC = () => {
 
   useEffect(() => {
     const subscription = watch(({ type, answers }) => {
+      console.log(answers);
+
       if (type === QuestionTypeEnum.SINGLE) {
         const correctAnswer = answers?.find((answer) => answer?.isCorrect);
         setCorrectAnswer(correctAnswer?.content || '');

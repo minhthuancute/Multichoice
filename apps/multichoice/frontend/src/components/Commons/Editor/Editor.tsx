@@ -85,9 +85,7 @@ const Editor: React.FC<IEditorProps> = ({
           <ReactQuill
             {...fieldProps}
             theme="snow"
-            className={classNames(['editor, rounded-sm'], {
-              'border border-red-400': isError,
-            })}
+            className={classNames(['editor, rounded-sm'])}
             placeholder={placeholder}
             modules={Editor.modules}
             formats={Editor.formats}

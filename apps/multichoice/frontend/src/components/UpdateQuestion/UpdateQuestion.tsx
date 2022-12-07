@@ -5,7 +5,7 @@ import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Select, { IOption } from '../Commons/Select/Select';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
-import { questionServices } from '../../services/QuestionServices';
+import { questionServices } from '../../services/Question/QuestionServices';
 import { topicStore } from '../../store/rootReducer';
 import { notify } from '../../helper/notify';
 import { iNotification } from 'react-notifications-component';
@@ -49,8 +49,6 @@ const UpdateQuestion: React.FC<IUpdateQuestionprops> = ({
     control,
     name: 'answers',
   });
-
-  const { setTopicDetail } = topicStore();
 
   const [hideAnswer, setHideAnswer] = useState<boolean>(false);
   const [correctAnswer, setCorrectAnswer] = useState<string>('');
@@ -146,7 +144,7 @@ const UpdateQuestion: React.FC<IUpdateQuestionprops> = ({
           formData
         );
         if (data.success) {
-          setTopicDetail(data.data);
+          // setTopicDetail(data.data);
           setVisibleModalEditQuestion(false);
         }
       } catch (error) {
@@ -168,7 +166,7 @@ const UpdateQuestion: React.FC<IUpdateQuestionprops> = ({
   }, []);
 
   return (
-    <form className="bg-white p-4" onSubmit={handleSubmit(onSubmit)}>
+    <form className="bg-white" onSubmit={handleSubmit(onSubmit)}>
       <div className="form-header flex items-center justify-between mb-6">
         <h4 className="text-slate-800 text-xl font-semibold">
           Cập nhật câu hỏi

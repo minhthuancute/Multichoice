@@ -70,6 +70,7 @@ const Modal: React.FC<IModalProps> = ({
           {
             'visible opacity-100': visible,
             'invisible opacity-0': !visible,
+            'flex justify-center items-center': placement === 'CENTER',
           }
         )}
       >

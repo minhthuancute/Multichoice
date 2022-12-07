@@ -1,31 +1,28 @@
 import create from 'zustand';
 import { devtools } from 'zustand/middleware';
-import { ITopicDetailResponse, ITopicResponse } from '../../types';
+import { topicServices } from '../../services/Title/TopicServices';
+import { ITopic } from '../../types';
 
 export interface ITopicStore {
-  topic: ITopicResponse;
-  topicDetail: ITopicDetailResponse;
-  setTopicData: (topicData: ITopicResponse) => void;
-  setTopicDetail: (topicData: ITopicDetailResponse) => void;
+  topic: ITopic;
+  getTopic: (id: number) => void;
 }
 
-// Topic detail
 export const topicStore = create<ITopicStore>()(
   devtools((set) => ({
-    topic: {} as ITopicResponse,
-    topicDetail: {} as ITopicDetailResponse,
-    setTopicData: (topicData: ITopicResponse) =>
-      set(() => {
-        return {
-          topic: topicData,
-        };
-      }),
+    topic: {} as ITopic,
 
-    setTopicDetail: (topicDetailData: ITopicDetailResponse) =>
-      set(() => {
-        return {
-          topicDetail: topicDetailData,
-        };
-      }),
+    getTopic: async (id: number) => {
+      try {
+        const { data } = await topicServices.getTopicById(id);
+        set({
+          topic: data,
+        });
+      } catch {
+        set({
+          topic: {} as ITopic,
+        });
+      }
+    },
   }))
 );

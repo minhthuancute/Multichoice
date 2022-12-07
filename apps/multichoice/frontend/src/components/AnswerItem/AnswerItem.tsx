@@ -52,9 +52,9 @@ const AnswerItem: React.FC<IAnswerItemProps> = ({
             }
           >
             <Checkbox
+              registerField={registerFieldIsCorrect}
               key={indexAnswer}
               disable={shouldDisableCheckbox()}
-              registerField={registerFieldIsCorrect}
               className="mt-1"
               id={'answers-' + indexAnswer}
               type="checkbox"

@@ -1,15 +1,14 @@
-class TitleServices {
-  defaultTitle = 'Đề Trắc Nghiệm | Làm Trắc nghiệm online';
-  setTitle(title: string = this.defaultTitle): void {
+const defaultTitle = 'Đề Trắc Nghiệm | Làm Trắc nghiệm online';
+export const titleServices = {
+  setTitle(title: string = defaultTitle): void {
     document.title = title;
-  }
+  },
 
   removeTitle(): void {
-    document.title = this.defaultTitle;
-  }
+    document.title = defaultTitle;
+  },
 
   addSub(subTitle: string): void {
-    document.title = subTitle + ' - ' + this.defaultTitle;
-  }
-}
-export const titleServices = new TitleServices();
+    document.title = subTitle + ' - ' + defaultTitle;
+  },
+};
