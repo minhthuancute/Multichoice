@@ -32,7 +32,7 @@ export const App: React.FC = () => {
   return (
     <BrowserRouter>
       <ReactNotifications />
-      <Splash />
+      {/* <Splash /> */}
       <Routes>
         <Route
           path="/login"

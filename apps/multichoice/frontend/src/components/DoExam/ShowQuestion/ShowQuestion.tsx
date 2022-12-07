@@ -32,7 +32,7 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
   expriedRealtime = false,
   isSubmited = false,
 }) => {
-  const { exam, isExpriedExam } = examStore();
+  const { exam } = examStore();
   const { answers, updateAnswer, userDoExam } = answerStore();
 
   const [visibleModal, setVisibleModal] = useState<boolean>(false);

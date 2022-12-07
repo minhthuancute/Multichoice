@@ -56,7 +56,7 @@ const FormEditTest: React.FC<IFormEditTestProps> = ({
       description: description || '',
       expirationTime: +secondsToMinutes(+expirationTime),
       isDraft: false,
-      isPrivate: false,
+      isPublic: false,
       timeType: topic.timeType as TopicTimeTypeEnum,
       title: title,
       typeCategoryName: topic.typeCategoryName as TopicCategoryEnum,

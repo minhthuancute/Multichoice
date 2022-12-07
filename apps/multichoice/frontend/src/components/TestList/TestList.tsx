@@ -7,6 +7,7 @@ import { topicServices } from '../../services/Title/TopicServices';
 import { ITopic } from '../../types';
 import { ITopicLocal } from '../../types/ICommons';
 import { removeVietnameseTones } from '../../utils/remove_vietnamese_tones';
+import EmptyData from '../Commons/EmptyData/EmptyData';
 import TestItem, { ITestItem } from '../TestItem/TestItem';
 import DeleteTest from './DeleteTest';
 
@@ -121,9 +122,7 @@ const TestList: React.FC = () => {
             />
           ))
         ) : (
-          <p className="font-semibold text-red-500 text-center mt-10 text-tiny">
-            {/* Hiện tại bạn chưa có đề thi nào! */}
-          </p>
+          <EmptyData>Hiện tại bạn chưa có đề thi nào!</EmptyData>
         )}
       </div>
     </>

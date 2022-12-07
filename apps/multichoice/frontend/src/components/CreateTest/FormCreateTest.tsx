@@ -42,7 +42,7 @@ const FormCreateTest: React.FC = () => {
       description: '',
       expirationTime: secondsToMinutes(1000 * 60),
       isDraft: false,
-      isPrivate: false,
+      isPublic: false,
       timeType: TopicTimeTypeEnum.FIXEDTIME,
       title: '',
       typeCategoryName: TopicCategoryEnum.PROGRAMMING,

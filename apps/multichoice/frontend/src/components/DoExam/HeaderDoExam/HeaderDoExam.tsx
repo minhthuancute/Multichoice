@@ -19,13 +19,18 @@ import { IoMdClose } from 'react-icons/io';
 import { useOnClickOutside } from '../../../hooks/useOnClickOutside';
 import IntroExam from '../IntroExam/IntroExam';
 import { sessionServices } from '../../../services/Applications/SessionServices';
+import { validObject } from '../../../helper/validObject';
 
-const HeaderDoExam: React.FC = () => {
+interface IHeaderDoExamProps {
+  submited?: boolean;
+}
+
+const HeaderDoExam: React.FC<IHeaderDoExamProps> = ({ submited }) => {
   const sideBarRef = useRef<HTMLDivElement>(null);
 
   const navigate = useNavigate();
   const { url } = useParams();
-  const { exam, setIsSubmitExam, dataExamResult, isSubmitExam } = examStore();
+  const { exam, dataExamResult } = examStore();
   const { user } = userStore();
   const { userDoExam, setUserDoexamData } = answerStore();
 
@@ -39,9 +44,8 @@ const HeaderDoExam: React.FC = () => {
     localServices.clearItem(ANSWERS_EXAM);
     sessionServices.setData(START_EXAM, false);
 
-    setIsSubmitExam(false);
     setUserDoexamData({} as IInforUserDoExam);
-    if (Object.keys(user).length) {
+    if (validObject(user)) {
       navigate('/');
     } else {
       const urlNavigate = '/e/' + url;
@@ -113,18 +117,15 @@ const HeaderDoExam: React.FC = () => {
             Hello, {userDoExam.userName || user.username}
           </p>
           <button
-            className={classNames(
-              `w-full rounded-md bg-slate-200 py-2 mt-6`
-              // {
-              //   flex: isSubmitExam,
-              //   hidden: !isSubmitExam,
-              // }
-            )}
-            onClick={() => {
-              if (isSubmitExam) {
-                setVisibleModalResult(true);
-              }
-            }}
+            className={classNames(`w-full rounded-md bg-slate-200 py-2 mt-6`, {
+              block: submited,
+              hidden: !submited,
+            })}
+            // onClick={() => {
+            //   if (isSubmitExam) {
+            //     setVisibleModalResult(true);
+            //   }
+            // }}
           >
             Xem lại kết quả
           </button>
@@ -164,17 +165,17 @@ const HeaderDoExam: React.FC = () => {
           <div className="ctas items-center xs:hidden lg:flex">
             <button
               className={classNames(
-                `px-4 py-1.5 bg-green-100 rounded-2xl ml-4 text-green-600 `
-                // {
-                //   flex: isSubmitExam,
-                //   hidden: !isSubmitExam,
-                // }
-              )}
-              onClick={() => {
-                if (isSubmitExam) {
-                  setVisibleModalResult(true);
+                `px-4 py-1.5 bg-green-100 rounded-2xl ml-4 text-green-600`,
+                {
+                  block: submited,
+                  hidden: !submited,
                 }
-              }}
+              )}
+              // onClick={() => {
+              //   if (isSubmitExam) {
+              //     setVisibleModalResult(true);
+              //   }
+              // }}
             >
               Xem lại kết quả
             </button>

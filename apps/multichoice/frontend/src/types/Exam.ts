@@ -1,5 +1,5 @@
 import { IQuestion } from './TopicResponse';
-export interface IExamResponse {
+export interface IExam {
   createdAt: string;
   updatedAt: string;
   id: number;

@@ -2,6 +2,11 @@ import React from 'react';
 import Button from '../../Commons/Button/Button';
 import Modal from '../../Commons/Modal/Modal';
 
+export interface IExamResult {
+  userName: string;
+  point: number;
+}
+
 interface IExamResultProps {
   setVisibleModal?: React.Dispatch<React.SetStateAction<boolean>>;
   visibleModal?: boolean;

@@ -18,6 +18,18 @@ import { schemaUpdateQuestion } from './updateQuestionSchema';
 import { IQuestion } from '../../types';
 import ToolTip from '../Commons/ToolTip/ToolTip';
 import { IoMdClose } from 'react-icons/io';
+import { useParams } from 'react-router-dom';
+
+const initialQuestions = [
+  {
+    content: '',
+    isCorrect: false,
+  },
+  {
+    content: '',
+    isCorrect: false,
+  },
+];
 
 interface IUpdateQuestionprops {
   questionData: IQuestion;
@@ -28,8 +40,10 @@ const UpdateQuestion: React.FC<IUpdateQuestionprops> = ({
   questionData,
   setVisibleModalEditQuestion,
 }) => {
-  const { topic } = topicStore();
+  const { id } = useParams();
 
+  const { topic, getTopic } = topicStore();
+  const isQuestionText = questionData.type === QuestionTypeEnum.TEXT;
   const {
     register,
     handleSubmit,
@@ -50,7 +64,7 @@ const UpdateQuestion: React.FC<IUpdateQuestionprops> = ({
     name: 'answers',
   });
 
-  const [hideAnswer, setHideAnswer] = useState<boolean>(false);
+  const [hideAnswer, setHideAnswer] = useState<boolean>(isQuestionText);
   const [correctAnswer, setCorrectAnswer] = useState<string>('');
   const [questionTypes] = useState<IOption[]>(() => {
     const types: QuestionTypeEnum[] = [];
@@ -69,6 +83,9 @@ const UpdateQuestion: React.FC<IUpdateQuestionprops> = ({
 
   const onSelectQuestionType = (item: IOption) => {
     setValue('type', item.value as QuestionTypeEnum);
+    if (hideAnswer || isQuestionText) {
+      setValue('answers', initialQuestions);
+    }
 
     switch (item.value) {
       case QuestionTypeEnum.MULTIPLE: {
@@ -143,8 +160,9 @@ const UpdateQuestion: React.FC<IUpdateQuestionprops> = ({
           questionData.id,
           formData
         );
+
         if (data.success) {
-          // setTopicDetail(data.data);
+          getTopic(Number(id));
           setVisibleModalEditQuestion(false);
         }
       } catch (error) {
@@ -196,7 +214,7 @@ const UpdateQuestion: React.FC<IUpdateQuestionprops> = ({
         ) : null}
         <Select
           onChange={onSelectQuestionType}
-          defaultValue={questionTypes[0].label}
+          defaultValue={questionData.type}
           options={questionTypes}
           textLabel="Loại câu hỏi"
         />
@@ -231,7 +249,7 @@ const UpdateQuestion: React.FC<IUpdateQuestionprops> = ({
             {fields.map((item: CreatAnswer, index: number) => {
               return (
                 <AnswerItem
-                  key={index}
+                  key={item.isCorrect + '' + index}
                   indexAnswer={index}
                   lengthAnswers={watch('answers').length}
                   correctAnswer={correctAnswer}

@@ -25,7 +25,6 @@ const NavQuestion: React.FC<INavQuestion> = ({
 
   const {
     exam,
-    isSubmitExam,
     exam: { questions },
   } = examStore();
 
@@ -85,7 +84,6 @@ const NavQuestion: React.FC<INavQuestion> = ({
       >
         {exam.expirationTime && expriedRealtime === false && (
           <CountDown
-            isHidden={isSubmitExam}
             startTime={startTimeCountdown || startTime}
             endTime={endTime}
             className="text-primary-900 text-lg"

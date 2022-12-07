@@ -19,17 +19,18 @@ const QuestionList: React.FC = () => {
 
   const { topic, getTopic } = topicStore();
 
-  const [visibleModal, setVisibleModal] = useState<boolean>(false);
+  const [visibleModalDelete, setVisibleModalDelete] = useState<boolean>(false);
+  const [visibleModalUpdate, setVisibleModalUpdate] = useState<boolean>(false);
   const [question, setQuestion] = useState<IQuestion>({} as IQuestion);
 
   const onClickUpdateQuestion = (question: IQuestion) => {
     setQuestion(question);
-    setVisibleModal(true);
+    setVisibleModalUpdate(true);
   };
 
   const onClickDeleteQuestion = (question: IQuestion) => {
     setQuestion(question);
-    setVisibleModal(true);
+    setVisibleModalDelete(true);
   };
 
   const deleteQuestion = async (questionId = -1) => {
@@ -49,15 +50,15 @@ const QuestionList: React.FC = () => {
         type: 'danger',
       } as iNotification);
     }
-    setVisibleModal(false);
+    setVisibleModalDelete(false);
   };
 
   return (
     <>
       <ModalConfirm
-        visible={visibleModal}
+        visible={visibleModalDelete}
         onConfirm={deleteQuestion}
-        onCancle={() => setVisibleModal(false)}
+        onCancle={() => setVisibleModalDelete(false)}
         title={
           <>
             Bạn có chắc chắn muốn xóa bỏ câu hỏi:{' '}
@@ -70,10 +71,13 @@ const QuestionList: React.FC = () => {
         }
       />
 
-      <Modal visible={visibleModal} setVisibleModal={setVisibleModal}>
+      <Modal
+        visible={visibleModalUpdate}
+        setVisibleModal={setVisibleModalUpdate}
+      >
         <UpdateQuestion
           questionData={question}
-          setVisibleModalEditQuestion={setVisibleModal}
+          setVisibleModalEditQuestion={setVisibleModalUpdate}
         />
       </Modal>
 

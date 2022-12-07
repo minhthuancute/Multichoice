@@ -17,14 +17,11 @@ import ShowQuestion from '../../components/DoExam/ShowQuestion/ShowQuestion';
 import NavQuestion from '../../components/DoExam/NavQuestion/NavQuestion';
 import { validObject } from '../../helper/validObject';
 import { isLogin } from '../../utils/check_logged';
-import ExamResult from '../../components/DoExam/ExamResult/ExamResult';
+import ExamResult, {
+  IExamResult,
+} from '../../components/DoExam/ExamResult/ExamResult';
 import { DoExamProvider, IDoExamContext } from '../../contexts/DoExamContext';
 import { IPayloadEndExamRealtime } from '../../services/Exam/type';
-
-interface IExamResult {
-  userName: string;
-  point: number;
-}
 
 const DoExamRealtime: React.FC = () => {
   const { url } = useParams();
@@ -37,8 +34,10 @@ const DoExamRealtime: React.FC = () => {
   const [indexQuestion, setIndexQuestion] = useState<number>(0);
   const [expriedRealtime, setExpriedRealtime] = useState<boolean>(false);
   const [startTimeCountdown, setStartTimeCountdown] = useState<number>(0);
+  const [submited, setSubmited] = useState<boolean>(false);
 
   const handleSubmitExam = async () => {
+    setSubmited(true);
     sessionServices.setData(IS_SUBMIT_EXAM, true);
     try {
       const payloadRealtime: IPayloadEndExamRealtime = {
@@ -85,18 +84,18 @@ const DoExamRealtime: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (validObject(exam)) {
-      const initAnswers: IAnswers[] = exam.questions.map(
-        (questions: IQuestion) => {
-          const tempArr: IAnswers = {
-            questionID: questions.id,
-            answerID: [],
-          };
-          return tempArr;
-        }
-      );
-      setAnswers(initAnswers);
-    }
+    // if (validObject(exam)) {
+    //   const initAnswers: IAnswers[] = exam.questions.map(
+    //     (questions: IQuestion) => {
+    //       const tempArr: IAnswers = {
+    //         questionID: questions.id,
+    //         answerID: [],
+    //       };
+    //       return tempArr;
+    //     }
+    //   );
+    //   setAnswers(initAnswers);
+    // }
   }, [exam]);
 
   const contextValue: IDoExamContext = {
@@ -105,7 +104,7 @@ const DoExamRealtime: React.FC = () => {
 
   return isLogin() ? (
     <DoExamProvider value={contextValue}>
-      <HeaderDoExam />
+      <HeaderDoExam submited={submited} />
       {loading ? (
         <DoExamSkelenton />
       ) : (

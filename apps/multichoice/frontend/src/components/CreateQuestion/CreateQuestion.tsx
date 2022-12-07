@@ -174,9 +174,8 @@ const CreateQuestion: React.FC = () => {
 
   useEffect(() => {
     const subscription = watch(({ type, answers }) => {
-      console.log(answers);
-
       if (type === QuestionTypeEnum.SINGLE) {
+        console.log(answers);
         const correctAnswer = answers?.find((answer) => answer?.isCorrect);
         setCorrectAnswer(correctAnswer?.content || '');
       }
@@ -237,12 +236,13 @@ const CreateQuestion: React.FC = () => {
                 Đáp án
                 <span className="ml-1 text-red-600">*</span>
               </label>
+              AnswerItem
             </div>
             <div className="answer-body">
               {fields.map((item: CreatAnswer, index: number) => {
                 return (
                   <AnswerItem
-                    key={index}
+                    key={item.isCorrect + ''}
                     indexAnswer={index}
                     lengthAnswers={watch('answers').length}
                     correctAnswer={correctAnswer}
