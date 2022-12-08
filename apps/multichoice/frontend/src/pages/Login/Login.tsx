@@ -11,7 +11,7 @@ import { AxiosResponse } from 'axios';
 import { iNotification } from 'react-notifications-component';
 import { useQuery } from '../../hooks/useQuery';
 import { userStore } from '../../store/rootReducer';
-import { titleServices } from '../../services/TitleServices';
+import { titleServices } from '../../services/Title/TitleServices';
 import { authenServices } from '../../services/Authen/AuthenServices';
 import { ILoginResponse } from '../../types';
 import { localServices } from '../../services/Applications/LocalServices';

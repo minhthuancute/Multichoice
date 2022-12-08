@@ -24,7 +24,7 @@ const EditTest: React.FC = () => {
           <QuestionList />
         </div>
       ) : (
-        <EmptyData>Hiện tại bạn chưa có câu hỏi nào!</EmptyData>
+        <EmptyData>Bộ đề chưa có câu hỏi nào!</EmptyData>
       )}
     </div>
   );

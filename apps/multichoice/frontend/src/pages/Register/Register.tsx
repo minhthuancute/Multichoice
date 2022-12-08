@@ -14,7 +14,7 @@ import { useQuery } from '../../hooks/useQuery';
 import { authenServices } from '../../services/Authen/AuthenServices';
 import { notify } from '../../helper/notify';
 import { acceptTerm, emailExisted } from '../../constants/msgNotify';
-import { titleServices } from '../../services/TitleServices';
+import { titleServices } from '../../services/Title/TitleServices';
 import InputAuthen from '../../components/Commons/InputAuthen/InputAuthen';
 import Checkbox from '../../components/Commons/Checkbox/Checkbox';
 import AuthenLayout from '../../layouts/AuthenLayout';

@@ -1,7 +1,7 @@
 import React, { useLayoutEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import HeaderAuthen from '../components/Authen/HeaderAuthen/HeaderAuthen';
-import { titleServices } from '../services/TitleServices';
+import { titleServices } from '../services/Title/TitleServices';
 
 interface ILayout {
   children?: React.ReactNode;
