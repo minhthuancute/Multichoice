@@ -11,10 +11,10 @@ import { AxiosResponse } from 'axios';
 import { iNotification } from 'react-notifications-component';
 import { useQuery } from '../../hooks/useQuery';
 import { userStore } from '../../store/rootReducer';
-import { titleServices } from '../../services/TitleServices';
-import { authenServices } from '../../services/AuthenServices';
+import { titleServices } from '../../services/Title/TitleServices';
+import { authenServices } from '../../services/Authen/AuthenServices';
 import { ILoginResponse } from '../../types';
-import { localServices } from '../../services/LocalServices';
+import { localServices } from '../../services/Applications/LocalServices';
 import { TOKEN } from '../../constants/contstants';
 import { notify } from '../../helper/notify';
 import { loginError } from '../../constants/msgNotify';
@@ -81,13 +81,15 @@ const Login: React.FC = () => {
     <AuthenLayout>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="form"
+        className="form-login"
         autoComplete="off"
       >
         <div className="form-header mb-10 flex items-center md:flex-col xs:flex-col text-center">
-          <h2 className="font-medium text-black mb-4 text-3xl">Login</h2>
+          <h2 className="font-medium text-black text-3xl">
+            Login to Multichoice
+          </h2>
           <p className="text-slate-800 text-sm">
-            Enter yor email address and password to get access account
+            Enter yor email address and password <br /> to get access account
           </p>
         </div>
 

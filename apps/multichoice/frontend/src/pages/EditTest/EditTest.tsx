@@ -1,46 +1,31 @@
-import React, { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import EmptyData from '../../components/Commons/EmptyData/EmptyData';
 import HeaderEditTest from '../../components/EditTest/HeaderEditTest';
 import QuestionList from '../../components/QuestionList/QuestionList';
+import { validObject } from '../../helper/validObject';
 import { withBackTop } from '../../HOCs/withBackTop';
-import { topicServices } from '../../services/TopicServices';
 import { topicStore } from '../../store/rootReducer';
-import { ITopicDetailResponse } from '../../types';
 
 const EditTest: React.FC = () => {
-  const query = useParams();
-  const navigate = useNavigate();
-  const { setTopicDetail } = topicStore();
-
-  const getTopicDetail = async () => {
-    const { id } = query;
-    try {
-      const { data } = await topicServices.getTopicById(Number(id));
-      setTopicDetail(data);
-    } catch {
-      navigate('/');
-    }
-  };
+  const { id } = useParams();
+  const { topic, getTopic } = topicStore();
 
   useEffect(() => {
-    getTopicDetail();
-    return () => {
-      setTopicDetail({} as ITopicDetailResponse);
-    };
+    getTopic(Number(id));
   }, []);
 
   return (
     <div className="edit-test">
       <HeaderEditTest />
 
-      <div
-        className="pt-5 pb-10 bg-slate-100"
-        style={{
-          minHeight: 'calc(100vh - 228px)',
-        }}
-      >
-        <QuestionList />
-      </div>
+      {validObject(topic.questions) ? (
+        <div className="pt-5 pb-10">
+          <QuestionList />
+        </div>
+      ) : (
+        <EmptyData>Bộ đề chưa có câu hỏi nào!</EmptyData>
+      )}
     </div>
   );
 };

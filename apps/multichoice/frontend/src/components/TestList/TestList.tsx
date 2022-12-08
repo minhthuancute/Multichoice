@@ -2,11 +2,12 @@ import { TopicTimeTypeEnum } from '@monorepo/multichoice/constant';
 import React, { useEffect, useState } from 'react';
 import { TOPIC_LIST } from '../../constants/contstants';
 import { useQuery } from '../../hooks/useQuery';
-import { localServices } from '../../services/LocalServices';
-import { topicServices } from '../../services/TopicServices';
+import { localServices } from '../../services/Applications/LocalServices';
+import { topicServices } from '../../services/Title/TopicServices';
+import { ITopic } from '../../types';
 import { ITopicLocal } from '../../types/ICommons';
-import { ITopicResponse } from '../../types/TopicResponse';
 import { removeVietnameseTones } from '../../utils/remove_vietnamese_tones';
+import EmptyData from '../Commons/EmptyData/EmptyData';
 import TestItem, { ITestItem } from '../TestItem/TestItem';
 import DeleteTest from './DeleteTest';
 
@@ -38,8 +39,8 @@ const TestList: React.FC = () => {
         page: page,
         take: 10,
       });
-      const topicResponse: ITopicResponse[] = data.data;
-      const topicsData = topicResponse.map((test: ITopicResponse) => {
+      const topicResponse: ITopic[] = data.result;
+      const topicsData = topicResponse.map((test) => {
         const testData: ITestItem = {
           topicUrl: test.url,
           id: test.id,
@@ -55,7 +56,7 @@ const TestList: React.FC = () => {
       setTestList(topicsData);
 
       const testsTitle: ITopicLocal[] = topicResponse.map(
-        (test: ITopicResponse) =>
+        (test) =>
           ({
             id: test.id,
             title: test.title,
@@ -121,9 +122,7 @@ const TestList: React.FC = () => {
             />
           ))
         ) : (
-          <p className="font-semibold text-red-500 text-center mt-10 text-tiny">
-            {/* Hiện tại bạn chưa có đề thi nào! */}
-          </p>
+          <EmptyData>Hiện tại bạn chưa có đề thi nào!</EmptyData>
         )}
       </div>
     </>

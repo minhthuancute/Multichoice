@@ -20,30 +20,17 @@ export interface IQuestion {
   answers: IAnswer[];
 }
 
-export interface ITopicResponse {
+export interface ITopic {
   url: string;
   createdAt: string;
   updatedAt: string;
   id: number;
-  typeCategoryName: `${TopicCategoryEnum}`;
+  typeCategoryName: TopicCategoryEnum;
   timeType: string;
   title: string;
   description: string | null;
   isDraft: boolean;
   expirationTime: number;
   questionsCount: number;
-}
-
-export interface ITopicDetailResponse {
-  url: string;
-  createdAt: string;
-  updatedAt: string;
-  id: number;
-  typeCategoryName: `${TopicCategoryEnum}`;
-  timeType: string;
-  title: string;
-  description: string | null;
-  isDraft: boolean;
-  expirationTime: number;
   questions: IQuestion[];
 }

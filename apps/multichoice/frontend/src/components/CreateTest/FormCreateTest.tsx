@@ -10,7 +10,7 @@ import {
   TopicCategoryEnum,
   TopicTimeTypeEnum,
 } from '@monorepo/multichoice/constant';
-import { topicServices } from '../../services/TopicServices';
+import { topicServices } from '../../services/Title/TopicServices';
 import { useNavigate } from 'react-router-dom';
 import { topicStore } from '../../store/rootReducer';
 import {
@@ -29,7 +29,7 @@ const schemaFormCreateTest = yup.object().shape({
 
 const FormCreateTest: React.FC = () => {
   const navigate = useNavigate();
-  const { setTopicData } = topicStore();
+  const { getTopic } = topicStore();
 
   const {
     register,
@@ -42,7 +42,7 @@ const FormCreateTest: React.FC = () => {
       description: '',
       expirationTime: secondsToMinutes(1000 * 60),
       isDraft: false,
-      isPrivate: false,
+      isPublic: false,
       timeType: TopicTimeTypeEnum.FIXEDTIME,
       title: '',
       typeCategoryName: TopicCategoryEnum.PROGRAMMING,
@@ -93,7 +93,7 @@ const FormCreateTest: React.FC = () => {
       if (data.success) {
         const topicId = data.data.id;
         const urlNavigate = '/tests/edit/' + topicId;
-        setTopicData(data.data);
+        // getTopic(data.data);
         navigate(urlNavigate);
       }
     } catch (error) {

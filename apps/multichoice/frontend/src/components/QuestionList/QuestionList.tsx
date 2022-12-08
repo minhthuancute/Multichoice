@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { iNotification } from 'react-notifications-component';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { deleteQuestionSuccess } from '../../constants/msgNotify';
 import { notify } from '../../helper/notify';
-import { questionServices } from '../../services/QuestionServices';
-import { topicServices } from '../../services/TopicServices';
+import { questionServices } from '../../services/Question/QuestionServices';
+import { topicServices } from '../../services/Title/TopicServices';
 import { topicStore } from '../../store/rootReducer';
 import { IQuestion } from '../../types';
 import ModalConfirm from '../Commons/ModalConfirm/ModalConfirm';
@@ -14,30 +14,23 @@ import QuestionItem from '../QuestionItem/QuestionItem';
 import UpdateQuestion from '../UpdateQuestion/UpdateQuestion';
 
 const QuestionList: React.FC = () => {
-  const query = useParams();
-  const { topicDetail, setTopicDetail } = topicStore();
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-  const [visibleModal, setVisibleModal] = useState<boolean>(false);
+  const { topic, getTopic } = topicStore();
+
+  const [visibleModalDelete, setVisibleModalDelete] = useState<boolean>(false);
+  const [visibleModalUpdate, setVisibleModalUpdate] = useState<boolean>(false);
   const [question, setQuestion] = useState<IQuestion>({} as IQuestion);
 
   const onClickUpdateQuestion = (question: IQuestion) => {
     setQuestion(question);
-    setVisibleModal(true);
+    setVisibleModalUpdate(true);
   };
 
   const onClickDeleteQuestion = (question: IQuestion) => {
     setQuestion(question);
-    setVisibleModal(true);
-  };
-
-  const getTopicDetail = async () => {
-    const { id } = query;
-    try {
-      const { data } = await topicServices.getTopicById(Number(id));
-      setTopicDetail(data);
-    } catch {
-      //
-    }
+    setVisibleModalDelete(true);
   };
 
   const deleteQuestion = async (questionId = -1) => {
@@ -49,7 +42,7 @@ const QuestionList: React.FC = () => {
           type: 'success',
         } as iNotification);
 
-        getTopicDetail();
+        getTopic(Number(id));
       }
     } catch (error) {
       notify({
@@ -57,15 +50,15 @@ const QuestionList: React.FC = () => {
         type: 'danger',
       } as iNotification);
     }
-    setVisibleModal(false);
+    setVisibleModalDelete(false);
   };
 
   return (
     <>
       <ModalConfirm
-        visible={visibleModal}
+        visible={visibleModalDelete}
         onConfirm={deleteQuestion}
-        onCancle={() => setVisibleModal(false)}
+        onCancle={() => setVisibleModalDelete(false)}
         title={
           <>
             Bạn có chắc chắn muốn xóa bỏ câu hỏi:{' '}
@@ -78,15 +71,18 @@ const QuestionList: React.FC = () => {
         }
       />
 
-      <Modal visible={visibleModal} setVisibleModal={setVisibleModal}>
+      <Modal
+        visible={visibleModalUpdate}
+        setVisibleModal={setVisibleModalUpdate}
+      >
         <UpdateQuestion
           questionData={question}
-          setVisibleModalEditQuestion={setVisibleModal}
+          setVisibleModalEditQuestion={setVisibleModalUpdate}
         />
       </Modal>
 
-      {topicDetail.questions &&
-        topicDetail.questions.map((question: IQuestion, index: number) => {
+      {topic.questions &&
+        topic.questions.map((question: IQuestion, index: number) => {
           return (
             <QuestionItem
               onClickDeleteQuestion={onClickDeleteQuestion}

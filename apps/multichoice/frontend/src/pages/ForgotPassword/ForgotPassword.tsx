@@ -8,7 +8,7 @@ import { validation } from '@monorepo/multichoice/validation';
 import { LoginUserDto } from '@monorepo/multichoice/dto';
 import { useQuery } from '../../hooks/useQuery';
 import { userStore } from '../../store/rootReducer';
-import { titleServices } from '../../services/TitleServices';
+import { titleServices } from '../../services/Title/TitleServices';
 
 import InputAuthen from '../../components/Commons/InputAuthen/InputAuthen';
 import AuthenLayout from '../../layouts/AuthenLayout';

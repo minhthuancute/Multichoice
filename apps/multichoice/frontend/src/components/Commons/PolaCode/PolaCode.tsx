@@ -15,8 +15,6 @@ const PolaCode: React.FC<IPolaCodeProps> = ({ content, className = '' }) => {
 
   const handleZoomImage = () => {
     const imgsEditor = editorRef.current?.querySelectorAll('img');
-    console.log(imgsEditor);
-
     if (imgsEditor) {
       imgsEditor.forEach((imgElement) => {
         imgElement.addEventListener('click', function () {
@@ -35,7 +33,6 @@ const PolaCode: React.FC<IPolaCodeProps> = ({ content, className = '' }) => {
   return (
     <>
       <Modal
-        placement="CENTER"
         visible={visibleModal}
         setVisibleModal={setVisibleModal}
         size="xxl"

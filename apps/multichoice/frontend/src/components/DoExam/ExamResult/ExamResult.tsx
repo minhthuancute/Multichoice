@@ -2,6 +2,11 @@ import React from 'react';
 import Button from '../../Commons/Button/Button';
 import Modal from '../../Commons/Modal/Modal';
 
+export interface IExamResult {
+  userName: string;
+  point: number;
+}
+
 interface IExamResultProps {
   setVisibleModal?: React.Dispatch<React.SetStateAction<boolean>>;
   visibleModal?: boolean;
@@ -19,7 +24,7 @@ const ExamResult: React.FC<IExamResultProps> = ({
       setVisibleModal={setVisibleModal}
       placement="CENTER"
     >
-      <div className="flex flex-col justify-center bg-white rounded-md py-6">
+      <div className="flex flex-col justify-center bg-white rounded-md">
         <div className="header text-center">
           <h2 className="text-slate-800 text-xl font-semibold capitalize">
             Kết quả làm bài

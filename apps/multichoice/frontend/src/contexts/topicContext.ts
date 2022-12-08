@@ -1,12 +1,12 @@
 import React, { createContext } from 'react';
 import { ITestItem } from '../components/TestItem/TestItem';
-import { ITopicResponse } from '../types';
+import { ITopic } from '../types';
 
 export interface ITopicContextValues {
-  topics: ITopicResponse[] | null;
+  topics: ITopic[] | null;
   tests: ITestItem[] | null;
   // setTopicData: (topicData: ITopicResponse) => void;
-  setTopics: React.Dispatch<React.SetStateAction<ITopicResponse[] | null>>;
+  setTopics: React.Dispatch<React.SetStateAction<ITopic[] | null>>;
   getTopics: () => void;
 }
 

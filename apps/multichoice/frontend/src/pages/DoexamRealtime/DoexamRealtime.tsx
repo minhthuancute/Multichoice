@@ -9,24 +9,19 @@ import { ITestRealtimeRecord } from '../../types/ICommons';
 import { fireGet } from '../../utils/firebase_utils';
 import DoExamSkelenton from '../../components/DoExam/DoExamSkelenton/DoExamSkelenton';
 import { IQuestion } from '../../types';
-import { sessionServices } from '../../services/SessionServices';
-import {
-  examServices,
-  IPayloadEndExamRealtime,
-} from '../../services/ExamServices';
+import { sessionServices } from '../../services/Applications/SessionServices';
+import { examServices } from '../../services/Exam/ExamServices';
 import { notify } from '../../helper/notify';
 import { iNotification } from 'react-notifications-component';
 import ShowQuestion from '../../components/DoExam/ShowQuestion/ShowQuestion';
 import NavQuestion from '../../components/DoExam/NavQuestion/NavQuestion';
 import { validObject } from '../../helper/validObject';
 import { isLogin } from '../../utils/check_logged';
-import ExamResult from '../../components/DoExam/ExamResult/ExamResult';
+import ExamResult, {
+  IExamResult,
+} from '../../components/DoExam/ExamResult/ExamResult';
 import { DoExamProvider, IDoExamContext } from '../../contexts/DoExamContext';
-
-interface IExamResult {
-  userName: string;
-  point: number;
-}
+import { IPayloadEndExamRealtime } from '../../services/Exam/type';
 
 const DoExamRealtime: React.FC = () => {
   const { url } = useParams();
@@ -37,11 +32,12 @@ const DoExamRealtime: React.FC = () => {
   const [visibleModalResult, setVisibleModalResult] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [indexQuestion, setIndexQuestion] = useState<number>(0);
-  const [expriedCountdownRealtime, setExpriedCountdownRealtime] =
-    useState<boolean>(false);
+  const [expriedRealtime, setExpriedRealtime] = useState<boolean>(false);
   const [startTimeCountdown, setStartTimeCountdown] = useState<number>(0);
+  const [submited, setSubmited] = useState<boolean>(false);
 
   const handleSubmitExam = async () => {
+    setSubmited(true);
     sessionServices.setData(IS_SUBMIT_EXAM, true);
     try {
       const payloadRealtime: IPayloadEndExamRealtime = {
@@ -88,18 +84,18 @@ const DoExamRealtime: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (validObject(exam)) {
-      const initAnswers: IAnswers[] = exam.questions.map(
-        (questions: IQuestion) => {
-          const tempArr: IAnswers = {
-            questionID: questions.id,
-            answerID: [],
-          };
-          return tempArr;
-        }
-      );
-      setAnswers(initAnswers);
-    }
+    // if (validObject(exam)) {
+    //   const initAnswers: IAnswers[] = exam.questions.map(
+    //     (questions: IQuestion) => {
+    //       const tempArr: IAnswers = {
+    //         questionID: questions.id,
+    //         answerID: [],
+    //       };
+    //       return tempArr;
+    //     }
+    //   );
+    //   setAnswers(initAnswers);
+    // }
   }, [exam]);
 
   const contextValue: IDoExamContext = {
@@ -108,7 +104,7 @@ const DoExamRealtime: React.FC = () => {
 
   return isLogin() ? (
     <DoExamProvider value={contextValue}>
-      <HeaderDoExam />
+      <HeaderDoExam submited={submited} />
       {loading ? (
         <DoExamSkelenton />
       ) : (
@@ -119,14 +115,14 @@ const DoExamRealtime: React.FC = () => {
               indexQuestion={indexQuestion}
               setIndexQuestion={setIndexQuestion}
               startTimeCountdown={startTimeCountdown}
-              expriedCountdownRealtime={expriedCountdownRealtime}
+              expriedRealtime={expriedRealtime}
             />
           </div>
           <div className="w-1/3 xs:hidden lg:block h-full">
             <NavQuestion
               indexQuestion={indexQuestion}
               setIndexQuestion={setIndexQuestion}
-              expriedCountdownRealtime={expriedCountdownRealtime}
+              expriedRealtime={expriedRealtime}
               startTimeCountdown={startTimeCountdown}
             />
           </div>

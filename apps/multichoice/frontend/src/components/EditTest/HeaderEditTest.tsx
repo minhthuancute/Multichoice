@@ -14,11 +14,11 @@ import { topicStore } from '../../store/rootReducer';
 import { validObject } from '../../helper/validObject';
 
 const HeaderEditTest: React.FC = () => {
-  const { topicDetail } = topicStore();
+  const { topic } = topicStore();
   const [visibleModalEditTest, setVisibleModalEditTest] =
     useState<boolean>(false);
 
-  return validObject(topicDetail) ? (
+  return validObject(topic) ? (
     <div className="bg-white">
       <Modal
         visible={visibleModalEditTest}
@@ -33,18 +33,16 @@ const HeaderEditTest: React.FC = () => {
             <Link to="/tests">Đề thi</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
-            <div>{topicDetail.title}</div>
+            <div>{topic.title}</div>
           </Breadcrumb.Item>
         </Breadcrumb>
 
         <div className="mt-4 flex items-start justify-between">
           <div>
             <h3 className="text-slate-800 text-xl font-semibold">
-              {topicDetail.title}
+              {topic.title}
             </h3>
-            <p className="text-slate-800 text-sm mt-1">
-              {topicDetail.description}
-            </p>
+            <p className="text-slate-800 text-sm mt-1">{topic.description}</p>
           </div>
           <div className="ctas">
             <ToolTip title="Cập nhật đề thi">
@@ -63,17 +61,17 @@ const HeaderEditTest: React.FC = () => {
         <ul className="left flex items-center">
           <li className="flex items-center text-sm mr-3">
             <BsCalendarDate className="text-slate-500 mr-2" />
-            <span>{getDate(topicDetail.createdAt)}</span>
+            <span>{getDate(topic.createdAt)}</span>
           </li>
           <li className="flex items-center text-sm mr-3">
             <AiOutlineQuestionCircle className="text-slate-800 mr-1" />
-            <span>{topicDetail?.questions.length || 0} câu hỏi</span>
+            <span>{topic?.questions.length || 0} câu hỏi</span>
           </li>
           <li className="flex items-center text-sm">
             <AiOutlineFieldTime className="text-slate-800 mr-1 text-base" />
             <span>
-              {secondsToMinutes(topicDetail.expirationTime)} phút{' '}
-              {topicDetail.timeType.toUpperCase() === 'REALTIME'
+              {secondsToMinutes(topic.expirationTime)} phút{' '}
+              {topic.timeType.toUpperCase() === 'REALTIME'
                 ? ' (Realtime)'
                 : null}
             </span>
@@ -81,7 +79,7 @@ const HeaderEditTest: React.FC = () => {
         </ul>
         <div className="right">
           <Link
-            to={'/questions/create?topic_id=' + topicDetail.id}
+            to={'/questions/create?topic_id=' + topic.id}
             className="btn-success rounded-md bg-primary-900 text-sm
             text-white font-bold flex justify-center items-center px-4 h-10 transition-all
             duration-200 hover:bg-primary-800

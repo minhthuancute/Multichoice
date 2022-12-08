@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import DefaultLayout from '../../layouts/DefaultLayout';
 
-const Notfound: React.FC = () => {
+const PageNotfound: React.FC = () => {
   return (
     <DefaultLayout>
       <div className="mt-16">
@@ -21,4 +21,4 @@ const Notfound: React.FC = () => {
   );
 };
 
-export default Notfound;
+export default PageNotfound;

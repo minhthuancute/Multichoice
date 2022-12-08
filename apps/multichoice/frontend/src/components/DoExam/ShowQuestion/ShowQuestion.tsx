@@ -1,19 +1,16 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { BiSkipNext, BiSkipPrevious } from 'react-icons/bi';
-import { iNotification } from 'react-notifications-component';
-import { notify } from '../../../helper/notify';
-import { answerStore, examStore, IAnswers } from '../../../store/rootReducer';
+import { answerStore, examStore } from '../../../store/rootReducer';
 import { IAnswer, IQuestion } from '../../../types';
 import ConfirmSubmit from '../ConfirmSubmit/ConfirmSubmit';
 import CountDown from '../../Commons/CountDown/CountDown';
-import { IS_SUBMIT_EXAM, START_TIME } from '../../../constants/contstants';
+import { START_TIME } from '../../../constants/contstants';
 import { classNames } from '../../../helper/classNames';
 import ToolTip from '../../Commons/ToolTip/ToolTip';
 import PolaCode from '../../Commons/PolaCode/PolaCode';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
-import { expriedTime, submited } from '../../../constants/msgNotify';
 import TextArea from '../../Commons/TextArea/TextArea';
-import { sessionServices } from '../../../services/SessionServices';
+import { sessionServices } from '../../../services/Applications/SessionServices';
 import { validArray } from '../../../helper/validArray';
 import './style.scss';
 
@@ -23,7 +20,7 @@ interface IShowQuestionProps {
   indexQuestion: number;
   setIndexQuestion: React.Dispatch<React.SetStateAction<number>>;
   startTimeCountdown?: number;
-  expriedCountdownRealtime?: boolean;
+  expriedRealtime?: boolean;
   isSubmited?: boolean;
 }
 
@@ -32,15 +29,14 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
   indexQuestion = 0,
   setIndexQuestion,
   startTimeCountdown = 0,
-  expriedCountdownRealtime = false,
+  expriedRealtime = false,
   isSubmited = false,
 }) => {
-  const { setDataExamResult, exam, isExpriedExam } = examStore();
+  const { exam } = examStore();
   const { answers, updateAnswer, userDoExam } = answerStore();
 
-  const [confirmSubmit, setConfirmSubmit] = useState<boolean>(false);
   const [visibleModal, setVisibleModal] = useState<boolean>(false);
-  const [visibleModalResult, setVisibleModalResult] = useState<boolean>(false);
+  const [visibleModalSubmit, setVisibleModalSubmit] = useState<boolean>(false);
   const [errorMsgSubmit, setErrorMsgSubmit] = useState<string>('');
 
   const startTime: number = sessionServices.getData(START_TIME) || 0;
@@ -71,37 +67,6 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
     updateAnswer(questionID, answerID, questionType);
   };
 
-  const countUnSelectAnswer = (): number => {
-    const count = answers.filter((answer: IAnswers) => {
-      return answer?.answerID.length === 0;
-    });
-    return count.length;
-  };
-
-  const onClickSubmit = () => {
-    // if (isExpriedExam) {
-    //   setErrorMsgSubmit(expriedTime);
-    //   notify({
-    //     message: expriedTime,
-    //     type: 'danger',
-    //   } as iNotification);
-    //   return;
-    // }
-    // if (isSubmited) {
-    //   setErrorMsgSubmit(submited);
-    //   notify({
-    //     message: submited,
-    //     type: 'danger',
-    //   } as iNotification);
-    //   return;
-    // }
-    setVisibleModal(true);
-  };
-
-  const onCancleModalConfirm = () => {
-    setVisibleModal(false);
-  };
-
   const isCheckAnswer = (answerID: number): boolean => {
     const shouldChecked = (
       answers[indexQuestion]?.answerID as number[]
@@ -110,26 +75,17 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
     return shouldChecked;
   };
 
-  // useEffect(() => {
-  //   if (confirmSubmit) {
-  //     handleSubmitExam();
-  //     setVisibleModal(false);
-  //   }
-  // }, [confirmSubmit]);
-
   return validArray(questions) ? (
     <div className="w-full h-full">
       <div className="modals">
         <ConfirmSubmit
-          onCancle={onCancleModalConfirm}
-          setConfirmSubmit={setConfirmSubmit}
-          visibleModal={visibleModal}
-          unSelectAnswer={countUnSelectAnswer()}
+          setVisibleModal={setVisibleModalSubmit}
+          visibleModal={visibleModalSubmit}
         />
       </div>
 
       <header className="flex items-start xs:justify-between lg:justify-center">
-        {expriedCountdownRealtime === false ? (
+        {expriedRealtime === false ? (
           <ToolTip title={errorMsgSubmit}>
             <button
               className={classNames(
@@ -139,7 +95,7 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
                   hidden: isSubmited,
                 }
               )}
-              onClick={() => onClickSubmit()}
+              onClick={() => setVisibleModalSubmit(true)}
             >
               Nộp Bài
             </button>
@@ -250,9 +206,13 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
             <TextArea
               key={'answer-' + indexQuestion}
               defaultValue={answers[indexQuestion].answerID}
-              // onChange={(value: string) => {
-              //   onChooseAnswer(value, questions[indexQuestion].type);
-              // }}
+              onInput={(e: ChangeEvent<HTMLAreaElement>) => {
+                onChooseAnswer(
+                  e.target.textContent as string,
+                  questions[indexQuestion].type
+                );
+                console.log('abasjcbj', e.target.textContent);
+              }}
               placeholder="Nhập câu trả lời..."
             />
           ) : null}

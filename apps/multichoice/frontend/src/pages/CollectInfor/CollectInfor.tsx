@@ -16,9 +16,7 @@ import {
   useNavigate,
   useParams,
 } from 'react-router-dom';
-import { examServices } from '../../services/ExamServices';
-import { IExamResponse, IQuestion } from '../../types';
-import { localServices } from '../../services/LocalServices';
+import { localServices } from '../../services/Applications/LocalServices';
 import {
   IS_SUBMIT_EXAM,
   START_EXAM,
@@ -26,8 +24,7 @@ import {
   TOKEN,
 } from '../../constants/contstants';
 import { examDetailStore } from '../../store/Exam/examDetailStore';
-import { TopicTimeTypeEnum } from '@monorepo/multichoice/constant';
-import { sessionServices } from '../../services/SessionServices';
+import { sessionServices } from '../../services/Applications/SessionServices';
 
 const schemaInfor = yup
   .object()
