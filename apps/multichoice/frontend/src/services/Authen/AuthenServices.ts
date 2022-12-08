@@ -1,5 +1,5 @@
 import { axiosClient } from '../Api';
-import { CreateUserDto } from '@monorepo/multichoice/dto';
+import { CreateUserDto, ForgotPasswordDto } from '@monorepo/multichoice/dto';
 import { LoginUserDto } from '@monorepo/multichoice/dto';
 
 export const authenServices = {
@@ -10,6 +10,11 @@ export const authenServices = {
 
   register(payload: CreateUserDto) {
     const data = axiosClient.post('/auth/register', payload);
+    return data;
+  },
+
+  forgotPassword(payload: ForgotPasswordDto) {
+    const data = axiosClient.post('/auth/forgotpassword', payload);
     return data;
   },
 };

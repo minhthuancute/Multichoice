@@ -1,4 +1,3 @@
-import { IAnswers } from '../../store/rootReducer';
 import { axiosClient } from '../Api';
 import {
   IPayloadDeleteUserExam,
@@ -11,24 +10,27 @@ import {
 
 export const examServices = {
   getExamByUrl(url: string) {
-    return axiosClient.get('/gettopicbyurl?url=' + url);
+    const data = axiosClient.get('/gettopicbyurl?url=' + url);
+    return data;
   },
 
   startExam(payload: IPayloadStartExam) {
-    return axiosClient.post('/exam/start', payload);
+    const data = axiosClient.post('/exam/start', payload);
+    return data;
   },
 
   submitExam(payload: IPayloadEndExam) {
-    return axiosClient.post('/exam/end', payload);
+    const data = axiosClient.post('/exam/end', payload);
+    return data;
   },
 
   async submitExamRealtime(payload: IPayloadEndExamRealtime) {
-    const { data } = await axiosClient.post('/examrealtime/end', payload);
+    const data = await axiosClient.post('/examrealtime/end', payload);
     return data;
   },
 
   async getListExamByTopicId(payload: IPayloadgetListExamByTopicId) {
-    const { data } = await axiosClient.get(
+    const data = await axiosClient.get(
       '/getListexambytopicid/' + payload.topicID
     );
     return data;

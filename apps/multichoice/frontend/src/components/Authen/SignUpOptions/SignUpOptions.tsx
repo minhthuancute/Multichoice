@@ -1,18 +1,9 @@
 import React from 'react';
-import { classNames } from '../../../helper/classNames';
 
-interface ISignupOption {
-  isLoginPage?: boolean;
-}
-
-const SignUpOptions: React.FC<ISignupOption> = ({ isLoginPage = false }) => {
+const SignUpOptions: React.FC = () => {
   return (
-    <div className="signup-options flex flex-col">
-      <div
-        className={classNames('line my-10 order-1', {
-          'order-3 ': !isLoginPage,
-        })}
-      >
+    <div className="signup-options">
+      <div className="line my-6">
         <p
           className="flex items-center before:w-1/2
           before:h-0.5 after:w-1/2 after:h-0.5 before:bg-slate-100 after:bg-slate-100"

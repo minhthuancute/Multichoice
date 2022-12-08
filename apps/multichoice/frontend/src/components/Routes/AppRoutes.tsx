@@ -25,7 +25,7 @@ const AppRoutes = () => {
     <Routes>
       <Route
         path=""
-        element={<PublicRoute Component={<AuthenLayout />} restricted={true} />}
+        element={<PublicRoute Component={AuthenLayout} restricted={true} />}
       >
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />

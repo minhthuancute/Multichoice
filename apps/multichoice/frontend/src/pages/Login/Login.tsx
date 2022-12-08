@@ -19,9 +19,9 @@ import { TOKEN } from '../../constants/contstants';
 import { notify } from '../../helper/notify';
 import { loginError } from '../../constants/msgNotify';
 import InputAuthen from '../../components/Commons/InputAuthen/InputAuthen';
-import AuthenLayout from '../../layouts/AuthenLayout';
 import { RedirectQuery } from '../../types/AuthenQuery';
 import Button from '../../components/Commons/Button/Button';
+import SignUpOptions from '../../components/Authen/SignUpOptions/SignUpOptions';
 
 const { email, password } = validation();
 const schemaFormLogin = yup
@@ -65,7 +65,7 @@ const Login: React.FC = () => {
           navigate('/');
         }
       }
-    } catch (error) {
+    } catch {
       notify({
         message: loginError,
         type: 'danger',
@@ -78,60 +78,60 @@ const Login: React.FC = () => {
   }, []);
 
   return (
-    <AuthenLayout>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="form-login"
-        autoComplete="off"
-      >
-        <div className="form-header mb-10 flex items-center md:flex-col xs:flex-col text-center">
-          <h2 className="font-medium text-black text-3xl">
-            Login to Multichoice
-          </h2>
-          <p className="text-slate-800 text-sm">
-            Enter yor email address and password <br /> to get access account
-          </p>
-        </div>
+    <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
+      <div className="form-header mb-8 flex items-center md:flex-col xs:flex-col text-center">
+        <h2 className="font-medium text-slate-800 text-2xl">
+          Login to Multichoice
+        </h2>
+      </div>
 
-        <InputAuthen
-          registerField={register('email')}
-          isError={Boolean(errors.email)}
-          errMessage={errors.email?.message}
-          placeholder="Email Address"
-          type="email"
-          Icon={MdOutlineMail}
-          id="email"
-        />
+      <InputAuthen
+        registerField={register('email')}
+        isError={Boolean(errors.email)}
+        errMessage={errors.email?.message}
+        placeholder="Email Address"
+        type="email"
+        Icon={MdOutlineMail}
+        id="email"
+      />
 
-        <InputAuthen
-          className="mt-5"
-          registerField={register('password')}
-          isError={Boolean(errors.password)}
-          errMessage={errors.password?.message}
-          placeholder="Password"
-          type="password"
-          Icon={VscUnlock}
-          id="password"
-        />
+      <InputAuthen
+        className="mt-5"
+        registerField={register('password')}
+        isError={Boolean(errors.password)}
+        errMessage={errors.password?.message}
+        placeholder="Password"
+        type="password"
+        Icon={VscUnlock}
+        id="password"
+      />
 
-        <div className="remember-me flex justify-end mt-5 text-slate-800">
-          <Link
-            to="/forgot-password"
-            className="text-sm transition-all duration-200 hover:text-primary-900"
-          >
-            Forgot password?
+      <div className="remember-me flex justify-end mt-2 text-slate-800">
+        <Link
+          to="/forgot-password"
+          className="text-sm transition-all duration-200 hover:text-primary-900"
+        >
+          Forgot password?
+        </Link>
+      </div>
+
+      <div className="submit mt-5">
+        <Button type="submit" widthFull color="success" size="lg">
+          Sign in
+        </Button>
+      </div>
+
+      <div className="text-center mt-3">
+        <p className="text-slate-800">
+          Don't have account ?
+          <Link to="/register" className="inline-block ml-1 text-primary-900">
+            Sign up now !
           </Link>
-        </div>
+        </p>
+      </div>
 
-        <div className="submit mt-5">
-          <Button type="submit" widthFull color="success" size="lg">
-            Sign in
-          </Button>
-        </div>
-
-        {/* <SignUpOptions isLoginPage={true} /> */}
-      </form>
-    </AuthenLayout>
+      <SignUpOptions />
+    </form>
   );
 };
 

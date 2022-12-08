@@ -11,6 +11,7 @@ const DefaultLayout: React.FC<ILayout> = ({ children }) => {
     <div className="layout-default">
       <Header />
       <main className="layout-default__main">
+        {children}
         <Outlet />
       </main>
     </div>

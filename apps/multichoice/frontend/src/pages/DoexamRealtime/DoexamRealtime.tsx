@@ -45,15 +45,13 @@ const DoExamRealtime: React.FC = () => {
         userID: userDoExam.userId,
         answerUsers: answers,
       };
-      const { data, success } = await examServices.submitExamRealtime(
-        payloadRealtime
-      );
+      const { data } = await examServices.submitExamRealtime(payloadRealtime);
 
-      if (success) {
+      if (data.success) {
         setVisibleModalResult(true);
         setResult({
-          userName: data.username,
-          point: data.point,
+          userName: data.data.username,
+          point: data.data.point,
         });
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
