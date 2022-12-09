@@ -4,7 +4,7 @@ import { fireGet, fireUpdate } from '../../utils/firebase_utils';
 import Button from '../Commons/Button/Button';
 import Modal from '../Commons/Modal/Modal';
 
-interface IHandlelayTestProps {
+interface IPlayTestRealtimeProps {
   visibleModal: boolean;
   setVisibleModal: React.Dispatch<React.SetStateAction<boolean>>;
   topicUrl: string;
@@ -12,7 +12,7 @@ interface IHandlelayTestProps {
   isPlaytest: boolean;
 }
 
-const HandlelayTest: React.FC<IHandlelayTestProps> = ({
+const PlayTestRealtime: React.FC<IPlayTestRealtimeProps> = ({
   visibleModal,
   setVisibleModal,
   topicUrl,
@@ -91,4 +91,4 @@ const HandlelayTest: React.FC<IHandlelayTestProps> = ({
   );
 };
 
-export default HandlelayTest;
+export default PlayTestRealtime;

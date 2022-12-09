@@ -15,17 +15,12 @@ import { validObject } from '../../helper/validObject';
 
 const HeaderEditTest: React.FC = () => {
   const { topic } = topicStore();
-  const [visibleModalEditTest, setVisibleModalEditTest] =
-    useState<boolean>(false);
+  const [visibleModal, setVisibleModal] = useState<boolean>(false);
 
   return validObject(topic) ? (
     <div className="bg-white">
-      <Modal
-        visible={visibleModalEditTest}
-        setVisibleModal={setVisibleModalEditTest}
-        size="md"
-      >
-        <FormEditTest setVisibleModalEditTest={setVisibleModalEditTest} />
+      <Modal visible={visibleModal} setVisibleModal={setVisibleModal} size="md">
+        <FormEditTest setVisibleModalEditTest={setVisibleModal} />
       </Modal>
       <div className="container pt-4">
         <Breadcrumb>
@@ -49,7 +44,7 @@ const HeaderEditTest: React.FC = () => {
               <button
                 className="create-test rounded-md bg-slate-800 text-xs
               text-white font-bold flex justify-center items-center px-3 h-8"
-                onClick={() => setVisibleModalEditTest(true)}
+                onClick={() => setVisibleModal(true)}
               >
                 <FaPencilAlt />
               </button>

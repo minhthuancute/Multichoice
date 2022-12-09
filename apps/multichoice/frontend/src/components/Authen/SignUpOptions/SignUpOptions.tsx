@@ -13,14 +13,14 @@ const SignUpOptions: React.FC = () => {
           </span>
         </p>
       </div>
-      <div className="socials order-2">
+      <div className="socials">
         <div className="google">
           <button
             className="w-full flex items-center justify-center border border-solid border-slate-200
-            rounded-md py-4"
+            rounded-md py-2.5"
           >
             <img src="../../assets/images/google.png" alt="login google" />
-            <span className="ml-3 font-medium text-slate-800">
+            <span className="ml-3 font-medium text-slate-800 text-sm">
               Sign up with Google
             </span>
           </button>
@@ -28,10 +28,10 @@ const SignUpOptions: React.FC = () => {
         <div className="facebook mt-5">
           <button
             className="w-full flex items-center justify-center border border-solid border-slate-200
-            rounded-md py-4"
+            rounded-md py-2.5"
           >
             <img src="../../assets/images/facebook.png" alt="login google" />
-            <span className="ml-3 font-medium text-slate-800">
+            <span className="ml-3 font-medium text-slate-800 text-sm">
               Sign up with Facebook
             </span>
           </button>

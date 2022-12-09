@@ -8,6 +8,7 @@ import { ITopic } from '../../types';
 import { ITopicLocal } from '../../types/ICommons';
 import { removeVietnameseTones } from '../../utils/remove_vietnamese_tones';
 import EmptyData from '../Commons/EmptyData/EmptyData';
+import PlayTestRealtime from '../PlayTestRealtime/PlayTestRealtime';
 import TestItem, { ITestItem } from '../TestItem/TestItem';
 import DeleteTest from './DeleteTest';
 
@@ -22,8 +23,9 @@ const TestList: React.FC = () => {
   const [testsFilter, setTestsFilter] = useState<ITestItem[]>([]);
   const [testIdDel, setTestIdDel] = useState<number>(-1);
   const [testTitleDel, setTestTitleDel] = useState<string>('');
-  const [visibleModal, setVisibleModal] = useState<boolean>(false);
-
+  const [visibleModalDelete, setVisibleModalDelete] = useState<boolean>(false);
+  const [visibleModalPlayTest, setVisibleModalPlayTest] =
+    useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
 
   const [paramSearch] = useState<string>(() => {
@@ -90,7 +92,7 @@ const TestList: React.FC = () => {
   };
 
   const handleDeleteTest = (testID: number, title: string) => {
-    setVisibleModal(true);
+    setVisibleModalDelete(true);
     setTestIdDel(testID);
     setTestTitleDel(title);
   };
@@ -101,14 +103,21 @@ const TestList: React.FC = () => {
 
   return (
     <>
+      {/* <PlayTestRealtime
+        visibleModal={visibleModalPlayTest}
+        setVisibleModal={setVisibleModalPlayTest}
+        topicTitle={test.title}
+        topicUrl={test.topicUrl}
+        isPlaytest={isPlaytest}
+      /> */}
       <DeleteTest
         testID={testIdDel}
         testTitle={testTitleDel}
-        visibleModal={visibleModal}
-        setVisibleModal={setVisibleModal}
+        visibleModal={visibleModalDelete}
+        setVisibleModal={setVisibleModalDelete}
         onConfirmDelete={() => {
           getListTest();
-          setVisibleModal(false);
+          setVisibleModalDelete(false);
         }}
       />
 

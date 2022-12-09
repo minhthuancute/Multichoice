@@ -2,10 +2,9 @@ import { Route, Routes } from 'react-router-dom';
 import AuthenLayout from '../../layouts/AuthenLayout';
 import DefaultLayout from '../../layouts/DefaultLayout';
 import ExamLayout from '../../layouts/ExamLayout';
-import CollectInfor from '../../pages/CollectInfor/CollectInfor';
 import CreateTest from '../../pages/CreateTest/CreateTest';
 import DoExam from '../../pages/DoExam/DoExam';
-import DoExamRealtime from '../../pages/DoexamRealtime/DoexamRealtime';
+import DoExamRealtime from '../../pages/DoExamRealtime/DoExamRealtime';
 import EditTest from '../../pages/EditTest/EditTest';
 import ForgotPassword from '../../pages/ForgotPassword/ForgotPassword';
 import Home from '../../pages/Home/Home';
@@ -31,18 +30,6 @@ const AppRoutes = () => {
         <Route path="register" element={<Register />} />
         <Route path="forgot-password" element={<ForgotPassword />} />
       </Route>
-      {/* <Route
-        path="/login"
-        element={<PublicRoute Component={Login} restricted={true} />}
-      />
-      <Route
-        path="/register"
-        element={<PublicRoute Component={Register} restricted={true} />}
-      />
-      <Route
-        path="/forgot-password"
-        element={<PublicRoute Component={ForgotPassword} restricted={true} />}
-      /> */}
 
       <Route path="/" element={<PrivateRoute Component={DefaultLayout} />}>
         <Route index element={<Home />} />
@@ -62,7 +49,6 @@ const AppRoutes = () => {
 
       <Route path="e" element={<ExamLayout />}>
         <Route path=":url/do-exam-realtime" element={<DoExamRealtime />} />
-        <Route path=":url" element={<CollectInfor />} />
         <Route path=":url/do-exam" element={<DoExam />} />
       </Route>
 

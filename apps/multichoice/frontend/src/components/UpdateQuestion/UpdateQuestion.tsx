@@ -59,13 +59,18 @@ const UpdateQuestion: React.FC<IUpdateQuestionprops> = ({
     mode: 'all',
     defaultValues: questionData,
   });
-  const { remove, fields, append } = useFieldArray({
+  const { remove, append } = useFieldArray({
     control,
     name: 'answers',
   });
 
+  const [answers, setAnswers] = useState<CreatAnswer[]>(getValues('answers'));
   const [hideAnswer, setHideAnswer] = useState<boolean>(isQuestionText);
-  const [correctAnswer, setCorrectAnswer] = useState<string>('');
+  const [correctAnswer, setCorrectAnswer] = useState<string>(() => {
+    return (
+      questionData.answers.find((answer) => answer.isCorrect)?.content || ''
+    );
+  });
   const [questionTypes] = useState<IOption[]>(() => {
     const types: QuestionTypeEnum[] = [];
     for (const topic in QuestionTypeEnum) {
@@ -172,7 +177,11 @@ const UpdateQuestion: React.FC<IUpdateQuestionprops> = ({
   };
 
   useEffect(() => {
+    console.log(correctAnswer);
+
     const subscription = watch(({ type, answers }) => {
+      setAnswers(answers as CreatAnswer[]);
+
       if (type === QuestionTypeEnum.SINGLE) {
         const correctAnswer = answers?.find((answer) => answer?.isCorrect);
         setCorrectAnswer(correctAnswer?.content || '');
@@ -246,18 +255,18 @@ const UpdateQuestion: React.FC<IUpdateQuestionprops> = ({
             </label>
           </div>
           <div className="answer-body">
-            {fields.map((item: CreatAnswer, index: number) => {
+            {answers.map((item: CreatAnswer, index: number) => {
               return (
                 <AnswerItem
                   key={item.isCorrect + '' + index}
                   indexAnswer={index}
-                  lengthAnswers={watch('answers').length}
+                  lengthAnswers={answers.length}
                   correctAnswer={correctAnswer}
                   registerFieldContent={register(`answers.${index}.content`)}
                   registerFieldIsCorrect={register(
                     `answers.${index}.isCorrect`
                   )}
-                  answerValue={watch(`answers.${index}.content`)}
+                  answerValue={item.content}
                   questionType={watch('type')}
                   removeAnswer={remove}
                 />

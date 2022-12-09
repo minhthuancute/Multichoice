@@ -4,18 +4,16 @@ import React, { useEffect, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import HeaderDoExam from '../../components/DoExam/HeaderDoExam/HeaderDoExam';
 import { IS_SUBMIT_EXAM } from '../../constants/contstants';
-import { answerStore, examStore, IAnswers } from '../../store/rootReducer';
+import { answerStore, examStore } from '../../store/rootReducer';
 import { ITestRealtimeRecord } from '../../types/ICommons';
 import { fireGet } from '../../utils/firebase_utils';
 import DoExamSkelenton from '../../components/DoExam/DoExamSkelenton/DoExamSkelenton';
-import { IQuestion } from '../../types';
 import { sessionServices } from '../../services/Applications/SessionServices';
 import { examServices } from '../../services/Exam/ExamServices';
 import { notify } from '../../helper/notify';
 import { iNotification } from 'react-notifications-component';
 import ShowQuestion from '../../components/DoExam/ShowQuestion/ShowQuestion';
 import NavQuestion from '../../components/DoExam/NavQuestion/NavQuestion';
-import { validObject } from '../../helper/validObject';
 import { isLogin } from '../../utils/check_logged';
 import ExamResult, {
   IExamResult,
@@ -26,13 +24,13 @@ import { IPayloadEndExamRealtime } from '../../services/Exam/type';
 const DoExamRealtime: React.FC = () => {
   const { url } = useParams();
   const { exam, getExam } = examStore();
-  const { userDoExam, setAnswers, answers } = answerStore();
+  const { userDoExam, answers } = answerStore();
 
   const [result, setResult] = useState<IExamResult>();
   const [visibleModalResult, setVisibleModalResult] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [indexQuestion, setIndexQuestion] = useState<number>(0);
-  const [expriedRealtime, setExpriedRealtime] = useState<boolean>(false);
+  const [expriedRealtime] = useState<boolean>(false);
   const [startTimeCountdown, setStartTimeCountdown] = useState<number>(0);
   const [submited, setSubmited] = useState<boolean>(false);
 

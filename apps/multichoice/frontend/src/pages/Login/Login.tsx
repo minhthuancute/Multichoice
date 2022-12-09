@@ -122,7 +122,7 @@ const Login: React.FC = () => {
       </div>
 
       <div className="text-center mt-3">
-        <p className="text-slate-800">
+        <p className="text-slate-800 text-sm">
           Don't have account ?
           <Link to="/register" className="inline-block ml-1 text-primary-900">
             Sign up now !

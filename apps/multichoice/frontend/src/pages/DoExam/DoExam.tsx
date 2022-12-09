@@ -18,6 +18,7 @@ import {
   IInforUserDoExam,
 } from '../../store/rootReducer';
 import { IPayloadStartExam } from '../../services/Exam/type';
+import { isLogin } from '../../utils/check_logged';
 
 const DoExam: React.FC = () => {
   const navigate = useNavigate();
@@ -25,10 +26,6 @@ const DoExam: React.FC = () => {
   const { getExam } = examStore();
   const { setExamDetailData } = examDetailStore();
   const { userDoExam, setUserDoexamData } = answerStore();
-
-  const getExamInfor = () => {
-    getExam(url || '');
-  };
 
   const startExam = async (id: number) => {
     // getExam(exam_id);
@@ -57,7 +54,7 @@ const DoExam: React.FC = () => {
   };
 
   useEffect(() => {
-    getExamInfor();
+    getExam(url || '');
 
     if (!sessionServices.getData(START_TIME)) {
       sessionServices.setData(START_TIME, Date.now());
@@ -68,13 +65,13 @@ const DoExam: React.FC = () => {
     };
   }, []);
 
-  return localServices.getData(TOKEN) || userDoExam.userName ? (
+  return isLogin() ? (
     <div className="h-max relative">
       <HeaderDoExam />
       <MainDoExam />
     </div>
   ) : (
-    <Navigate to={`/e/${url}`} />
+    <Navigate to="/" />
   );
 };
 

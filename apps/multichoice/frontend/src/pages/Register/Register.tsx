@@ -142,7 +142,7 @@ const Register: React.FC = () => {
       </div>
 
       <div className="text-center mt-3">
-        <p className="text-slate-800">
+        <p className="text-slate-800 text-sm">
           Already have an account ?
           <Link to="/login" className="inline-block ml-1 text-primary-900">
             Log in !

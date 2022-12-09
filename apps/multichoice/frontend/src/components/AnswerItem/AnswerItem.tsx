@@ -28,7 +28,7 @@ const AnswerItem: React.FC<IAnswerItemProps> = ({
   removeAnswer,
 }) => {
   const getAsciiCode = (): string => {
-    const startCharacter = 65; // 'A'
+    const startCharacter = 65;
     return String.fromCharCode(startCharacter + indexAnswer) + ')';
   };
 
@@ -44,16 +44,13 @@ const AnswerItem: React.FC<IAnswerItemProps> = ({
         <div className="check-correct flex items-start mr-2">
           <ToolTip
             title={
-              !answerValue
-                ? ''
-                : shouldDisableCheckbox()
+              shouldDisableCheckbox()
                 ? 'Câu hỏi không thể có hai đáp án đúng'
                 : ''
             }
           >
             <Checkbox
               registerField={registerFieldIsCorrect}
-              key={indexAnswer}
               disable={shouldDisableCheckbox()}
               className="mt-1"
               id={'answers-' + indexAnswer}
@@ -63,7 +60,6 @@ const AnswerItem: React.FC<IAnswerItemProps> = ({
           <span className="font-semibold">{getAsciiCode()}</span>
         </div>
         <TextArea
-          key={indexAnswer}
           registerField={registerFieldContent}
           placeholder="Nhập câu trả lời"
           className="flex-1"
