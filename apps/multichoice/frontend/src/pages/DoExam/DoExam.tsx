@@ -49,7 +49,7 @@ const DoExam: React.FC = () => {
         const { data } = await examServices.startExam(payload);
         if (data.success) {
           setUserID(data.data.userid);
-          setUserName(payload.userName);
+          setUserName(payload.username);
         }
       } catch {
         navigate('/');
@@ -93,7 +93,7 @@ const DoExam: React.FC = () => {
     if (validObject(exam)) {
       const payload: IPayloadStartExam = {
         topicID: exam.id,
-        userName: user.username,
+        username: user.username,
       };
       if (isAuthenticated()) {
         startExam(payload);

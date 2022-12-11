@@ -5,7 +5,7 @@ import { IExam } from '../../types/Exam';
 
 interface IExamResult {
   point: number;
-  userName: string;
+  username: string;
 }
 
 export interface IExamStore {

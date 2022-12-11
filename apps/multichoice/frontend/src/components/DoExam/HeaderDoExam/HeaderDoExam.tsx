@@ -31,7 +31,7 @@ const HeaderDoExam: React.FC<IHeaderDoExamProps> = ({ submited }) => {
   const { url } = useParams();
   const { exam } = examStore();
   const { user } = userStore();
-  const { userName } = userExamStore();
+  const { username } = userExamStore();
 
   const [visibleModalIntro, setVisibleModalIntro] = useState<boolean>(false);
   const [visibleModalResult, setVisibleModalResult] = useState<boolean>(false);
@@ -111,7 +111,7 @@ const HeaderDoExam: React.FC<IHeaderDoExamProps> = ({ submited }) => {
           </h3>
 
           <p className="text-white text-tiny mt-4">
-            Hello, {userName || 'Guest'}
+            Hello, {username || 'Guest'}
           </p>
           <button
             className={classNames(`w-full rounded-md bg-slate-200 py-2 mt-6`, {
@@ -193,7 +193,7 @@ const HeaderDoExam: React.FC<IHeaderDoExamProps> = ({ submited }) => {
               Thoát
             </button>
           </div>
-          <p className="ml-4">Hello, {userName || 'Guest'}</p>
+          <p className="ml-4">Hello, {username || 'Guest'}</p>
         </div>
       </div>
     </header>
