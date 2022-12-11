@@ -59,7 +59,7 @@ export class Topic extends Timestamp {
   expirationTime: number;
 
   @Column({ default: false })
-  isPrivate: boolean;
+  isPublic: boolean;
 
   @OneToMany(() => Question, (qs) => qs.topic)
   questions: Question[];

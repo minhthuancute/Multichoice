@@ -1,15 +1,20 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { isLogin } from '../../utils/authen';
+import { userStore } from '../../store/rootReducer';
 
-interface IPrivateRoute {
+interface IPrivateRouteProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Component: React.FunctionComponent<any>;
-  rest?: any;
 }
 
-const PrivateRoute: React.FC<IPrivateRoute> = ({ Component, ...rest }) => {
-  const loggedIn = isLogin();
-  return loggedIn ? <Component {...rest} /> : <Navigate to="/login" />;
+const PrivateRoute: React.FC<IPrivateRouteProps> = ({ Component, ...rest }) => {
+  const { isAuthenticated } = userStore();
+
+  return isAuthenticated() ? (
+    <Component {...rest} />
+  ) : (
+    <Navigate to="/login" replace />
+  );
 };
 
 export default PrivateRoute;

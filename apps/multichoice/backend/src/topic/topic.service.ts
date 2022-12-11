@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
-import { Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Topic } from './entities/topic.entity';
 import { User } from '../user/entities/user.entity';
 
@@ -77,7 +77,7 @@ export class TopicService {
         description: true,
         expirationTime: true,
         groups: true,
-        isPrivate: true,
+        isPublic: true,
         timeType: true,
         title: true,
         typeCategoryName: true,
@@ -106,30 +106,23 @@ export class TopicService {
     queryTopicDto: QueryTopicDto,
     userID: number
   ): Promise<PageDto<Topic>> {
+    const page = queryTopicDto?.page || 1;
+    const take = queryTopicDto?.take || 10;
     const queryBuilder = this.topicRepository
       .createQueryBuilder('topic')
       .where('topic.ownerId = :owner', { owner: userID })
-      .andWhere(
-        queryTopicDto.searchTerms &&
-          queryTopicDto.searchTerms.length &&
-          `MATCH(title) AGAINST ('${queryTopicDto.searchTerms}' IN BOOLEAN MODE)`
-      )
-      .andWhere(
-        queryTopicDto.typeCategoryName &&
-          'topic.typeCategoryName = :typeCategoryName',
-        { typeCategoryName: queryTopicDto.typeCategoryName }
-      )
-      .andWhere(queryTopicDto.timeType && 'topic.timeType = :timeType', {
-        timeType: queryTopicDto.timeType,
-      })
       .leftJoin('topic.questions', 'questions')
       .loadRelationCountAndMap('topic.questionsCount', 'topic.questions')
-      .skip((queryTopicDto.page - 1) * queryTopicDto.take)
-      .take(queryTopicDto.take);
+      .skip((page - 1) * take)
+      .take(take);
 
-    const { 0: topics, 1: itemCount } = await queryBuilder.getManyAndCount();
+    const { 0: topics, 1: itemCount } = await this.queryTopic(
+      queryBuilder,
+      queryTopicDto
+    ).getManyAndCount();
+
     const pageMetaDto = new PageMetaDto({
-      pageOptionsDto: { page: queryTopicDto.page, take: queryTopicDto.take },
+      pageOptionsDto: { page, take },
       itemCount,
     });
     return new PageDto(topics, pageMetaDto);
@@ -239,5 +232,51 @@ export class TopicService {
     });
     if (!result) return false;
     return true;
+  }
+
+  private queryTopic(
+    queryBuilder: SelectQueryBuilder<Topic>,
+    queryTopicDto: QueryTopicDto
+  ): SelectQueryBuilder<Topic> {
+    if (queryTopicDto.timeType) {
+      queryBuilder.andWhere('topic.timeType = :timeType', {
+        timeType: queryTopicDto.timeType,
+      });
+    }
+    if (queryTopicDto.typeCategoryName) {
+      queryBuilder.andWhere('topic.typeCategoryName = :typeCategoryName', {
+        typeCategoryName: queryTopicDto.typeCategoryName,
+      });
+    }
+    if (queryTopicDto.searchTerm && queryTopicDto.searchTerm.length) {
+      queryBuilder.andWhere(
+        `MATCH(title) AGAINST ('${queryTopicDto.searchTerm}' IN BOOLEAN MODE)`
+      );
+    }
+    return queryBuilder;
+  }
+
+  public async getTopicPublic(
+    queryTopicDto: QueryTopicDto
+  ): Promise<PageDto<Topic>> {
+    const page = queryTopicDto?.page || 1;
+    const take = queryTopicDto?.take || 10;
+    const queryBuilder = this.topicRepository
+      .createQueryBuilder('topic')
+      .where('topic.isPublic = :isPublic', { isPublic: 1 })
+      .leftJoin('topic.questions', 'questions')
+      .loadRelationCountAndMap('topic.questionsCount', 'topic.questions')
+      .skip((page - 1) * take)
+      .take(take);
+
+    const { 0: topics, 1: itemCount } = await this.queryTopic(
+      queryBuilder,
+      queryTopicDto
+    ).getManyAndCount();
+    const pageMetaDto = new PageMetaDto({
+      pageOptionsDto: { page, take },
+      itemCount,
+    });
+    return new PageDto(topics, pageMetaDto);
   }
 }

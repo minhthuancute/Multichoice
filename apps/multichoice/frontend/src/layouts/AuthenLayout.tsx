@@ -1,53 +1,25 @@
-import React, { useLayoutEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import HeaderAuthen from '../components/Authen/HeaderAuthen';
-import { titleServices } from '../services/TitleServices';
+import React, { useLayoutEffect } from 'react';
+import { Outlet } from 'react-router-dom';
+import HeaderAuthen from '../components/Authen/HeaderAuthen/HeaderAuthen';
+import { titleServices } from '../services/Title/TitleServices';
 
-interface ILayout {
+interface IAuthenLayout {
   children?: React.ReactNode;
 }
 
-const AuthenLayout: React.FC<ILayout> = ({ children }) => {
-  const location = useLocation();
-  const [isLoginPage, setIsLoginPage] = useState<boolean>(true);
-
+const AuthenLayout: React.FC<IAuthenLayout> = ({ children }) => {
   useLayoutEffect(() => {
-    const currentPath = location.pathname;
-    const isLoginPage = currentPath.includes('/login');
-    if (!isLoginPage) {
-      setIsLoginPage(false);
-    }
-
     return () => {
       titleServices.setTitle();
     };
-  }, [location.pathname]);
+  }, []);
 
   return (
-    <div className="layout-authen min-h-screen bg-authen bg-no-repeat bg-center">
+    <div className="min-h-screen bg-authen bg-no-repeat bg-center">
       <HeaderAuthen />
       <main className="max-w-lg py-8 px-4 mx-auto">
         {children}
-        <div className="text-center xs:block md:hidden mt-10">
-          {isLoginPage ? (
-            <p className="text-slate-800">
-              Don't have account ?
-              <Link
-                to="/register"
-                className="inline-block ml-1 text-primary-900"
-              >
-                Sign up now !
-              </Link>
-            </p>
-          ) : (
-            <p className="text-slate-800">
-              Already have an account ?
-              <Link to="/login" className="inline-block ml-1 text-primary-900">
-                Log in !
-              </Link>
-            </p>
-          )}
-        </div>
+        <Outlet />
       </main>
     </div>
   );

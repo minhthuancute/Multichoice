@@ -7,7 +7,7 @@ const Splash: React.FC = () => {
   return loading ? (
     <div
       id="splash"
-      className="flex h-screen items-center justify-center z-10 w-screen left-0 top-0 bg-primary-800 fixed"
+      className="flex h-screen items-center justify-center z-50 w-screen left-0 top-0 bg-primary-800 fixed px-4"
       onAnimationEnd={(e) => {
         if (e.animationName === 'fadeOut') {
           setLoading(false);

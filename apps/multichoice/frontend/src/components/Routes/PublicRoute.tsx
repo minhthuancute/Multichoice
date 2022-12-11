@@ -1,25 +1,23 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { isLogin } from '../../utils/authen';
+import { userStore } from '../../store/rootReducer';
 
 interface IPrivateRoute {
-  Component: any;
+  Component: React.FunctionComponent<any>;
   restricted?: boolean;
-  rest?: any;
 }
 
 const PublicRoute: React.FC<IPrivateRoute> = ({
   Component,
   restricted = false,
-  ...rest
 }) => {
-  const loggedIn = isLogin();
-
-  if (loggedIn && restricted) {
-    return <Navigate to="/" />;
-  } else {
-    return <Component {...rest} />;
-  }
+  const { isAuthenticated } = userStore();
+  return isAuthenticated() && restricted ? (
+    <Navigate to="/" replace />
+  ) : (
+    <Component />
+  );
 };
 
 export default PublicRoute;

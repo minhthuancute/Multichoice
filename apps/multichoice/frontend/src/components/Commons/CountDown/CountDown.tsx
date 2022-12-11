@@ -2,9 +2,9 @@ import React from 'react';
 import Countdown from 'react-countdown';
 import { BsFillClockFill } from 'react-icons/bs';
 import { classNames } from '../../../helper/classNames';
-import { examStore } from '../../../store/rootReducer';
 
 interface Renderer {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (props: any): React.ReactNode;
 }
 
@@ -13,7 +13,6 @@ interface ICountDownProps {
   endTime?: number;
   className: string;
   isHidden?: boolean;
-  restartKey?: string | number;
 }
 
 const CountDown: React.FC<ICountDownProps> = ({
@@ -21,9 +20,7 @@ const CountDown: React.FC<ICountDownProps> = ({
   endTime = 1,
   className = '',
   isHidden = false,
-  restartKey = '',
 }) => {
-  const { setIsExpriedExam } = examStore();
   const formatCountdown = (
     hours: number,
     minutes: number,
@@ -61,8 +58,8 @@ const CountDown: React.FC<ICountDownProps> = ({
     <Countdown
       date={startTime + endTime}
       renderer={rendererCountdown}
-      onStart={() => setIsExpriedExam(false)}
-      onComplete={() => setIsExpriedExam(true)}
+      // onStart={() => setIsExpriedExam(false)}
+      // onComplete={() => setIsExpriedExam(true)}
       key={startTime}
     />
   );

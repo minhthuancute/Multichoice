@@ -1,44 +1,48 @@
 import { TopicTimeTypeEnum } from '@monorepo/multichoice/constant';
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TOPIC_LIST } from '../../constants/contstants';
 import { useQuery } from '../../hooks/useQuery';
-import { localServices } from '../../services/LocalServices';
-import { topicServices } from '../../services/TopicServices';
-import { ITopicLocal } from '../../types/ICommons';
-import { ITopicResponse } from '../../types/TopicResponse';
-import { removeVietnameseTones } from '../../utils/removeVietnameseTones';
+import { localServices } from '../../services/Applications/LocalServices';
+import { topicServices } from '../../services/Title/TopicServices';
+import { ITopicLocal } from '../../types/Commons';
+import { ITopic } from '../../types/Topic';
+import { removeVietnameseTones } from '../../utils/remove_vietnamese_tones';
+import EmptyData from '../Commons/EmptyData/EmptyData';
+import PlayTestRealtime from '../PlayTestRealtime/PlayTestRealtime';
 import TestItem, { ITestItem } from '../TestItem/TestItem';
 import DeleteTest from './DeleteTest';
 
-interface ITestList {
-  searchKeyword: string;
+interface TestListQuery {
+  searchTerm: string;
 }
 
-const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
-  const query = useQuery();
+const TestList: React.FC = () => {
+  const [query] = useQuery<TestListQuery>();
 
   const [testList, setTestList] = useState<ITestItem[]>([]);
   const [testsFilter, setTestsFilter] = useState<ITestItem[]>([]);
-  const [openModalDelete, setOpenModalDelete] = useState<boolean>(false);
   const [testIdDel, setTestIdDel] = useState<number>(-1);
   const [testTitleDel, setTestTitleDel] = useState<string>('');
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [pageSie, setPageSie] = useState<number>(10);
+  const [visibleModalDelete, setVisibleModalDelete] = useState<boolean>(false);
+  const [visibleModalPlayTest, setVisibleModalPlayTest] =
+    useState<boolean>(false);
+  const [page, setPage] = useState<number>(1);
 
   const [paramSearch] = useState<string>(() => {
-    const params = query.get('search') || '';
-    const formatParamSearch = removeVietnameseTones(params).toLowerCase();
+    const formatParamSearch = removeVietnameseTones(
+      query.searchTerm
+    ).toLowerCase();
     return formatParamSearch;
   });
 
   const getListTest = async () => {
     try {
       const { data } = await topicServices.getAllTopic({
-        page: currentPage,
-        take: pageSie,
+        page: page,
+        take: 10,
       });
-      const topicResponse: ITopicResponse[] = data.data;
-      const topicsData = topicResponse.map((test: ITopicResponse) => {
+      const topicResponse: ITopic[] = data.result;
+      const topicsData = topicResponse.map((test) => {
         const testData: ITestItem = {
           topicUrl: test.url,
           id: test.id,
@@ -46,7 +50,7 @@ const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
           date: test.createdAt,
           questionCount: test.questionsCount,
           expirationTime: test.expirationTime,
-          timeType: test.timeType.toUpperCase() as `${TopicTimeTypeEnum}`,
+          timeType: test.timeType as `${TopicTimeTypeEnum}`,
           typeCategoryName: test.typeCategoryName,
         };
         return testData;
@@ -54,7 +58,7 @@ const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
       setTestList(topicsData);
 
       const testsTitle: ITopicLocal[] = topicResponse.map(
-        (test: ITopicResponse) =>
+        (test) =>
           ({
             id: test.id,
             title: test.title,
@@ -68,9 +72,9 @@ const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
           const isMatched: boolean = title.includes(paramSearch);
           return isMatched;
         });
-        setTestsFilter(filterResult.reverse());
+        setTestsFilter(filterResult);
       } else {
-        setTestsFilter(topicsData.reverse());
+        setTestsFilter(topicsData);
       }
     } catch (error) {
       //
@@ -88,52 +92,49 @@ const TestList: React.FC<ITestList> = ({ searchKeyword = '' }) => {
   };
 
   const handleDeleteTest = (testID: number, title: string) => {
-    setOpenModalDelete(true);
+    setVisibleModalDelete(true);
     setTestIdDel(testID);
     setTestTitleDel(title);
   };
 
-  const onConfirmDel = () => {
-    getListTest();
-    setOpenModalDelete(false);
-  };
-
-  useLayoutEffect(() => {
+  useEffect(() => {
     getListTest();
   }, []);
 
-  useEffect(() => {
-    filterTest(searchKeyword);
-  }, [searchKeyword]);
-
   return (
-    <div>
+    <>
+      {/* <PlayTestRealtime
+        visibleModal={visibleModalPlayTest}
+        setVisibleModal={setVisibleModalPlayTest}
+        topicTitle={test.title}
+        topicUrl={test.topicUrl}
+        isPlaytest={isPlaytest}
+      /> */}
       <DeleteTest
-        setOpenModalDelete={setOpenModalDelete}
-        openModalDelete={openModalDelete}
         testID={testIdDel}
         testTitle={testTitleDel}
-        cbConfirmDel={onConfirmDel}
+        visibleModal={visibleModalDelete}
+        setVisibleModal={setVisibleModalDelete}
+        onConfirmDelete={() => {
+          getListTest();
+          setVisibleModalDelete(false);
+        }}
       />
 
       <div className="mt-4">
         {testsFilter && testsFilter.length > 0 ? (
-          testsFilter.map((test: ITestItem) => {
-            return (
-              <TestItem
-                test={test}
-                key={test.id}
-                handleDeleteTest={handleDeleteTest}
-              />
-            );
-          })
+          testsFilter.map((test: ITestItem) => (
+            <TestItem
+              test={test}
+              key={test.id}
+              handleDeleteTest={handleDeleteTest}
+            />
+          ))
         ) : (
-          <p className="font-semibold text-red-500 text-center mt-10 text-tiny">
-            {/* Hiện tại bạn chưa có đề thi nào! */}
-          </p>
+          <EmptyData>Hiện tại bạn chưa có đề thi nào!</EmptyData>
         )}
       </div>
-    </div>
+    </>
   );
 };
 

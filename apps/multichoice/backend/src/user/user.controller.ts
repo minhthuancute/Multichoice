@@ -38,7 +38,7 @@ export class UserController {
     @Res() res
   ): Promise<SucessResponse> {
     const result = await this.userService.endExam(resultUserDto);
-    return res.json(new SucessResponse(200, result));
+    return res.status(200).json(new SucessResponse(200, result));
   }
 
   @UseGuards(JwtAuthGuard)
@@ -50,12 +50,12 @@ export class UserController {
     @Body() resultUserDto: UserExamDto
   ): Promise<SucessResponse> {
     const result = await this.userService.startExam(resultUserDto, req.user);
-    return res.json(new SucessResponse(200, result));
+    return res.status(200).json(new SucessResponse(200, result));
   }
 
-  @Get(':url')
+  @Get('/gettopicbyurl')
   async findTopicByUrl(
-    @Param('url') url: string,
+    @Query('url') url: string,
     @Res() res
   ): Promise<SucessResponse> {
     const result = await this.userService.findTopicByUrl(url);
@@ -130,6 +130,6 @@ export class UserController {
       resultUserRealTimeDto,
       req.user
     );
-    return res.json(new SucessResponse(200, result));
+    return res.status(200).json(new SucessResponse(200, result));
   }
 }

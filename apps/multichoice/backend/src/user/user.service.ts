@@ -178,7 +178,7 @@ export class UserService {
     userID: number
   ): Promise<IUserDoExam[]> {
     const result = await this.userExamService.getUserExamByTopicID(id, userID);
-    if (result) {
+    if (result.length) {
       return this.convertListUserDoExam(result);
     }
     throw new BadRequestException(GConfig.NOT_PERMISSION_VIEW);
@@ -198,7 +198,7 @@ export class UserService {
     if (topic.timeType === TopicTimeTypeEnum.FIXEDTIME)
       throw new BadRequestException(GConfig.TOPIC_NOT_REALTIME);
 
-    if (topic.isPrivate)
+    if (!topic.isPublic)
       await this.topicService.checkPermissionUserOfTopic(topic.id, user.id);
 
     if (await this.topicService.checkUserIsExistUserExam(topic.id, user.id))
@@ -280,19 +280,23 @@ export class UserService {
 
   public async startExam(userExamDto: UserExamDto, user: User) {
     const topic = await this.topicService.fineOneByID(userExamDto.topicID);
-
     if (topic.timeType === TopicTimeTypeEnum.REALTIME)
       throw new BadRequestException(GConfig.TOPIC_NOT_FIXEDTIME);
 
     const exam: UserExam = new UserExam();
-    if (topic.isPrivate) {
-      if (!user) throw new UnauthorizedException();
-      await this.topicService.checkPermissionUserOfTopic(topic.id, user.id);
-      exam.username = user.username;
-      exam.owner = new User(user.id);
-    } else {
+
+    // guest user
+    if (!user) {
+      if (!topic.isPublic) throw new UnauthorizedException();
+      if (!userExamDto.username)
+        throw new BadRequestException(GConfig.USERNAME_NOT_EMPTY);
       exam.username = userExamDto.username;
     }
+
+    if (!topic.isPublic)
+      await this.topicService.checkPermissionUserOfTopic(topic.id, user.id);
+    exam.username = user.username;
+    exam.owner = new User(user.id);
 
     exam.topic = new Topic(topic.id);
     exam.startTime = new Date().getTime();

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect } from 'react';
 // Hook
 export const useOnClickOutside = (
@@ -5,8 +6,6 @@ export const useOnClickOutside = (
   handler: any,
   ...exclusiveRefs: any[]
 ) => {
-  console.log('ref', ref);
-  console.log('handler', handler);
   useEffect(() => {
     const listener = (event: any) => {
       // Do nothing if clicking ref's element or descendent elements

@@ -32,7 +32,7 @@ const Navabar: React.FC = () => {
     const currentPath = location.pathname;
 
     if (currentPath === '/') return 0;
-    const currentIndexNav = navs.findIndex((nav: INav) => {
+    const currentIndexNav = navs.findIndex((nav) => {
       if (nav.path === '/') return false;
       const relativePaths = nav.relativePaths?.toString();
       const matchedNav =

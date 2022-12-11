@@ -40,7 +40,7 @@ export class TopicController {
   }
 
   @UseGuards(AuthenticationGuard)
-  @Get('/gettopics')
+  @Get()
   @ApiBearerAuth()
   async getTopicAll(
     @Query() queryTopicDto: QueryTopicDto,
@@ -51,6 +51,15 @@ export class TopicController {
       queryTopicDto,
       req.user.id
     );
+    return res.json(new SucessResponse(200, result));
+  }
+
+  @Get('public')
+  async getTopicPublic(
+    @Query() queryTopicDto: QueryTopicDto,
+    @Res() res
+  ): Promise<SucessResponse> {
+    const result = await this.topicService.getTopicPublic(queryTopicDto);
     return res.json(new SucessResponse(200, result));
   }
 
@@ -96,7 +105,7 @@ export class TopicController {
   }
 
   @UseGuards(AuthenticationGuard)
-  @Post('addgroupfortopic')
+  @Post('group')
   @ApiBearerAuth()
   async addGroupForTopic(
     @Body() query: AddGroupForTopic,

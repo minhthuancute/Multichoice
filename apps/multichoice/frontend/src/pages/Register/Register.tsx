@@ -2,23 +2,23 @@ import React, { useLayoutEffect, useState } from 'react';
 import { MdOutlineMail } from 'react-icons/md';
 import { VscUnlock } from 'react-icons/vsc';
 import { AiOutlineUser } from 'react-icons/ai';
-
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-
 import { validation } from '@monorepo/multichoice/validation';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { CreateUserDto } from '@monorepo/multichoice/dto';
 import { iNotification } from 'react-notifications-component';
 import { useQuery } from '../../hooks/useQuery';
-import { authenServices } from '../../services/AuthenServices';
+import { authenServices } from '../../services/Authen/AuthenServices';
 import { notify } from '../../helper/notify';
 import { acceptTerm, emailExisted } from '../../constants/msgNotify';
-import { titleServices } from '../../services/TitleServices';
-import InputAuthen from '../../components/Authen/InputAuthen';
+import { titleServices } from '../../services/Title/TitleServices';
+import InputAuthen from '../../components/Commons/InputAuthen/InputAuthen';
 import Checkbox from '../../components/Commons/Checkbox/Checkbox';
-import AuthenLayout from '../../layouts/AuthenLayout';
+import { RedirectQuery } from '../../types/Commons';
+import Button from '../../components/Commons/Button/Button';
+import SignUpOptions from '../../components/Authen/SignUpOptions/SignUpOptions';
 
 const { username, email, password } = validation();
 const schemaFormRegister = yup
@@ -31,14 +31,16 @@ const schemaFormRegister = yup
       .required('Email is required')
       .email(),
     password: yup.string().min(password.minLength).max(password.maxLength),
+    acceptTern: yup.boolean(),
   })
   .required();
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
-  const query = useQuery();
-  const redirectUrl = query.get('redirect') || '';
-  const [isUserAccept, setIsUserAccept] = useState<boolean>(false);
+  const [query] = useQuery<RedirectQuery>();
+  const redirectUrl = query.redirect;
+
+  const [acceptTern, setAcceptTern] = useState<boolean>(false);
 
   const {
     register,
@@ -48,16 +50,16 @@ const Register: React.FC = () => {
     resolver: yupResolver(schemaFormRegister),
   });
 
-  const onSubmit: SubmitHandler<CreateUserDto> = async (
-    formData: CreateUserDto
-  ) => {
-    if (isUserAccept) {
+  const onSubmit: SubmitHandler<CreateUserDto> = async (formData) => {
+    if (acceptTern) {
       try {
-        await authenServices.register(formData);
-        const urlNavigate = redirectUrl
-          ? `/login?redirect=${redirectUrl}`
-          : '/login';
-        navigate(urlNavigate);
+        const { data } = await authenServices.register(formData);
+        if (data.success) {
+          const urlNavigate = redirectUrl
+            ? `/login?redirect=${redirectUrl}`
+            : '/login';
+          navigate(urlNavigate);
+        }
       } catch (error) {
         notify({
           message: emailExisted,
@@ -77,81 +79,82 @@ const Register: React.FC = () => {
   }, []);
 
   return (
-    <AuthenLayout>
-      <div className="wrapper-form">
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="form"
-          autoComplete="off"
-        >
-          <div className="form-header mb-10 text-center">
-            <h2 className="font-medium text-black mb-4 text-3xl">
-              Sign up Now
-            </h2>
-            <p className="text-slate-800 text-sm">
-              Enter yor valid email address and password to register your
-              account
-            </p>
-          </div>
-
-          {/* <SignUpOptions isLoginPage={false} /> */}
-
-          <InputAuthen
-            registerField={register('username')}
-            isError={Boolean(errors.username)}
-            errMessage={errors.username?.message}
-            placeholder="User Name"
-            typeInput="text"
-            Icon={AiOutlineUser}
-            id="username"
-          />
-
-          <InputAuthen
-            className="mt-5"
-            registerField={register('email')}
-            isError={Boolean(errors.email)}
-            errMessage={errors.email?.message}
-            placeholder="Email Address"
-            typeInput="email"
-            Icon={MdOutlineMail}
-            id="email"
-          />
-
-          <InputAuthen
-            className="mt-5"
-            registerField={register('password')}
-            isError={Boolean(errors.password)}
-            errMessage={errors.password?.message}
-            placeholder="Password"
-            typeInput="password"
-            Icon={VscUnlock}
-            id="password"
-          />
-
-          {/* <div className="remember-me flex items-center justify-between mt-5 text-slate-800">
-            <div className="check-box cursor-pointer flex items-center">
-              <Checkbox
-                onChange={setIsUserAccept}
-                textLabel="<p>
-                I accept the <span class='text-primary-900'>Term of Conditions</span>
-                and <span class='text-primary-900'>Privacy Policy</span>
-              </p>"
-                id="accept-term"
-              />
-            </div>
-          </div> */}
-
-          <div className="submit mt-5">
-            <button
-              className="w-full py-3 bg-primary-900 rounded-md text-white font-medium"
-              type="submit"
-            >
-              Sign up Now
-            </button>
-          </div>
-        </form>
+    <form onSubmit={handleSubmit(onSubmit)} className="form" autoComplete="off">
+      <div className="form-header mb-8 text-center">
+        <h2 className="font-medium text-slate-800 mb-4 text-2xl">
+          Register to Multichoice
+        </h2>
       </div>
-    </AuthenLayout>
+
+      <InputAuthen
+        registerField={register('username')}
+        isError={Boolean(errors.username)}
+        errMessage={errors.username?.message}
+        placeholder="User Name"
+        type="text"
+        Icon={AiOutlineUser}
+        id="username"
+      />
+
+      <InputAuthen
+        className="mt-5"
+        registerField={register('email')}
+        isError={Boolean(errors.email)}
+        errMessage={errors.email?.message}
+        placeholder="Email Address"
+        type="email"
+        Icon={MdOutlineMail}
+        id="email"
+      />
+
+      <InputAuthen
+        className="mt-5"
+        registerField={register('password')}
+        isError={Boolean(errors.password)}
+        errMessage={errors.password?.message}
+        placeholder="Password"
+        type="password"
+        Icon={VscUnlock}
+        id="password"
+      />
+
+      <div className="remember-me flex items-center justify-between mt-5 text-slate-800">
+        <div className="check-box cursor-pointer flex items-center">
+          <Checkbox
+            onClick={() => setAcceptTern((prev) => !prev)}
+            textLabel={
+              <p>
+                I accept the{' '}
+                <span className="text-primary-900">Term of Conditions </span>
+                and <span className="text-primary-900"> Privacy Policy</span>
+              </p>
+            }
+            id="accept-term"
+            type="checkbox"
+          />
+        </div>
+      </div>
+
+      <div className="submit mt-5">
+        <Button type="submit" widthFull color="success" size="lg">
+          Sign up
+        </Button>
+      </div>
+
+      <div className="text-center mt-3">
+        <p className="text-slate-800 text-sm">
+          Already have an account ?
+          <Link
+            to={redirectUrl ? `/login?redirect=${redirectUrl}` : '/login'}
+            className="inline-block ml-1 text-primary-900"
+          >
+            Log in !
+          </Link>
+        </p>
+      </div>
+
+      <SignUpOptions />
+    </form>
   );
 };
 

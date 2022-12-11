@@ -13,6 +13,3 @@ export const START_TIME = 'START_TIME';
 // STORES
 export const CURRENT_USER = 'CURRENT_USER';
 export const ANSWERS_EXAM = 'ANSWERS_EXAM';
-
-// FIRE BASE PATHs
-export const TOPICS_REALTIME = 'topics_realtime';

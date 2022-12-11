@@ -42,6 +42,7 @@ export class UpdateUserPasswordDto {
 
 export class ForgotPasswordDto {
   @IsEmail()
+  @MaxLength(validation().email.maxLength)
   @ApiProperty()
   email: string;
 }

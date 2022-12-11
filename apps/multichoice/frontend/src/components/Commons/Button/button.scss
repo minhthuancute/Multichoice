@@ -1,0 +1,17 @@
+.btn-success {
+  &:focus {
+    box-shadow: rgba(22, 160, 133, 0.2) 0 0 0 3px;
+  }
+}
+
+.btn-danger {
+  &:focus {
+    box-shadow: rgba(239, 68, 68, 0.2) 0 0 0 3px;
+  }
+}
+
+.btn-default {
+  &:focus {
+    box-shadow: rgba($color: #ccc, $alpha: 0.2) 0 0 0 3px;
+  }
+}

@@ -5,78 +5,55 @@ import axios, {
   AxiosResponse,
 } from 'axios';
 import { TOKEN } from '../constants/contstants';
-import { localServices } from './LocalServices';
+import { localServices } from './Applications/LocalServices';
 import { loadingStore } from '../store/rootReducer';
 
 let pendingRequest = 0;
 
-export class Api {
-  axiosInstance: AxiosInstance;
-  constructor() {
-    this.axiosInstance = axios.create({
-      baseURL:
-        process.env['NODE_ENV'] === 'production'
-          ? 'https://detracnghiem.vn/api'
-          : 'http://localhost:3333/api',
-    });
+const axiosClient: AxiosInstance = axios.create({
+  baseURL:
+    process.env['NODE_ENV'] === 'production'
+      ? 'https://detracnghiem.vn/api'
+      : 'http://localhost:3333/api',
+});
 
-    this.axiosInstance.interceptors.request.use(
-      (config: AxiosRequestConfig): AxiosRequestConfig => {
-        // pendingRequest += 1;
-        // const state = loadingStore.getState();
-        // state.setLoading(true);
-        const token = localServices.getData(TOKEN);
-        config!.headers!['Authorization'] = `Bearer ${token}`;
-        return config;
-      }
-    );
-
-    this.axiosInstance.interceptors.response.use(
-      (response: AxiosResponse): AxiosResponse => {
-        // this.clearLoading();
-        return response;
-      },
-      async (err: AxiosError): Promise<AxiosError> => {
-        // this.clearLoading();
-        // await this.sleep(500);
-        return Promise.reject(err);
-      }
-    );
+axiosClient.interceptors.request.use(
+  (config: AxiosRequestConfig): AxiosRequestConfig => {
+    // pendingRequest += 1;
+    // const state = loadingStore.getState();
+    // state.setLoading(true);
+    const token = localServices.getData(TOKEN);
+    config!.headers!['Authorization'] = `Bearer ${token}`;
+    return config;
   }
+);
 
-  sleep(time: number) {
-    return new Promise((resolve) => {
-      setTimeout(resolve, time);
-    });
+axiosClient.interceptors.response.use(
+  (response: AxiosResponse): AxiosResponse => {
+    // this.clearLoading();
+    return response;
+  },
+  async (err: AxiosError): Promise<AxiosError> => {
+    // this.clearLoading();
+    // await this.sleep(500);
+    return Promise.reject(err);
   }
+);
 
-  clearLoading() {
-    pendingRequest -= 1;
-    if (pendingRequest === 0) {
-      const state = loadingStore.getState();
-      setTimeout(() => {
-        // state.setLoading(false);
-      }, 500);
-    }
+export const sleep = (time: number) => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, time);
+  });
+};
+
+export const clearLoading = () => {
+  pendingRequest -= 1;
+  if (pendingRequest === 0) {
+    const state = loadingStore.getState();
+    setTimeout(() => {
+      // state.setLoading(false);
+    }, 500);
   }
+};
 
-  get(url: string) {
-    return this.axiosInstance.get(url);
-  }
-
-  post(url: string, body?: any) {
-    return this.axiosInstance.post(url, body);
-  }
-
-  update(url: string, body?: any) {
-    return this.axiosInstance.patch(url, body);
-  }
-
-  delete(url: string, body?: any) {
-    return this.axiosInstance.delete(url, body);
-  }
-}
-
-const apiClient = new Api();
-
-export default apiClient;
+export { axiosClient };
