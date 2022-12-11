@@ -6,7 +6,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import Select, { IOption } from '../Commons/Select/Select';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 import { questionServices } from '../../services/Question/QuestionServices';
-import { topicStore } from '../../store/rootReducer';
+import { IAnswer, topicStore } from '../../store/rootReducer';
 import { notify } from '../../helper/notify';
 import { iNotification } from 'react-notifications-component';
 import Editor from '../Commons/Editor/Editor';
@@ -15,10 +15,8 @@ import { errNotSelectCorrectAnswer } from '../../constants/msgNotify';
 import Button from '../Commons/Button/Button';
 import AnswerItem from '../AnswerItem/AnswerItem';
 import { schemaUpdateQuestion } from './updateQuestionSchema';
-import { IQuestion } from '../../types';
-import ToolTip from '../Commons/ToolTip/ToolTip';
-import { IoMdClose } from 'react-icons/io';
 import { useParams } from 'react-router-dom';
+import { IQuestion } from '../../types/Topic';
 
 const initialQuestions = [
   {
@@ -50,7 +48,6 @@ const UpdateQuestion: React.FC<IUpdateQuestionprops> = ({
     setValue,
     getValues,
     clearErrors,
-    setError,
     control,
     watch,
     formState: { errors },
@@ -59,13 +56,14 @@ const UpdateQuestion: React.FC<IUpdateQuestionprops> = ({
     mode: 'all',
     defaultValues: questionData,
   });
-  const { remove, fields, append } = useFieldArray({
+  const { fields, remove, append } = useFieldArray({
     control,
     name: 'answers',
   });
 
+  const [indexCorrectAnswer, setIndexCorrectAnswer] = useState<number>(-1);
   const [hideAnswer, setHideAnswer] = useState<boolean>(isQuestionText);
-  const [correctAnswer, setCorrectAnswer] = useState<string>('');
+
   const [questionTypes] = useState<IOption[]>(() => {
     const types: QuestionTypeEnum[] = [];
     for (const topic in QuestionTypeEnum) {
@@ -126,18 +124,8 @@ const UpdateQuestion: React.FC<IUpdateQuestionprops> = ({
       return true;
     }
     const haveCorrectAnswer = answers.some(
-      (answers: CreatAnswer) => answers.isCorrect
+      (answers: CreatAnswer) => !!answers.isCorrect
     );
-    const haveEmptyContent = answers.some(
-      (answers: CreatAnswer) => answers.content === ''
-    );
-
-    if (haveEmptyContent) {
-      setError('answers', {
-        message: 'Answers content is required',
-      });
-      return false;
-    }
 
     if (!haveCorrectAnswer) {
       notify({
@@ -149,7 +137,25 @@ const UpdateQuestion: React.FC<IUpdateQuestionprops> = ({
     return true;
   };
 
+  const setCorectAnswerSingle = (indexAnswer: number) => {
+    setIndexCorrectAnswer(indexAnswer);
+  };
+
+  const formatAnswers = () => {
+    const format = getValues('answers').map((answer, index) => {
+      return {
+        ...answer,
+        isCorrect: index === indexCorrectAnswer,
+      };
+    });
+    return format;
+  };
+
   const onSubmit: SubmitHandler<CreateQuestionDto> = async (formData) => {
+    const { type } = formData;
+    if (type === QuestionTypeEnum.SINGLE && indexCorrectAnswer !== -1) {
+      formData.answers = formatAnswers();
+    }
     if (validAnswers()) {
       try {
         if (formData.type === QuestionTypeEnum.TEXT) {
@@ -172,34 +178,17 @@ const UpdateQuestion: React.FC<IUpdateQuestionprops> = ({
   };
 
   useEffect(() => {
-    const subscription = watch(({ type, answers }) => {
-      if (type === QuestionTypeEnum.SINGLE) {
-        const correctAnswer = answers?.find((answer) => answer?.isCorrect);
-        setCorrectAnswer(correctAnswer?.content || '');
-      }
+    const formatAnswers = getValues('answers').map((answer) => {
+      return {
+        ...answer,
+        isCorrect: !!answer.isCorrect,
+      };
     });
-    return () => {
-      subscription.unsubscribe();
-    };
+    setValue('answers', formatAnswers);
   }, []);
 
   return (
     <form className="bg-white" onSubmit={handleSubmit(onSubmit)}>
-      <div className="form-header flex items-center justify-between mb-6">
-        <h4 className="text-slate-800 text-xl font-semibold">
-          Cập nhật câu hỏi
-        </h4>
-        <ToolTip title="Đóng">
-          <button
-            type="button"
-            className="text-lg"
-            onClick={() => setVisibleModalEditQuestion(false)}
-          >
-            <IoMdClose />
-          </button>
-        </ToolTip>
-      </div>
-
       <div className="bg-white rounded-md mb-4">
         {topic.typeCategoryName === 'game' ? (
           <Input
@@ -246,20 +235,21 @@ const UpdateQuestion: React.FC<IUpdateQuestionprops> = ({
             </label>
           </div>
           <div className="answer-body">
-            {fields.map((item: CreatAnswer, index: number) => {
+            {fields.map((item, index: number) => {
               return (
                 <AnswerItem
-                  key={item.isCorrect + '' + index}
+                  key={item.isCorrect + '-' + index}
                   indexAnswer={index}
                   lengthAnswers={watch('answers').length}
-                  correctAnswer={correctAnswer}
                   registerFieldContent={register(`answers.${index}.content`)}
                   registerFieldIsCorrect={register(
                     `answers.${index}.isCorrect`
                   )}
-                  answerValue={watch(`answers.${index}.content`)}
                   questionType={watch('type')}
                   removeAnswer={remove}
+                  setCorectAnswerSingle={setCorectAnswerSingle}
+                  clearErrors={clearErrors}
+                  isCorrect={item.isCorrect}
                 />
               );
             })}

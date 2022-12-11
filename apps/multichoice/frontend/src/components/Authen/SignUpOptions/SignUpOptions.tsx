@@ -1,18 +1,9 @@
 import React from 'react';
-import { classNames } from '../../../helper/classNames';
 
-interface ISignupOption {
-  isLoginPage?: boolean;
-}
-
-const SignUpOptions: React.FC<ISignupOption> = ({ isLoginPage = false }) => {
+const SignUpOptions: React.FC = () => {
   return (
-    <div className="signup-options flex flex-col">
-      <div
-        className={classNames('line my-10 order-1', {
-          'order-3 ': !isLoginPage,
-        })}
-      >
+    <div className="signup-options">
+      <div className="line my-6">
         <p
           className="flex items-center before:w-1/2
           before:h-0.5 after:w-1/2 after:h-0.5 before:bg-slate-100 after:bg-slate-100"
@@ -22,14 +13,14 @@ const SignUpOptions: React.FC<ISignupOption> = ({ isLoginPage = false }) => {
           </span>
         </p>
       </div>
-      <div className="socials order-2">
+      <div className="socials">
         <div className="google">
           <button
             className="w-full flex items-center justify-center border border-solid border-slate-200
-            rounded-md py-4"
+            rounded-md py-2.5"
           >
             <img src="../../assets/images/google.png" alt="login google" />
-            <span className="ml-3 font-medium text-slate-800">
+            <span className="ml-3 font-medium text-slate-800 text-sm">
               Sign up with Google
             </span>
           </button>
@@ -37,10 +28,10 @@ const SignUpOptions: React.FC<ISignupOption> = ({ isLoginPage = false }) => {
         <div className="facebook mt-5">
           <button
             className="w-full flex items-center justify-center border border-solid border-slate-200
-            rounded-md py-4"
+            rounded-md py-2.5"
           >
             <img src="../../assets/images/facebook.png" alt="login google" />
-            <span className="ml-3 font-medium text-slate-800">
+            <span className="ml-3 font-medium text-slate-800 text-sm">
               Sign up with Facebook
             </span>
           </button>

@@ -25,16 +25,16 @@ const ConfirmSubmit: React.FC<IConfirmSubmitProps> = ({
 
   return (
     <Modal
+      headerTitle="Nộp Bài"
       visible={visibleModal}
       setVisibleModal={setVisibleModal}
       size="sm"
       placement="CENTER"
     >
       <>
-        <div className="header text-center">
-          <h4 className="text-slate-800 font-semibold text-xl">Nộp Bài</h4>
+        <div className="header">
           {countUnSelectAnswer() > 0 ? (
-            <p className="mt-4 text-slate-800 font-semibold">
+            <p className="text-slate-800">
               Bạn còn{' '}
               <span className="font-semibold">
                 {countUnSelectAnswer()} (câu hỏi)
@@ -42,12 +42,12 @@ const ConfirmSubmit: React.FC<IConfirmSubmitProps> = ({
               chưa chọn đáp án. Bạn có chắc chắn muốn nộp bài ?
             </p>
           ) : (
-            <p className="mt-4 text-slate-800 font-semibold">
+            <p className="mt-4 text-slate-800">
               Bạn có chắc chắn muốn nộp bài?
             </p>
           )}
         </div>
-        <div className="ctas flex items-center justify-center gap-x-2 mt-5">
+        <div className="ctas flex items-center justify-end gap-x-2 mt-5">
           <Button type="button" onClick={() => setVisibleModal(false)}>
             Huỷ
           </Button>

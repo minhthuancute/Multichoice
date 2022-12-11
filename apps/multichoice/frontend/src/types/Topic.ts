@@ -2,12 +2,7 @@ import {
   QuestionTypeEnum,
   TopicCategoryEnum,
 } from '@monorepo/multichoice/constant';
-
-export interface IAnswer {
-  id: number;
-  content: string;
-  isCorrect: boolean;
-}
+import { UpdateAnswer } from '@monorepo/multichoice/dto';
 
 export interface IQuestion {
   id: number;
@@ -17,7 +12,7 @@ export interface IQuestion {
   image: string;
   audio: string;
   type: QuestionTypeEnum;
-  answers: IAnswer[];
+  answers: UpdateAnswer[];
 }
 
 export interface ITopic {
@@ -33,4 +28,12 @@ export interface ITopic {
   expirationTime: number;
   questionsCount: number;
   questions: IQuestion[];
+}
+
+export interface ITokenPayload {
+  email: string;
+  exp: number;
+  iat: number;
+  id: number;
+  username: string;
 }

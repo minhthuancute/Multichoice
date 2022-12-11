@@ -3,9 +3,9 @@ import React from 'react';
 import { FaPencilAlt } from 'react-icons/fa';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { classNames } from '../../helper/classNames';
-import { IAnswer, IQuestion } from '../../types';
 import ToolTip from '../Commons/ToolTip/ToolTip';
 import PolaCode from '../Commons/PolaCode/PolaCode';
+import { IQuestion } from '../../types/Topic';
 
 export interface IQuestionItemProps {
   index: number;
@@ -65,7 +65,7 @@ const QuestionItem: React.FC<IQuestionItemProps> = ({
         >
           <ul>
             {question &&
-              question.answers.map((answer: IAnswer, index: number) => (
+              question.answers.map((answer, index: number) => (
                 <li
                   key={answer.id}
                   className="flex items-start text-slate-800 text-tiny mb-2 last:mb-0"

@@ -13,15 +13,27 @@ import { useQuery } from '../../hooks/useQuery';
 import { userStore } from '../../store/rootReducer';
 import { titleServices } from '../../services/Title/TitleServices';
 import { authenServices } from '../../services/Authen/AuthenServices';
-import { ILoginResponse } from '../../types';
 import { localServices } from '../../services/Applications/LocalServices';
 import { TOKEN } from '../../constants/contstants';
 import { notify } from '../../helper/notify';
 import { loginError } from '../../constants/msgNotify';
 import InputAuthen from '../../components/Commons/InputAuthen/InputAuthen';
-import AuthenLayout from '../../layouts/AuthenLayout';
-import { RedirectQuery } from '../../types/AuthenQuery';
+import { RedirectQuery } from '../../types/Commons';
 import Button from '../../components/Commons/Button/Button';
+import SignUpOptions from '../../components/Authen/SignUpOptions/SignUpOptions';
+
+export interface AuthPayload {
+  id: number;
+  username: string;
+  email: string;
+}
+
+export interface ILogin extends AxiosResponse {
+  data: {
+    token: string;
+    payload: AuthPayload;
+  };
+}
 
 const { email, password } = validation();
 const schemaFormLogin = yup
@@ -52,20 +64,15 @@ const Login: React.FC = () => {
 
   const onSubmit: SubmitHandler<LoginUserDto> = async (formData) => {
     try {
-      const data: AxiosResponse = await authenServices.login(formData);
-      const loginResponse: ILoginResponse = data.data;
-      if (loginResponse.success) {
+      const { data } = await authenServices.login(formData);
+      const loginResponse: ILogin = data;
+      if (data.success) {
         const { payload, token } = loginResponse.data;
         localServices.setData(TOKEN, token);
         setInforUser(payload, token);
-
-        if (redirectUrl) {
-          navigate(`/e/${redirectUrl}/do-exam-realtime`);
-        } else {
-          navigate('/');
-        }
+        navigate('/');
       }
-    } catch (error) {
+    } catch {
       notify({
         message: loginError,
         type: 'danger',
@@ -78,60 +85,68 @@ const Login: React.FC = () => {
   }, []);
 
   return (
-    <AuthenLayout>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="form-login"
-        autoComplete="off"
-      >
-        <div className="form-header mb-10 flex items-center md:flex-col xs:flex-col text-center">
-          <h2 className="font-medium text-black text-3xl">
-            Login to Multichoice
-          </h2>
-          <p className="text-slate-800 text-sm">
-            Enter yor email address and password <br /> to get access account
+    <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
+      <div className="form-header mb-8 flex items-center md:flex-col xs:flex-col text-center">
+        <h2 className="font-medium text-slate-800 text-2xl">
+          Login to Multichoice
+        </h2>
+        {redirectUrl && (
+          <p className="text-slate-800 text-sm mt-1">
+            Bạn cần đăng nhập để làm bài
           </p>
-        </div>
+        )}
+      </div>
 
-        <InputAuthen
-          registerField={register('email')}
-          isError={Boolean(errors.email)}
-          errMessage={errors.email?.message}
-          placeholder="Email Address"
-          type="email"
-          Icon={MdOutlineMail}
-          id="email"
-        />
+      <InputAuthen
+        registerField={register('email')}
+        isError={Boolean(errors.email)}
+        errMessage={errors.email?.message}
+        placeholder="Email Address"
+        type="email"
+        Icon={MdOutlineMail}
+        id="email"
+      />
 
-        <InputAuthen
-          className="mt-5"
-          registerField={register('password')}
-          isError={Boolean(errors.password)}
-          errMessage={errors.password?.message}
-          placeholder="Password"
-          type="password"
-          Icon={VscUnlock}
-          id="password"
-        />
+      <InputAuthen
+        className="mt-5"
+        registerField={register('password')}
+        isError={Boolean(errors.password)}
+        errMessage={errors.password?.message}
+        placeholder="Password"
+        type="password"
+        Icon={VscUnlock}
+        id="password"
+      />
 
-        <div className="remember-me flex justify-end mt-5 text-slate-800">
+      <div className="remember-me flex justify-end mt-2 text-slate-800">
+        <Link
+          to="/forgot-password"
+          className="text-sm transition-all duration-200 hover:text-primary-900"
+        >
+          Forgot password?
+        </Link>
+      </div>
+
+      <div className="submit mt-5">
+        <Button type="submit" widthFull color="success" size="lg">
+          Sign in
+        </Button>
+      </div>
+
+      <div className="text-center mt-3">
+        <p className="text-slate-800 text-sm">
+          Don't have account ?
           <Link
-            to="/forgot-password"
-            className="text-sm transition-all duration-200 hover:text-primary-900"
+            to={redirectUrl ? `/register?redirect=${redirectUrl}` : '/register'}
+            className="inline-block ml-1 text-primary-900"
           >
-            Forgot password?
+            Sign up now !
           </Link>
-        </div>
+        </p>
+      </div>
 
-        <div className="submit mt-5">
-          <Button type="submit" widthFull color="success" size="lg">
-            Sign in
-          </Button>
-        </div>
-
-        {/* <SignUpOptions isLoginPage={true} /> */}
-      </form>
-    </AuthenLayout>
+      <SignUpOptions />
+    </form>
   );
 };
 

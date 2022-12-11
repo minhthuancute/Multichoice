@@ -2,24 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { BsCalendarDate, BsPause, BsPlay } from 'react-icons/bs';
 import { AiOutlineQuestionCircle, AiOutlineFieldTime } from 'react-icons/ai';
 import { RiDeleteBin6Line } from 'react-icons/ri';
-
 import { getDate } from '../../utils/format_date';
 import ToolTip from '../Commons/ToolTip/ToolTip';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { TiPencil } from 'react-icons/ti';
 import Badge from '../Commons/Badge/Badge';
-
 import { copyClipboard } from '../../helper/copyClipboard';
 import { notify } from '../../helper/notify';
 import { iNotification } from 'react-notifications-component';
 import { secondsToMinutes } from '../../utils/minutes_to_seconds';
-import { ITestRealtimeRecord } from '../../types/ICommons';
+import { ITestRealtimeRecord } from '../../types/Commons';
 import {
   canNotCopyLinkExam,
   copyLinkExamSuccess,
 } from '../../constants/msgNotify';
 import { fireGet, fireUpdate } from '../../utils/firebase_utils';
-import HandlelayTest from './HandlePlayTest';
+import PlayTestRealtime from '../PlayTestRealtime/PlayTestRealtime';
 import {
   firebasePath,
   TopicCategoryEnum,
@@ -43,7 +41,9 @@ interface ITestItemProps {
 }
 
 const TestItem: React.FC<ITestItemProps> = ({ test, handleDeleteTest }) => {
-  const isrealtime = test.timeType.toUpperCase() === 'REALTIME';
+  const { url } = useParams();
+  const isRealtime = test.timeType.toUpperCase() === 'REALTIME';
+
   const [visibleModalPlayTest, setVisibleModalPlayTest] =
     useState<boolean>(false);
   const [startedTestRealtime, setStartedTestRealtime] =
@@ -52,33 +52,52 @@ const TestItem: React.FC<ITestItemProps> = ({ test, handleDeleteTest }) => {
 
   const examUrl = (): string => {
     const host = window.location.origin + '/e/';
-    return host + test.topicUrl + (isrealtime ? '/do-exam-realtime' : '');
+    return (
+      host + test.topicUrl + (isRealtime ? '/do-exam-realtime' : '/do-exam')
+    );
   };
 
   const onCopyClipboard = () => {
-    const canExam = test.questionCount !== 0;
-    if (!canExam) {
+    const canCopy = test.questionCount !== 0;
+    if (canCopy) {
+      copyClipboard(examUrl());
+      notify({
+        message: copyLinkExamSuccess,
+        type: 'success',
+      } as iNotification);
+    } else {
       notify({
         message: canNotCopyLinkExam,
         type: 'danger',
       } as iNotification);
-      return;
     }
+  };
 
-    copyClipboard(examUrl());
-    notify({
-      message: copyLinkExamSuccess,
-      type: 'success',
-    } as iNotification);
+  const RenderExamUrl = (): React.ReactNode => {
+    return test.questionCount === 0 ? (
+      <p>Bộ đề chưa có câu hỏi nào. Hãy thêm câu hỏi cho bộ đề</p>
+    ) : (
+      <Link
+        to={
+          '/e/' +
+          test.topicUrl +
+          (isRealtime ? '/do-exam-realtime' : '/do-exam')
+        }
+        target="_blank"
+      >
+        {examUrl()}
+      </Link>
+    );
   };
 
   useEffect(() => {
     const testPath: string = `${firebasePath}-` + test.topicUrl;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     fireGet(testPath, (data: any) => {
       const recordValue: ITestRealtimeRecord = data;
-      const shouldExpriedTest =
+      const expriedTest: boolean =
         new Date().getTime() > +recordValue?.startTime + +test?.expirationTime;
-      if (shouldExpriedTest) {
+      if (expriedTest) {
         fireUpdate(testPath, {
           started: false,
           duration: 0,
@@ -101,12 +120,10 @@ const TestItem: React.FC<ITestItemProps> = ({ test, handleDeleteTest }) => {
   }, []);
 
   useEffect(() => {
-    const testPath: string = 'test-' + test.topicUrl;
-
+    const testPath: string = `${firebasePath}-` + url;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     fireGet(testPath, (data: any) => {
       const recordValue: ITestRealtimeRecord = data;
-
       setStartedTestRealtime(recordValue?.started || false);
       setIsPlaytest(recordValue?.started || false);
     });
@@ -114,7 +131,7 @@ const TestItem: React.FC<ITestItemProps> = ({ test, handleDeleteTest }) => {
 
   return (
     <>
-      <HandlelayTest
+      <PlayTestRealtime
         visibleModal={visibleModalPlayTest}
         setVisibleModal={setVisibleModalPlayTest}
         topicTitle={test.title}
@@ -208,23 +225,10 @@ const TestItem: React.FC<ITestItemProps> = ({ test, handleDeleteTest }) => {
 
         <div
           className="test-footer mt-2 pt-4 flex items-center justify-between
-        border-t border-solid border-slate-200"
+          border-t border-solid border-slate-200"
         >
           <div className="left text-sm text-primary-900 font-semibold inline-block">
-            {test.questionCount === 0 ? (
-              <p>Bộ đề chưa có câu hỏi nào. Hãy thêm câu hỏi cho bộ đề</p>
-            ) : (
-              <Link
-                to={
-                  '/e/' +
-                  test.topicUrl +
-                  (isrealtime ? '/do-exam-realtime' : '')
-                }
-                target="_blank"
-              >
-                {examUrl()}
-              </Link>
-            )}
+            {RenderExamUrl()}
           </div>
           <div className="right">
             <button

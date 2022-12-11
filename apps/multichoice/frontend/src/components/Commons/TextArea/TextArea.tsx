@@ -1,64 +1,51 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { AreaHTMLAttributes, HTMLInputTypeAttribute } from 'react';
+import React, { TextareaHTMLAttributes } from 'react';
 import { classNames } from '../../../helper/classNames';
+import TextareaAutosize from 'react-textarea-autosize';
 
-export interface ITextAreaProps extends AreaHTMLAttributes<HTMLAreaElement> {
+export interface ITextAreaProps
+  extends TextareaHTMLAttributes<HTMLAreaElement> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   textLabel?: React.ReactNode;
-  defaultValue?: any;
-  className?: string;
-  classNameTextarea?: string;
-  id?: string;
-  placeholder?: string;
   Icon?: React.ReactNode;
-  typeInput?: HTMLInputTypeAttribute;
   isError?: boolean;
   errMessage?: string;
-  fieldName?: string;
   registerField?: any;
   isRequired?: boolean;
+  areaClassname?: string;
 }
 
 const TextArea: React.FC<ITextAreaProps> = ({
   textLabel = '',
-  defaultValue = '',
-  className,
-  classNameTextarea = '',
-  id = '',
   registerField = null,
   isError = false,
   errMessage = '',
   Icon = '',
-  placeholder = '',
-  typeInput = 'text',
   isRequired = false,
+  ...rest
 }) => {
   return (
-    <div className={classNames('form-group relative', className)}>
-      <div
-        className={classNames('relative wrapper-input h-full', {
-          'no-error': !isError,
-        })}
-      >
+    <div
+      className={classNames(['form-group w-full', rest.className as string])}
+    >
+      <div>
         <label
-          htmlFor={id}
+          htmlFor={rest.id}
           className="font-semibold text-slate-800 text-sm inline-block mb-2"
         >
           {textLabel}
           {isRequired ? <span className="ml-1 text-red-600">*</span> : null}
         </label>
 
-        <textarea
+        <TextareaAutosize
           {...registerField}
-          defaultValue={defaultValue}
-          id={id}
-          type={typeInput}
-          placeholder={placeholder}
+          {...rest}
+          id={rest.id}
           className={classNames(
             [
               `text-sm w-full text-stone-600 outline-none
-            border py-2 border-solid border-stone-200 focus:border-primary-900
-            rounded-md placeholder:text-sm`,
-              classNameTextarea,
+              border py-2 border-solid border-stone-200 focus:border-primary-900
+              rounded-md placeholder:text-sm resize-none`,
             ],
             {
               'border-stone-200 focus:border-primary-900': !isError,

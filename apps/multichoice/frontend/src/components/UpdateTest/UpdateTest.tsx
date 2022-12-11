@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import * as yup from 'yup';
-
 import { CreateTopicDto } from '@monorepo/multichoice/dto';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -13,17 +12,15 @@ import Select, { IOption } from '../Commons/Select/Select';
 import { topicServices } from '../../services/Title/TopicServices';
 import Input from '../Commons/Input/Input';
 import TextArea from '../Commons/TextArea/TextArea';
-import { IoMdClose } from 'react-icons/io';
-import ToolTip from '../Commons/ToolTip/ToolTip';
 import { topicStore } from '../../store/rootReducer';
 import {
   minutesToSeconds,
   secondsToMinutes,
 } from '../../utils/minutes_to_seconds';
 import Button from '../Commons/Button/Button';
-import { ITopic } from '../../types';
+import { enumToOptions } from '../../utils/enum_to_options';
 
-const schemaFormEditTest = yup.object().shape({
+const schemaUpdateTest = yup.object().shape({
   timeType: yup.string().required(),
   typeCategoryName: yup.string().required(),
   title: yup.string().required(),
@@ -32,11 +29,11 @@ const schemaFormEditTest = yup.object().shape({
   expirationTime: yup.number(),
 });
 
-interface IFormEditTestProps {
+interface IFormUpdateTestProps {
   setVisibleModalEditTest: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const FormEditTest: React.FC<IFormEditTestProps> = ({
+const UpdateTest: React.FC<IFormUpdateTestProps> = ({
   setVisibleModalEditTest,
 }) => {
   const { id } = useParams();
@@ -51,7 +48,7 @@ const FormEditTest: React.FC<IFormEditTestProps> = ({
     setValue,
     formState: { errors },
   } = useForm<CreateTopicDto>({
-    resolver: yupResolver(schemaFormEditTest),
+    resolver: yupResolver(schemaUpdateTest),
     defaultValues: {
       description: description || '',
       expirationTime: +secondsToMinutes(+expirationTime),
@@ -63,33 +60,12 @@ const FormEditTest: React.FC<IFormEditTestProps> = ({
     },
   });
 
-  const [topicCategories] = useState<IOption[]>(() => {
-    const topics: TopicCategoryEnum[] = [];
-    for (const topic in TopicCategoryEnum) {
-      const topicVal = topic as TopicCategoryEnum;
-      topics.push(topicVal);
-    }
-    const options: IOption[] = topics.map((topic: TopicCategoryEnum) => ({
-      label: topic,
-      value: topic,
-    }));
-    return options;
-  });
-
-  const [topicTimeTypes] = useState<IOption[]>(() => {
-    const timeTypes: TopicTimeTypeEnum[] = [];
-    for (const types in TopicTimeTypeEnum) {
-      const topicVal = types as TopicTimeTypeEnum;
-      timeTypes.push(topicVal);
-    }
-    const options: IOption[] = timeTypes.map(
-      (timeTypes: TopicTimeTypeEnum) => ({
-        label: timeTypes,
-        value: timeTypes,
-      })
-    );
-    return options;
-  });
+  const [topicCategories] = useState<IOption[]>(
+    enumToOptions(TopicCategoryEnum)
+  );
+  const [topicTimeTypes] = useState<IOption[]>(
+    enumToOptions(TopicTimeTypeEnum)
+  );
 
   const onSelectCategory = (item: IOption) => {
     const optionVal: TopicCategoryEnum = item.value as TopicCategoryEnum;
@@ -101,23 +77,7 @@ const FormEditTest: React.FC<IFormEditTestProps> = ({
     setValue('timeType', optionVal);
   };
 
-  const getTopicById = async () => {
-    try {
-      const { data }: { data: ITopic } = await topicServices.getTopicById(
-        Number(id)
-      );
-      if (data) {
-        // setTopicDetail(data);
-      }
-    } catch (error) {
-      //
-    }
-  };
-
-  // create TOPIC
-  const onSubmit: SubmitHandler<CreateTopicDto> = async (
-    formData: CreateTopicDto
-  ) => {
+  const onSubmit: SubmitHandler<CreateTopicDto> = async (formData) => {
     try {
       formData.expirationTime = minutesToSeconds(formData.expirationTime);
       const { data } = await topicServices.updateTopicById(
@@ -126,7 +86,7 @@ const FormEditTest: React.FC<IFormEditTestProps> = ({
       );
       if (data.success) {
         setVisibleModalEditTest(false);
-        getTopicById();
+        getTopic(Number(id));
       }
     } catch (error) {
       //
@@ -136,20 +96,6 @@ const FormEditTest: React.FC<IFormEditTestProps> = ({
   return (
     <div className="rounded-md bg-white">
       <form className="form" onSubmit={handleSubmit(onSubmit)}>
-        <div className="form-header flex items-center justify-between mb-8">
-          <h4 className="text-slate-800 text-xl font-semibold">
-            Cập nhật đề thi
-          </h4>
-          <ToolTip title="Đóng">
-            <button
-              type="button"
-              className="text-lg"
-              onClick={() => setVisibleModalEditTest(false)}
-            >
-              <IoMdClose />
-            </button>
-          </ToolTip>
-        </div>
         <Input
           registerField={register('expirationTime')}
           defaultValue={+secondsToMinutes(+expirationTime)}
@@ -189,12 +135,12 @@ const FormEditTest: React.FC<IFormEditTestProps> = ({
         />
 
         <TextArea
-          defaultValue={description}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          defaultValue={description || ''}
           registerField={register('description')}
           textLabel="Mô tả"
           placeholder="Không bắt buộc"
           className="mt-5"
-          classNameTextarea="h-[200px]"
           isError={Boolean(errors.description)}
           errMessage={errors.description?.message}
         />
@@ -212,4 +158,4 @@ const FormEditTest: React.FC<IFormEditTestProps> = ({
   );
 };
 
-export default FormEditTest;
+export default UpdateTest;

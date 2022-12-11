@@ -1,17 +1,16 @@
 import React, { ChangeEvent, useState } from 'react';
 import { BiSkipNext, BiSkipPrevious } from 'react-icons/bi';
 import { answerStore, examStore } from '../../../store/rootReducer';
-import { IAnswer, IQuestion } from '../../../types';
 import ConfirmSubmit from '../ConfirmSubmit/ConfirmSubmit';
 import CountDown from '../../Commons/CountDown/CountDown';
 import { START_TIME } from '../../../constants/contstants';
-import { classNames } from '../../../helper/classNames';
-import ToolTip from '../../Commons/ToolTip/ToolTip';
 import PolaCode from '../../Commons/PolaCode/PolaCode';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 import TextArea from '../../Commons/TextArea/TextArea';
 import { sessionServices } from '../../../services/Applications/SessionServices';
 import { validArray } from '../../../helper/validArray';
+import { IQuestion } from '../../../types/Topic';
+import Button from '../../Commons/Button/Button';
 import './style.scss';
 
 interface IShowQuestionProps {
@@ -20,8 +19,7 @@ interface IShowQuestionProps {
   indexQuestion: number;
   setIndexQuestion: React.Dispatch<React.SetStateAction<number>>;
   startTimeCountdown?: number;
-  expriedRealtime?: boolean;
-  isSubmited?: boolean;
+  submited?: boolean;
 }
 
 const ShowQuestion: React.FC<IShowQuestionProps> = ({
@@ -29,15 +27,12 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
   indexQuestion = 0,
   setIndexQuestion,
   startTimeCountdown = 0,
-  expriedRealtime = false,
-  isSubmited = false,
+  submited = false,
 }) => {
   const { exam } = examStore();
-  const { answers, updateAnswer, userDoExam } = answerStore();
+  const { answers, updateAnswer } = answerStore();
 
-  const [visibleModal, setVisibleModal] = useState<boolean>(false);
   const [visibleModalSubmit, setVisibleModalSubmit] = useState<boolean>(false);
-  const [errorMsgSubmit, setErrorMsgSubmit] = useState<string>('');
 
   const startTime: number = sessionServices.getData(START_TIME) || 0;
   const endTime: number = +exam.expirationTime;
@@ -84,42 +79,31 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
         />
       </div>
 
-      <header className="flex items-start xs:justify-between lg:justify-center">
-        {expriedRealtime === false ? (
-          <ToolTip title={errorMsgSubmit}>
-            <button
-              className={classNames(
-                `px-8 py-2 bg-primary-800 rounded-3xl text-sm text-white
-                mb-4 font-semibold focus:ring-blue-100 focus:ring`,
-                {
-                  hidden: isSubmited,
-                }
-              )}
-              onClick={() => setVisibleModalSubmit(true)}
-            >
-              Nộp Bài
-            </button>
-          </ToolTip>
-        ) : null}
+      <header className="flex items-center justify-between mb-4">
+        <Button
+          color="success"
+          className="rounded-3xl"
+          disabled={submited}
+          onClick={() => setVisibleModalSubmit(true)}
+        >
+          Nộp Bài
+        </Button>
 
-        <div className="lg:hidden">
-          <CountDown
-            isHidden={isSubmited}
-            startTime={startTimeCountdown || startTime}
-            endTime={endTime}
-            key="count-down-mobile"
-            className="text-primary-800"
-          />
-        </div>
+        <CountDown
+          isHidden={submited}
+          startTime={startTimeCountdown || startTime}
+          endTime={endTime}
+          className="text-primary-800"
+        />
       </header>
 
       <div className="ctas mb-2 flex items-center justify-between">
         <button
-          className="px-4 py-1 bg-slate-800 rounded-sm text-sm
-          text-white flex items-center focus:ring-blue-100 focus:ring"
+          className="rounded-sm text-tiny text-slate-800 flex items-center
+          font-semibold"
           onClick={() => preQuestion()}
         >
-          <BiSkipPrevious className="mr-1 text-xl" />
+          <BiSkipPrevious className="mr-1 text-3xl" />
           Câu hỏi trước
         </button>
         <span className="text-slate-800 font-semibold">
@@ -127,16 +111,16 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
         </span>
 
         <button
-          className="px-4 py-1 bg-slate-800 rounded-sm text-sm
-          text-white flex items-center focus:ring-blue-100 focus:ring"
+          className="rounded-sm text-tiny text-slate-800 flex items-center
+          font-semibold"
           onClick={() => nextQuestion()}
         >
           Câu hỏi sau
-          <BiSkipNext className="ml-1 text-xl" />
+          <BiSkipNext className="ml-1 text-3xl" />
         </button>
       </div>
 
-      <div className="p-4 bg-white lg:p-10 shadow-xl lg:min-h-[335px] xs:min-h-[435px]">
+      <div className="p-4 bg-white lg:p-10 shadow-xl lg:min-h-[355px] xs:min-h-[435px]">
         <h4 className="text-slate-800 xs:text-tiny lg:text-lg lg:flex items-start">
           <span className="min-w-max flex font-semibold">
             Câu hỏi {indexQuestion + 1}:{' '}
@@ -149,50 +133,48 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
 
         <div className="mt-5">
           {questions &&
-            questions[indexQuestion].answers.map(
-              (answers: IAnswer, index: number) => {
-                return (
-                  <label
-                    className="answer-item text-tiny text-slate-800 mb-4 last:mb-0
+            questions[indexQuestion].answers.map((answers, index: number) => {
+              return (
+                <label
+                  className="answer-item text-tiny text-slate-800 mb-4 last:mb-0
                     flex items-center cursor-pointer group"
-                    htmlFor={'correct-answer-' + index}
-                    key={answers.id}
-                  >
-                    <div className="checkbox mr-4">
-                      <input
-                        hidden
-                        type={
-                          questions[indexQuestion].type ===
-                          QuestionTypeEnum.MULTIPLE
-                            ? 'checkbox'
-                            : 'radio'
-                        }
-                        name={'correct-answer'}
-                        id={'correct-answer-' + index}
-                        className="peer select-answer"
-                        defaultChecked={isCheckAnswer(answers.id)}
-                        onChange={() =>
-                          onChooseAnswer(
-                            answers.id,
-                            questions[indexQuestion].type
-                          )
-                        }
-                      />
-                      <div
-                        className="radio mt-0.5 w-4 h-4 border border-solid rounded-full
+                  htmlFor={'correct-answer-' + index}
+                  key={answers.id}
+                >
+                  <div className="checkbox mr-4">
+                    <input
+                      hidden
+                      type={
+                        questions[indexQuestion].type ===
+                        QuestionTypeEnum.MULTIPLE
+                          ? 'checkbox'
+                          : 'radio'
+                      }
+                      name="correct-answer"
+                      id={'correct-answer-' + index}
+                      className="peer select-answer"
+                      defaultChecked={isCheckAnswer(answers.id)}
+                      onChange={() =>
+                        onChooseAnswer(
+                          answers.id,
+                          questions[indexQuestion].type
+                        )
+                      }
+                    />
+                    <div
+                      className="radio w-4 h-4 border border-solid rounded-full
                     border-primary-900 before:bg-primary-900 before:w-2.5 before:h-2.5 before:block
                       before:rounded-full flex items-center justify-center before:opacity-0
                       peer-checked:before:opacity-100"
-                      ></div>
-                    </div>
-                    <span className="font-semibold mr-2">
-                      {String.fromCharCode(65 + index)}:
-                    </span>
-                    {answers.content}
-                  </label>
-                );
-              }
-            )}
+                    ></div>
+                  </div>
+                  <span className="font-semibold mr-2">
+                    {String.fromCharCode(65 + index)}:
+                  </span>
+                  {answers.content}
+                </label>
+              );
+            })}
 
           {questions[indexQuestion].type === QuestionTypeEnum.MULTIPLE ? (
             <div className="mt-3">
@@ -205,13 +187,12 @@ const ShowQuestion: React.FC<IShowQuestionProps> = ({
           {questions[indexQuestion].type === QuestionTypeEnum.TEXT ? (
             <TextArea
               key={'answer-' + indexQuestion}
-              defaultValue={answers[indexQuestion].answerID}
+              defaultValue={answers[indexQuestion].answerID as string}
               onInput={(e: ChangeEvent<HTMLAreaElement>) => {
                 onChooseAnswer(
                   e.target.textContent as string,
                   questions[indexQuestion].type
                 );
-                console.log('abasjcbj', e.target.textContent);
               }}
               placeholder="Nhập câu trả lời..."
             />

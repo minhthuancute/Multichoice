@@ -5,9 +5,8 @@ import { AiOutlineUser } from 'react-icons/ai';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-
 import { validation } from '@monorepo/multichoice/validation';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { CreateUserDto } from '@monorepo/multichoice/dto';
 import { iNotification } from 'react-notifications-component';
 import { useQuery } from '../../hooks/useQuery';
@@ -17,9 +16,9 @@ import { acceptTerm, emailExisted } from '../../constants/msgNotify';
 import { titleServices } from '../../services/Title/TitleServices';
 import InputAuthen from '../../components/Commons/InputAuthen/InputAuthen';
 import Checkbox from '../../components/Commons/Checkbox/Checkbox';
-import AuthenLayout from '../../layouts/AuthenLayout';
-import { RedirectQuery } from '../../types/AuthenQuery';
+import { RedirectQuery } from '../../types/Commons';
 import Button from '../../components/Commons/Button/Button';
+import SignUpOptions from '../../components/Authen/SignUpOptions/SignUpOptions';
 
 const { username, email, password } = validation();
 const schemaFormRegister = yup
@@ -80,79 +79,82 @@ const Register: React.FC = () => {
   }, []);
 
   return (
-    <AuthenLayout>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="form"
-        autoComplete="off"
-      >
-        <div className="form-header mb-10 text-center">
-          <h2 className="font-medium text-black mb-4 text-3xl">
-            Register to Multichoice
-          </h2>
-          <p className="text-slate-500 text-sm">
-            Enter yor valid email address and password <br /> to register your
-            account
-          </p>
+    <form onSubmit={handleSubmit(onSubmit)} className="form" autoComplete="off">
+      <div className="form-header mb-8 text-center">
+        <h2 className="font-medium text-slate-800 mb-4 text-2xl">
+          Register to Multichoice
+        </h2>
+      </div>
+
+      <InputAuthen
+        registerField={register('username')}
+        isError={Boolean(errors.username)}
+        errMessage={errors.username?.message}
+        placeholder="User Name"
+        type="text"
+        Icon={AiOutlineUser}
+        id="username"
+      />
+
+      <InputAuthen
+        className="mt-5"
+        registerField={register('email')}
+        isError={Boolean(errors.email)}
+        errMessage={errors.email?.message}
+        placeholder="Email Address"
+        type="email"
+        Icon={MdOutlineMail}
+        id="email"
+      />
+
+      <InputAuthen
+        className="mt-5"
+        registerField={register('password')}
+        isError={Boolean(errors.password)}
+        errMessage={errors.password?.message}
+        placeholder="Password"
+        type="password"
+        Icon={VscUnlock}
+        id="password"
+      />
+
+      <div className="remember-me flex items-center justify-between mt-5 text-slate-800">
+        <div className="check-box cursor-pointer flex items-center">
+          <Checkbox
+            onClick={() => setAcceptTern((prev) => !prev)}
+            textLabel={
+              <p>
+                I accept the{' '}
+                <span className="text-primary-900">Term of Conditions </span>
+                and <span className="text-primary-900"> Privacy Policy</span>
+              </p>
+            }
+            id="accept-term"
+            type="checkbox"
+          />
         </div>
+      </div>
 
-        {/* <SignUpOptions isLoginPage={false} /> */}
+      <div className="submit mt-5">
+        <Button type="submit" widthFull color="success" size="lg">
+          Sign up
+        </Button>
+      </div>
 
-        <InputAuthen
-          registerField={register('username')}
-          isError={Boolean(errors.username)}
-          errMessage={errors.username?.message}
-          placeholder="User Name"
-          type="text"
-          Icon={AiOutlineUser}
-          id="username"
-        />
+      <div className="text-center mt-3">
+        <p className="text-slate-800 text-sm">
+          Already have an account ?
+          <Link
+            to={redirectUrl ? `/login?redirect=${redirectUrl}` : '/login'}
+            className="inline-block ml-1 text-primary-900"
+          >
+            Log in !
+          </Link>
+        </p>
+      </div>
 
-        <InputAuthen
-          className="mt-5"
-          registerField={register('email')}
-          isError={Boolean(errors.email)}
-          errMessage={errors.email?.message}
-          placeholder="Email Address"
-          type="email"
-          Icon={MdOutlineMail}
-          id="email"
-        />
-
-        <InputAuthen
-          className="mt-5"
-          registerField={register('password')}
-          isError={Boolean(errors.password)}
-          errMessage={errors.password?.message}
-          placeholder="Password"
-          type="password"
-          Icon={VscUnlock}
-          id="password"
-        />
-
-        <div className="remember-me flex items-center justify-between mt-5 text-slate-800">
-          <div className="check-box cursor-pointer flex items-center">
-            <Checkbox
-              onClick={() => setAcceptTern((prev) => !prev)}
-              textLabel={
-                <p>
-                  I accept the{' '}
-                  <span className="text-primary-900">Term of Conditions </span>
-                  and <span className="text-primary-900"> Privacy Policy</span>
-                </p>
-              }
-              id="accept-term"
-            />
-          </div>
-        </div>
-
-        <div className="submit mt-5">
-          <Button type="submit" widthFull color="success" size="lg">
-            Sign up
-          </Button>
-        </div>
-      </form>
-    </AuthenLayout>
+      <SignUpOptions />
+    </form>
   );
 };
 

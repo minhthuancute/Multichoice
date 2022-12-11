@@ -6,7 +6,6 @@ type ButtonColors = 'success' | 'danger' | 'warning' | 'default' | 'infor';
 type ButtonSize = 'sm' | 'md' | 'lg';
 
 interface IButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  dissable?: boolean;
   widthFull?: boolean;
   color?: ButtonColors;
   size?: ButtonSize;
@@ -14,7 +13,6 @@ interface IButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const Button: React.FC<IButtonProps> = ({
-  dissable = false,
   widthFull = false,
   color = 'default',
   size = 'md',
@@ -26,7 +24,7 @@ const Button: React.FC<IButtonProps> = ({
   const buttonColor = (color: ButtonColors = 'default'): string => {
     switch (color) {
       case 'default':
-        return `btn-default text-slate-800 border-slate-800`;
+        return `btn-default bg-slate-800 text-white`;
       case 'success':
         return 'btn-success text-white border-primary-800 bg-primary-800';
       case 'danger':
@@ -52,6 +50,13 @@ const Button: React.FC<IButtonProps> = ({
   return (
     <button
       {...rest}
+      onClick={(e) => {
+        if (rest.disabled) {
+          e.preventDefault();
+        } else {
+          rest.onClick && rest.onClick(e);
+        }
+      }}
       className={classNames(
         [
           defaultCss,
@@ -63,7 +68,7 @@ const Button: React.FC<IButtonProps> = ({
         {
           'w-full': widthFull,
           'min-w-[128px]': !widthFull,
-          'opacity-50 pointer-events-none': dissable,
+          'opacity-50 cursor-not-allowed': rest.disabled,
         }
       )}
     >

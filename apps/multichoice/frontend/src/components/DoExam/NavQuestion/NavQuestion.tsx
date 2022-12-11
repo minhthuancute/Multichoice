@@ -4,39 +4,31 @@ import { START_TIME } from '../../../constants/contstants';
 import { classNames } from '../../../helper/classNames';
 import { sessionServices } from '../../../services/Applications/SessionServices';
 import { answerStore, examStore } from '../../../store/rootReducer';
-import { IQuestion } from '../../../types';
+import { IQuestion } from '../../../types/Topic';
 import CountDown from '../../Commons/CountDown/CountDown';
 import PolaCode from '../../Commons/PolaCode/PolaCode';
 
 interface INavQuestion {
   indexQuestion: number;
   setIndexQuestion: React.Dispatch<React.SetStateAction<number>>;
-  expriedRealtime?: boolean;
-  startTimeCountdown?: number;
 }
 
 const NavQuestion: React.FC<INavQuestion> = ({
   indexQuestion = 0,
   setIndexQuestion,
-  expriedRealtime = false,
-  startTimeCountdown = 0,
 }) => {
   const { answers } = answerStore();
 
   const {
-    exam,
     exam: { questions },
   } = examStore();
-
-  const startTime: number = sessionServices.getData(START_TIME) || 0;
-  const endTime: number = +exam.expirationTime;
 
   const navigateQuestion = (index: number) => {
     setIndexQuestion(index);
   };
 
   return (
-    <div className="bg-white shadow-xl w-full min-h-[430px] px-8 pt-12 pb-6 relative">
+    <div className="bg-white shadow-xl w-full min-h-[448px] p-4 relative">
       <div className="mb-2">
         <h2 className="text-center text-lg font-semibold text-slate-800 capitalize">
           Danh sách câu hỏi
@@ -77,20 +69,6 @@ const NavQuestion: React.FC<INavQuestion> = ({
             );
           })}
       </ul>
-
-      <div
-        className="border-b border-slate-200 absolute top-0 left-1/2 transform -translate-x-1/2
-        w-full flex justify-center items-center h-10"
-      >
-        {exam.expirationTime && expriedRealtime === false && (
-          <CountDown
-            startTime={startTimeCountdown || startTime}
-            endTime={endTime}
-            className="text-primary-900 text-lg"
-            key="count-down-desktop"
-          />
-        )}
-      </div>
     </div>
   );
 };

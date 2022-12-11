@@ -8,24 +8,24 @@ import { getDate } from '../../utils/format_date';
 import { AiOutlineFieldTime, AiOutlineQuestionCircle } from 'react-icons/ai';
 import { FaPlus } from 'react-icons/fa';
 import Modal from '../Commons/Modal/Modal';
-import FormEditTest from '../FormEditTest/FormEditTest';
+import UpdateTest from '../UpdateTest/UpdateTest';
 import { secondsToMinutes } from '../../utils/minutes_to_seconds';
 import { topicStore } from '../../store/rootReducer';
 import { validObject } from '../../helper/validObject';
 
 const HeaderEditTest: React.FC = () => {
   const { topic } = topicStore();
-  const [visibleModalEditTest, setVisibleModalEditTest] =
-    useState<boolean>(false);
+  const [visibleModal, setVisibleModal] = useState<boolean>(false);
 
   return validObject(topic) ? (
     <div className="bg-white">
       <Modal
-        visible={visibleModalEditTest}
-        setVisibleModal={setVisibleModalEditTest}
+        headerTitle="Cập nhật đề thi"
+        visible={visibleModal}
+        setVisibleModal={setVisibleModal}
         size="md"
       >
-        <FormEditTest setVisibleModalEditTest={setVisibleModalEditTest} />
+        <UpdateTest setVisibleModalEditTest={setVisibleModal} />
       </Modal>
       <div className="container pt-4">
         <Breadcrumb>
@@ -49,7 +49,7 @@ const HeaderEditTest: React.FC = () => {
               <button
                 className="create-test rounded-md bg-slate-800 text-xs
               text-white font-bold flex justify-center items-center px-3 h-8"
-                onClick={() => setVisibleModalEditTest(true)}
+                onClick={() => setVisibleModal(true)}
               >
                 <FaPencilAlt />
               </button>

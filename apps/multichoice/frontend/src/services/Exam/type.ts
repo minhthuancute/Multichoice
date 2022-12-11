@@ -1,4 +1,4 @@
-import { IAnswers } from '../../store/rootReducer';
+import { IAnswer } from '../../store/rootReducer';
 
 export interface IPayloadStartExam {
   userName: string;
@@ -6,14 +6,9 @@ export interface IPayloadStartExam {
 }
 
 export interface IPayloadEndExam {
-  userID: number;
-  answerUsers: IAnswers[];
-}
-
-export interface IPayloadEndExamRealtime {
-  userID: number;
   url: string;
-  answerUsers: IAnswers[];
+  userID: number | null;
+  answerUsers: IAnswer[];
 }
 
 export interface IPayloadgetListExamByTopicId {

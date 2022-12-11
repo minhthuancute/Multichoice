@@ -39,7 +39,6 @@ const InputAuthen: React.FC<IInputAuthen> = ({
 
   return (
     <div className={classNames('form-group relative w-full', className)}>
-      {/* input content */}
       <div
         className={classNames('relative wrapper-input', {
           'no-error': !isError,
@@ -50,8 +49,8 @@ const InputAuthen: React.FC<IInputAuthen> = ({
           {...rest}
           type={getTypeInput()}
           className={classNames(
-            `transition-all duration-200 w-full outline-none border px-4 py-2.5 border-solid
-            rounded-md text-sm placeholder:text-sm`,
+            `transition-all duration-200 w-full outline-none border px-4 py-2 border-solid
+            rounded-md text-sm placeholder:text-xs hover:border-primary-900`,
             {
               'border-stone-200 focus:border-primary-900 placeholder:text-slate-400':
                 !isError,
@@ -59,7 +58,7 @@ const InputAuthen: React.FC<IInputAuthen> = ({
                 isError,
               'text-slate-800': !isError,
               'pl-10': Icon,
-              'pl-2.5': !Icon,
+              'pl-3': !Icon,
             }
           )}
         />
@@ -103,7 +102,6 @@ const InputAuthen: React.FC<IInputAuthen> = ({
         )}
       </div>
 
-      {/* show error */}
       {isError && (
         <p className="mt-1 text-xs text-red-500 first-letter:capitalize">
           {errMessage}

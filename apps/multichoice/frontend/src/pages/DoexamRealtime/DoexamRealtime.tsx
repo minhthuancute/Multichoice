@@ -4,61 +4,61 @@ import React, { useEffect, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import HeaderDoExam from '../../components/DoExam/HeaderDoExam/HeaderDoExam';
 import { IS_SUBMIT_EXAM } from '../../constants/contstants';
-import { answerStore, examStore, IAnswers } from '../../store/rootReducer';
-import { ITestRealtimeRecord } from '../../types/ICommons';
+import {
+  answerStore,
+  examStore,
+  userExamStore,
+  userStore,
+} from '../../store/rootReducer';
+import { ITestRealtimeRecord } from '../../types/Commons';
 import { fireGet } from '../../utils/firebase_utils';
 import DoExamSkelenton from '../../components/DoExam/DoExamSkelenton/DoExamSkelenton';
-import { IQuestion } from '../../types';
 import { sessionServices } from '../../services/Applications/SessionServices';
 import { examServices } from '../../services/Exam/ExamServices';
 import { notify } from '../../helper/notify';
 import { iNotification } from 'react-notifications-component';
 import ShowQuestion from '../../components/DoExam/ShowQuestion/ShowQuestion';
 import NavQuestion from '../../components/DoExam/NavQuestion/NavQuestion';
-import { validObject } from '../../helper/validObject';
-import { isLogin } from '../../utils/check_logged';
-import ExamResult, {
-  IExamResult,
-} from '../../components/DoExam/ExamResult/ExamResult';
+import ExamResult from '../../components/DoExam/ExamResult/ExamResult';
 import { DoExamProvider, IDoExamContext } from '../../contexts/DoExamContext';
-import { IPayloadEndExamRealtime } from '../../services/Exam/type';
+import { IPayloadEndExam } from '../../services/Exam/type';
+import { validObject } from '../../helper/validObject';
 
 const DoExamRealtime: React.FC = () => {
   const { url } = useParams();
+  const { user, isAuthenticated } = userStore();
   const { exam, getExam } = examStore();
-  const { userDoExam, setAnswers, answers } = answerStore();
+  const { answers, initAnswers, setPoint } = answerStore();
+  const { userID, setUserID, setUserName } = userExamStore();
 
-  const [result, setResult] = useState<IExamResult>();
   const [visibleModalResult, setVisibleModalResult] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [indexQuestion, setIndexQuestion] = useState<number>(0);
-  const [expriedRealtime, setExpriedRealtime] = useState<boolean>(false);
   const [startTimeCountdown, setStartTimeCountdown] = useState<number>(0);
-  const [submited, setSubmited] = useState<boolean>(false);
+  const [submited, setSubmited] = useState<boolean>(
+    !!sessionServices.getData(IS_SUBMIT_EXAM)
+  );
 
   const handleSubmitExam = async () => {
-    setSubmited(true);
-    sessionServices.setData(IS_SUBMIT_EXAM, true);
     try {
-      const payloadRealtime: IPayloadEndExamRealtime = {
+      const payload: IPayloadEndExam = {
         url: url || '',
-        userID: userDoExam.userId,
+        userID: user.id,
         answerUsers: answers,
       };
-      const { data, success } = await examServices.submitExamRealtime(
-        payloadRealtime
-      );
+      const { data } = await examServices.submitExamRealtime(payload);
 
-      if (success) {
+      if (data.success) {
         setVisibleModalResult(true);
-        setResult({
-          userName: data.username,
-          point: data.point,
-        });
+        setPoint(data.data.point);
+        setSubmited(true);
+        sessionServices.setData(IS_SUBMIT_EXAM, true);
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       const { message } = error.response.data;
+      setSubmited(false);
+
       notify({
         message: message,
         type: 'danger',
@@ -73,8 +73,10 @@ const DoExamRealtime: React.FC = () => {
         if (data) {
           const recordValue: ITestRealtimeRecord = data;
           setLoading(!recordValue.started);
-          setStartTimeCountdown(+recordValue.startTime);
           if (recordValue.started) {
+            console.log(recordValue.startTime);
+
+            setStartTimeCountdown(+recordValue.startTime);
             getExam(url || '');
           }
         }
@@ -84,46 +86,40 @@ const DoExamRealtime: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // if (validObject(exam)) {
-    //   const initAnswers: IAnswers[] = exam.questions.map(
-    //     (questions: IQuestion) => {
-    //       const tempArr: IAnswers = {
-    //         questionID: questions.id,
-    //         answerID: [],
-    //       };
-    //       return tempArr;
-    //     }
-    //   );
-    //   setAnswers(initAnswers);
-    // }
+    sessionServices.setData(IS_SUBMIT_EXAM, false);
+
+    if (isAuthenticated()) {
+      setUserName(user.username);
+    }
+    if (validObject(exam)) {
+      initAnswers(exam.questions);
+    }
   }, [exam]);
 
   const contextValue: IDoExamContext = {
     handleSubmitExam: handleSubmitExam,
   };
 
-  return isLogin() ? (
+  return isAuthenticated() ? (
     <DoExamProvider value={contextValue}>
       <HeaderDoExam submited={submited} />
       {loading ? (
         <DoExamSkelenton />
       ) : (
-        <div className="container mx-auto pt-5 lg:px-10 flex gap-x-8">
-          <div className="w-full lg:w-2/3 h-full">
+        <div className="container mx-auto pt-5 lg:px-10 flex gap-x-5">
+          <div className="w-full lg:w-2/3">
             <ShowQuestion
               questions={exam.questions}
               indexQuestion={indexQuestion}
               setIndexQuestion={setIndexQuestion}
               startTimeCountdown={startTimeCountdown}
-              expriedRealtime={expriedRealtime}
+              submited={submited}
             />
           </div>
           <div className="w-1/3 xs:hidden lg:block h-full">
             <NavQuestion
               indexQuestion={indexQuestion}
               setIndexQuestion={setIndexQuestion}
-              expriedRealtime={expriedRealtime}
-              startTimeCountdown={startTimeCountdown}
             />
           </div>
         </div>
@@ -132,7 +128,6 @@ const DoExamRealtime: React.FC = () => {
       <ExamResult
         setVisibleModal={setVisibleModalResult}
         visibleModal={visibleModalResult}
-        point={result?.point}
       />
     </DoExamProvider>
   ) : (

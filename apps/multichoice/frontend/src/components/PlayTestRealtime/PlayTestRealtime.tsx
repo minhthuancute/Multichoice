@@ -1,10 +1,10 @@
 import React from 'react';
-import { ITestRealtimeRecord } from '../../types/ICommons';
+import { ITestRealtimeRecord } from '../../types/Commons';
 import { fireGet, fireUpdate } from '../../utils/firebase_utils';
 import Button from '../Commons/Button/Button';
 import Modal from '../Commons/Modal/Modal';
 
-interface IHandlelayTestProps {
+interface IPlayTestRealtimeProps {
   visibleModal: boolean;
   setVisibleModal: React.Dispatch<React.SetStateAction<boolean>>;
   topicUrl: string;
@@ -12,7 +12,7 @@ interface IHandlelayTestProps {
   isPlaytest: boolean;
 }
 
-const HandlelayTest: React.FC<IHandlelayTestProps> = ({
+const PlayTestRealtime: React.FC<IPlayTestRealtimeProps> = ({
   visibleModal,
   setVisibleModal,
   topicUrl,
@@ -51,23 +51,20 @@ const HandlelayTest: React.FC<IHandlelayTestProps> = ({
 
   return (
     <Modal
+      headerTitle={isPlaytest ? 'Bắt đầu bài thi' : 'Tạm dừng bài thi'}
       visible={visibleModal}
       setVisibleModal={setVisibleModal}
       size="sm"
       placement="CENTER"
     >
       <>
-        <div className="header text-center">
-          <h4 className="text-slate-800 font-semibold text-xl capitalize">
-            {isPlaytest ? 'Bắt đầu bài thi' : 'Tạm dừng bài thi'}
-          </h4>
-
-          <p className="mt-4 text-slate-800">
+        <div>
+          <p className="text-slate-800">
             Bạn có chắc chắn muốn {isPlaytest ? 'bắt đầu' : 'tạm dừng'} bài thi:{' '}
-            <span className="font-semibold">{topicTitle}</span>?
+            {topicTitle}?
           </p>
         </div>
-        <div className="body ctas flex items-center justify-center gap-x-2 mt-5">
+        <div className="ctas flex items-center justify-end gap-x-2 mt-6">
           <Button type="button" onClick={() => setVisibleModal(false)}>
             Huỷ
           </Button>
@@ -91,4 +88,4 @@ const HandlelayTest: React.FC<IHandlelayTestProps> = ({
   );
 };
 
-export default HandlelayTest;
+export default PlayTestRealtime;

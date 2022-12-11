@@ -1,6 +1,8 @@
 import React from 'react';
+import { IPayloadStartExam } from '../services/Exam/type';
 
 export interface IDoExamContext {
+  startExam?: (payload: IPayloadStartExam) => void;
   handleSubmitExam: () => void;
 }
 

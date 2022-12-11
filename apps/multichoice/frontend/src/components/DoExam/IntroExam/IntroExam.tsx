@@ -13,25 +13,25 @@ const IntroExam: React.FC<IIntroExamProps> = ({
 }) => {
   return (
     <Modal
+      headerTitle="Hướng dẫn làm bài"
       visible={visibleModalIntro}
       setVisibleModal={setVisibleModalIntro}
       placement="CENTER"
     >
       <>
-        <h4 className="text-center text-xl font-semibold mb-5 capitalize">
-          Hướng dẫn làm bài
-        </h4>
-        <ul>
-          <li>- Đề thi chỉ nộp bài một lần</li>
-          <li>- Không thể nộp bài khi đã hết thời gian</li>
+        <ul className="text-tiny text-slate-800">
           <li>
-            - Bấm <b>"Thoát"</b> để làm lại bài thi
+            - Đề thi chỉ nộp bài một lần và không thể nộp bài khi đã hết thời
+            gian.
+          </li>
+          <li>
+            - Bấm <b>"Thoát"</b> để làm lại bài thi.
           </li>
         </ul>
 
-        <Button className="mt-5" onClick={() => setVisibleModalIntro(false)}>
-          Đóng
-        </Button>
+        <div className="text-end mt-6">
+          <Button onClick={() => setVisibleModalIntro(false)}>Đóng</Button>
+        </div>
       </>
     </Modal>
   );

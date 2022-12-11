@@ -24,7 +24,15 @@ const Checkbox: React.FC<ICheckboxProps> = ({
         'opacity-40': disable,
       })}
     >
-      <input {...rest} {...registerField} hidden />
+      <input
+        {...rest}
+        {...registerField}
+        onChange={(e) => {
+          registerField?.onChange(e);
+        }}
+        name={rest.name ? rest.name : registerField?.name}
+        hidden
+      />
 
       <label
         htmlFor={rest.id}

@@ -17,6 +17,7 @@ import { errNotSelectCorrectAnswer } from '../../constants/msgNotify';
 import Button from '../Commons/Button/Button';
 import AnswerItem from '../AnswerItem/AnswerItem';
 import { schemaCreateQuestion } from './createQuestionSchema';
+import HeaderCreateQuestion from '../HeaderCreateQuestion/HeaderCreateQuestion';
 
 interface CreateQuestionQuery {
   topic_id: string;
@@ -33,7 +34,6 @@ const CreateQuestion: React.FC = () => {
     setValue,
     getValues,
     clearErrors,
-    setError,
     control,
     watch,
     formState: { errors },
@@ -66,13 +66,16 @@ const CreateQuestion: React.FC = () => {
       type: QuestionTypeEnum.SINGLE,
     },
   });
-  const { remove, fields, append } = useFieldArray({
+
+  const { remove, append, fields } = useFieldArray({
     control,
     name: 'answers',
   });
 
+  const [indexCorrectAnswer, setIndexCorrectAnswer] = useState<number>(-1);
+
+  const [answers, setAnswers] = useState<CreatAnswer[]>(getValues('answers'));
   const [hideAnswer, setHideAnswer] = useState<boolean>(false);
-  const [correctAnswer, setCorrectAnswer] = useState<string>('');
   const [questionTypes] = useState<IOption[]>(() => {
     const types: QuestionTypeEnum[] = [];
     for (const topic in QuestionTypeEnum) {
@@ -126,23 +129,12 @@ const CreateQuestion: React.FC = () => {
   const validAnswers = (): boolean => {
     const answers = getValues('answers');
     const questionType = getValues('type');
-    const isQuestionTypeText = questionType === QuestionTypeEnum.TEXT;
-    if (isQuestionTypeText) {
+    if (questionType === QuestionTypeEnum.TEXT) {
       return true;
     }
     const haveCorrectAnswer = answers.some(
-      (answers: CreatAnswer) => answers.isCorrect
+      (answers: CreatAnswer) => !!answers.isCorrect
     );
-    const haveEmptyContent = answers.some(
-      (answers: CreatAnswer) => answers.content === ''
-    );
-
-    if (haveEmptyContent) {
-      setError('answers', {
-        message: 'Answers content is required',
-      });
-      return false;
-    }
 
     if (!haveCorrectAnswer) {
       notify({
@@ -154,7 +146,15 @@ const CreateQuestion: React.FC = () => {
     return true;
   };
 
+  const setCorectAnswerSingle = (indexAnswer: number) => {
+    setIndexCorrectAnswer(indexAnswer);
+  };
+
   const onSubmit: SubmitHandler<CreateQuestionDto> = async (formData) => {
+    const { type } = formData;
+    if (type === QuestionTypeEnum.SINGLE && indexCorrectAnswer !== -1) {
+      setValue(`answers.${indexCorrectAnswer}.isCorrect`, true);
+    }
     if (validAnswers()) {
       try {
         if (formData.type === QuestionTypeEnum.TEXT) {
@@ -166,19 +166,15 @@ const CreateQuestion: React.FC = () => {
           const urlNavigate = '/tests/edit/' + query.topic_id;
           navigate(urlNavigate);
         }
-      } catch (error) {
-        //
+      } catch {
+        navigate('/');
       }
     }
   };
 
   useEffect(() => {
     const subscription = watch(({ type, answers }) => {
-      if (type === QuestionTypeEnum.SINGLE) {
-        console.log(answers);
-        const correctAnswer = answers?.find((answer) => answer?.isCorrect);
-        setCorrectAnswer(correctAnswer?.content || '');
-      }
+      setAnswers(answers as CreatAnswer[]);
     });
     return () => {
       subscription.unsubscribe();
@@ -186,100 +182,107 @@ const CreateQuestion: React.FC = () => {
   }, []);
 
   return (
-    <form
-      className="container form flex items-start"
-      id="form-create-question"
-      onSubmit={handleSubmit(onSubmit)}
-    >
-      <div className="form-left w-1/3 p-4 bg-white rounded-md">
-        {topic.typeCategoryName === 'game' ? (
-          <Input
-            registerField={register('time')}
-            typeInput="number"
-            textLabel="Thời gian làm bài"
-            id="expirationTime"
-            isError={Boolean(errors.time)}
-            errMessage={errors.time?.message}
-            isDisable={topic.typeCategoryName !== 'game'}
-          />
-        ) : null}
-        <Select
-          onChange={onSelectQuestionType}
-          defaultValue={questionTypes[0].label}
-          options={questionTypes}
-          textLabel="Loại câu hỏi"
-        />
-      </div>
-      <div className="form-right w-2/3 ml-4 p-4 bg-white rounded-md">
-        <div className="relative">
-          <label className="font-semibold text-slate-800 text-sm inline-block mb-2">
-            Nội dung
-            <span className="ml-1 text-red-600">*</span>
-          </label>
-          <Editor
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            control={control as any}
-            name="content"
-            placeholder="Nội dung câu hỏi"
-            isError={Boolean(errors.content)}
-            errMessage={errors.content?.message}
+    <>
+      <HeaderCreateQuestion />
+      <form
+        className="container flex items-start mt-5 mb-10"
+        id="form-create-question"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <div className="form-left w-1/3 p-4 bg-white rounded-md">
+          {topic.typeCategoryName === 'game' ? (
+            <Input
+              registerField={register('time')}
+              typeInput="number"
+              textLabel="Thời gian làm bài"
+              id="expirationTime"
+              isError={Boolean(errors.time)}
+              errMessage={errors.time?.message}
+              isDisable={topic.typeCategoryName !== 'game'}
+            />
+          ) : null}
+          <Select
+            onChange={onSelectQuestionType}
+            defaultValue={questionTypes[0].label}
+            options={questionTypes}
+            textLabel="Loại câu hỏi"
           />
         </div>
-        <div
-          className={classNames('create-answer', {
-            hidden: hideAnswer,
-          })}
-        >
-          <div className="answer mt-4">
-            <div className="answer-header">
-              <label className="font-semibold text-slate-800 text-sm inline-block mb-2">
-                Đáp án
-                <span className="ml-1 text-red-600">*</span>
-              </label>
-            </div>
-            <div className="answer-body">
-              {fields.map((item: CreatAnswer, index: number) => {
-                return (
-                  <AnswerItem
-                    key={item.isCorrect + ''}
-                    indexAnswer={index}
-                    lengthAnswers={watch('answers').length}
-                    correctAnswer={correctAnswer}
-                    registerFieldContent={register(`answers.${index}.content`)}
-                    registerFieldIsCorrect={register(
-                      `answers.${index}.isCorrect`
-                    )}
-                    answerValue={watch(`answers.${index}.content`)}
-                    questionType={watch('type')}
-                    removeAnswer={remove}
-                  />
-                );
-              })}
-            </div>
-            {errors.answers ? (
-              <div className="show-error mt-3">
-                <p className="text-red-500 text-xs">{errors.answers.message}</p>
+        <div className="form-right w-2/3 ml-4 p-4 bg-white rounded-md">
+          <div className="relative">
+            <label className="font-semibold text-slate-800 text-sm inline-block mb-2">
+              Nội dung
+              <span className="ml-1 text-red-600">*</span>
+            </label>
+            <Editor
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              control={control as any}
+              name="content"
+              placeholder="Nội dung câu hỏi"
+              isError={Boolean(errors.content)}
+              errMessage={errors.content?.message}
+            />
+          </div>
+          <div
+            className={classNames('create-answer', {
+              hidden: hideAnswer,
+            })}
+          >
+            <div className="answer mt-4">
+              <div className="answer-header">
+                <label className="font-semibold text-slate-800 text-sm inline-block mb-2">
+                  Đáp án
+                  <span className="ml-1 text-red-600">*</span>
+                </label>
               </div>
-            ) : null}
-            <div className="add-answer mt-5 text-end">
-              <Button
-                type="button"
-                onClick={() => {
-                  if (getValues('answers').length + 1 !== 5) {
-                    append({
-                      content: '',
-                      isCorrect: false,
-                    });
-                  }
-                }}
-              >
-                Thêm đáp án
-              </Button>
+              <div className="answer-body">
+                {fields.map((item: CreatAnswer, index: number) => {
+                  return (
+                    <AnswerItem
+                      key={item.isCorrect + '-' + index}
+                      indexAnswer={index}
+                      lengthAnswers={answers.length}
+                      registerFieldContent={register(
+                        `answers.${index}.content`
+                      )}
+                      registerFieldIsCorrect={register(
+                        `answers.${index}.isCorrect`
+                      )}
+                      questionType={watch('type')}
+                      removeAnswer={remove}
+                      setCorectAnswerSingle={setCorectAnswerSingle}
+                      clearErrors={clearErrors}
+                    />
+                  );
+                })}
+              </div>
+              {errors.answers ? (
+                <div className="show-error mt-3">
+                  <p className="text-red-500 text-xs">
+                    {errors.answers.message}
+                  </p>
+                </div>
+              ) : null}
+              <div className="add-answer mt-5 text-end">
+                <Button
+                  type="button"
+                  onClick={() => {
+                    if (getValues('answers').length + 1 !== 5) {
+                      append({
+                        content: '',
+                        isCorrect: false,
+                      });
+                    }
+                  }}
+                >
+                  Thêm đáp án
+                </Button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </>
   );
 };
 
