@@ -27,6 +27,7 @@ export class UserExamService {
           },
         },
       },
+      order: { createdAt: 'DESC' },
     });
   }
 
