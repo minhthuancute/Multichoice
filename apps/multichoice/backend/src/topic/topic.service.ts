@@ -263,7 +263,7 @@ export class TopicService {
     const take = queryTopicDto?.take || 10;
     const queryBuilder = this.topicRepository
       .createQueryBuilder('topic')
-      .where('topic.isPublic = :isPublic', { isPublic: 0 })
+      .where('topic.isPublic = :isPublic', { isPublic: 1 })
       .leftJoin('topic.questions', 'questions')
       .loadRelationCountAndMap('topic.questionsCount', 'topic.questions')
       .skip((page - 1) * take)
