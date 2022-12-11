@@ -1,6 +1,6 @@
 import { IUserDoExamDetail } from '@monorepo/multichoice/dto';
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import Breadcrumb from '../../components/Commons/Breadcrumb/Breadcrumb';
 import QuestionsUserExam from '../../components/QuestionsUserExam/QuestionsUserExam';
 import { getTopicTitle } from '../../helper/getTopicTitle';
@@ -16,6 +16,7 @@ interface IStatisticUserExamQuery {
 
 const StatisticUserExam: React.FC = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [query] = useQuery<IStatisticUserExamQuery>();
 
   const [userExamDetail, setUserExamDetail] = useState<IUserDoExamDetail>();
@@ -32,7 +33,7 @@ const StatisticUserExam: React.FC = () => {
         setUserExamDetail(userExamDetail);
       }
     } catch {
-      //
+      navigate('/');
     }
   };
 
@@ -57,12 +58,7 @@ const StatisticUserExam: React.FC = () => {
           </Breadcrumb.Item>
         </Breadcrumb>
       </header>
-      <main
-        className="bg-slate-50 pt-5"
-        style={{
-          minHeight: 'calc(100vh - 106px)',
-        }}
-      >
+      <main>
         <div className="container h-max pt-4 rounded-md pb-10">
           <div className="mb-10">
             <h4 className="text-primary-900 mb-2 font-semibold">Chi tiết:</h4>
@@ -72,7 +68,7 @@ const StatisticUserExam: React.FC = () => {
             >
               <li className="capitalize">
                 <span className="font-semibold mr-2">Tên:</span>
-                {userExamDetail.username}
+                {userExamDetail.username || 'N/A'}
               </li>
               <li>
                 <span className="font-semibold mr-2">Điểm:</span>

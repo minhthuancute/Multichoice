@@ -4,8 +4,8 @@ import { TOPIC_LIST } from '../../constants/contstants';
 import { useQuery } from '../../hooks/useQuery';
 import { localServices } from '../../services/Applications/LocalServices';
 import { topicServices } from '../../services/Title/TopicServices';
-import { ITopic } from '../../types';
-import { ITopicLocal } from '../../types/ICommons';
+import { ITopicLocal } from '../../types/Commons';
+import { ITopic } from '../../types/Topic';
 import { removeVietnameseTones } from '../../utils/remove_vietnamese_tones';
 import EmptyData from '../Commons/EmptyData/EmptyData';
 import PlayTestRealtime from '../PlayTestRealtime/PlayTestRealtime';
@@ -72,9 +72,9 @@ const TestList: React.FC = () => {
           const isMatched: boolean = title.includes(paramSearch);
           return isMatched;
         });
-        setTestsFilter(filterResult.reverse());
+        setTestsFilter(filterResult);
       } else {
-        setTestsFilter(topicsData.reverse());
+        setTestsFilter(topicsData);
       }
     } catch (error) {
       //

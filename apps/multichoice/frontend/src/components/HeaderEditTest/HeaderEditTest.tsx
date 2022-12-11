@@ -8,7 +8,7 @@ import { getDate } from '../../utils/format_date';
 import { AiOutlineFieldTime, AiOutlineQuestionCircle } from 'react-icons/ai';
 import { FaPlus } from 'react-icons/fa';
 import Modal from '../Commons/Modal/Modal';
-import FormEditTest from '../FormEditTest/FormEditTest';
+import UpdateTest from '../UpdateTest/UpdateTest';
 import { secondsToMinutes } from '../../utils/minutes_to_seconds';
 import { topicStore } from '../../store/rootReducer';
 import { validObject } from '../../helper/validObject';
@@ -19,8 +19,13 @@ const HeaderEditTest: React.FC = () => {
 
   return validObject(topic) ? (
     <div className="bg-white">
-      <Modal visible={visibleModal} setVisibleModal={setVisibleModal} size="md">
-        <FormEditTest setVisibleModalEditTest={setVisibleModal} />
+      <Modal
+        headerTitle="Cập nhật đề thi"
+        visible={visibleModal}
+        setVisibleModal={setVisibleModal}
+        size="md"
+      >
+        <UpdateTest setVisibleModalEditTest={setVisibleModal} />
       </Modal>
       <div className="container pt-4">
         <Breadcrumb>

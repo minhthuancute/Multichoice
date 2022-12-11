@@ -1,7 +1,6 @@
 import React from 'react';
-import { QuestionDetail } from '@monorepo/multichoice/dto';
+import { QuestionDetail, UpdateAnswer } from '@monorepo/multichoice/dto';
 import { classNames } from '../../helper/classNames';
-import { IAnswer } from '../../types';
 import PolaCode from '../Commons/PolaCode/PolaCode';
 import { BiCheckDouble } from 'react-icons/bi';
 import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
@@ -15,7 +14,7 @@ const QuestionsUserExam: React.FC<IQuestionsUserExamProps> = ({
   questions,
 }) => {
   const isCorrectMultiAnswer = (
-    answers: IAnswer[],
+    answers: UpdateAnswer[],
     answersUser: number[] | string,
     questionType: `${QuestionTypeEnum}`
   ): boolean => {
@@ -24,8 +23,8 @@ const QuestionsUserExam: React.FC<IQuestionsUserExamProps> = ({
     if (questionType.toUpperCase() === 'SINGLE') return true;
 
     const correctAnswersObj = answers
-      .filter((answer: IAnswer) => answer.isCorrect)
-      .reduce((acc: Record<number, number>, answer: IAnswer) => {
+      .filter((answer) => answer.isCorrect)
+      .reduce((acc: Record<number, number>, answer) => {
         acc[answer.id] = answer.id;
         return acc;
       }, {});
@@ -73,66 +72,63 @@ const QuestionsUserExam: React.FC<IQuestionsUserExamProps> = ({
                   </p>
                 ) : (
                   question &&
-                  question.answers.map(
-                    (answer: IAnswer, indexAnswer: number) => {
-                      const { isCorrect, id: answerId } = answer;
-                      const {
-                        answers,
-                        answerUser,
-                        type: questionType,
-                      } = question;
+                  question.answers.map((answer, indexAnswer: number) => {
+                    const { isCorrect, id: answerId } = answer;
+                    const {
+                      answers,
+                      answerUser,
+                      type: questionType,
+                    } = question;
 
-                      const isCorrectMulti = isCorrectMultiAnswer(
-                        answers,
-                        answerUser,
-                        questionType
-                      );
-                      return (
-                        <li
-                          key={answerId}
-                          className="flex items-start text-slate-800 text-sm mb-1 last:mb-0"
+                    const isCorrectMulti = isCorrectMultiAnswer(
+                      answers,
+                      answerUser,
+                      questionType
+                    );
+                    return (
+                      <li
+                        key={answerId}
+                        className="flex items-start text-slate-800 text-sm mb-1 last:mb-0"
+                      >
+                        <BiCheckDouble
+                          className={classNames(
+                            'absolute left-1 mt-1 min-w-max',
+                            {
+                              'text-green-500': isCorrect,
+                              hidden: !isCorrect,
+                            }
+                          )}
+                        />
+                        <span
+                          className={classNames(
+                            'font-semibold flex items-center min-w-max',
+                            {
+                              // for correct
+                              'text-green-600':
+                                questionType === QuestionTypeEnum.SINGLE &&
+                                typeof answerUser !== 'string'
+                                  ? answerUser.includes(answerId) &&
+                                    answer.isCorrect
+                                  : typeof answerUser !== 'string' &&
+                                    answerUser.includes(answerId) &&
+                                    isCorrectMulti,
+                              // for incorrect
+                              'text-red-500':
+                                questionType === QuestionTypeEnum.SINGLE &&
+                                typeof answerUser !== 'string'
+                                  ? answerUser.includes(answerId) && !isCorrect
+                                  : typeof answerUser !== 'string' &&
+                                    answerUser.includes(answerId) &&
+                                    !isCorrectMulti,
+                            }
+                          )}
                         >
-                          <BiCheckDouble
-                            className={classNames(
-                              'absolute left-1 mt-1 min-w-max',
-                              {
-                                'text-green-500': isCorrect,
-                                hidden: !isCorrect,
-                              }
-                            )}
-                          />
-                          <span
-                            className={classNames(
-                              'font-semibold flex items-center min-w-max',
-                              {
-                                // for correct
-                                'text-green-600':
-                                  questionType === QuestionTypeEnum.SINGLE &&
-                                  typeof answerUser !== 'string'
-                                    ? answerUser.includes(answerId) &&
-                                      answer.isCorrect
-                                    : typeof answerUser !== 'string' &&
-                                      answerUser.includes(answerId) &&
-                                      isCorrectMulti,
-                                // for incorrect
-                                'text-red-500':
-                                  questionType === QuestionTypeEnum.SINGLE &&
-                                  typeof answerUser !== 'string'
-                                    ? answerUser.includes(answerId) &&
-                                      !isCorrect
-                                    : typeof answerUser !== 'string' &&
-                                      answerUser.includes(answerId) &&
-                                      !isCorrectMulti,
-                              }
-                            )}
-                          >
-                            Đáp án {String.fromCharCode(65 + indexAnswer)} :
-                          </span>
-                          <span className="ml-2">{answer.content}</span>
-                        </li>
-                      );
-                    }
-                  )
+                          Đáp án {String.fromCharCode(65 + indexAnswer)} :
+                        </span>
+                        <span className="ml-2">{answer.content}</span>
+                      </li>
+                    );
+                  })
                 )}
               </div>
 

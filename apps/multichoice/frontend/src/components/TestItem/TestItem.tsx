@@ -11,7 +11,7 @@ import { copyClipboard } from '../../helper/copyClipboard';
 import { notify } from '../../helper/notify';
 import { iNotification } from 'react-notifications-component';
 import { secondsToMinutes } from '../../utils/minutes_to_seconds';
-import { ITestRealtimeRecord } from '../../types/ICommons';
+import { ITestRealtimeRecord } from '../../types/Commons';
 import {
   canNotCopyLinkExam,
   copyLinkExamSuccess,

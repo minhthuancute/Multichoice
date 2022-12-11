@@ -13,15 +13,27 @@ import { useQuery } from '../../hooks/useQuery';
 import { userStore } from '../../store/rootReducer';
 import { titleServices } from '../../services/Title/TitleServices';
 import { authenServices } from '../../services/Authen/AuthenServices';
-import { ILoginResponse } from '../../types';
 import { localServices } from '../../services/Applications/LocalServices';
 import { TOKEN } from '../../constants/contstants';
 import { notify } from '../../helper/notify';
 import { loginError } from '../../constants/msgNotify';
 import InputAuthen from '../../components/Commons/InputAuthen/InputAuthen';
-import { RedirectQuery } from '../../types/AuthenQuery';
+import { RedirectQuery } from '../../types/Commons';
 import Button from '../../components/Commons/Button/Button';
 import SignUpOptions from '../../components/Authen/SignUpOptions/SignUpOptions';
+
+export interface AuthPayload {
+  id: number;
+  username: string;
+  email: string;
+}
+
+export interface ILogin extends AxiosResponse {
+  data: {
+    token: string;
+    payload: AuthPayload;
+  };
+}
 
 const { email, password } = validation();
 const schemaFormLogin = yup
@@ -52,18 +64,13 @@ const Login: React.FC = () => {
 
   const onSubmit: SubmitHandler<LoginUserDto> = async (formData) => {
     try {
-      const data: AxiosResponse = await authenServices.login(formData);
-      const loginResponse: ILoginResponse = data.data;
-      if (loginResponse.success) {
+      const { data } = await authenServices.login(formData);
+      const loginResponse: ILogin = data;
+      if (data.success) {
         const { payload, token } = loginResponse.data;
         localServices.setData(TOKEN, token);
         setInforUser(payload, token);
-
-        if (redirectUrl) {
-          navigate(`/e/${redirectUrl}/do-exam-realtime`);
-        } else {
-          navigate('/');
-        }
+        navigate('/');
       }
     } catch {
       notify({
@@ -83,6 +90,11 @@ const Login: React.FC = () => {
         <h2 className="font-medium text-slate-800 text-2xl">
           Login to Multichoice
         </h2>
+        {redirectUrl && (
+          <p className="text-slate-800 text-sm mt-1">
+            Bạn cần đăng nhập để làm bài
+          </p>
+        )}
       </div>
 
       <InputAuthen
@@ -124,7 +136,10 @@ const Login: React.FC = () => {
       <div className="text-center mt-3">
         <p className="text-slate-800 text-sm">
           Don't have account ?
-          <Link to="/register" className="inline-block ml-1 text-primary-900">
+          <Link
+            to={redirectUrl ? `/register?redirect=${redirectUrl}` : '/register'}
+            className="inline-block ml-1 text-primary-900"
+          >
             Sign up now !
           </Link>
         </p>

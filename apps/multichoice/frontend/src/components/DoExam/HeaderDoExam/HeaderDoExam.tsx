@@ -7,9 +7,8 @@ import {
 } from '../../../constants/contstants';
 import { localServices } from '../../../services/Applications/LocalServices';
 import {
-  answerStore,
   examStore,
-  IInforUserDoExam,
+  userExamStore,
   userStore,
 } from '../../../store/rootReducer';
 import ExamResult from '../ExamResult/ExamResult';
@@ -30,9 +29,9 @@ const HeaderDoExam: React.FC<IHeaderDoExamProps> = ({ submited }) => {
 
   const navigate = useNavigate();
   const { url } = useParams();
-  const { exam, dataExamResult } = examStore();
+  const { exam } = examStore();
   const { user } = userStore();
-  const { userDoExam, setUserDoexamData } = answerStore();
+  const { userName } = userExamStore();
 
   const [visibleModalIntro, setVisibleModalIntro] = useState<boolean>(false);
   const [visibleModalResult, setVisibleModalResult] = useState<boolean>(false);
@@ -44,7 +43,6 @@ const HeaderDoExam: React.FC<IHeaderDoExamProps> = ({ submited }) => {
     localServices.clearItem(ANSWERS_EXAM);
     sessionServices.setData(START_EXAM, false);
 
-    setUserDoexamData({} as IInforUserDoExam);
     if (validObject(user)) {
       navigate('/');
     } else {
@@ -69,7 +67,6 @@ const HeaderDoExam: React.FC<IHeaderDoExamProps> = ({ submited }) => {
       <ExamResult
         setVisibleModal={setVisibleModalResult}
         visibleModal={visibleModalResult}
-        point={dataExamResult?.point || 0}
       />
 
       <ModalConfirm
@@ -114,18 +111,18 @@ const HeaderDoExam: React.FC<IHeaderDoExamProps> = ({ submited }) => {
           </h3>
 
           <p className="text-white text-tiny mt-4">
-            Hello, {userDoExam.userName || user.username}
+            Hello, {userName || 'Guest'}
           </p>
           <button
             className={classNames(`w-full rounded-md bg-slate-200 py-2 mt-6`, {
               block: submited,
               hidden: !submited,
             })}
-            // onClick={() => {
-            //   if (isSubmitExam) {
-            //     setVisibleModalResult(true);
-            //   }
-            // }}
+            onClick={() => {
+              if (submited) {
+                setVisibleModalResult(true);
+              }
+            }}
           >
             Xem lại kết quả
           </button>
@@ -171,11 +168,11 @@ const HeaderDoExam: React.FC<IHeaderDoExamProps> = ({ submited }) => {
                   hidden: !submited,
                 }
               )}
-              // onClick={() => {
-              //   if (isSubmitExam) {
-              //     setVisibleModalResult(true);
-              //   }
-              // }}
+              onClick={() => {
+                if (submited) {
+                  setVisibleModalResult(true);
+                }
+              }}
             >
               Xem lại kết quả
             </button>
@@ -196,7 +193,7 @@ const HeaderDoExam: React.FC<IHeaderDoExamProps> = ({ submited }) => {
               Thoát
             </button>
           </div>
-          <p className="ml-4">Hello, {userDoExam.userName || user.username}</p>
+          <p className="ml-4">Hello, {userName || 'Guest'}</p>
         </div>
       </div>
     </header>

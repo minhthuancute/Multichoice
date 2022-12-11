@@ -5,7 +5,6 @@ import { AiOutlineUser } from 'react-icons/ai';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-
 import { validation } from '@monorepo/multichoice/validation';
 import { Link, useNavigate } from 'react-router-dom';
 import { CreateUserDto } from '@monorepo/multichoice/dto';
@@ -17,7 +16,7 @@ import { acceptTerm, emailExisted } from '../../constants/msgNotify';
 import { titleServices } from '../../services/Title/TitleServices';
 import InputAuthen from '../../components/Commons/InputAuthen/InputAuthen';
 import Checkbox from '../../components/Commons/Checkbox/Checkbox';
-import { RedirectQuery } from '../../types/AuthenQuery';
+import { RedirectQuery } from '../../types/Commons';
 import Button from '../../components/Commons/Button/Button';
 import SignUpOptions from '../../components/Authen/SignUpOptions/SignUpOptions';
 
@@ -124,13 +123,14 @@ const Register: React.FC = () => {
           <Checkbox
             onClick={() => setAcceptTern((prev) => !prev)}
             textLabel={
-              <label>
+              <p>
                 I accept the{' '}
                 <span className="text-primary-900">Term of Conditions </span>
                 and <span className="text-primary-900"> Privacy Policy</span>
-              </label>
+              </p>
             }
             id="accept-term"
+            type="checkbox"
           />
         </div>
       </div>
@@ -144,7 +144,10 @@ const Register: React.FC = () => {
       <div className="text-center mt-3">
         <p className="text-slate-800 text-sm">
           Already have an account ?
-          <Link to="/login" className="inline-block ml-1 text-primary-900">
+          <Link
+            to={redirectUrl ? `/login?redirect=${redirectUrl}` : '/login'}
+            className="inline-block ml-1 text-primary-900"
+          >
             Log in !
           </Link>
         </p>

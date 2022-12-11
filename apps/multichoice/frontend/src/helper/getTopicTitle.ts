@@ -1,6 +1,6 @@
 import { TOPIC_LIST } from '../constants/contstants';
 import { localServices } from '../services/Applications/LocalServices';
-import { ITopicLocal } from '../types/ICommons';
+import { ITopicLocal } from '../types/Commons';
 
 export const getTopicTitle = (topicId: number): string => {
   const topicsLocal: ITopicLocal[] = localServices.getData(TOPIC_LIST);

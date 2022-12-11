@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import * as yup from 'yup';
 import Input from '../Commons/Input/Input';
 import TextArea from '../Commons/TextArea/TextArea';
@@ -12,11 +12,11 @@ import {
 } from '@monorepo/multichoice/constant';
 import { topicServices } from '../../services/Title/TopicServices';
 import { useNavigate } from 'react-router-dom';
-import { topicStore } from '../../store/rootReducer';
 import {
   minutesToSeconds,
   secondsToMinutes,
 } from '../../utils/minutes_to_seconds';
+import { enumToOptions } from '../../utils/enum_to_options';
 
 const schemaFormCreateTest = yup.object().shape({
   timeType: yup.string().required(),
@@ -29,7 +29,6 @@ const schemaFormCreateTest = yup.object().shape({
 
 const FormCreateTest: React.FC = () => {
   const navigate = useNavigate();
-  const { getTopic } = topicStore();
 
   const {
     register,
@@ -49,33 +48,12 @@ const FormCreateTest: React.FC = () => {
     },
   });
 
-  const [topicCategories] = useState<IOption[]>(() => {
-    const topics: TopicCategoryEnum[] = [];
-    for (const topic in TopicCategoryEnum) {
-      const topicVal = topic as TopicCategoryEnum;
-      topics.push(topicVal);
-    }
-    const options: IOption[] = topics.map((topic: TopicCategoryEnum) => ({
-      label: topic,
-      value: topic,
-    }));
-    return options;
-  });
-
-  const [topicTimeTypes] = useState<IOption[]>(() => {
-    const timeTypes: TopicTimeTypeEnum[] = [];
-    for (const types in TopicTimeTypeEnum) {
-      const topicVal = types as TopicTimeTypeEnum;
-      timeTypes.push(topicVal);
-    }
-    const options: IOption[] = timeTypes.map(
-      (timeTypes: TopicTimeTypeEnum) => ({
-        label: timeTypes,
-        value: timeTypes,
-      })
-    );
-    return options;
-  });
+  const [topicCategories] = useState<IOption[]>(
+    enumToOptions(TopicCategoryEnum)
+  );
+  const [topicTimeTypes] = useState<IOption[]>(
+    enumToOptions(TopicTimeTypeEnum)
+  );
 
   const onSelectCategory = (item: IOption) => {
     setValue('typeCategoryName', item.value as TopicCategoryEnum);
@@ -85,7 +63,6 @@ const FormCreateTest: React.FC = () => {
     setValue('timeType', item.value as TopicTimeTypeEnum);
   };
 
-  // create TOPIC
   const onSubmit: SubmitHandler<CreateTopicDto> = async (formData) => {
     try {
       formData.expirationTime = minutesToSeconds(formData.expirationTime);
@@ -93,11 +70,10 @@ const FormCreateTest: React.FC = () => {
       if (data.success) {
         const topicId = data.data.id;
         const urlNavigate = '/tests/edit/' + topicId;
-        // getTopic(data.data);
         navigate(urlNavigate);
       }
-    } catch (error) {
-      //
+    } catch {
+      navigate('/');
     }
   };
 
@@ -147,11 +123,11 @@ const FormCreateTest: React.FC = () => {
           />
 
           <TextArea
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             registerField={register('description')}
             textLabel="Mô tả"
             placeholder="Không bắt buộc"
-            className="mt-5"
-            classNameTextarea="h-[200px]"
+            className="mt-5 h-[200px]"
             isError={Boolean(errors.description)}
             errMessage={errors.description?.message}
           />

@@ -2,30 +2,25 @@ import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
 import create from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { ANSWERS_EXAM } from '../../constants/contstants';
+import { IQuestion } from '../../types/Topic';
 
-export interface IInforUserDoExam {
-  topicUrl: string;
-  userName: string;
-  userId: number;
-}
-
-export interface IAnswers {
+export interface IAnswer {
   questionID: number;
   answerID: number[] | string;
 }
 
 export interface IAnswersStore {
-  userDoExam: IInforUserDoExam;
-  answers: IAnswers[];
-  isSubmitExam: boolean;
-  setAnswers: (answers: IAnswers[]) => void;
+  answers: IAnswer[];
+  point: number;
+  initAnswers: (questions: IQuestion[]) => void;
+  setPoint: (point: number) => void;
+  setAnswers: (answers: IAnswer[]) => void;
   updateAnswer: (
     questionID: number,
     answerSelect: number | string,
     questionType: `${QuestionTypeEnum}`
-  ) => void; // for update correct answer
-  addAnswer: (answer: IAnswers) => void;
-  setUserDoexamData: (userData: IInforUserDoExam) => void;
+  ) => void;
+  addAnswer: (answer: IAnswer) => void;
 }
 
 export const answerStore = create<IAnswersStore>()(
@@ -33,20 +28,30 @@ export const answerStore = create<IAnswersStore>()(
     persist(
       (set) => ({
         answers: [],
-        userDoExam: {} as IInforUserDoExam,
-        isSubmitExam: false,
-
-        setAnswers: (answers: IAnswers[]) =>
+        point: 0,
+        initAnswers: (questions: IQuestion[]) =>
           set(() => {
+            const initAnswers: IAnswer[] = questions.map((questions) => {
+              const tempArr: IAnswer = {
+                questionID: questions.id,
+                answerID: [],
+              };
+              return tempArr;
+            });
             return {
-              answers: answers,
+              answers: initAnswers,
             };
           }),
-
-        setUserDoexamData: (userData: IInforUserDoExam) =>
+        setAnswers: (answers: IAnswer[]) =>
           set(() => {
             return {
-              userDoExam: userData,
+              answers,
+            };
+          }),
+        setPoint: (point: number) =>
+          set(() => {
+            return {
+              point,
             };
           }),
 
@@ -58,7 +63,7 @@ export const answerStore = create<IAnswersStore>()(
         ) =>
           set((state) => {
             const tempAnswers = [...state.answers];
-            const answerIndex = tempAnswers.findIndex((answer: IAnswers) => {
+            const answerIndex = tempAnswers.findIndex((answer) => {
               return answer.questionID === questionID;
             });
 

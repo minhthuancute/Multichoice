@@ -40,33 +40,31 @@ const Input: React.FC<IInputProps> = ({
           'no-error': !isError,
         })}
       >
-        <label
-          htmlFor={rest.id}
-          className="font-semibold text-slate-800 text-sm inline-block mb-2"
-        >
-          {textLabel}
-          {isRequired ? <span className="ml-1 text-red-600">*</span> : null}
-        </label>
+        {textLabel && (
+          <label
+            htmlFor={rest.id}
+            className="font-semibold text-slate-800 text-sm inline-block mb-2"
+          >
+            {textLabel}
+            {isRequired ? <span className="ml-1 text-red-600">*</span> : null}
+          </label>
+        )}
+
         <input
           {...registerField}
           {...rest}
           type={typeInput}
           className={classNames(
-            [
-              `text-sm transition-all duration-200 w-full text-stone-600 outline-none
-             px-4
-            rounded-md placeholder:text-sm`,
-            ],
+            `transition-all duration-200 w-full outline-none px-4 py-2 border-solid
+            rounded-md text-sm placeholder:text-xs hover:border-primary-900`,
             {
-              'border-stone-200 focus:border-primary-900': !isError,
-              'border-red-500 focus:border-red-500': isError,
-              'pl-9': Icon,
-              'pl-4': !Icon,
-              'py-2': inputSize === 'sm',
-              'py-3': inputSize === 'md',
-              'py-4': inputSize === 'lg',
-              'border border-solid border-stone-200 focus:border-primary-900 rounded-md':
-                hasBorder,
+              'border border-stone-200 focus:border-primary-900 placeholder:text-slate-400':
+                !isError && hasBorder,
+              'border border-red-500 focus:border-red-500 text-red-500 placeholder:text-red-500':
+                isError,
+              'text-slate-800': !isError,
+              'pl-10': Icon,
+              'pl-3': !Icon,
             }
           )}
         />

@@ -1,7 +1,7 @@
 import create from 'zustand';
 import { devtools } from 'zustand/middleware';
 import { topicServices } from '../../services/Title/TopicServices';
-import { ITopic } from '../../types';
+import { ITopic } from '../../types/Topic';
 
 export interface ITopicStore {
   topic: ITopic;

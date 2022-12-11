@@ -18,7 +18,6 @@ import Button from '../Commons/Button/Button';
 import AnswerItem from '../AnswerItem/AnswerItem';
 import { schemaCreateQuestion } from './createQuestionSchema';
 import HeaderCreateQuestion from '../HeaderCreateQuestion/HeaderCreateQuestion';
-import { IAnswer } from '../../types';
 
 interface CreateQuestionQuery {
   topic_id: string;
@@ -35,7 +34,6 @@ const CreateQuestion: React.FC = () => {
     setValue,
     getValues,
     clearErrors,
-    setError,
     control,
     watch,
     formState: { errors },
@@ -68,14 +66,16 @@ const CreateQuestion: React.FC = () => {
       type: QuestionTypeEnum.SINGLE,
     },
   });
-  const { remove, fields, append } = useFieldArray({
+
+  const { remove, append, fields } = useFieldArray({
     control,
     name: 'answers',
   });
 
+  const [indexCorrectAnswer, setIndexCorrectAnswer] = useState<number>(-1);
+
   const [answers, setAnswers] = useState<CreatAnswer[]>(getValues('answers'));
   const [hideAnswer, setHideAnswer] = useState<boolean>(false);
-  const [correctAnswer, setCorrectAnswer] = useState<string>('');
   const [questionTypes] = useState<IOption[]>(() => {
     const types: QuestionTypeEnum[] = [];
     for (const topic in QuestionTypeEnum) {
@@ -129,23 +129,12 @@ const CreateQuestion: React.FC = () => {
   const validAnswers = (): boolean => {
     const answers = getValues('answers');
     const questionType = getValues('type');
-    const isQuestionTypeText = questionType === QuestionTypeEnum.TEXT;
-    if (isQuestionTypeText) {
+    if (questionType === QuestionTypeEnum.TEXT) {
       return true;
     }
     const haveCorrectAnswer = answers.some(
-      (answers: CreatAnswer) => answers.isCorrect
+      (answers: CreatAnswer) => !!answers.isCorrect
     );
-    const haveEmptyContent = answers.some(
-      (answers: CreatAnswer) => answers.content === ''
-    );
-
-    if (haveEmptyContent) {
-      setError('answers', {
-        message: 'Answers content is required',
-      });
-      return false;
-    }
 
     if (!haveCorrectAnswer) {
       notify({
@@ -157,7 +146,15 @@ const CreateQuestion: React.FC = () => {
     return true;
   };
 
+  const setCorectAnswerSingle = (indexAnswer: number) => {
+    setIndexCorrectAnswer(indexAnswer);
+  };
+
   const onSubmit: SubmitHandler<CreateQuestionDto> = async (formData) => {
+    const { type } = formData;
+    if (type === QuestionTypeEnum.SINGLE && indexCorrectAnswer !== -1) {
+      setValue(`answers.${indexCorrectAnswer}.isCorrect`, true);
+    }
     if (validAnswers()) {
       try {
         if (formData.type === QuestionTypeEnum.TEXT) {
@@ -169,8 +166,8 @@ const CreateQuestion: React.FC = () => {
           const urlNavigate = '/tests/edit/' + query.topic_id;
           navigate(urlNavigate);
         }
-      } catch (error) {
-        //
+      } catch {
+        navigate('/');
       }
     }
   };
@@ -178,10 +175,6 @@ const CreateQuestion: React.FC = () => {
   useEffect(() => {
     const subscription = watch(({ type, answers }) => {
       setAnswers(answers as CreatAnswer[]);
-      if (type === QuestionTypeEnum.SINGLE) {
-        const correctAnswer = answers?.find((answer) => answer?.isCorrect);
-        setCorrectAnswer(correctAnswer?.content || '');
-      }
     });
     return () => {
       subscription.unsubscribe();
@@ -192,7 +185,7 @@ const CreateQuestion: React.FC = () => {
     <>
       <HeaderCreateQuestion />
       <form
-        className="container flex items-start mt-5"
+        className="container flex items-start mt-5 mb-10"
         id="form-create-question"
         onSubmit={handleSubmit(onSubmit)}
       >
@@ -243,22 +236,22 @@ const CreateQuestion: React.FC = () => {
                 </label>
               </div>
               <div className="answer-body">
-                {answers.map((item: CreatAnswer, index: number) => {
+                {fields.map((item: CreatAnswer, index: number) => {
                   return (
                     <AnswerItem
-                      key={item.isCorrect + '' + index}
+                      key={item.isCorrect + '-' + index}
                       indexAnswer={index}
                       lengthAnswers={answers.length}
-                      correctAnswer={correctAnswer}
                       registerFieldContent={register(
                         `answers.${index}.content`
                       )}
                       registerFieldIsCorrect={register(
                         `answers.${index}.isCorrect`
                       )}
-                      answerValue={item.content}
                       questionType={watch('type')}
                       removeAnswer={remove}
+                      setCorectAnswerSingle={setCorectAnswerSingle}
+                      clearErrors={clearErrors}
                     />
                   );
                 })}

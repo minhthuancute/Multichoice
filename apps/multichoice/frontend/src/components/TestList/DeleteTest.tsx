@@ -40,21 +40,19 @@ const DeleteTest: React.FC<IDeleteTestProps> = ({
 
   return (
     <Modal
+      headerTitle="Xoá bỏ đề thi"
       visible={visibleModal}
       setVisibleModal={setVisibleModal}
       placement="CENTER"
     >
       <>
-        <div className="header text-center">
-          <h2 className="text-slate-800 text-xl font-semibold capitalize">
-            Xoá bỏ đề thi
-          </h2>
-          <h4 className="mt-2 text-slate-800 text-tiny">
+        <div className="header">
+          <h4 className="text-slate-800">
             Bạn có chắc chắn muốn xóa bỏ đề thi:{' '}
             <span className="font-semibold">{testTitle}</span> ?
           </h4>
         </div>
-        <div className="body ctas flex items-center justify-center gap-x-2 mt-10">
+        <div className="body ctas flex items-center justify-end gap-x-2 mt-6">
           <Button onClick={() => setVisibleModal(false)}>Huỷ</Button>
           <Button onClick={() => deleteTest()} color="success">
             Xác nhận

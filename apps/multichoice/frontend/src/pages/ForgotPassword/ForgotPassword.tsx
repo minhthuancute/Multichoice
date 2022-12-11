@@ -87,7 +87,7 @@ const ForgotPassword: React.FC = () => {
 
       {resetMsg && (
         <p
-          className={classNames('text-center mt-2 text-tiny', {
+          className={classNames('text-sm', {
             'text-green-600': resetSuccess,
             'text-red-500': !resetSuccess,
           })}

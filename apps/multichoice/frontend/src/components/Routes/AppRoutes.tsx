@@ -4,7 +4,7 @@ import DefaultLayout from '../../layouts/DefaultLayout';
 import ExamLayout from '../../layouts/ExamLayout';
 import CreateTest from '../../pages/CreateTest/CreateTest';
 import DoExam from '../../pages/DoExam/DoExam';
-import DoExamRealtime from '../../pages/DoExamRealtime/DoExamRealtime';
+import DoExamRealtime from '../../pages/DoexamRealtime/DoexamRealtime';
 import EditTest from '../../pages/EditTest/EditTest';
 import ForgotPassword from '../../pages/ForgotPassword/ForgotPassword';
 import Home from '../../pages/Home/Home';
@@ -18,12 +18,13 @@ import Tests from '../../pages/Tests/Tests';
 import CreateQuestion from '../CreateQuestion/CreateQuestion';
 import PrivateRoute from './PrivateRoute';
 import PublicRoute from './PublicRoute';
+import 'react-notifications-component/dist/theme.css';
 
 const AppRoutes = () => {
   return (
     <Routes>
       <Route
-        path=""
+        path="/"
         element={<PublicRoute Component={AuthenLayout} restricted={true} />}
       >
         <Route path="login" element={<Login />} />

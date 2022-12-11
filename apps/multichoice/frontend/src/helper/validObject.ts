@@ -1,3 +1,3 @@
 export const validObject = (object = {}): boolean => {
-  return object && Object.keys(object).length > 0;
+  return Boolean(object && Object.keys(object).length);
 };

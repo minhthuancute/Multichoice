@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { isLogin } from '../../utils/check_logged';
+import { userStore } from '../../store/rootReducer';
 
 interface IPrivateRoute {
   Component: React.FunctionComponent<any>;
@@ -12,9 +12,12 @@ const PublicRoute: React.FC<IPrivateRoute> = ({
   Component,
   restricted = false,
 }) => {
-  const loggedIn = isLogin();
-
-  return loggedIn && restricted ? <Navigate to="/" replace /> : <Component />;
+  const { isAuthenticated } = userStore();
+  return isAuthenticated() && restricted ? (
+    <Navigate to="/" replace />
+  ) : (
+    <Component />
+  );
 };
 
 export default PublicRoute;

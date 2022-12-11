@@ -1,18 +1,18 @@
 import create from 'zustand';
 import { devtools } from 'zustand/middleware';
 import { EXAM_DETAIL } from '../../constants/contstants';
-import { IExamDetail } from '../../types';
+import { IExam } from '../../types/Exam';
 
 export interface IExamDetailStore {
-  examDetail: IExamDetail;
-  setExamDetailData: (examData: IExamDetail) => void;
+  examDetail: IExam;
+  setExamDetailData: (examData: IExam) => void;
 }
 
 export const examDetailStore = create<IExamDetailStore>()(
   devtools(
     (set) => ({
-      examDetail: {} as IExamDetail,
-      setExamDetailData: (examDetailData: IExamDetail) =>
+      examDetail: {} as IExam,
+      setExamDetailData: (examDetailData: IExam) =>
         set(() => {
           return {
             examDetail: examDetailData,

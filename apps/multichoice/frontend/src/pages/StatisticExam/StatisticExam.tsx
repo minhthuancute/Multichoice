@@ -17,13 +17,13 @@ import {
   IPayloadDeleteUserExam,
   IPayloadgetListExamByTopicId,
 } from '../../services/Exam/type';
+import EmptyData from '../../components/Commons/EmptyData/EmptyData';
 
 const StatisticExam: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [usersDoExam, setUsersDoExam] = useState<IUserDoExam[]>([]);
-  const [showModalConfirmDelete, setShowModalConfirmDelete] =
-    useState<boolean>(false);
+  const [visibleModalDelete, setVisibleModalDelete] = useState<boolean>(false);
   const [userExamDetail, setUserExamDetail] = useState<IUserDoExam>();
 
   const getListExamByTopicId = async () => {
@@ -33,7 +33,7 @@ const StatisticExam: React.FC = () => {
       };
       const { data, status } = await examServices.getListExamByTopicId(payload);
       if (status === 200) {
-        setUsersDoExam(data.reverse());
+        setUsersDoExam(data.data);
       }
     } catch {
       navigate('/');
@@ -49,7 +49,7 @@ const StatisticExam: React.FC = () => {
       if (response) {
         const { status } = response;
         if (status) {
-          setShowModalConfirmDelete(false);
+          setVisibleModalDelete(false);
           notify({
             message: deleteResultUserExamSuccess,
           } as iNotification);
@@ -61,8 +61,8 @@ const StatisticExam: React.FC = () => {
     }
   };
 
-  const requestDeleteUserExam = (rowIndex: number) => {
-    setShowModalConfirmDelete(true);
+  const onclickDeleteUserExam = (rowIndex: number) => {
+    setVisibleModalDelete(true);
     setUserExamDetail(usersDoExam[rowIndex]);
   };
 
@@ -71,30 +71,33 @@ const StatisticExam: React.FC = () => {
   }, []);
 
   return (
-    <div>
-      <header className="container py-4">
-        <Breadcrumb>
-          <Breadcrumb.Item>
-            <Link to="/tests">Đề thi</Link>
-          </Breadcrumb.Item>
-          <Breadcrumb.Item>
-            <div>Thống kê đề {getTopicTitle(Number(id))}</div>
-          </Breadcrumb.Item>
-        </Breadcrumb>
-      </header>
-      <main>
+    <>
+      <div className="bg-white">
+        <header className="container py-4">
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              <Link to="/tests">Đề thi</Link>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <div>Thống kê đề thi: {getTopicTitle(Number(id))}</div>
+            </Breadcrumb.Item>
+          </Breadcrumb>
+        </header>
+      </div>
+
+      <main className="pb-10">
         <ConfirmDeleteUserExam
           userData={userExamDetail || ({} as IUserDoExam)}
           onConfirmDelete={handleDeleteUserExam}
-          setOpenModalConfirm={setShowModalConfirmDelete}
-          openModalConfirm={showModalConfirmDelete}
+          setVisibleModal={setVisibleModalDelete}
+          visibleModal={visibleModalDelete}
         />
 
         <div className="container">
-          <div className="pt-5 pb-10">
+          <div>
             {usersDoExam && usersDoExam.length ? (
               <>
-                <div className="flex justify-end items-center">
+                <div className="flex justify-end mb-4">
                   <FilterStatisticExam />
                 </div>
                 <table className="shadow-xl w-full">
@@ -118,7 +121,9 @@ const StatisticExam: React.FC = () => {
                       <th className="py-2 pl-4 text-left capitalize">
                         Chi tiết
                       </th>
-                      <th className="py-2 pl-4 text-left capitalize">Action</th>
+                      <th className="py-2 pl-4 text-left capitalize">
+                        Actions
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="py-4">
@@ -127,13 +132,15 @@ const StatisticExam: React.FC = () => {
                         <tr
                           key={user.startTime + user.username}
                           className="mb-4 border-b border-slate-200 last:border-none
-                      text-slate-800 text-sm cursor-pointer even:bg-slate-100"
+                        text-slate-800 text-sm cursor-pointer odd:bg-white even:bg-slate-100"
                         >
                           <td className="pl-4 py-4">{index + 1}</td>
                           <td className="pl-4 font-semibold">
-                            {user.username}
+                            {user.username || 'N/A'}
                           </td>
-                          <td className="pl-4 font-semibold">{user.point}</td>
+                          <td className="pl-4 font-semibold text-green-500">
+                            {user.point}
+                          </td>
                           <td className="pl-4">{getDate(user.startTime)}</td>
                           <td className="pl-4">{getTime(user.startTime)}</td>
                           <td className="pl-4">
@@ -159,7 +166,7 @@ const StatisticExam: React.FC = () => {
                           </td>
                           <td className="pl-4">
                             <button
-                              onClick={() => requestDeleteUserExam(index)}
+                              onClick={() => onclickDeleteUserExam(index)}
                             >
                               <ToolTip title="Xóa">
                                 <RiDeleteBin6Line className="text-red-500" />
@@ -172,14 +179,14 @@ const StatisticExam: React.FC = () => {
                 </table>
               </>
             ) : (
-              <p className="text-center text-slate-800 mt-10">
+              <EmptyData>
                 Hiện chưa có kết quả thống kê nào cho đề thi này !
-              </p>
+              </EmptyData>
             )}
           </div>
         </div>
       </main>
-    </div>
+    </>
   );
 };
 

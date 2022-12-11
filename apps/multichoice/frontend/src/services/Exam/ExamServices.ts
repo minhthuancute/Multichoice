@@ -2,7 +2,6 @@ import { axiosClient } from '../Api';
 import {
   IPayloadDeleteUserExam,
   IPayloadEndExam,
-  IPayloadEndExamRealtime,
   IPayloadgetListExamByTopicId,
   IPayloadGetUserExamDetail,
   IPayloadStartExam,
@@ -24,7 +23,7 @@ export const examServices = {
     return data;
   },
 
-  async submitExamRealtime(payload: IPayloadEndExamRealtime) {
+  async submitExamRealtime(payload: IPayloadEndExam) {
     const data = await axiosClient.post('/examrealtime/end', payload);
     return data;
   },
