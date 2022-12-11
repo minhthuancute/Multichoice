@@ -4,9 +4,9 @@ import { USER_DO_EXAM } from '../../constants/contstants';
 
 export interface IUserExamStore {
   userID: number | null;
-  userName: string;
+  username: string;
   setUserID: (userID: number) => void;
-  setUserName: (userName: string) => void;
+  setUserName: (username: string) => void;
 }
 
 export const userExamStore = create<IUserExamStore>()(
@@ -14,17 +14,17 @@ export const userExamStore = create<IUserExamStore>()(
     persist(
       (set) => ({
         userID: null,
-        userName: '',
+        username: '',
         setUserID: (userID: number) =>
           set(() => {
             return {
               userID,
             };
           }),
-        setUserName: (userName: string) =>
+        setUserName: (username: string) =>
           set(() => {
             return {
-              userName,
+              username,
             };
           }),
       }),

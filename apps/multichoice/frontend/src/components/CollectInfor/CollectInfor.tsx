@@ -12,11 +12,11 @@ import { sessionServices } from '../../services/Applications/SessionServices';
 import { START_TIME } from '../../constants/contstants';
 
 interface ICollectInforForm {
-  userName: string;
+  username: string;
 }
 
 const collectInforSchema = yup.object().shape({
-  userName: yup
+  username: yup
     .string()
     .required('Please fill out this field')
     .min(2, 'User name must be at least 2 characters'),
@@ -44,13 +44,13 @@ const CollectInfor: React.FC<ICollectInforProps> = ({
     resolver: yupResolver(collectInforSchema),
   });
 
-  const onSubmit: SubmitHandler<ICollectInforForm> = async ({ userName }) => {
+  const onSubmit: SubmitHandler<ICollectInforForm> = async ({ username }) => {
     const payload: IPayloadStartExam = {
       topicID,
-      userName,
+      username,
     };
     startExam && startExam(payload);
-    setUserName(userName);
+    setUserName(username);
     setVisibleModalInfor(false);
     sessionServices.setData(START_TIME, Date.now());
   };
@@ -75,10 +75,10 @@ const CollectInfor: React.FC<ICollectInforProps> = ({
         <form className="mt-5" onSubmit={handleSubmit(onSubmit)}>
           <div className="form-group">
             <Input
-              registerField={register('userName')}
+              registerField={register('username')}
               placeholder="Tên của bạn"
-              isError={Boolean(errors.userName)}
-              errMessage={errors.userName?.message}
+              isError={Boolean(errors.username)}
+              errMessage={errors.username?.message}
             />
           </div>
           <div className="text-end mt-4">

@@ -1,7 +1,7 @@
 import { IAnswer } from '../../store/rootReducer';
 
 export interface IPayloadStartExam {
-  userName: string;
+  username: string;
   topicID: number;
 }
 
