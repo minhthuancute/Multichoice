@@ -178,7 +178,7 @@ export class UserService {
     userID: number
   ): Promise<IUserDoExam[]> {
     const result = await this.userExamService.getUserExamByTopicID(id, userID);
-    if (result) {
+    if (result.length) {
       return this.convertListUserDoExam(result);
     }
     throw new BadRequestException(GConfig.NOT_PERMISSION_VIEW);
@@ -285,13 +285,16 @@ export class UserService {
       throw new BadRequestException(GConfig.TOPIC_NOT_FIXEDTIME);
 
     const exam: UserExam = new UserExam();
-    if (topic.isPublic) {
-      if (!user) throw new UnauthorizedException();
-      await this.topicService.checkPermissionUserOfTopic(topic.id, user.id);
+    if (!user) {
+      if (topic.isPublic) throw new UnauthorizedException();
+      if (!userExamDto.username)
+        throw new BadRequestException(GConfig.USERNAME_NOT_EMPTY);
+      exam.username = userExamDto.username;
+    } else {
+      if (topic.isPublic)
+        await this.topicService.checkPermissionUserOfTopic(topic.id, user.id);
       exam.username = user.username;
       exam.owner = new User(user.id);
-    } else {
-      exam.username = userExamDto.username;
     }
 
     exam.topic = new Topic(topic.id);

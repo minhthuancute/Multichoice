@@ -16,6 +16,8 @@ export class GConfig {
   public static TOPIC_NOT_FOUND = this.MES_NOT_FOUND('Topic');
   public static NAME_NOT_FOUND = this.MES_NOT_FOUND('Name');
 
+  public static USERNAME_NOT_EMPTY = this.MES_NOT_EMPTY('Tên');
+
   public static NOT_PERMISSION_VIEW = 'Bạn không có quyền xem';
   public static NOT_PERMISSION_DELETE = 'Bạn không có quyền xóa';
   public static NOT_PERMISSION_EDIT = 'Bạn không có quyền sửa';

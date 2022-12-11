@@ -50,7 +50,7 @@ export class UserController {
     @Body() resultUserDto: UserExamDto
   ): Promise<SucessResponse> {
     const result = await this.userService.startExam(resultUserDto, req.user);
-    return res.json(new SucessResponse(200, result));
+    return res.status(200).json(new SucessResponse(200, result));
   }
 
   @Get('/gettopicbyurl')
