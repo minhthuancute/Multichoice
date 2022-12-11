@@ -32,9 +32,9 @@ const ConfirmSubmit: React.FC<IConfirmSubmitProps> = ({
       placement="CENTER"
     >
       <>
-        <div className="header text-center">
+        <div className="header">
           {countUnSelectAnswer() > 0 ? (
-            <p className="mt-4 text-slate-800">
+            <p className="text-slate-800">
               Bạn còn{' '}
               <span className="font-semibold">
                 {countUnSelectAnswer()} (câu hỏi)
@@ -47,7 +47,7 @@ const ConfirmSubmit: React.FC<IConfirmSubmitProps> = ({
             </p>
           )}
         </div>
-        <div className="ctas flex items-center justify-center gap-x-2 mt-5">
+        <div className="ctas flex items-center justify-end gap-x-2 mt-5">
           <Button type="button" onClick={() => setVisibleModal(false)}>
             Huỷ
           </Button>
