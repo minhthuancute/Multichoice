@@ -135,10 +135,7 @@ export class TopicService {
     userID: number
   ): Promise<IUserDoExam[]> {
     const result = await this.userExamService.getUserExamByTopicID(id, userID);
-    if (result.length) {
-      return this.convertListUserDoExam(result);
-    }
-    throw new BadRequestException(GConfig.NOT_PERMISSION_VIEW);
+    return this.convertListUserDoExam(result);
   }
 
   private async checkTopicRealTime(topic: Topic) {
