@@ -13,19 +13,19 @@ const Navabar: React.FC = () => {
   const location = useLocation();
 
   const navs: INav[] = [
-    {
-      label: 'Tổng quan',
-      path: '/',
-    },
+    // {
+    //   label: 'Tổng quan',
+    //   path: '/',
+    // },
     {
       label: 'Đề thi',
       path: '/tests',
       relativePaths: ['questions'],
     },
-    {
-      label: 'Thống kê',
-      path: '/statistical',
-    },
+    // {
+    //   label: 'Thống kê',
+    //   path: '/statistical',
+    // },
   ];
 
   const indexActiveNav = (): number => {
