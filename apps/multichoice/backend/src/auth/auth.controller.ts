@@ -89,6 +89,6 @@ export class authController {
   @Post('/token')
   verifyToken(@Body() tokenDto: tokenDto, @Res() res): SucessResponse {
     const result = this.authService.verifyToken(tokenDto.token);
-    return res.json(new SucessResponse(200, result));
+    return res.status(200).json(new SucessResponse(200, result));
   }
 }
