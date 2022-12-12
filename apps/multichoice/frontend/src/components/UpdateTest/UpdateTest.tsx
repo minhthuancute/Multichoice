@@ -19,6 +19,7 @@ import {
 } from '../../utils/minutes_to_seconds';
 import Button from '../Commons/Button/Button';
 import { enumToOptions } from '../../utils/enum_to_options';
+import Switch from '../Commons/Switch/Switch';
 
 const schemaUpdateTest = yup.object().shape({
   timeType: yup.string().required(),
@@ -39,8 +40,14 @@ const UpdateTest: React.FC<IFormUpdateTestProps> = ({
   const { id } = useParams();
 
   const { topic, getTopic } = topicStore();
-  const { expirationTime, typeCategoryName, timeType, title, description } =
-    topic;
+  const {
+    expirationTime,
+    typeCategoryName,
+    timeType,
+    title,
+    description,
+    isPublic,
+  } = topic;
 
   const {
     register,
@@ -53,10 +60,10 @@ const UpdateTest: React.FC<IFormUpdateTestProps> = ({
       description: description || '',
       expirationTime: +secondsToMinutes(+expirationTime),
       isDraft: false,
-      isPublic: false,
-      timeType: topic.timeType as TopicTimeTypeEnum,
+      isPublic: isPublic,
+      timeType: timeType as TopicTimeTypeEnum,
       title: title,
-      typeCategoryName: topic.typeCategoryName as TopicCategoryEnum,
+      typeCategoryName: typeCategoryName as TopicCategoryEnum,
     },
   });
 
@@ -96,6 +103,12 @@ const UpdateTest: React.FC<IFormUpdateTestProps> = ({
   return (
     <div className="rounded-md bg-white">
       <form className="form" onSubmit={handleSubmit(onSubmit)}>
+        <div className="mb-5 flex items-center">
+          <label className="text-slate-800 mr-2 font-semibold text-sm">
+            Public
+          </label>
+          <Switch textLabel="Public" registerField={register('isPublic')} />
+        </div>
         <Input
           registerField={register('expirationTime')}
           defaultValue={+secondsToMinutes(+expirationTime)}

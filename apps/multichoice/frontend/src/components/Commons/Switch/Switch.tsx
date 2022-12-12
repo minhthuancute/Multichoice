@@ -1,8 +1,7 @@
 import React, { InputHTMLAttributes } from 'react';
 import { UseFormRegisterReturn } from 'react-hook-form';
-import { BsCheck } from 'react-icons/bs';
 import { classNames } from '../../../helper/classNames';
-import './checkbox.scss';
+import './switch.scss';
 
 interface ICheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
   disable?: boolean;
@@ -11,7 +10,7 @@ interface ICheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
   textLabel?: React.ReactNode;
 }
 
-const Checkbox: React.FC<ICheckboxProps> = ({
+const Switch: React.FC<ICheckboxProps> = ({
   disable = false,
   registerField = null,
   className = '',
@@ -20,7 +19,7 @@ const Checkbox: React.FC<ICheckboxProps> = ({
 }) => {
   return (
     <div
-      className={classNames(['wrapper-input flex items-center', className], {
+      className={classNames(['wrapper-switch', className], {
         'opacity-40': disable,
       })}
     >
@@ -32,26 +31,20 @@ const Checkbox: React.FC<ICheckboxProps> = ({
         id={rest.id || 'checkbox'}
         hidden
       />
-
       <label
         htmlFor={rest.id || 'checkbox'}
         onClick={(e: React.FormEvent<HTMLElement>) => {
           disable && e.preventDefault();
         }}
         className={classNames(
-          'flex items-center cursor-pointer text-sm text-slate-800',
+          `flex items-center cursor-pointer text-sm text-slate-800 w-10 h-5 rounded-2xl`,
           {
             'cursor-not-allowed': disable,
           }
         )}
-      >
-        <div className="box mr-2 w-5 h-5 rounded-sm border border-solid border-slate-400">
-          <BsCheck className="icon fill-white text-lg opacity-0" />
-        </div>
-        {textLabel}
-      </label>
+      ></label>
     </div>
   );
 };
 
-export default React.memo(Checkbox);
+export default React.memo(Switch);

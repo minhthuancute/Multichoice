@@ -4,7 +4,7 @@ import DefaultLayout from '../../layouts/DefaultLayout';
 import ExamLayout from '../../layouts/ExamLayout';
 import CreateTest from '../../pages/CreateTest/CreateTest';
 import DoExam from '../../pages/DoExam/DoExam';
-import DoExamRealtime from '../../pages/DoexamRealtime/DoexamRealtime';
+import DoExamRealtime from '../../pages/DoExamRealtime/DoexamRealtime';
 import EditTest from '../../pages/EditTest/EditTest';
 import ForgotPassword from '../../pages/ForgotPassword/ForgotPassword';
 import Home from '../../pages/Home/Home';

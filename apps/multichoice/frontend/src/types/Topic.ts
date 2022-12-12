@@ -25,6 +25,7 @@ export interface ITopic {
   title: string;
   description: string | null;
   isDraft: boolean;
+  isPublic: boolean;
   expirationTime: number;
   questionsCount: number;
   questions: IQuestion[];
