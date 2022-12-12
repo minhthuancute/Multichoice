@@ -3,7 +3,6 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
-  UnauthorizedException,
 } from '@nestjs/common';
 import {
   CreateUserDto,
@@ -172,20 +171,5 @@ export class authService {
     if (!user) throw new BadRequestException(GConfig.USER_NOT_FOUND);
 
     await this.updatePasswordByUserId(user.id, resetPasswordDto.password);
-  }
-
-  verifyToken(token: string): AuthPayload {
-    if (!token) throw new BadRequestException(GConfig.TOKEN_NOT_EMPTY);
-    try {
-      const user: User = this.jwtService.verify(token);
-      const payload: AuthPayload = {
-        username: user.username,
-        id: user.id,
-        email: user.email,
-      };
-      return payload;
-    } catch (error) {
-      throw new UnauthorizedException(error);
-    }
   }
 }
