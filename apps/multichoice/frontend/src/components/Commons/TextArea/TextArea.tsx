@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { TextareaHTMLAttributes } from 'react';
+import React, { TextareaHTMLAttributes, useEffect } from 'react';
 import { classNames } from '../../../helper/classNames';
 import TextareaAutosize from 'react-textarea-autosize';
 
@@ -24,6 +24,13 @@ const TextArea: React.FC<ITextAreaProps> = ({
   isRequired = false,
   ...rest
 }) => {
+  useEffect(() => {
+    const dev = document.querySelector('.area-resize') as HTMLHtmlElement;
+    if (dev) {
+      dev.style.height = (rest.style?.height as string) || '100px';
+    }
+  }, []);
+
   return (
     <div
       className={classNames(['form-group w-full', rest.className as string])}
@@ -43,9 +50,9 @@ const TextArea: React.FC<ITextAreaProps> = ({
           id={rest.id}
           className={classNames(
             [
-              `text-sm w-full text-stone-600 outline-none
+              `area-resize text-sm w-full text-stone-600 outline-none
               border py-2 border-solid border-stone-200 focus:border-primary-900
-              rounded-md placeholder:text-sm resize-none`,
+              rounded-md placeholder:text-sm resize-none hover:border-primary-900`,
             ],
             {
               'border-stone-200 focus:border-primary-900': !isError,

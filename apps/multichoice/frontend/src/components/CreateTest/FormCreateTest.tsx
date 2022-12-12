@@ -17,6 +17,7 @@ import {
   secondsToMinutes,
 } from '../../utils/minutes_to_seconds';
 import { enumToOptions } from '../../utils/enum_to_options';
+import Switch from '../Commons/Switch/Switch';
 
 const schemaFormCreateTest = yup.object().shape({
   timeType: yup.string().required(),
@@ -24,6 +25,7 @@ const schemaFormCreateTest = yup.object().shape({
   title: yup.string().required(),
   description: yup.string(),
   isDraft: yup.boolean(),
+  isPublic: yup.boolean(),
   expirationTime: yup.number(),
 });
 
@@ -110,6 +112,13 @@ const FormCreateTest: React.FC = () => {
             textLabel="Loại thời gian"
             className="mt-5"
           />
+
+          <div className="mt-5 flex items-center">
+            <label className="text-slate-800 mr-2 font-semibold text-sm">
+              Public
+            </label>
+            <Switch textLabel="Public" registerField={register('isPublic')} />
+          </div>
         </div>
         <div className="form-right w-2/3 p-4 ml-4 bg-white rounded-md">
           <Input
@@ -127,9 +136,12 @@ const FormCreateTest: React.FC = () => {
             registerField={register('description')}
             textLabel="Mô tả"
             placeholder="Không bắt buộc"
-            className="mt-5 h-[200px]"
+            className="mt-5"
             isError={Boolean(errors.description)}
             errMessage={errors.description?.message}
+            style={{
+              height: '150px',
+            }}
           />
         </div>
       </form>

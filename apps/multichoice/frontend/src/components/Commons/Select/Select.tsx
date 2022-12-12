@@ -63,7 +63,7 @@ const Select: React.FC<ISelectProps> = ({
             type="button"
             className="flex items-center justify-between capitalize transition-all duration-200 w-full
             text-slate-800 outline-none border px-4 py-2 border-solid border-stone-200
-             focus:border-primary-900 rounded-md text-sm"
+             focus:border-primary-900 hover:border-primary-900 rounded-md text-sm"
           >
             {selectedOption ? selectedOption : defaultValue}
             <BiChevronDown

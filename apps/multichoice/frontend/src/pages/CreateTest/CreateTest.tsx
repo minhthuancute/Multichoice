@@ -1,6 +1,6 @@
 import React from 'react';
 import FormCreateTest from '../../components/CreateTest/FormCreateTest';
-import HeaderCreateTest from '../../components/CreateTest/HeaderCreateTest';
+import HeaderCreateTest from '../../components/HeaderCreateTest/HeaderCreateTest';
 
 const CreateTest: React.FC = () => {
   return (
