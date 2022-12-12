@@ -21,12 +21,16 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthenticationGuard } from '../auth/guards/auth.guard';
 import { GConfig } from '../config/gconfig';
 import { SucessResponse } from '../model/SucessResponse';
+import { UserService } from '../user/user.service';
 import { TopicService } from './topic.service';
 
 @ApiTags('topic')
 @Controller('topic')
 export class TopicController {
-  constructor(private readonly topicService: TopicService) {}
+  constructor(
+    private readonly topicService: TopicService,
+    private readonly userService: UserService
+  ) {}
   @UseGuards(AuthenticationGuard)
   @Post('create')
   @ApiBearerAuth()
@@ -39,8 +43,18 @@ export class TopicController {
     return res.status(201).json(new SucessResponse(201, result));
   }
 
+  @Get('url')
+  async findTopicByUrl(
+    @Query('q') q: string,
+    @Res() res
+  ): Promise<SucessResponse> {
+    console.log(q);
+    const result = await this.topicService.findTopicByUrl(q);
+    return res.json(new SucessResponse(200, result));
+  }
+
   @UseGuards(AuthenticationGuard)
-  @Get()
+  @Get('/')
   @ApiBearerAuth()
   async getTopicAll(
     @Query() queryTopicDto: QueryTopicDto,
@@ -76,6 +90,18 @@ export class TopicController {
       req.user.id
     );
 
+    return res.json(new SucessResponse(200, result));
+  }
+
+  @UseGuards(AuthenticationGuard)
+  @ApiBearerAuth()
+  @Get(':id/exams')
+  async getListExamByTopicID(
+    @Param('id') id: number,
+    @Res() res,
+    @Req() req
+  ): Promise<SucessResponse> {
+    const result = await this.topicService.getUserExamByTopic(id, req.user.id);
     return res.json(new SucessResponse(200, result));
   }
 

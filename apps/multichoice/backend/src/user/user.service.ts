@@ -48,27 +48,6 @@ export class UserService {
     private readonly userAnswerService: UserAnswerService
   ) {}
 
-  private convertListUserDoExam(userExams: UserExam[]): IUserDoExam[] {
-    const lst: IUserDoExam[] = [];
-    userExams.forEach((element) => {
-      lst.push(this.convertUserDoExam(element));
-    });
-    return lst;
-  }
-
-  private convertUserDoExam(userExams: UserExam): IUserDoExam {
-    const userDoExam: IUserDoExam = {
-      username: userExams.username,
-      startTime: Number(userExams.startTime),
-      endTime: Number(userExams.endTime),
-      duration: Number(userExams.endTime) - Number(userExams.startTime),
-      point: userExams.point,
-      userID: userExams.id,
-    };
-
-    return userDoExam;
-  }
-
   private convertUserDoExamDetail(
     userExam: UserExam,
     topic: Topic
@@ -171,17 +150,6 @@ export class UserService {
     );
     if (!result) throw new BadRequestException(GConfig.USER_NOT_FOUND);
     return this.convertUserDoExamDetail(result, topic);
-  }
-
-  public async getUserExamByTopic(
-    id: number,
-    userID: number
-  ): Promise<IUserDoExam[]> {
-    const result = await this.userExamService.getUserExamByTopicID(id, userID);
-    if (result.length) {
-      return this.convertListUserDoExam(result);
-    }
-    throw new BadRequestException(GConfig.NOT_PERMISSION_VIEW);
   }
 
   public async endExamRealTime(
@@ -356,24 +324,6 @@ export class UserService {
     }
 
     return poit;
-  }
-
-  private async checkTopicRealTime(topic: Topic) {
-    if (topic.timeType === TopicTimeTypeEnum.REALTIME) {
-      const checkRealTimeExam: realtimeExam = (await this.firebaseService.get(
-        `${firebasePath}-${topic.url}`
-      )) as realtimeExam;
-
-      if (!checkRealTimeExam || !checkRealTimeExam.started) {
-        delete topic.questions;
-      }
-    }
-  }
-
-  public async findTopicByUrl(url: string): Promise<Topic> {
-    const result = await this.topicService.findOneByUrl(url);
-    await this.checkTopicRealTime(result);
-    return result;
   }
 
   public async deleteUserExamByID(

@@ -55,7 +55,7 @@ export class authController {
     return res.json(new SucessResponse(200, req.user));
   }
 
-  @Patch('/changepassword')
+  @Patch('/change-password')
   @ApiBearerAuth()
   @UseGuards(AuthenticationGuard)
   async changePassword(
@@ -67,7 +67,7 @@ export class authController {
     return res.json(new SucessResponse(200, GConfig.UPDATE_MES_SUCESS));
   }
 
-  @Post('/forgotpassword')
+  @Post('/forgot-password')
   async forgotPassword(
     @Body() forgotPasswordDto: ForgotPasswordDto,
     @Res() res
@@ -76,7 +76,7 @@ export class authController {
     return res.json(new SucessResponse(200, GConfig.EMAIL_CHECK));
   }
 
-  @Post('/resetpassword')
+  @Post('/reset-password')
   async resetPassword(
     @Body() resetPasswordDto: ResetPasswordDto,
     @Res() res
