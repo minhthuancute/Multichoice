@@ -83,9 +83,11 @@ const TestItem: React.FC<ITestItemProps> = ({ test, handleDeleteTest }) => {
           test.topicUrl +
           (isRealtime ? '/do-exam-realtime' : '/do-exam')
         }
+        className="inline-block px-4 py-0.5 bg-blue-50
+        rounded-xl text-tiny"
         target="_blank"
       >
-        {examUrl()}
+        Làm bài ngay
       </Link>
     );
   };
@@ -139,7 +141,7 @@ const TestItem: React.FC<ITestItemProps> = ({ test, handleDeleteTest }) => {
         isPlaytest={isPlaytest}
       />
 
-      <div className="test-item cursor-pointer p-4 rounded-md bg-white mb-3 last:mb-0">
+      <div className="test-item cursor-pointer p-4 rounded-md bg-white mb-3 last:mb-0 shadow-sm">
         <div className="test-item__header title">
           <Link
             className="font-semibold text-lg text-slate-800"
