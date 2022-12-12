@@ -181,6 +181,7 @@ export class authService {
       const payload: AuthPayload = {
         username: user.username,
         id: user.id,
+        email: user.email,
       };
       return payload;
     } catch (error) {
