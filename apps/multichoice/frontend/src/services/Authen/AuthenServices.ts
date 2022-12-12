@@ -14,7 +14,7 @@ export const authenServices = {
   },
 
   forgotPassword(payload: ForgotPasswordDto) {
-    const data = axiosClient.post('/auth/forgotpassword', payload);
+    const data = axiosClient.post('/auth/forgot-password', payload);
     return data;
   },
 };

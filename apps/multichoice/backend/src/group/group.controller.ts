@@ -7,6 +7,7 @@ import {
   UseGuards,
   Req,
   Res,
+  Param,
 } from '@nestjs/common';
 import { GroupService } from './group.service';
 import {
@@ -40,7 +41,7 @@ export class GroupController {
 
   @UseGuards(AuthenticationGuard)
   @ApiBearerAuth()
-  @Get('getallgroup')
+  @Get('/')
   async findAll(
     @Query() pageDto: PageOptionsDto,
     @Req() req,
@@ -56,16 +57,16 @@ export class GroupController {
 
   @UseGuards(AuthenticationGuard)
   @ApiBearerAuth()
-  @Get('getbygroupid')
+  @Get(':id')
   async findOnebyGroupID(
-    @Query('groupID') groupID: number,
+    @Param('id') id: number,
     @Res() res,
     @Req() req
   ): Promise<SucessResponse> {
     return res.json(
       new SucessResponse(
         200,
-        await this.groupService.getGroupDetail(groupID, req.user.id)
+        await this.groupService.getGroupDetail(id, req.user.id)
       )
     );
   }

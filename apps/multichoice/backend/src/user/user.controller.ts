@@ -53,30 +53,9 @@ export class UserController {
     return res.status(200).json(new SucessResponse(200, result));
   }
 
-  @Get('/gettopicbyurl')
-  async findTopicByUrl(
-    @Query('url') url: string,
-    @Res() res
-  ): Promise<SucessResponse> {
-    const result = await this.userService.findTopicByUrl(url);
-    return res.json(new SucessResponse(200, result));
-  }
-
   @UseGuards(AuthenticationGuard)
   @ApiBearerAuth()
-  @Get('/getlistexambytopicid/:id')
-  async getListExamByTopicID(
-    @Param('id') id: number,
-    @Res() res,
-    @Req() req
-  ): Promise<SucessResponse> {
-    const result = await this.userService.getUserExamByTopic(id, req.user.id);
-    return res.json(new SucessResponse(200, result));
-  }
-
-  @UseGuards(AuthenticationGuard)
-  @ApiBearerAuth()
-  @Get('/userexam/getdetail')
+  @Get('/exam/detail')
   async test(
     @Query('topicID') topicID: number,
     @Query('userID') userID: number,
@@ -93,9 +72,9 @@ export class UserController {
 
   @UseGuards(AuthenticationGuard)
   @ApiBearerAuth()
-  @Delete('/userexam/deletebyid')
+  @Delete('/exam/:id')
   async deleteUserExamByID(
-    @Query('id') id: number,
+    @Param('id') id: number,
     @Res() res,
     @Req() req
   ): Promise<SucessResponse> {
@@ -105,7 +84,7 @@ export class UserController {
 
   @UseGuards(AuthenticationGuard)
   @ApiBearerAuth()
-  @Patch('/user/updatebyid')
+  @Patch('/user')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileFieldsInterceptor([{ name: 'avatar' }], multerOptions))
   async updateUserByID(
@@ -120,7 +99,7 @@ export class UserController {
 
   @UseGuards(AuthenticationGuard)
   @ApiBearerAuth()
-  @Post('/examrealtime/end')
+  @Post('/exam-realtime/end')
   async endExamRealTime(
     @Body() resultUserRealTimeDto: ResultUserDto,
     @Res() res,
