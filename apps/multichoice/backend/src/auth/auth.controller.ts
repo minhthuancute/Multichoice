@@ -9,13 +9,13 @@ import {
   UploadedFiles,
   Patch,
   Query,
+  Get,
 } from '@nestjs/common';
 import {
   CreateUserDto,
   ForgotPasswordDto,
   LoginUserDto,
   ResetPasswordDto,
-  tokenDto,
   UpdateUserPasswordDto,
 } from '@monorepo/multichoice/dto';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
@@ -86,9 +86,10 @@ export class authController {
     return res.json(new SucessResponse(200, GConfig.RESET_MES_SUCESS));
   }
 
-  @Post('/token')
-  verifyToken(@Body() tokenDto: tokenDto, @Res() res): SucessResponse {
-    const result = this.authService.verifyToken(tokenDto.token);
-    return res.status(200).json(new SucessResponse(200, result));
+  @ApiBearerAuth()
+  @UseGuards(AuthenticationGuard)
+  @Get('/token')
+  verifyToken(@Req() req, @Res() res): SucessResponse {
+    return res.json(new SucessResponse(200, req.user));
   }
 }
