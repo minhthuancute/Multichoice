@@ -148,3 +148,7 @@ export class IUserExam {
     this.time = endTime - startTime;
   }
 }
+export class tokenDto {
+  @ApiProperty()
+  token: string;
+}
