@@ -9,7 +9,7 @@ import {
 
 export const examServices = {
   getExamByUrl(url: string) {
-    const data = axiosClient.get('/gettopicbyurl?url=' + url);
+    const data = axiosClient.get('/topic/url?q=' + url);
     return data;
   },
 
@@ -24,28 +24,24 @@ export const examServices = {
   },
 
   async submitExamRealtime(payload: IPayloadEndExam) {
-    const data = await axiosClient.post('/examrealtime/end', payload);
+    const data = await axiosClient.post('/exam-realtime/end', payload);
     return data;
   },
 
   async getListExamByTopicId(payload: IPayloadgetListExamByTopicId) {
-    const data = await axiosClient.get(
-      '/getListexambytopicid/' + payload.topicID
-    );
+    const data = await axiosClient.get(`/topic/${payload.topicID}/exams/`);
     return data;
   },
 
   getUserExamDetail(payload: IPayloadGetUserExamDetail) {
     const data = axiosClient.get(
-      `/userexam/getdetail?topicID=${payload.topicId}&userID=${payload.userId}`
+      `/exam/detail?topicID=${payload.topicId}&userID=${payload.userId}`
     );
     return data;
   },
 
   deleteUserExam(payload: IPayloadDeleteUserExam) {
-    const data = axiosClient.delete(
-      `/userexam/deletebyid?id=${payload.userId}`
-    );
+    const data = axiosClient.delete(`/exam/${payload.userId}`);
     return data;
   },
 };

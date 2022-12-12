@@ -2,7 +2,8 @@ import React, { createRef, useEffect, useState } from 'react';
 import { classNames } from '../../../helper/classNames';
 import Button from '../Button/Button';
 import Modal from '../Modal/Modal';
-import './polacode.scss';
+import './Polacode.scss';
+
 interface IPolaCodeProps {
   content: string | React.ReactNode;
   className?: string;

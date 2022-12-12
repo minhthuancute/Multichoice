@@ -1,6 +1,7 @@
 import {
   AddGroupForTopic,
   CreateTopicDto,
+  IUserDoExam,
   PageDto,
   PageMetaDto,
   PageOptionsDto,
@@ -19,15 +20,25 @@ import { User } from '../user/entities/user.entity';
 
 import { Question } from '../question/entities/question.entity';
 import { GConfig } from '../config/gconfig';
-import { QuestionTypeEnum } from '@monorepo/multichoice/constant';
+import {
+  firebasePath,
+  QuestionTypeEnum,
+  TopicTimeTypeEnum,
+} from '@monorepo/multichoice/constant';
 import { GroupService } from '../group/group.service';
+import { realtimeExam } from '../firebase/dto/realtimeExam.dto';
+import { FirebaseService } from '../firebase/firebase.service';
+import { UserExam } from '../userExam/entities/userExam.entity';
+import { UserExamService } from '../userExam/userExam.service';
 
 @Injectable()
 export class TopicService {
   constructor(
     @InjectRepository(Topic)
     private readonly topicRepository: Repository<Topic>,
-    private readonly groupService: GroupService
+    private readonly groupService: GroupService,
+    private readonly firebaseService: FirebaseService,
+    private readonly userExamService: UserExamService
   ) {}
 
   public async create(topic: CreateTopicDto, userID: number): Promise<Topic> {
@@ -96,6 +107,50 @@ export class TopicService {
 
     if (!result) throw new BadRequestException(GConfig.TOPIC_NOT_FOUND);
     return result;
+  }
+
+  private convertUserDoExam(userExams: UserExam): IUserDoExam {
+    const userDoExam: IUserDoExam = {
+      username: userExams.username,
+      startTime: Number(userExams.startTime),
+      endTime: Number(userExams.endTime),
+      duration: Number(userExams.endTime) - Number(userExams.startTime),
+      point: userExams.point,
+      userID: userExams.id,
+    };
+
+    return userDoExam;
+  }
+
+  private convertListUserDoExam(userExams: UserExam[]): IUserDoExam[] {
+    const lst: IUserDoExam[] = [];
+    userExams.forEach((element) => {
+      lst.push(this.convertUserDoExam(element));
+    });
+    return lst;
+  }
+
+  public async getUserExamByTopic(
+    id: number,
+    userID: number
+  ): Promise<IUserDoExam[]> {
+    const result = await this.userExamService.getUserExamByTopicID(id, userID);
+    if (result.length) {
+      return this.convertListUserDoExam(result);
+    }
+    throw new BadRequestException(GConfig.NOT_PERMISSION_VIEW);
+  }
+
+  private async checkTopicRealTime(topic: Topic) {
+    if (topic.timeType === TopicTimeTypeEnum.REALTIME) {
+      const checkRealTimeExam: realtimeExam = (await this.firebaseService.get(
+        `${firebasePath}-${topic.url}`
+      )) as realtimeExam;
+
+      if (!checkRealTimeExam || !checkRealTimeExam.started) {
+        delete topic.questions;
+      }
+    }
   }
 
   public async deleteById(id: number, userID: number): Promise<void> {
@@ -278,5 +333,11 @@ export class TopicService {
       itemCount,
     });
     return new PageDto(topics, pageMetaDto);
+  }
+
+  public async findTopicByUrl(url: string): Promise<Topic> {
+    const result = await this.findOneByUrl(url);
+    await this.checkTopicRealTime(result);
+    return result;
   }
 }
