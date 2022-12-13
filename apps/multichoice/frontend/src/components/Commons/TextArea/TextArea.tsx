@@ -27,7 +27,7 @@ const TextArea: React.FC<ITextAreaProps> = ({
   useEffect(() => {
     const dev = document.querySelector('.area-resize') as HTMLHtmlElement;
     if (dev) {
-      dev.style.height = (rest.style?.height as string) || '100px';
+      dev.style.height = (rest.style?.height as string) || '39px';
     }
   }, []);
 
