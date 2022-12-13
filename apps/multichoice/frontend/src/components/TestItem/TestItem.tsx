@@ -75,7 +75,9 @@ const TestItem: React.FC<ITestItemProps> = ({ test, handleDeleteTest }) => {
 
   const RenderExamUrl = (): React.ReactNode => {
     return test.questionCount === 0 ? (
-      <p>Bộ đề chưa có câu hỏi nào. Hãy thêm câu hỏi cho bộ đề</p>
+      <p className="text-sm text-yellow-400">
+        Bộ đề chưa có câu hỏi nào. Hãy thêm câu hỏi cho bộ đề
+      </p>
     ) : (
       <Link
         to={
@@ -83,8 +85,7 @@ const TestItem: React.FC<ITestItemProps> = ({ test, handleDeleteTest }) => {
           test.topicUrl +
           (isRealtime ? '/do-exam-realtime' : '/do-exam')
         }
-        className="inline-block px-4 py-0.5 bg-blue-50
-        rounded-xl text-tiny"
+        className="text-sm text-primary-800"
         target="_blank"
       >
         Làm bài ngay
@@ -229,9 +230,7 @@ const TestItem: React.FC<ITestItemProps> = ({ test, handleDeleteTest }) => {
           className="test-footer mt-2 pt-4 flex items-center justify-between
           border-t border-solid border-slate-200"
         >
-          <div className="left text-sm text-primary-900 font-semibold inline-block">
-            {RenderExamUrl()}
-          </div>
+          <div className="left font-semibold">{RenderExamUrl()}</div>
           <div className="right">
             <button
               className="text-sm text-slate-800 font-semibold"
