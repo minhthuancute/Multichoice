@@ -23,6 +23,7 @@ import {
   TopicCategoryEnum,
   TopicTimeTypeEnum,
 } from '@monorepo/multichoice/constant';
+import BadgeColor from '../Commons/Badge/BadgeColor';
 
 export interface ITestItem {
   topicUrl: string;
@@ -33,6 +34,7 @@ export interface ITestItem {
   expirationTime: number;
   timeType: `${TopicTimeTypeEnum}`;
   typeCategoryName: `${TopicCategoryEnum}`;
+  isPublic: boolean;
 }
 
 interface ITestItemProps {
@@ -143,13 +145,17 @@ const TestItem: React.FC<ITestItemProps> = ({ test, handleDeleteTest }) => {
       />
 
       <div className="test-item cursor-pointer p-4 rounded-md bg-white mb-3 last:mb-0 shadow-sm">
-        <div className="test-item__header title">
+        <div className="test-item__header title flex items-center ">
           <Link
-            className="font-semibold text-lg text-slate-800"
+            className="font-semibold text-lg text-slate-800 mr-2"
             to={'/tests/edit/' + test.id}
           >
             {test.title}
           </Link>
+          <BadgeColor
+            text={test.isPublic ? 'Public' : 'Private'}
+            type={test.isPublic ? 'green' : 'yellow'}
+          />
         </div>
         <div className="test-item__body mt-2 flex items-center justify-between">
           <ul className="left flex items-center">

@@ -52,6 +52,7 @@ const TestList: React.FC = () => {
           expirationTime: test.expirationTime,
           timeType: test.timeType as `${TopicTimeTypeEnum}`,
           typeCategoryName: test.typeCategoryName,
+          isPublic: test.isPublic,
         };
         return testData;
       });
