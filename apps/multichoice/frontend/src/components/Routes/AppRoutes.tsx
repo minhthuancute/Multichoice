@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import AuthenLayout from '../../layouts/AuthenLayout';
 import DefaultLayout from '../../layouts/DefaultLayout';
 import ExamLayout from '../../layouts/ExamLayout';
@@ -7,7 +7,6 @@ import DoExam from '../../pages/DoExam/DoExam';
 import DoExamRealtime from '../../pages/DoexamRealtime/DoexamRealtime';
 import EditTest from '../../pages/EditTest/EditTest';
 import ForgotPassword from '../../pages/ForgotPassword/ForgotPassword';
-import Home from '../../pages/Home/Home';
 import Login from '../../pages/Login/Login';
 import PageNotfound from '../../pages/Notfound/Notfound';
 import Register from '../../pages/Register/Register';
@@ -33,7 +32,8 @@ const AppRoutes = () => {
       </Route>
 
       <Route path="/" element={<PrivateRoute Component={DefaultLayout} />}>
-        <Route index element={<Home />} />
+        <Route index element={<Navigate to={'/tests'} />} />
+        {/*<Route index element={<Home />} />*/}
 
         <Route path="statistical" element={<Statistical />} />
 
