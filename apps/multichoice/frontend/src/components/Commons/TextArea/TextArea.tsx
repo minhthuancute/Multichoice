@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { TextareaHTMLAttributes, useEffect } from 'react';
+import React, { TextareaHTMLAttributes, useEffect, useId } from 'react';
 import { classNames } from '../../../helper/classNames';
 import TextareaAutosize from 'react-textarea-autosize';
 
@@ -24,10 +24,14 @@ const TextArea: React.FC<ITextAreaProps> = ({
   isRequired = false,
   ...rest
 }) => {
+  const uniqueId = useId().slice(1, 3);
+
   useEffect(() => {
-    const dev = document.querySelector('.area-resize') as HTMLHtmlElement;
-    if (dev) {
-      dev.style.height = (rest.style?.height as string) || '39px';
+    const textareaElement = document.querySelector(
+      '.area-resize-' + uniqueId
+    ) as HTMLHtmlElement;
+    if (textareaElement) {
+      textareaElement.style.height = (rest.style?.height as string) || '';
     }
   }, []);
 
@@ -47,12 +51,12 @@ const TextArea: React.FC<ITextAreaProps> = ({
         <TextareaAutosize
           {...registerField}
           {...rest}
-          id={rest.id}
           className={classNames(
             [
-              `area-resize text-sm w-full text-stone-600 outline-none
+              `text-sm w-full text-stone-600 outline-none
               border py-2 border-solid border-stone-200 focus:border-primary-900
               rounded-md placeholder:text-sm resize-none hover:border-primary-900`,
+              'area-resize-' + uniqueId,
             ],
             {
               'border-stone-200 focus:border-primary-900': !isError,
