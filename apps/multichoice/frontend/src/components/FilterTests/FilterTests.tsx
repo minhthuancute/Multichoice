@@ -1,24 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import Input from '../Commons/Input/Input';
-import { useSearchParams } from 'react-router-dom';
 import Select from 'react-select';
 import { TopicCategoryEnum } from '@monorepo/multichoice/constant';
-
-interface IFormFilterTest {
-  searchTerm: string; // keyword search Test
-  category: TopicCategoryEnum; // category search
-}
-
-interface IFilterTestsProps {
-  onFilter?: (keyword: string) => void;
-}
+import { useQuery } from '../../hooks/useQuery';
+import { IFilter } from '../../services/Title/TopicServices';
+import { topicStore } from '../../store/Topic/topicStore';
 
 const schemaFormFilter = yup.object().shape({
   searchTerm: yup.string().required(),
-  category: yup
+  typeCategoryName: yup
     .mixed<TopicCategoryEnum>()
     .oneOf(Object.values(TopicCategoryEnum)),
 });
@@ -30,31 +23,76 @@ const options = Object.values(TopicCategoryEnum).map((val) => {
   };
 });
 
-const FilterTests: React.FC<IFilterTestsProps> = ({ onFilter }) => {
-  const [searchParams, setSearchParams] = useSearchParams();
+const FilterTests: React.FC = () => {
+  const [query, setSearchParams] = useQuery<IFilter>();
 
-  const { register, handleSubmit, setValue } = useForm<IFormFilterTest>({
+  const { getTopics, getPublicTopics, isPublic } = topicStore();
+
+  const { register, handleSubmit, setValue, getValues } = useForm<IFilter>({
     resolver: yupResolver(schemaFormFilter),
   });
 
-  const onSubmit: SubmitHandler<IFormFilterTest> = (formData) => {
-    setSearchParams('?search=' + formData.searchTerm);
-    if (onFilter) {
-      onFilter(formData.searchTerm);
+  const getData = () => {
+    if (isPublic) {
+      getPublicTopics(
+        {
+          typeCategoryName: getValues('typeCategoryName'),
+          searchTerm: getValues('searchTerm'),
+        },
+        {
+          page: 1,
+          take: 10,
+        }
+      );
+    } else {
+      getTopics(
+        {
+          typeCategoryName: getValues('typeCategoryName'),
+          searchTerm: getValues('searchTerm'),
+        },
+        {
+          page: 1,
+          take: 10,
+        }
+      );
     }
   };
+
+  const onSubmit: SubmitHandler<IFilter> = (formData) => {
+    console.log('1111');
+    setSearchParams({
+      searchTerm: formData.searchTerm || '',
+      typeCategoryName: formData.typeCategoryName || '',
+    });
+    console.log(formData);
+    getData();
+  };
+
+  useEffect(() => {
+    setValue('searchTerm', query.searchTerm);
+    setValue('typeCategoryName', query.typeCategoryName);
+  }, []);
+
+  useEffect(() => {
+    getData();
+  }, [query.typeCategoryName, isPublic]);
+
   return (
-    <form
-      className="form-search-test flex items-center bg-white border border-solid border-stone-200 focus:border-primary-900 rounded-md"
-      onSubmit={handleSubmit(onSubmit)}
-    >
+    <form className="form-search-test flex items-center bg-white border border-solid border-stone-200 focus:border-primary-900 rounded-md">
       <Input
         className="flex-1"
         placeholder="Tìm kiếm đề thi"
         registerField={register('searchTerm')}
         inputSize="md"
-        defaultValue={searchParams.get('search') || ''}
+        defaultValue={query.searchTerm}
         hasBorder={false}
+        type={'submit'}
+        onKeyDown={(e) => {
+          console.log(e.key);
+          if (e.key === 'Enter') {
+            onSubmit(getValues());
+          }
+        }}
       />
       <div className="h-6 bg-stone-200 w-[1px]"></div>
       <Select
@@ -65,8 +103,21 @@ const FilterTests: React.FC<IFilterTestsProps> = ({ onFilter }) => {
         isSearchable={false}
         options={options}
         onChange={(option) => {
-          setValue('category', (option?.value || '') as TopicCategoryEnum);
+          // set category
+          setValue(
+            'typeCategoryName',
+            (option?.value || '') as TopicCategoryEnum
+          );
+
+          // set query
+          setSearchParams({
+            ...query,
+            typeCategoryName: option?.value as TopicCategoryEnum,
+          });
         }}
+        defaultValue={options.find(
+          (option) => option.value === query.typeCategoryName
+        )}
         placeholder="Chọn danh mục..."
         className="text-sm"
         styles={{

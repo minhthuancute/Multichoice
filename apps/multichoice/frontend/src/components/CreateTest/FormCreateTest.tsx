@@ -71,7 +71,7 @@ const FormCreateTest: React.FC = () => {
       const { data } = await topicServices.createTopic(formData);
       if (data.success) {
         const topicId = data.data.id;
-        const urlNavigate = '/tests/edit/' + topicId;
+        const urlNavigate = '/manage-tests/edit/' + topicId;
         navigate(urlNavigate);
       }
     } catch {

@@ -1,10 +1,34 @@
 import { axiosClient } from '../Api';
 import { CreateTopicDto, PageOptionsDto } from '@monorepo/multichoice/dto';
+import { TopicCategoryEnum } from '@monorepo/multichoice/constant';
+
+export interface IFilter {
+  typeCategoryName: TopicCategoryEnum;
+  searchTerm: string;
+}
 
 export const topicServices = {
-  async getAllTopic(pagination: PageOptionsDto) {
+  async getTopics(filter: IFilter, pagination: PageOptionsDto) {
     const { page, take } = pagination;
-    const { data } = await axiosClient.get(`/topic?page=${page}&take=${take}`);
+    const {
+      typeCategoryName: typeCategoryName = '',
+      searchTerm: searchTerm = '',
+    } = filter;
+    const { data } = await axiosClient.get(
+      `/topic?page=${page}&take=${take}&typeCategoryName=${typeCategoryName}&searchTerm=${searchTerm}`
+    );
+    return data;
+  },
+
+  async getPublicTopics(filter: IFilter, pagination: PageOptionsDto) {
+    const { page, take } = pagination;
+    const {
+      typeCategoryName: typeCategoryName = '',
+      searchTerm: searchTerm = '',
+    } = filter;
+    const { data } = await axiosClient.get(
+      `/topic/public?page=${page}&take=${take}&typeCategoryName=${typeCategoryName}&searchTerm=${searchTerm}`
+    );
     return data;
   },
 

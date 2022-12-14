@@ -163,7 +163,7 @@ const CreateQuestion: React.FC = () => {
 
         const { data } = await questionServices.createQuestion(formData);
         if (data.success) {
-          const urlNavigate = '/tests/edit/' + query.topic_id;
+          const urlNavigate = '/manage-tests/edit/' + query.topic_id;
           navigate(urlNavigate);
         }
       } catch {

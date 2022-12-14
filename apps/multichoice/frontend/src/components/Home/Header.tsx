@@ -78,6 +78,13 @@ const Header: React.FC = () => {
                   Quản lý tài khoản
                 </Link>
                 <Link
+                  to="/manage-tests"
+                  className="block duration-200 transition-all
+                hover:font-semibold rounded-md mb-2"
+                >
+                  Quản lý bài thi
+                </Link>
+                <Link
                   to="/"
                   className="block duration-200 transition-all
                 hover:font-semibold rounded-md"

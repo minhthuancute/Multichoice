@@ -15,13 +15,15 @@ const Badge: React.FC<IBadge> = ({
   className = '',
   title = '',
 }) => {
-  const badgeColor = (type: `${TopicCategoryEnum}` = 'none'): string => {
+  const badgeColor = (
+    type: `${TopicCategoryEnum}` = TopicCategoryEnum.NONE
+  ): string => {
     const colorTypes: Record<`${TopicCategoryEnum}`, string> = {
-      business: 'text-green-500',
-      english: 'text-violet-500',
-      game: 'text-cyan-500',
-      programming: 'text-red-500',
-      none: 'text-yellow-300',
+      [TopicCategoryEnum.BUSINESS]: 'text-green-500',
+      [TopicCategoryEnum.ENGLISH]: 'text-violet-500',
+      [TopicCategoryEnum.GAME]: 'text-cyan-500',
+      [TopicCategoryEnum.PROGRAMMING]: 'text-red-500',
+      [TopicCategoryEnum.NONE]: 'text-yellow-300',
     };
     return colorTypes[type] || '';
   };

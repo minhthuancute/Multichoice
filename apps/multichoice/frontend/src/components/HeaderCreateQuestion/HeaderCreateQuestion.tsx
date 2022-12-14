@@ -23,7 +23,7 @@ const HeaderCreateQuestion: React.FC = () => {
       <div className="container flex justify-between py-4 ">
         <Breadcrumb>
           <Breadcrumb.Item>
-            <Link to={'/tests/edit/' + topic.id}>{topic.title}</Link>
+            <Link to={'/manage-tests/edit/' + topic.id}>{topic.title}</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
             <div>Tạo mới câu hỏi</div>

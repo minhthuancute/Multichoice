@@ -18,27 +18,13 @@ import {
 } from '../../constants/msgNotify';
 import { fireGet, fireUpdate } from '../../utils/firebase_utils';
 import PlayTestRealtime from '../PlayTestRealtime/PlayTestRealtime';
-import {
-  firebasePath,
-  TopicCategoryEnum,
-  TopicTimeTypeEnum,
-} from '@monorepo/multichoice/constant';
+import { firebasePath } from '@monorepo/multichoice/constant';
 import BadgeColor from '../Commons/Badge/BadgeColor';
-
-export interface ITestItem {
-  topicUrl: string;
-  id: number;
-  title: string;
-  date: string;
-  questionCount: number;
-  expirationTime: number;
-  timeType: `${TopicTimeTypeEnum}`;
-  typeCategoryName: `${TopicCategoryEnum}`;
-  isPublic: boolean;
-}
+import { ITopic } from '../../types/Topic';
+import { topicStore } from '../../store/Topic/topicStore';
 
 interface ITestItemProps {
-  test: ITestItem;
+  test: ITopic;
   handleDeleteTest: (testID: number, testTitle: string) => void;
 }
 
@@ -51,16 +37,15 @@ const TestItem: React.FC<ITestItemProps> = ({ test, handleDeleteTest }) => {
   const [startedTestRealtime, setStartedTestRealtime] =
     useState<boolean>(false);
   const [isPlaytest, setIsPlaytest] = useState<boolean>(false);
+  const { isPublic } = topicStore();
 
   const examUrl = (): string => {
     const host = window.location.origin + '/e/';
-    return (
-      host + test.topicUrl + (isRealtime ? '/do-exam-realtime' : '/do-exam')
-    );
+    return host + test.url + (isRealtime ? '/do-exam-realtime' : '/do-exam');
   };
 
   const onCopyClipboard = () => {
-    const canCopy = test.questionCount !== 0;
+    const canCopy = test.questionsCount !== 0;
     if (canCopy) {
       copyClipboard(examUrl());
       notify({
@@ -76,17 +61,13 @@ const TestItem: React.FC<ITestItemProps> = ({ test, handleDeleteTest }) => {
   };
 
   const RenderExamUrl = (): React.ReactNode => {
-    return test.questionCount === 0 ? (
+    return test.questionsCount === 0 ? (
       <p className="text-sm text-yellow-400">
         Bộ đề chưa có câu hỏi nào. Hãy thêm câu hỏi cho bộ đề
       </p>
     ) : (
       <Link
-        to={
-          '/e/' +
-          test.topicUrl +
-          (isRealtime ? '/do-exam-realtime' : '/do-exam')
-        }
+        to={'/e/' + test.url + (isRealtime ? '/do-exam-realtime' : '/do-exam')}
         className="text-sm text-primary-800"
         target="_blank"
       >
@@ -96,7 +77,7 @@ const TestItem: React.FC<ITestItemProps> = ({ test, handleDeleteTest }) => {
   };
 
   useEffect(() => {
-    const testPath: string = `${firebasePath}-` + test.topicUrl;
+    const testPath: string = `${firebasePath}-` + test.url;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     fireGet(testPath, (data: any) => {
       const recordValue: ITestRealtimeRecord = data;
@@ -132,40 +113,44 @@ const TestItem: React.FC<ITestItemProps> = ({ test, handleDeleteTest }) => {
       setStartedTestRealtime(recordValue?.started || false);
       setIsPlaytest(recordValue?.started || false);
     });
-  }, [test.topicUrl]);
+  }, [test.url]);
 
   return (
     <>
-      <PlayTestRealtime
-        visibleModal={visibleModalPlayTest}
-        setVisibleModal={setVisibleModalPlayTest}
-        topicTitle={test.title}
-        topicUrl={test.topicUrl}
-        isPlaytest={isPlaytest}
-      />
+      {!isPublic ? (
+        <PlayTestRealtime
+          visibleModal={visibleModalPlayTest}
+          setVisibleModal={setVisibleModalPlayTest}
+          topicTitle={test.title}
+          topicUrl={test.url}
+          isPlaytest={isPlaytest}
+        />
+      ) : null}
 
       <div className="test-item cursor-pointer p-4 rounded-md bg-white mb-3 last:mb-0 shadow-sm">
         <div className="test-item__header title flex items-center ">
           <Link
             className="font-semibold text-lg text-slate-800 mr-2"
-            to={'/tests/edit/' + test.id}
+            to={'/manage-tests/edit/' + test.id}
           >
             {test.title}
           </Link>
-          <BadgeColor
-            text={test.isPublic ? 'Public' : 'Private'}
-            type={test.isPublic ? 'green' : 'yellow'}
-          />
+          {!isPublic ? (
+            <BadgeColor
+              text={test.isPublic ? 'Public' : 'Private'}
+              type={test.isPublic ? 'green' : 'yellow'}
+            />
+          ) : null}
         </div>
         <div className="test-item__body mt-2 flex items-center justify-between">
           <ul className="left flex items-center">
             <li className="flex items-center text-tiny mr-3">
               <BsCalendarDate className="text-slate-500 mr-2" />
-              <span>{getDate(test.date)}</span>
+              <span>{getDate(test.createdAt)}</span>
             </li>
             <li className="flex items-center text-tiny mr-3">
               <AiOutlineQuestionCircle className="text-slate-800 mr-1" />
-              <span>{test.questionCount} câu hỏi</span>
+              <span>{test.questionsCount} câu hỏi</span>
             </li>
             <li className="flex items-center text-tiny mr-3">
               <AiOutlineFieldTime className="text-slate-800 mr-1 text-base" />
@@ -181,76 +166,81 @@ const TestItem: React.FC<ITestItemProps> = ({ test, handleDeleteTest }) => {
               />
             </li>
           </ul>
-          <div className="right">
-            <ul className="ctas flex items-center">
-              {test.timeType === 'realtime' ? (
-                <li className="relative group mr-4 mt-1">
-                  <ToolTip
-                    title={
-                      startedTestRealtime
-                        ? 'Bài thi đã bắt đầu'
-                        : 'Bắt đầu làm bài'
-                    }
-                  >
-                    {startedTestRealtime ? (
-                      <button
-                      // onClick={() => {
-                      //   setIsPlaytest(false);
-                      //   setModalHandlePlayTest(true);
-                      // }}
-                      >
-                        <BsPause className="text-slate-800 text-2xl" />
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => {
-                          setIsPlaytest(true);
-                          setVisibleModalPlayTest(true);
-                        }}
-                      >
-                        <BsPlay className="text-slate-800 text-2xl" />
-                      </button>
-                    )}
+          {!isPublic ? (
+            <div className="right">
+              <ul className="ctas flex items-center">
+                {test.timeType === 'realtime' ? (
+                  <li className="relative group mr-4 mt-1">
+                    <ToolTip
+                      title={
+                        startedTestRealtime
+                          ? 'Bài thi đã bắt đầu'
+                          : 'Bắt đầu làm bài'
+                      }
+                    >
+                      {startedTestRealtime ? (
+                        <button
+                        // onClick={() => {
+                        //   setIsPlaytest(false);
+                        //   setModalHandlePlayTest(true);
+                        // }}
+                        >
+                          <BsPause className="text-slate-800 text-2xl" />
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            setIsPlaytest(true);
+                            setVisibleModalPlayTest(true);
+                          }}
+                        >
+                          <BsPlay className="text-slate-800 text-2xl" />
+                        </button>
+                      )}
+                    </ToolTip>
+                  </li>
+                ) : null}
+                <li className="relative group mr-4 mb-0.5">
+                  <ToolTip title="Cập nhật đề thi">
+                    <Link to={'/manage-tests/edit/' + test.id}>
+                      <TiPencil className="text-slate-800" />
+                    </Link>
                   </ToolTip>
                 </li>
-              ) : null}
-              <li className="relative group mr-4 mb-0.5">
-                <ToolTip title="Cập nhật đề thi">
-                  <Link to={'/tests/edit/' + test.id}>
-                    <TiPencil className="text-slate-800" />
-                  </Link>
-                </ToolTip>
-              </li>
-              <li className="relative group mr-4">
-                <ToolTip title="Xóa">
-                  <button onClick={() => handleDeleteTest(test.id, test.title)}>
-                    <RiDeleteBin6Line className="text-red-500" />
-                  </button>
-                </ToolTip>
-              </li>
-            </ul>
-          </div>
+                <li className="relative group mr-4">
+                  <ToolTip title="Xóa">
+                    <button
+                      onClick={() => handleDeleteTest(test.id, test.title)}
+                    >
+                      <RiDeleteBin6Line className="text-red-500" />
+                    </button>
+                  </ToolTip>
+                </li>
+              </ul>
+            </div>
+          ) : null}
         </div>
-
         <div
           className="test-footer mt-2 pt-4 flex items-center justify-between
           border-t border-solid border-slate-200"
         >
           <div className="left font-semibold">{RenderExamUrl()}</div>
-          <div className="right">
-            <button
-              className="text-sm text-slate-800 font-semibold"
-              onClick={() => onCopyClipboard()}
-            >
-              Sao chép liên kết
-            </button>
-            <Link
-              className="ml-5 text-sm text-slate-800 font-semibold"
-              to={`/tests/${test.id}/statistic`}
-            >
-              Thống kê kết quả
-            </Link>
-          </div>
+          {!isPublic ? (
+            <div className="right">
+              <button
+                className="text-sm text-slate-800 font-semibold"
+                onClick={() => onCopyClipboard()}
+              >
+                Sao chép liên kết
+              </button>
+              <Link
+                className="ml-5 text-sm text-slate-800 font-semibold"
+                to={`/manage-tests/${test.id}/statistic`}
+              >
+                Thống kê kết quả
+              </Link>
+            </div>
+          ) : null}
         </div>
       </div>
     </>

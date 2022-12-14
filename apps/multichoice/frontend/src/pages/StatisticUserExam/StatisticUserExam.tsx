@@ -49,7 +49,7 @@ const StatisticUserExam: React.FC = () => {
             <Link to="/tests">Đề thi</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
-            <Link to={`/tests/${Number(id)}/statistic`}>
+            <Link to={`/manage-tests/${Number(id)}/statistic`}>
               {getTopicTitle(Number(id))}
             </Link>
           </Breadcrumb.Item>

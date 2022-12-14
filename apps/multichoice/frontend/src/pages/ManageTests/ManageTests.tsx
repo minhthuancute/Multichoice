@@ -1,20 +1,16 @@
-import React, { useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import FilterTests from '../../components/FilterTests/FilterTests';
 import TestList from '../../components/TestList/TestList';
 import { withBackTop } from '../../HOCs/withBackTop';
+import { topicStore } from '../../store/Topic/topicStore';
 
-const Tests: React.FC = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [searchKeyword, setSearchKeyword] = useState<string>('');
+const ManageTests: React.FC = () => {
+  const { setPublicStatus } = topicStore();
 
-  // on search Test
-  const onFilter = (keyword: string) => {
-    setSearchKeyword(keyword);
-    setSearchParams({
-      search: keyword,
-    });
-  };
+  useEffect(() => {
+    setPublicStatus(false);
+  }, []);
 
   return (
     <>
@@ -24,7 +20,7 @@ const Tests: React.FC = () => {
             Danh sách đề thi
           </h3>
           <div className="w-2/5">
-            <FilterTests onFilter={onFilter} />
+            <FilterTests />
           </div>
         </div>
       </div>
@@ -33,7 +29,7 @@ const Tests: React.FC = () => {
         <div className="container">
           <div className="flex justify-end">
             <Link
-              to="/tests/create"
+              to="/manage-tests/create"
               className="create-test btn-success rounded-md bg-primary-900 text-sm
             text-white font-bold flex justify-center items-center w-32 h-10 transition-all
               duration-200"
@@ -41,7 +37,6 @@ const Tests: React.FC = () => {
               Tạo đề thi
             </Link>
           </div>
-
           <TestList />
         </div>
       </div>
@@ -49,4 +44,4 @@ const Tests: React.FC = () => {
   );
 };
 
-export default withBackTop(Tests);
+export default withBackTop(ManageTests);

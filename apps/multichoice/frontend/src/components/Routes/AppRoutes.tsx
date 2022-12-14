@@ -13,11 +13,12 @@ import Register from '../../pages/Register/Register';
 import Statistical from '../../pages/Statistical/Statistical';
 import StatisticExam from '../../pages/StatisticExam/StatisticExam';
 import StatisticUserExam from '../../pages/StatisticUserExam/StatisticUserExam';
-import Tests from '../../pages/Tests/Tests';
+import ManageTests from '../../pages/ManageTests/ManageTests';
 import CreateQuestion from '../CreateQuestion/CreateQuestion';
 import PrivateRoute from './PrivateRoute';
 import PublicRoute from './PublicRoute';
 import 'react-notifications-component/dist/theme.css';
+import Test from '../../pages/Test/Test';
 
 const AppRoutes = () => {
   return (
@@ -38,7 +39,11 @@ const AppRoutes = () => {
         <Route path="statistical" element={<Statistical />} />
 
         <Route path="tests">
-          <Route index element={<Tests />} />
+          <Route index element={<Test />} />
+        </Route>
+
+        <Route path="manage-tests">
+          <Route index element={<ManageTests />} />
           <Route path="create" element={<CreateTest />} />
           <Route path="edit/:id" element={<EditTest />} />
           <Route path=":id/statistic" element={<StatisticExam />} />

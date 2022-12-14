@@ -1,6 +1,7 @@
 import {
   QuestionTypeEnum,
   TopicCategoryEnum,
+  TopicTimeTypeEnum,
 } from '@monorepo/multichoice/constant';
 import { UpdateAnswer } from '@monorepo/multichoice/dto';
 
@@ -21,7 +22,7 @@ export interface ITopic {
   updatedAt: string;
   id: number;
   typeCategoryName: TopicCategoryEnum;
-  timeType: string;
+  timeType: TopicTimeTypeEnum;
   title: string;
   description: string | null;
   isDraft: boolean;

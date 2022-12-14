@@ -159,7 +159,7 @@ const StatisticExam: React.FC = () => {
                           </td>
                           <td className="pl-4 font-semibold text-primary-800">
                             <Link
-                              to={`/tests/${id}/statistic/detail?user_id=${user.userID}`}
+                              to={`/manage-tests/${id}/statistic/detail?user_id=${user.userID}`}
                             >
                               Xem chi tiết
                             </Link>
