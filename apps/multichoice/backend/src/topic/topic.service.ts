@@ -301,9 +301,9 @@ export class TopicService {
       });
     }
     if (queryTopicDto.searchTerm && queryTopicDto.searchTerm.length) {
-      queryBuilder.andWhere(
-        `MATCH(title) AGAINST ('${queryTopicDto.searchTerm}' IN BOOLEAN MODE)`
-      );
+      queryBuilder.andWhere('topic.title like :title', {
+        title: `%${queryTopicDto.searchTerm}%`,
+      });
     }
     return queryBuilder;
   }
