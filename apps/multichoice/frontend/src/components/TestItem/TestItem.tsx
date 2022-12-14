@@ -129,12 +129,21 @@ const TestItem: React.FC<ITestItemProps> = ({ test, handleDeleteTest }) => {
 
       <div className="test-item cursor-pointer p-4 rounded-md bg-white mb-3 last:mb-0 shadow-sm">
         <div className="test-item__header title flex items-center ">
-          <Link
-            className="font-semibold text-lg text-slate-800 mr-2"
-            to={'/manage-tests/edit/' + test.id}
-          >
-            {test.title}
-          </Link>
+          {isPublic ? (
+            <Link
+              className="font-semibold text-lg text-slate-800 mr-2"
+              to={'#'}
+            >
+              {test.title}
+            </Link>
+          ) : (
+            <Link
+              className="font-semibold text-lg text-slate-800 mr-2"
+              to={'/manage-tests/edit/' + test.id}
+            >
+              {test.title}
+            </Link>
+          )}
           {!isPublic ? (
             <BadgeColor
               text={test.isPublic ? 'Public' : 'Private'}

@@ -30,7 +30,7 @@ const HeaderEditTest: React.FC = () => {
       <div className="container pt-4">
         <Breadcrumb>
           <Breadcrumb.Item>
-            <Link to="/tests">Đề thi</Link>
+            <Link to="/manage-tests">Đề thi</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
             <div>{topic.title}</div>
