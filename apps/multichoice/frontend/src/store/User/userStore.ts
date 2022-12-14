@@ -1,25 +1,26 @@
-import jwtDecode from 'jwt-decode';
 import create from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
-import { CURRENT_USER, TOKEN } from '../../constants/contstants';
+import { CURRENT_USER } from '../../constants/contstants';
 import { AuthPayload } from '../../pages/Login/Login';
-import { localServices } from '../../services/Applications/LocalServices';
-import { ITokenPayload } from '../../types/Topic';
+import { authenServices } from '../../services/Authen/AuthenServices';
 
 export interface IDataUser extends AuthPayload {
   token: string;
 }
 export interface IUserStore {
   user: IDataUser;
+  isAuthenticated: boolean;
   setInforUser: (data: AuthPayload, token: string) => void;
-  isAuthenticated: () => boolean;
+  checkAuthenticated: () => Promise<void>;
+  setAuthenticated: (isAuthen: boolean) => void;
 }
 
 export const userStore = create<IUserStore>()(
   devtools(
     persist(
-      (set, get) => ({
+      (set) => ({
         user: {} as IDataUser,
+        isAuthenticated: false,
         setInforUser: (data: AuthPayload, token: string) =>
           set(() => {
             return {
@@ -30,15 +31,24 @@ export const userStore = create<IUserStore>()(
             };
           }),
 
-        isAuthenticated: () => {
+        checkAuthenticated: async () => {
           try {
-            const token = localServices.getData(TOKEN) || '';
-            const decodeToken = jwtDecode(token) as ITokenPayload;
-            const isExpried = decodeToken.exp > Date.now() / 1000;
-            return isExpried;
-          } catch (error) {
-            return false;
+            await authenServices.token();
+            set({
+              isAuthenticated: true,
+            });
+          } catch {
+            set({
+              isAuthenticated: false,
+              user: {} as IDataUser,
+            });
           }
+        },
+
+        setAuthenticated: (isAuthen: boolean) => {
+          set({
+            isAuthenticated: isAuthen,
+          });
         },
       }),
       {

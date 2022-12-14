@@ -17,4 +17,9 @@ export const authenServices = {
     const data = axiosClient.post('/auth/forgot-password', payload);
     return data;
   },
+
+  token() {
+    const data = axiosClient.get('/auth/token');
+    return data;
+  },
 };

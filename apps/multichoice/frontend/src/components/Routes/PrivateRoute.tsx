@@ -10,7 +10,7 @@ interface IPrivateRouteProps {
 const PrivateRoute: React.FC<IPrivateRouteProps> = ({ Component, ...rest }) => {
   const { isAuthenticated } = userStore();
 
-  return isAuthenticated() ? (
+  return isAuthenticated ? (
     <Component {...rest} />
   ) : (
     <Navigate to="/login" replace />
