@@ -13,7 +13,7 @@ const PublicRoute: React.FC<IPrivateRoute> = ({
   restricted = false,
 }) => {
   const { isAuthenticated } = userStore();
-  return isAuthenticated() && restricted ? (
+  return isAuthenticated && restricted ? (
     <Navigate to="/" replace />
   ) : (
     <Component />

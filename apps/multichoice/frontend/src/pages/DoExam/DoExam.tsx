@@ -37,7 +37,7 @@ const DoExam: React.FC = () => {
   );
   const [indexQuestion, setIndexQuestion] = useState<number>(0);
   const [visibleModalInfor, setVisibleModalInfor] = useState<boolean>(
-    !isAuthenticated() && !sessionServices.getData(START_EXAM)
+    !isAuthenticated && !sessionServices.getData(START_EXAM)
   );
   const [visibleModalResult, setVisibleModalResult] = useState<boolean>(false);
 
@@ -84,7 +84,7 @@ const DoExam: React.FC = () => {
 
   useEffect(() => {
     getExam(url || '');
-    if (!sessionServices.getData(START_TIME) && isAuthenticated()) {
+    if (!sessionServices.getData(START_TIME) && isAuthenticated) {
       sessionServices.setData(START_TIME, Date.now());
     }
   }, []);
@@ -95,7 +95,7 @@ const DoExam: React.FC = () => {
         topicID: exam.id,
         username: user.username,
       };
-      if (isAuthenticated()) {
+      if (isAuthenticated) {
         startExam(payload);
       }
       if (!validArray(answers)) {

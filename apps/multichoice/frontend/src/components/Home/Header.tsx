@@ -12,7 +12,7 @@ import Button from '../Commons/Button/Button';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
-  const { user } = userStore();
+  const { user, setAuthenticated } = userStore();
 
   const refDropdownUser = useRef<HTMLDivElement>(null);
   const refUsername = useRef<HTMLHeadingElement>(null);
@@ -21,6 +21,7 @@ const Header: React.FC = () => {
 
   const handleLogout = () => {
     localServices.clearItem(TOKEN);
+    setAuthenticated(false);
     navigate('/login');
   };
 

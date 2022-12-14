@@ -53,7 +53,7 @@ const Login: React.FC = () => {
   const [query] = useQuery<RedirectQuery>();
   const redirectUrl = query.redirect;
 
-  const { setInforUser } = userStore();
+  const { setInforUser, setAuthenticated } = userStore();
   const {
     register,
     handleSubmit,
@@ -70,6 +70,7 @@ const Login: React.FC = () => {
         const { payload, token } = loginResponse.data;
         localServices.setData(TOKEN, token);
         setInforUser(payload, token);
+        setAuthenticated(true);
         navigate('/');
       }
     } catch {

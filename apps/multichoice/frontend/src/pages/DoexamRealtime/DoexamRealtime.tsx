@@ -88,7 +88,7 @@ const DoExamRealtime: React.FC = () => {
   useEffect(() => {
     sessionServices.setData(IS_SUBMIT_EXAM, false);
 
-    if (isAuthenticated()) {
+    if (isAuthenticated) {
       setUserName(user.username);
     }
     if (validObject(exam)) {
@@ -100,7 +100,7 @@ const DoExamRealtime: React.FC = () => {
     handleSubmitExam: handleSubmitExam,
   };
 
-  return isAuthenticated() ? (
+  return isAuthenticated ? (
     <DoExamProvider value={contextValue}>
       <HeaderDoExam submited={submited} />
       {loading ? (
