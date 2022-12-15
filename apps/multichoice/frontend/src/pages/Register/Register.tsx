@@ -75,7 +75,7 @@ const Register: React.FC = () => {
   };
 
   useLayoutEffect(() => {
-    titleServices.addSub('Login');
+    titleServices.addSub('Register');
   }, []);
 
   return (
