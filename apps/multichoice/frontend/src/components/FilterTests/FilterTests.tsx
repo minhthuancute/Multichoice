@@ -59,12 +59,10 @@ const FilterTests: React.FC = () => {
   };
 
   const onSubmit: SubmitHandler<IFilter> = (formData) => {
-    console.log('1111');
     setSearchParams({
       searchTerm: formData.searchTerm || '',
       typeCategoryName: formData.typeCategoryName || '',
     });
-    console.log(formData);
     getData();
   };
 
@@ -75,7 +73,7 @@ const FilterTests: React.FC = () => {
 
   useEffect(() => {
     getData();
-  }, [query.typeCategoryName, isPublic]);
+  }, [query.typeCategoryName]);
 
   return (
     <form className="form-search-test flex items-center bg-white border border-solid border-stone-200 focus:border-primary-900 rounded-md">
