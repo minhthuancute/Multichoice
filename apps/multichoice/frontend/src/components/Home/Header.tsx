@@ -10,6 +10,11 @@ import Avatar from '../../assets/images/avatar.svg';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import Button from '../Commons/Button/Button';
 
+interface IDropdownOption {
+  label: React.ReactNode;
+  to: string;
+}
+
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const { user, setAuthenticated } = userStore();
@@ -18,6 +23,21 @@ const Header: React.FC = () => {
   const refUsername = useRef<HTMLHeadingElement>(null);
 
   const [openDropdown, setOpenDropdown] = useState<boolean>(false);
+
+  const dropdownOptions: IDropdownOption[] = [
+    {
+      label: 'Quản lý tài khoản',
+      to: '/manage-account',
+    },
+    {
+      label: 'Quản lý mật khẩu',
+      to: '/manage-password',
+    },
+    {
+      label: 'Quản lý bài thi',
+      to: '/manage-tests',
+    },
+  ];
 
   const handleLogout = () => {
     localServices.clearItem(TOKEN);
@@ -71,27 +91,19 @@ const Header: React.FC = () => {
                 <li className="cursor-pointer">{user.email}</li>
               </ul>
               <ul className="py-4 border-t border-slate-200 text-sm text-slate-800">
-                <Link
-                  to="/"
-                  className="block duration-200 transition-all
-                hover:font-semibold rounded-md mb-2"
-                >
-                  Quản lý tài khoản
-                </Link>
-                <Link
-                  to="/manage-tests"
-                  className="block duration-200 transition-all
-                hover:font-semibold rounded-md mb-2"
-                >
-                  Quản lý bài thi
-                </Link>
-                <Link
-                  to="/"
-                  className="block duration-200 transition-all
-                hover:font-semibold rounded-md"
-                >
-                  Đổi mật khẩu
-                </Link>
+                {dropdownOptions.map((option) => (
+                  <Link
+                    key={option.to}
+                    to={option.to}
+                    className="block duration-200 transition-all
+                    hover:text-primary-800 rounded-md mb-2"
+                    onClick={() => {
+                      setOpenDropdown((state) => !state);
+                    }}
+                  >
+                    {option.label}
+                  </Link>
+                ))}
               </ul>
               <div className="logout pt-5 border-t border-slate-200">
                 <Button
@@ -100,16 +112,8 @@ const Header: React.FC = () => {
                   widthFull
                   onClick={handleLogout}
                 >
-                  {' '}
                   Đăng Xuất
                 </Button>
-                {/* <button
-                  className="bg-red-500 text-white text-sm w-full py-1
-                  rounded-sm font-semibold text-center cursor-pointer focus:ring focus:ring-red-100"
-                  onClick={handleLogout}
-                >
-                  Đăng Xuất
-                </button> */}
               </div>
             </div>
           </div>
